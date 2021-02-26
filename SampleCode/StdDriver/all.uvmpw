@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<ProjectWorkspace xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="project_mpw.xsd">
+
+  <SchemaVersion>1.0</SchemaVersion>
+
+  <Header>### uVision Project, (C) Keil Software</Header>
+
+  <WorkspaceName>WorkSpace</WorkspaceName>
+
+  <project>
+    <PathAndName>.\ACMP_CompareDAC\Keil\ACMP_CompareDAC.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\ACMP_CompareVBG\Keil\ACMP_CompareVBG.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\ACMP_Wakeup\Keil\ACMP_Wakeup.uvprojx</PathAndName>
+    <NodeIsActive>1</NodeIsActive>
+    <NodeIsExpanded>1</NodeIsExpanded>
+  </project>
+
+  <project>
+    <PathAndName>.\ACMP_WindowComapre\Keil\ACMP_WindowComapre.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\CLK_ClockDetector\Keil\CLK_ClockDetector.uvprojx</PathAndName>
+  </project>
+
+</ProjectWorkspace>

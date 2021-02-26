@@ -1,0 +1,182 @@
+/**************************************************************************//**
+ * @file     main.c
+ * @version  V3.00
+ * @brief    Demonstrate how to implement a Remote Network Driver
+ *           Interface Specification (RNDIS) device.
+ *
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ ******************************************************************************/
+#include <stdio.h>
+#include "NuMicro.h"
+#include "rndis.h"
+
+// Our MAC address
+uint8_t g_au8MacAddr[6] = {0x00, 0x00, 0x00, 0x59, 0x16, 0x88};
+// Buffer for holding received packet
+
+uint32_t u32RxAct = 0;
+uint32_t u32TxCnt = 0, u32RxCnt = 0;
+
+// Descriptor pointers holds current Tx and Rx used by IRQ handler here.
+uint32_t u32CurrentTxDesc, u32CurrentRxDesc;
+
+// allocate 5 buffers for tx and other 5 for rx.
+// 1 for usb, the other 4 for emac. 4 is the descriptor number allocated in this sample
+// these buffers are shared between usb and emac so no memory copy is required while
+// passing buffer content between two interfaces.
+
+#ifdef __ICCARM__
+#pragma data_alignment=4
+uint8_t rndis_outdata[EMAC_TX_DESC_SIZE + 1][1580];
+uint8_t rndis_indata[EMAC_RX_DESC_SIZE + 1][1580];
+#else
+uint8_t rndis_outdata[EMAC_TX_DESC_SIZE + 1][1580] __attribute__((aligned(32)));
+uint8_t rndis_indata[EMAC_RX_DESC_SIZE + 1][1580] __attribute__((aligned(32)));
+#endif
+
+//for usb
+uint32_t u32CurrentTxBuf = 0;
+uint32_t u32CurrentRxBuf = 0;
+
+void SYS_Init(void)
+{
+    uint32_t volatile i;
+
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
+    /*---------------------------------------------------------------------------------------------------------*/
+    /* Init System Clock                                                                                       */
+    /*---------------------------------------------------------------------------------------------------------*/
+
+    /* Enable HIRC and HXT clock */
+    CLK_EnableXtalRC(CLK_PWRCTL_HIRCEN_Msk | CLK_PWRCTL_HXTEN_Msk);
+
+    /* Wait for HIRC and HXT clock ready */
+    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk | CLK_STATUS_HXTSTB_Msk);
+
+    /* Set PCLK0 and PCLK1 to HCLK/2 */
+    CLK->PCLKDIV = (CLK_PCLKDIV_APB0DIV_DIV2 | CLK_PCLKDIV_APB1DIV_DIV2);
+
+    /* Set core clock to 192MHz */
+    CLK_SetCoreClock(FREQ_192MHZ);
+
+    /* Enable all GPIO clock */
+    CLK->AHBCLK0 |= CLK_AHBCLK0_GPACKEN_Msk | CLK_AHBCLK0_GPBCKEN_Msk | CLK_AHBCLK0_GPCCKEN_Msk | CLK_AHBCLK0_GPDCKEN_Msk |
+                    CLK_AHBCLK0_GPECKEN_Msk | CLK_AHBCLK0_GPFCKEN_Msk | CLK_AHBCLK0_GPGCKEN_Msk | CLK_AHBCLK0_GPHCKEN_Msk;
+    CLK->AHBCLK1 |= CLK_AHBCLK1_GPICKEN_Msk | CLK_AHBCLK1_GPJCKEN_Msk;
+
+    /* Enable UART0 module clock */
+    CLK_EnableModuleClock(UART0_MODULE);
+
+    /* Select UART0 module clock source as HIRC and UART0 module clock divider as 1 */
+    CLK_SetModuleClock(UART0_MODULE, CLK_CLKSEL1_UART0SEL_HIRC, CLK_CLKDIV0_UART0(1));
+
+    /* Select HSUSBD */
+    SYS->USBPHY &= ~SYS_USBPHY_HSUSBROLE_Msk;
+
+    /* Enable USB PHY */
+    SYS->USBPHY = (SYS->USBPHY & ~(SYS_USBPHY_HSUSBROLE_Msk | SYS_USBPHY_HSUSBACT_Msk)) | SYS_USBPHY_HSUSBEN_Msk;
+    for(i = 0; i < 0x1000; i++);   // delay > 10 us
+    SYS->USBPHY |= SYS_USBPHY_HSUSBACT_Msk;
+
+    /* Enable HSUSBD module clock */
+    CLK_EnableModuleClock(HSUSBD_MODULE);
+
+    /* Enable EMAC0 module clock */
+    CLK_EnableModuleClock(EMAC0_MODULE);
+
+    /* Configure MDC clock rate to HCLK / (127 + 1) = 1.5 MHz if system is running at 192 MHz */
+    CLK_SetModuleClock(EMAC0_MODULE, 0, CLK_CLKDIV3_EMAC0(127));
+
+    /*---------------------------------------------------------------------------------------------------------*/
+    /* Init I/O Multi-function                                                                                 */
+    /*---------------------------------------------------------------------------------------------------------*/
+
+    /* Set multi-function pins for UART0 RXD and TXD */
+    SET_UART0_RXD_PB12();
+    SET_UART0_TXD_PB13();
+
+    /* Configure RMII pins */
+    SET_EMAC0_RMII_RXERR_PA6();
+    SET_EMAC0_RMII_CRSDV_PA7();
+    SET_EMAC0_RMII_RXD1_PC6();
+    SET_EMAC0_RMII_RXD0_PC7();
+    SET_EMAC0_RMII_REFCLK_PC8();
+    SET_EMAC0_RMII_MDC_PE8();
+    SET_EMAC0_RMII_MDIO_PE9();
+    SET_EMAC0_RMII_TXD0_PE10();
+    SET_EMAC0_RMII_TXD1_PE11();
+    SET_EMAC0_RMII_TXEN_PE12();
+
+    /* Enable high slew rate on all RMII TX output pins */
+    PE->SLEWCTL = (GPIO_SLEWCTL_HIGH << GPIO_SLEWCTL_HSREN10_Pos) |
+                  (GPIO_SLEWCTL_HIGH << GPIO_SLEWCTL_HSREN11_Pos) |
+                  (GPIO_SLEWCTL_HIGH << GPIO_SLEWCTL_HSREN12_Pos);
+
+    /* Lock protected registers */
+    SYS_LockReg();
+}
+
+extern uint32_t My_EMAC_RecvPkt(void);
+
+/*---------------------------------------------------------------------------------------------------------*/
+/*  Main Function                                                                                          */
+/*---------------------------------------------------------------------------------------------------------*/
+int32_t main(void)
+{
+    unsigned int i;
+
+    /* Init System, peripheral clock and multi-function I/O */
+    SYS_Init();
+
+    /* Init UART to 115200-8n1 for print message */
+    UART_Open(UART0, 115200);
+
+    printf("NuMicro HSUSBD RNDIS\n");
+
+    // Select RMII interface by default
+    EMAC_Open(g_au8MacAddr);
+    EMAC_ENABLE_RX();
+    EMAC_ENABLE_TX();
+    EMAC_TRIGGER_RX();
+
+    HSUSBD_Open(&gsHSInfo, RNDIS_ClassRequest, NULL);
+    HSUSBD_SetVendorRequest(RNDIS_VendorRequest);
+
+    /* Endpoint configuration */
+    RNDIS_Init();
+    NVIC_EnableIRQ(USBD20_IRQn);
+
+    for(i = 0; i < EMAC_RX_DESC_SIZE + 1; i++)
+    {
+        *(uint32_t *)&rndis_indata[i][0] = 0x00000001; /* message type */
+        *(uint32_t *)&rndis_indata[i][8] = 0x24;       /* data offset */
+    }
+
+    /* Start transaction */
+    while(1)
+    {
+        if(HSUSBD_IS_ATTACHED())
+        {
+            HSUSBD_Start();
+            break;
+        }
+    }
+
+    while(1)
+    {
+        // Rx
+        // Check if there any Rx packet queued in RX descriptor, if yes, move to USBD
+        if((i = My_EMAC_RecvPkt()) > 0)
+        {
+            RNDIS_InData(i);
+            u32CurrentRxBuf++;
+            if(u32CurrentRxBuf == EMAC_RX_DESC_SIZE + 1)
+                u32CurrentRxBuf = 0;
+        }
+        // Tx
+        RNDIS_ProcessOutData();
+    }
+}
