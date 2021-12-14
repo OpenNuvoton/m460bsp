@@ -1,7 +1,7 @@
 /**************************************************************************//**
- * @file     system_M480.c
- * @version  V1.000
- * @brief    CMSIS Cortex-M4 Core Peripheral Access Layer Source File for M480
+ * @file     system_M460.c
+ * @version  V3.000
+ * @brief    CMSIS Cortex-M4 Core Peripheral Access Layer Source File for M460
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2017-2020 Nuvoton Technology Corp. All rights reserved.
@@ -78,5 +78,17 @@ void SystemInit (void)
     SCB->CPACR |= ((3UL << 10*2) |                 /* set CP10 Full Access */
                    (3UL << 11*2)  );               /* set CP11 Full Access */
 #endif
+
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
+    /* Set HCLK switch to be reset by HRESET reset sources */
+    outpw(0x40000014, inpw(0x40000014)|BIT7);
+
+    /* Set HXT crystal as INV type */
+    CLK->PWRCTL &= ~CLK_PWRCTL_HXTSELTYP_Msk;
+
+    /* Lock protected registers */
+    SYS_LockReg();
 
 }

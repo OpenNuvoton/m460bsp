@@ -354,7 +354,7 @@ typedef struct
      * |[3:1]   |GAIN      |Oscillator Gain Option
      * |        |          |User can select oscillator gain according to crystal external loading and operating temperature range.
      * |        |          |The larger gain value corresponding to stronger driving capability and higher power consumption.
-     * |        |          |000 = L0 mode.
+     * |        |          |000 = Reserved.
      * |        |          |001 = L1 mode.
      * |        |          |010 = L2 mode.
      * |        |          |011 = L3 mode.
