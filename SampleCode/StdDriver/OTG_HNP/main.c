@@ -282,7 +282,9 @@ void SYS_Init(void)
     CLK_SetModuleClock(UART0_MODULE, CLK_CLKSEL1_UART0SEL_HIRC, CLK_CLKDIV0_UART0(1));
 
     /* Select On-The-Go device */
-    SYS->USBPHY = SYS_USBPHY_USBEN_Msk | SYS_USBPHY_SBO_Msk | (0x3 << SYS_USBPHY_USBROLE_Pos);
+    SYS->USBPHY = SYS_USBPHY_HSUSBEN_Msk | (0x1 << SYS_USBPHY_HSUSBROLE_Pos) | SYS_USBPHY_USBEN_Msk | SYS_USBPHY_SBO_Msk | (0x3 << SYS_USBPHY_USBROLE_Pos);
+    delay_us(20);
+    SYS->USBPHY |= SYS_USBPHY_HSUSBACT_Msk;
 
     /* Select USB clock divider as 2 */
     CLK->CLKDIV0 = (CLK->CLKDIV0 & ~CLK_CLKDIV0_USBDIV_Msk) | CLK_CLKDIV0_USB(2);
@@ -309,6 +311,12 @@ void SYS_Init(void)
 
     /* USB_VBUS_ST (USB 1.1 over-current detect pin) multi-function pin - PC.14   */
     SET_USB_VBUS_ST_PC14();
+
+    /* HSUSB_VBUS_EN (USB 2.0 VBUS power enable pin) multi-function pin - PB.10   */
+    SET_HSUSB_VBUS_EN_PB10();
+
+    /* HSUSB_VBUS_ST (USB 2.0 over-current detect pin) multi-function pin - PB.11 */
+    SET_HSUSB_VBUS_ST_PB11();
 
     /* USB 1.1 port multi-function pin VBUS, D+, D-, and ID pins */
     SET_USB_VBUS_PA12();

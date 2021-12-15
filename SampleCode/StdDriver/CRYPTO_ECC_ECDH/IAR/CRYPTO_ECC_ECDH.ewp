@@ -655,7 +655,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>CRYPTO_ECC_Demo.bin</state>
+                    <state>CRYPTO_ECC_ECDH.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>

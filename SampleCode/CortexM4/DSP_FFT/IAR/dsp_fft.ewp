@@ -775,7 +775,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$TOOLKIT_DIR$\CONFIG\generic_cortex.icf</state>
+                    <state>$TOOLKIT_DIR$\config\linker\Nuvoton\M46xxGCAE.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -787,7 +787,7 @@
                 </option>
                 <option>
                     <name>IlinkSuppressDiags</name>
-                    <state></state>
+                    <state>Li062</state>
                 </option>
                 <option>
                     <name>IlinkTreatAsRem</name>
@@ -1008,7 +1008,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>###Unitialized###</state>
+                    <state>dsp_fft_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>

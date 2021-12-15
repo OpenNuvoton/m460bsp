@@ -655,7 +655,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>CRYPTO_AES.bin</state>
+                    <state>CRYPTO_AES_GCM.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -710,7 +710,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>CRYPTO_AES.out</state>
+                    <state>CRYPTO_AES_GCM.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>

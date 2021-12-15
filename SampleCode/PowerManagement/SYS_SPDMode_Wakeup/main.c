@@ -353,6 +353,8 @@ void CheckPowerSource(void)
         printf("Wake-up source is LVR.\n");
     if((u32RegRstsrc & CLK_PMUSTS_BODWK_Msk) != 0)
         printf("Wake-up source is BOD.\n");
+    if((u32RegRstsrc & CLK_PMUSTS_RSTWK_Msk) != 0)
+        printf("Wake-up source is Pin Reset.\n");
 
     /* Clear all wake-up flag */
     CLK->PMUSTS |= CLK_PMUSTS_CLRWK_Msk;

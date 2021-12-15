@@ -274,6 +274,8 @@ void CheckPowerSource(void)
         printf("Wake-up source is Wake-up Timer.\n");
     if((u32RegRstsrc & CLK_PMUSTS_PINWK0_Msk) != 0)
         printf("Wake-up source is Wake-up Pin.\n");
+    if((u32RegRstsrc & CLK_PMUSTS_RSTWK_Msk) != 0)
+        printf("Wake-up source is Pin Reset.\n");
 
     /* Clear all wake-up flag */
     CLK->PMUSTS |= CLK_PMUSTS_CLRWK_Msk;

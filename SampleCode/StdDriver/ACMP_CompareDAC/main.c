@@ -62,8 +62,8 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
 
     /* Set multi-function pins for UART0 RXD and TXD */
-    SET_UART0_RXD_PA6();
-    SET_UART0_TXD_PA7();
+    SET_UART0_RXD_PB12();
+    SET_UART0_TXD_PB13();
 
     /* Set PB4 multi-function pin for ACMP1 positive input pin and PB6 multi-function pin for ACMP1 output pin*/
     SET_ACMP1_O_PB6();

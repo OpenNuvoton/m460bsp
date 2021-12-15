@@ -73,14 +73,6 @@ void GPB_IRQHandler(void)
 void SYS_Init(void)
 {
 
-    /* Set PF multi-function pins for XT1_OUT(PF.2) and XT1_IN(PF.3) */
-    SET_XT1_OUT_PF2();
-    SET_XT1_IN_PF3();
-
-    /* Set PF multi-function pins for X32_OUT(PF.4) and X32_IN(PF.5) */
-    SET_X32_OUT_PF4();
-    SET_X32_IN_PF5();
-
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/

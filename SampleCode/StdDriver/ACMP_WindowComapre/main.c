@@ -65,8 +65,8 @@ void SYS_Init(void)
     SET_ACMP1_P1_PB4();
 
     /* Set multi-function pins for UART0 RXD and TXD */
-    SET_UART0_RXD_PA6();
-    SET_UART0_TXD_PA7();
+    SET_UART0_RXD_PB12();
+    SET_UART0_TXD_PB13();
 
     /* Disable digital input path of analog pin ACMP0_P0 and ACMP1_P1 to prevent leakage */
     GPIO_DISABLE_DIGITAL_PATH(PA, (1ul << 11));
