@@ -52,6 +52,9 @@ void SYS_Init(void)
     /* Select UART0 module clock source as HIRC and UART0 module clock divider as 1 */
     CLK_SetModuleClock(UART0_MODULE, CLK_CLKSEL1_UART0SEL_HIRC, CLK_CLKDIV0_UART0(1));
 
+    /* Enable PDMA0 module clock */
+    CLK_EnableModuleClock(PDMA0_MODULE);
+
     /* Enable PSIO module clock */
     CLK_EnableModuleClock(PSIO_MODULE);
 
@@ -222,8 +225,8 @@ int32_t main(void)
         /* Send LED pattern by PSIO */
         PSIO_WS2812B_Send_Pattern(&sConfig);
 
-        /* Delay 50000 us */
-        CLK_SysTickDelay(500000);
+        /* Delay 500 ms */
+        CLK_SysTickLongDelay(500000);
     } while (1);
 
 }

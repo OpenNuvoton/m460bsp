@@ -133,7 +133,7 @@ void PacketFormatDownScale(void)
         if(u32Frame!=u32FramePass)
         {
             u32Frame=u32FramePass;
-            printf("Get frame %3d\n",u32Frame);
+            printf("Get frame %d\n",u32Frame);
         }
     }
 

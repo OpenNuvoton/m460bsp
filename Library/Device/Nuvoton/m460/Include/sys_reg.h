@@ -1052,6 +1052,7 @@ typedef struct
      * |        |          |14 = EQEI3_B
      * |        |          |15 = DAC0_ST
      * |        |          |17 = PSIO0_CH7
+     * |        |          |20 = BMC19
      * |[12:8]  |PA1MFP    |PA.1 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = SPIM_MISO
@@ -1068,6 +1069,7 @@ typedef struct
      * |        |          |14 = EQEI3_A
      * |        |          |15 = DAC1_ST
      * |        |          |17 = PSIO0_CH6
+     * |        |          |20 = BMC18
      * |[20:16] |PA2MFP    |PA.2 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = SPIM_CLK
@@ -1083,6 +1085,7 @@ typedef struct
      * |        |          |13 = EPWM0_CH3
      * |        |          |14 = EQEI3_INDEX
      * |        |          |17 = PSIO0_CH5
+     * |        |          |20 = BMC17
      * |[28:24] |PA3MFP    |PA.3 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = SPIM_SS
@@ -1099,6 +1102,7 @@ typedef struct
      * |        |          |14 = EQEI0_B
      * |        |          |15 = EPWM1_BRAKE1
      * |        |          |17 = PSIO0_CH4
+     * |        |          |20 = BMC16
      * @var SYS_T::GPA_MFP1
      * Offset: 0x504  GPIOA Multiple Function Control Register 1
      * ---------------------------------------------------------------------------------------------------
@@ -1152,6 +1156,7 @@ typedef struct
      * |        |          |17 = SPI5_CLK
      * |        |          |18 = KPI_COL0
      * |        |          |19 = SPI6_CLK
+     * |        |          |20 = BMC15
      * |[28:24] |PA7MFP    |PA.7 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = EBI_AD7
@@ -1169,6 +1174,7 @@ typedef struct
      * |        |          |17 = SPI5_SS
      * |        |          |18 = KPI_COL1
      * |        |          |19 = SPI6_SS
+     * |        |          |20 = BMC14
      * @var SYS_T::GPA_MFP2
      * Offset: 0x508  GPIOA Multiple Function Control Register 2
      * ---------------------------------------------------------------------------------------------------
@@ -1190,6 +1196,7 @@ typedef struct
      * |        |          |12 = I2S1_DO
      * |        |          |13 = TM3_EXT
      * |        |          |15 = INT4
+     * |        |          |20 = BMC9
      * |[12:8]  |PA9MFP    |PA.9 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |01 = EADC1_CH5, EADC2_CH5
@@ -1206,6 +1213,7 @@ typedef struct
      * |        |          |12 = I2S1_DI
      * |        |          |13 = TM2_EXT
      * |        |          |15 = SWDH_DAT (for M460HD)
+     * |        |          |20 = BMC8
      * |[20:16] |PA10MFP   |PA.10 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |01 = EADC1_CH6, EADC2_CH6, ACMP1_P0
@@ -1224,6 +1232,7 @@ typedef struct
      * |        |          |14 = DAC0_ST
      * |        |          |15 = SWDH_CLK (for M460HD)
      * |        |          |18 = KPI_ROW5
+     * |        |          |20 = BMC7
      * |[28:24] |PA11MFP   |PA.11 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |01 = EADC1_CH7, EADC2_CH7, ACMP0_P0
@@ -1240,6 +1249,7 @@ typedef struct
      * |        |          |13 = TM0_EXT
      * |        |          |14 = DAC1_ST
      * |        |          |18 = KPI_ROW4
+     * |        |          |20 = BMC6
      * @var SYS_T::GPA_MFP3
      * Offset: 0x50C  GPIOA Multiple Function Control Register 3
      * ---------------------------------------------------------------------------------------------------
@@ -1262,6 +1272,7 @@ typedef struct
      * |        |          |14 = USB_VBUS
      * |        |          |17 = PSIO0_CH4
      * |        |          |19 = SPI10_SS
+     * |        |          |20 = BMC12
      * |[12:8]  |PA13MFP   |PA.13 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = I2S0_MCLK
@@ -1278,6 +1289,7 @@ typedef struct
      * |        |          |14 = USB_D-
      * |        |          |17 = PSIO0_CH5
      * |        |          |19 = SPI10_CLK
+     * |        |          |20 = BMC13
      * |[20:16] |PA14MFP   |PA.14 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = I2S0_DI
@@ -1294,6 +1306,7 @@ typedef struct
      * |        |          |16 = I2C0_SCL (for M460LD)
      * |        |          |17 = PSIO0_CH6
      * |        |          |19 = SPI10_MISO
+     * |        |          |20 = BMC14
      * |[28:24] |PA15MFP   |PA.15 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = I2S0_DO
@@ -1310,6 +1323,7 @@ typedef struct
      * |        |          |16 = I2C0_SDA (for M460LD)
      * |        |          |17 = PSIO0_CH7
      * |        |          |19 = SPI10_MOSI
+     * |        |          |20 = BMC15
      * @var SYS_T::GPB_MFP0
      * Offset: 0x510  GPIOB Multiple Function Control Register 0
      * ---------------------------------------------------------------------------------------------------
@@ -1333,6 +1347,7 @@ typedef struct
      * |        |          |15 = QSPI0_MOSI1
      * |        |          |18 = KPI_ROW3
      * |        |          |19 = SPI4_MOSI
+     * |        |          |20 = BMC5
      * |[12:8]  |PB1MFP    |PB.1 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |01 = EADC0_CH1, EADC1_CH9, EADC2_CH9, ACMP3_P0
@@ -1351,6 +1366,7 @@ typedef struct
      * |        |          |15 = QSPI0_MISO1
      * |        |          |18 = KPI_ROW2
      * |        |          |19 = SPI4_MISO
+     * |        |          |20 = BMC4
      * |[20:16] |PB2MFP    |PB.2 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |01 = EADC0_CH2, EADC1_CH10, ACMP0_P1
@@ -1369,6 +1385,7 @@ typedef struct
      * |        |          |17 = PSIO0_CH7
      * |        |          |18 = KPI_ROW1
      * |        |          |19 = SPI4_CLK
+     * |        |          |20 = BMC3
      * |[28:24] |PB3MFP    |PB.3 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |01 = EADC0_CH3, EADC1_CH11, ACMP0_N
@@ -1387,6 +1404,7 @@ typedef struct
      * |        |          |17 = PSIO0_CH6
      * |        |          |18 = KPI_ROW0
      * |        |          |19 = SPI4_SS
+     * |        |          |20 = BMC2
      * @var SYS_T::GPB_MFP1
      * Offset: 0x514  GPIOB Multiple Function Control Register 1
      * ---------------------------------------------------------------------------------------------------
@@ -1409,6 +1427,7 @@ typedef struct
      * |        |          |15 = INT1
      * |        |          |17 = PSIO0_CH5
      * |        |          |18 = KPI_COL7
+     * |        |          |20 = BMC1
      * |[12:8]  |PB5MFP    |PB.5 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |01 = EADC0_CH5, ACMP1_N
@@ -1426,6 +1445,7 @@ typedef struct
      * |        |          |15 = INT0
      * |        |          |17 = PSIO0_CH4
      * |        |          |18 = KPI_COL6
+     * |        |          |20 = BMC0
      * |[20:16] |PB6MFP    |PB.6 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |01 = EADC0_CH6, EADC2_CH14, ACMP2_N
@@ -1441,8 +1461,10 @@ typedef struct
      * |        |          |13 = INT4
      * |        |          |14 = USB_VBUS_EN
      * |        |          |15 = ACMP1_O
+     * |        |          |16 = SPI3_MOSI (for M460LD)
      * |        |          |18 = KPI_COL5
      * |        |          |19 = SPI1_SS
+     * |        |          |20 = BMC31
      * |[28:24] |PB7MFP    |PB.7 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |01 = EADC0_CH7, EADC2_CH15, ACMP2_P0
@@ -1458,8 +1480,10 @@ typedef struct
      * |        |          |13 = INT5
      * |        |          |14 = USB_VBUS_ST
      * |        |          |15 = ACMP0_O
+     * |        |          |16 = SPI3_MISO (for M460LD)
      * |        |          |18 = KPI_COL4
      * |        |          |19 = SPI1_CLK (for M460LD)
+     * |        |          |20 = BMC30
      * @var SYS_T::GPB_MFP2
      * Offset: 0x518  GPIOB Multiple Function Control Register 2
      * ---------------------------------------------------------------------------------------------------
@@ -1480,6 +1504,7 @@ typedef struct
      * |        |          |12 = CAN2_RXD
      * |        |          |13 = INT6
      * |        |          |14 = EADC2_ST
+     * |        |          |20 = BMC23
      * |[12:8]  |PB9MFP    |PB.9 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |01 = EADC0_CH9, ACMP2_P2
@@ -1495,6 +1520,7 @@ typedef struct
      * |        |          |12 = CAN2_TXD
      * |        |          |13 = INT7
      * |        |          |14 = CCAP_HSYNC
+     * |        |          |20 = BMC22
      * |[20:16] |PB10MFP   |PB.10 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |01 = EADC0_CH10, ACMP2_P3
@@ -1508,6 +1534,7 @@ typedef struct
      * |        |          |11 = SPI3_SS
      * |        |          |12 = CCAP_VSYNC
      * |        |          |14 = HSUSB_VBUS_EN
+     * |        |          |20 = BMC21
      * |[28:24] |PB11MFP   |PB.11 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |01 = EADC0_CH11
@@ -1522,6 +1549,7 @@ typedef struct
      * |        |          |11 = SPI3_CLK
      * |        |          |12 = CCAP_SFIELD
      * |        |          |14 = HSUSB_VBUS_ST
+     * |        |          |20 = BMC20
      * @var SYS_T::GPB_MFP3
      * Offset: 0x51C  GPIOB Multiple Function Control Register 3
      * ---------------------------------------------------------------------------------------------------
@@ -1543,8 +1571,10 @@ typedef struct
      * |        |          |12 = ETMC_TRACE_DATA3 (for M460HD)
      * |        |          |13 = TM3_EXT
      * |        |          |14 = CAN3_RXD
+     * |        |          |16 = SPI3_SS (for M460LD)
      * |        |          |17 = PSIO0_CH3
      * |        |          |18 = KPI_COL3
+     * |        |          |20 = BMC29
      * |[12:8]  |PB13MFP   |PB.13 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |01 = EADC0_CH13, EADC1_CH13, DAC1_OUT, ACMP0_P3, ACMP1_P3
@@ -1560,9 +1590,11 @@ typedef struct
      * |        |          |12 = ETMC_TRACE_DATA2 (for M460HD)
      * |        |          |13 = TM2_EXT
      * |        |          |14 = CAN3_TXD
+     * |        |          |16 = SPI3_CLK (for M460LD)
      * |        |          |17 = PSIO0_CH2
      * |        |          |18 = KPI_COL2
      * |        |          |19 = SPI9_MISO
+     * |        |          |20 = BMC28
      * |[20:16] |PB14MFP   |PB.14 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |01 = EADC0_CH14, EADC1_CH14
@@ -1602,6 +1634,7 @@ typedef struct
      * |        |          |17 = PSIO0_CH0
      * |        |          |18 = KPI_COL0
      * |        |          |19 = SPI9_CLK
+     * |        |          |20 = BMC27
      * @var SYS_T::GPC_MFP0
      * Offset: 0x520  GPIOC Multiple Function Control Register 0
      * ---------------------------------------------------------------------------------------------------
@@ -1626,6 +1659,7 @@ typedef struct
      * |        |          |17 = QSPI1_CLK (for M460LD)
      * |        |          |18 = KPI_ROW5
      * |        |          |19 = SPI7_MOSI
+     * |        |          |20 = BMC25
      * |[12:8]  |PC1MFP    |PC.1 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = EBI_AD1
@@ -1645,6 +1679,7 @@ typedef struct
      * |        |          |17 = QSPI1_SS (for M460LD)
      * |        |          |18 = KPI_ROW4
      * |        |          |19 = SPI7_MISO
+     * |        |          |20 = BMC24
      * |[20:16] |PC2MFP    |PC.2 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = EBI_AD2
@@ -1665,6 +1700,7 @@ typedef struct
      * |        |          |17 = PSIO0_CH3
      * |        |          |18 = KPI_ROW3
      * |        |          |19 = SPI7_CLK
+     * |        |          |20 = BMC23
      * |[28:24] |PC3MFP    |PC.3 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = EBI_AD3
@@ -1685,6 +1721,7 @@ typedef struct
      * |        |          |17 = PSIO0_CH2
      * |        |          |18 = KPI_ROW2
      * |        |          |19 = SPI7_SS
+     * |        |          |20 = BMC22
      * @var SYS_T::GPC_MFP1
      * Offset: 0x524  GPIOC Multiple Function Control Register 1
      * ---------------------------------------------------------------------------------------------------
@@ -1709,6 +1746,7 @@ typedef struct
      * |        |          |16 = HBI_CK
      * |        |          |17 = PSIO0_CH1
      * |        |          |18 = KPI_ROW1
+     * |        |          |20 = BMC21
      * |[12:8]  |PC5MFP    |PC.5 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = EBI_AD5
@@ -1725,6 +1763,7 @@ typedef struct
      * |        |          |16 = HBI_nCK
      * |        |          |17 = PSIO0_CH0
      * |        |          |18 = KPI_ROW0
+     * |        |          |20 = BMC20
      * |[20:16] |PC6MFP    |PC.6 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = EBI_AD8
@@ -1743,6 +1782,7 @@ typedef struct
      * |        |          |15 = INT2
      * |        |          |18 = KPI_COL2
      * |        |          |19 = SPI6_MOSI
+     * |        |          |20 = BMC25
      * |[28:24] |PC7MFP    |PC.7 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = EBI_AD9
@@ -1761,6 +1801,7 @@ typedef struct
      * |        |          |15 = INT3
      * |        |          |18 = KPI_COL3
      * |        |          |19 = SPI6_MISO
+     * |        |          |20 = BMC24
      * @var SYS_T::GPC_MFP2
      * Offset: 0x528  GPIOC Multiple Function Control Register 2
      * ---------------------------------------------------------------------------------------------------
@@ -1857,6 +1898,7 @@ typedef struct
      * |        |          |14 = USB_VBUS_ST
      * |        |          |15 = HSUSB_VBUS_ST (for M460HD)
      * |        |          |19 = SPI9_MOSI
+     * |        |          |20 = BMC26
      * |[28:24] |PC15MFP   |PC.15 Multi-function Pin Selection
      * @var SYS_T::GPD_MFP0
      * Offset: 0x530  GPIOD Multiple Function Control Register 0
@@ -2306,6 +2348,7 @@ typedef struct
      * |        |          |11 = BPWM1_CH1
      * |        |          |12 = I2C4_SMBSUS
      * |        |          |13 = ACMP3_O
+     * |        |          |20 = BMC13
      * |[28:24] |PF3MFP    |PF.3 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = EBI_nCS0
@@ -2317,6 +2360,7 @@ typedef struct
      * |        |          |12 = I2C4_SMBAL
      * |        |          |13 = ACMP2_O
      * |        |          |15 = EADC2_ST
+     * |        |          |20 = BMC12
      * @var SYS_T::GPF_MFP1
      * Offset: 0x554  GPIOF Multiple Function Control Register 1
      * ---------------------------------------------------------------------------------------------------
@@ -2334,6 +2378,7 @@ typedef struct
      * |        |          |12 = I2C4_SDA
      * |        |          |13 = EQEI2_B
      * |        |          |19 = SPI5_MISO
+     * |        |          |20 = BMC11
      * |[12:8]  |PF5MFP    |PF.5 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = UART2_RXD
@@ -2347,6 +2392,7 @@ typedef struct
      * |        |          |12 = I2C4_SCL
      * |        |          |13 = EQEI2_A
      * |        |          |19 = SPI5_MOSI
+     * |        |          |20 = BMC10
      * |[20:16] |PF6MFP    |PF.6 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = EBI_ADR19
@@ -2372,6 +2418,7 @@ typedef struct
      * |        |          |08 = CAN2_TXD
      * |        |          |10 = TAMPER1
      * |        |          |19 = SPI5_SS
+
      * @var SYS_T::GPF_MFP2
      * Offset: 0x558  GPIOF Multiple Function Control Register 2
      * ---------------------------------------------------------------------------------------------------
@@ -2531,6 +2578,7 @@ typedef struct
      * |        |          |12 = BPWM0_CH5
      * |        |          |16 = HBI_D4
      * |        |          |19 = SPI8_SS
+     * |        |          |20 = BMC16
      * |[20:16] |PG10MFP   |PG.10 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = EBI_AD1
@@ -2543,6 +2591,7 @@ typedef struct
      * |        |          |12 = BPWM0_CH4
      * |        |          |16 = HBI_D3
      * |        |          |19 = SPI8_CLK
+     * |        |          |20 = BMC17
      * |[28:24] |PG11MFP   |PG.11 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = EBI_AD2
@@ -2556,6 +2605,7 @@ typedef struct
      * |        |          |12 = BPWM0_CH3
      * |        |          |16 = HBI_D0
      * |        |          |19 = SPI8_MOSI
+     * |        |          |20 = BMC18
      * @var SYS_T::GPG_MFP3
      * Offset: 0x56C  GPIOG Multiple Function Control Register 3
      * ---------------------------------------------------------------------------------------------------
@@ -2573,6 +2623,7 @@ typedef struct
      * |        |          |12 = BPWM0_CH2
      * |        |          |16 = HBI_D1
      * |        |          |19 = SPI8_MISO
+     * |        |          |20 = BMC19
      * |[12:8]  |PG13MFP   |PG.13 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = EBI_AD4

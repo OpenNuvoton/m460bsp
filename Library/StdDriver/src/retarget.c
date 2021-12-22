@@ -161,6 +161,111 @@ static volatile int32_t g_ICE_Conneced = 1;
 int32_t SH_Return(int32_t n32In_R0, int32_t n32In_R1, int32_t *pn32Out_R0);
 void _sys_exit(int return_code)__attribute__((noreturn));
 
+/* Make sure won't goes here only because --gnu is defined , so
+   add !__CC_ARM and !__ICCARM__ checking */
+# if defined ( __GNUC__ ) && !(__CC_ARM) && !(__ICCARM__)
+
+# elif defined(__ICCARM__)      // IAR
+
+void SH_End(void)
+{
+    asm("MOVS   R0,#1 \n"        /*; Set return value to 1 */
+        "BX     lr    \n"        /*; Return */
+       );
+}
+
+void SH_ICE(void)
+{
+  asm("CMP   R2,#0   \n"
+      "BEQ   SH_End  \n"
+      "STR   R0,[R2] \n"       /*; Save the return value to *pn32Out_R0 */
+     );
+}
+
+/**
+ *
+ * @brief      The function to process semihosted command
+ * @param[in]  n32In_R0  : semihost register 0
+ * @param[in]  n32In_R1  : semihost register 1
+ * @param[out] pn32Out_R0: semihost register 0
+ * @retval     0: No ICE debug
+ * @retval     1: ICE debug
+ *
+ */
+int32_t SH_DoCommand(int32_t n32In_R0, int32_t n32In_R1, int32_t *pn32Out_R0)
+{
+    asm("BKPT   0xAB   \n"       /*; This instruction will cause ICE trap or system HardFault */
+        "B      SH_ICE \n"
+        "SH_HardFault: \n"       /*; Captured by HardFault */
+        "MOVS   R0,#0  \n"       /*; Set return value to 0 */
+        "BX     lr     \n"       /*; Return */
+        );
+
+    return 1;                    /*; Return 1 when it is trap by ICE */
+}
+
+# else
+
+
+
+/**
+ *
+ * @brief      The function to process semihosted command
+ * @param[in]  n32In_R0  : semihost register 0
+ * @param[in]  n32In_R1  : semihost register 1
+ * @param[out] pn32Out_R0: semihost register 0
+ * @retval     0: No ICE debug
+ * @retval     1: ICE debug
+ *
+ */
+
+int32_t SH_Return(int32_t n32In_R0, int32_t n32In_R1, int32_t *pn32Out_R0)
+{
+    (void)n32In_R1;
+
+    if(g_ICE_Conneced)
+    {
+        if(pn32Out_R0)
+            *pn32Out_R0 = n32In_R0;
+
+        return 1;
+    }
+    return 0;
+}
+
+/**
+ *
+ * @brief      The function to process semihosted command
+ * @param[in]  n32In_R0  : semihost register 0
+ * @param[in]  n32In_R1  : semihost register 1
+ * @param[out] pn32Out_R0: semihost register 0
+ * @retval     0: No ICE debug
+ * @retval     1: ICE debug
+ *
+ */
+__asm int32_t SH_DoCommand(int32_t n32In_R0, int32_t n32In_R1, int32_t *pn32Out_R0)
+{
+    BKPT   0xAB          /*; Wait ICE or HardFault */
+    /*; ICE will step over BKPT directly
+      ; HardFault will step BKPT and the next line */
+    B      SH_ICE
+
+SH_HardFault             /*; Captured by HardFault */
+    MOVS   R0, #0        /*; Set return value to 0 */
+    BX     lr            /*; Return */
+
+SH_ICE                   /*; Captured by ICE */
+    /*; Save return value */
+    CMP    R2, #0
+    BEQ    SH_End
+    STR    R0, [R2]      /*; Save the return value to *pn32Out_R0 */
+
+SH_End
+    MOVS   R0, #1        /*; Set return value to 1 */
+    BX     lr            /*; Return */
+}
+#endif
+
 /**
  * @brief    This function is called by Hardfault handler.
  * @param    None
@@ -169,6 +274,11 @@ void _sys_exit(int return_code)__attribute__((noreturn));
  *
  */
 
+#if defined( __ICCARM__ )
+__WEAK
+#else
+__attribute__((weak))
+#endif
 uint32_t ProcessHardFault(uint32_t lr, uint32_t msp, uint32_t psp)
 {
     uint32_t *sp = NULL;
@@ -232,64 +342,6 @@ uint32_t ProcessHardFault(uint32_t lr, uint32_t msp, uint32_t psp)
 }
 
 
-
-/**
- *
- * @brief      The function to process semihosted command
- * @param[in]  n32In_R0  : semihost register 0
- * @param[in]  n32In_R1  : semihost register 1
- * @param[out] pn32Out_R0: semihost register 0
- * @retval     0: No ICE debug
- * @retval     1: ICE debug
- *
- */
-
-int32_t SH_Return(int32_t n32In_R0, int32_t n32In_R1, int32_t *pn32Out_R0)
-{
-    (void)n32In_R1;
-
-    if(g_ICE_Conneced)
-    {
-        if(pn32Out_R0)
-            *pn32Out_R0 = n32In_R0;
-
-        return 1;
-    }
-    return 0;
-}
-
-/**
- *
- * @brief      The function to process semihosted command
- * @param[in]  n32In_R0  : semihost register 0
- * @param[in]  n32In_R1  : semihost register 1
- * @param[out] pn32Out_R0: semihost register 0
- * @retval     0: No ICE debug
- * @retval     1: ICE debug
- *
- */
-__asm int32_t SH_DoCommand(int32_t n32In_R0, int32_t n32In_R1, int32_t *pn32Out_R0)
-{
-    BKPT   0xAB          /*; Wait ICE or HardFault */
-    /*; ICE will step over BKPT directly
-      ; HardFault will step BKPT and the next line */
-    B      SH_ICE
-
-SH_HardFault             /*; Captured by HardFault */
-    MOVS   R0, #0        /*; Set return value to 0 */
-    BX     lr            /*; Return */
-
-SH_ICE                   /*; Captured by ICE */
-    /*; Save return value */
-    CMP    R2, #0
-    BEQ    SH_End
-    STR    R0, [R2]      /*; Save the return value to *pn32Out_R0 */
-
-SH_End
-    MOVS   R0, #1        /*; Set return value to 1 */
-    BX     lr            /*; Return */
-}
-
 #endif
 #else // defined(DEBUG_ENABLE_SEMIHOST)
 
@@ -339,7 +391,7 @@ uint32_t ProcessHardFault(uint32_t lr, uint32_t msp, uint32_t psp)
     */
 
 
-    printf("HardFault @ 0x%08x\n", sp[6]);
+    printf("HardFault @ 0x%x\n", sp[6]);
     /* Get the instruction caused the hardfault */
     addr = sp[6];
     inst = M16(addr);

@@ -197,6 +197,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPA_MFP0_PA0MFP_EQEI3_B      (0x0eUL<<SYS_GPA_MFP0_PA0MFP_Pos) /*!< GPA_MFP0 PA0 setting for EQEI3_B     */
 #define SYS_GPA_MFP0_PA0MFP_DAC0_ST      (0x0fUL<<SYS_GPA_MFP0_PA0MFP_Pos) /*!< GPA_MFP0 PA0 setting for DAC0_ST     */
 #define SYS_GPA_MFP0_PA0MFP_PSIO0_CH7    (0x11UL<<SYS_GPA_MFP0_PA0MFP_Pos) /*!< GPA_MFP0 PA0 setting for PSIO0_CH7   */
+#define SYS_GPA_MFP0_PA0MFP_BMC19        (0x14UL<<SYS_GPA_MFP0_PA0MFP_Pos) /*!< GPA_MFP0 PA0 setting for BMC19       */
 
 /* PA.1 MFP */
 #define SYS_GPA_MFP0_PA1MFP_GPIO         (0x00UL<<SYS_GPA_MFP0_PA1MFP_Pos) /*!< GPA_MFP0 PA1 setting for GPIO        */
@@ -214,6 +215,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPA_MFP0_PA1MFP_EQEI3_A      (0x0eUL<<SYS_GPA_MFP0_PA1MFP_Pos) /*!< GPA_MFP0 PA1 setting for EQEI3_A     */
 #define SYS_GPA_MFP0_PA1MFP_DAC1_ST      (0x0fUL<<SYS_GPA_MFP0_PA1MFP_Pos) /*!< GPA_MFP0 PA1 setting for DAC1_ST     */
 #define SYS_GPA_MFP0_PA1MFP_PSIO0_CH6    (0x11UL<<SYS_GPA_MFP0_PA1MFP_Pos) /*!< GPA_MFP0 PA1 setting for PSIO0_CH6   */
+#define SYS_GPA_MFP0_PA1MFP_BMC18        (0x14UL<<SYS_GPA_MFP0_PA1MFP_Pos) /*!< GPA_MFP0 PA1 setting for BMC18       */
 
 /* PA.2 MFP */
 #define SYS_GPA_MFP0_PA2MFP_GPIO         (0x00UL<<SYS_GPA_MFP0_PA2MFP_Pos) /*!< GPA_MFP0 PA2 setting for GPIO        */
@@ -230,6 +232,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPA_MFP0_PA2MFP_EPWM0_CH3    (0x0dUL<<SYS_GPA_MFP0_PA2MFP_Pos) /*!< GPA_MFP0 PA2 setting for EPWM0_CH3   */
 #define SYS_GPA_MFP0_PA2MFP_EQEI3_INDEX  (0x0eUL<<SYS_GPA_MFP0_PA2MFP_Pos) /*!< GPA_MFP0 PA2 setting for EQEI3_INDEX */
 #define SYS_GPA_MFP0_PA2MFP_PSIO0_CH5    (0x11UL<<SYS_GPA_MFP0_PA2MFP_Pos) /*!< GPA_MFP0 PA2 setting for PSIO0_CH5   */
+#define SYS_GPA_MFP0_PA2MFP_BMC17        (0x14UL<<SYS_GPA_MFP0_PA2MFP_Pos) /*!< GPA_MFP0 PA2 setting for BMC17       */
 
 /* PA.3 MFP */
 #define SYS_GPA_MFP0_PA3MFP_GPIO         (0x00UL<<SYS_GPA_MFP0_PA3MFP_Pos) /*!< GPA_MFP0 PA3 setting for GPIO        */
@@ -247,6 +250,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPA_MFP0_PA3MFP_EQEI0_B      (0x0eUL<<SYS_GPA_MFP0_PA3MFP_Pos) /*!< GPA_MFP0 PA3 setting for EQEI0_B     */
 #define SYS_GPA_MFP0_PA3MFP_EPWM1_BRAKE1 (0x0fUL<<SYS_GPA_MFP0_PA3MFP_Pos) /*!< GPA_MFP0 PA3 setting for EPWM1_BRAKE1*/
 #define SYS_GPA_MFP0_PA3MFP_PSIO0_CH4    (0x11UL<<SYS_GPA_MFP0_PA3MFP_Pos) /*!< GPA_MFP0 PA3 setting for PSIO0_CH4   */
+#define SYS_GPA_MFP0_PA3MFP_BMC16        (0x14UL<<SYS_GPA_MFP0_PA3MFP_Pos) /*!< GPA_MFP0 PA3 setting for BMC16       */
 
 /* PA.4 MFP */
 #define SYS_GPA_MFP1_PA4MFP_GPIO         (0x00UL<<SYS_GPA_MFP1_PA4MFP_Pos) /*!< GPA_MFP1 PA4 setting for GPIO        */
@@ -298,6 +302,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPA_MFP1_PA6MFP_SPI5_CLK     (0x11UL<<SYS_GPA_MFP1_PA6MFP_Pos) /*!< GPA_MFP1 PA6 setting for SPI5_CLK    */
 #define SYS_GPA_MFP1_PA6MFP_KPI_COL0     (0x12UL<<SYS_GPA_MFP1_PA6MFP_Pos) /*!< GPA_MFP1 PA6 setting for KPI_COL0    */
 #define SYS_GPA_MFP1_PA6MFP_SPI6_CLK     (0x13UL<<SYS_GPA_MFP1_PA6MFP_Pos) /*!< GPA_MFP1 PA6 setting for SPI6_CLK    */
+#define SYS_GPA_MFP1_PA6MFP_BMC15        (0x14UL<<SYS_GPA_MFP1_PA6MFP_Pos) /*!< GPA_MFP1 PA6 setting for BMC15       */
 
 /* PA.7 MFP */
 #define SYS_GPA_MFP1_PA7MFP_GPIO         (0x00UL<<SYS_GPA_MFP1_PA7MFP_Pos) /*!< GPA_MFP1 PA7 setting for GPIO        */
@@ -316,6 +321,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPA_MFP1_PA7MFP_SPI5_SS      (0x11UL<<SYS_GPA_MFP1_PA7MFP_Pos) /*!< GPA_MFP1 PA7 setting for SPI5_SS     */
 #define SYS_GPA_MFP1_PA7MFP_KPI_COL1     (0x12UL<<SYS_GPA_MFP1_PA7MFP_Pos) /*!< GPA_MFP1 PA7 setting for KPI_COL1    */
 #define SYS_GPA_MFP1_PA7MFP_SPI6_SS      (0x13UL<<SYS_GPA_MFP1_PA7MFP_Pos) /*!< GPA_MFP1 PA7 setting for SPI6_SS     */
+#define SYS_GPA_MFP1_PA7MFP_BMC14        (0x14UL<<SYS_GPA_MFP1_PA7MFP_Pos) /*!< GPA_MFP1 PA7 setting for BMC14       */
 
 /* PA.8 MFP */
 #define SYS_GPA_MFP2_PA8MFP_GPIO         (0x00UL<<SYS_GPA_MFP2_PA8MFP_Pos) /*!< GPA_MFP2 PA8 setting for GPIO        */
@@ -334,6 +340,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPA_MFP2_PA8MFP_I2S1_DO      (0x0cUL<<SYS_GPA_MFP2_PA8MFP_Pos) /*!< GPA_MFP2 PA8 setting for I2S1_DO     */
 #define SYS_GPA_MFP2_PA8MFP_TM3_EXT      (0x0dUL<<SYS_GPA_MFP2_PA8MFP_Pos) /*!< GPA_MFP2 PA8 setting for TM3_EXT     */
 #define SYS_GPA_MFP2_PA8MFP_INT4         (0x0fUL<<SYS_GPA_MFP2_PA8MFP_Pos) /*!< GPA_MFP2 PA8 setting for INT4        */
+#define SYS_GPA_MFP2_PA8MFP_BMC9         (0x14UL<<SYS_GPA_MFP2_PA8MFP_Pos) /*!< GPA_MFP2 PA8 setting for BMC9        */
 
 /* PA.9 MFP */
 #define SYS_GPA_MFP2_PA9MFP_GPIO         (0x00UL<<SYS_GPA_MFP2_PA9MFP_Pos) /*!< GPA_MFP2 PA9 setting for GPIO        */
@@ -352,6 +359,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPA_MFP2_PA9MFP_I2S1_DI      (0x0cUL<<SYS_GPA_MFP2_PA9MFP_Pos) /*!< GPA_MFP2 PA9 setting for I2S1_DI     */
 #define SYS_GPA_MFP2_PA9MFP_TM2_EXT      (0x0dUL<<SYS_GPA_MFP2_PA9MFP_Pos) /*!< GPA_MFP2 PA9 setting for TM2_EXT     */
 #define SYS_GPA_MFP2_PA9MFP_SWDH_DAT     (0x0fUL<<SYS_GPA_MFP2_PA9MFP_Pos) /*!< GPA_MFP2 PA9 setting for SWDH_DAT    */
+#define SYS_GPA_MFP2_PA9MFP_BMC8         (0x14UL<<SYS_GPA_MFP2_PA9MFP_Pos) /*!< GPA_MFP2 PA9 setting for BMC8        */
 
 /* PA.10 MFP */
 #define SYS_GPA_MFP2_PA10MFP_GPIO        (0x00UL<<SYS_GPA_MFP2_PA10MFP_Pos)/*!< GPA_MFP2 PA10 setting for GPIO       */
@@ -373,6 +381,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPA_MFP2_PA10MFP_DAC0_ST     (0x0eUL<<SYS_GPA_MFP2_PA10MFP_Pos)/*!< GPA_MFP2 PA10 setting for DAC0_ST    */
 #define SYS_GPA_MFP2_PA10MFP_SWDH_CLK    (0x0fUL<<SYS_GPA_MFP2_PA10MFP_Pos)/*!< GPA_MFP2 PA10 setting for SWDH_CLK   */
 #define SYS_GPA_MFP2_PA10MFP_KPI_ROW5    (0x12UL<<SYS_GPA_MFP2_PA10MFP_Pos)/*!< GPA_MFP2 PA10 setting for KPI_ROW5   */
+#define SYS_GPA_MFP2_PA10MFP_BMC7        (0x14UL<<SYS_GPA_MFP2_PA10MFP_Pos)/*!< GPA_MFP2 PA10 setting for BMC7       */
 
 /* PA.11 MFP */
 #define SYS_GPA_MFP2_PA11MFP_GPIO        (0x00UL<<SYS_GPA_MFP2_PA11MFP_Pos)/*!< GPA_MFP2 PA11 setting for GPIO       */
@@ -392,6 +401,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPA_MFP2_PA11MFP_TM0_EXT     (0x0dUL<<SYS_GPA_MFP2_PA11MFP_Pos)/*!< GPA_MFP2 PA11 setting for TM0_EXT    */
 #define SYS_GPA_MFP2_PA11MFP_DAC1_ST     (0x0eUL<<SYS_GPA_MFP2_PA11MFP_Pos)/*!< GPA_MFP2 PA11 setting for DAC1_ST    */
 #define SYS_GPA_MFP2_PA11MFP_KPI_ROW4    (0x12UL<<SYS_GPA_MFP2_PA11MFP_Pos)/*!< GPA_MFP2 PA11 setting for KPI_ROW4   */
+#define SYS_GPA_MFP2_PA11MFP_BMC6        (0x14UL<<SYS_GPA_MFP2_PA11MFP_Pos)/*!< GPA_MFP2 PA11 setting for BMC6       */
 
 /* PA.12 MFP */
 #define SYS_GPA_MFP3_PA12MFP_GPIO        (0x00UL<<SYS_GPA_MFP3_PA12MFP_Pos)/*!< GPA_MFP3 PA12 setting for GPIO       */
@@ -410,6 +420,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPA_MFP3_PA12MFP_USB_VBUS    (0x0eUL<<SYS_GPA_MFP3_PA12MFP_Pos)/*!< GPA_MFP3 PA12 setting for USB_VBUS   */
 #define SYS_GPA_MFP3_PA12MFP_PSIO0_CH4   (0x11UL<<SYS_GPA_MFP3_PA12MFP_Pos)/*!< GPA_MFP3 PA12 setting for PSIO0_CH4  */
 #define SYS_GPA_MFP3_PA12MFP_SPI10_SS    (0x13UL<<SYS_GPA_MFP3_PA12MFP_Pos)/*!< GPA_MFP3 PA12 setting for SPI10_SS   */
+#define SYS_GPA_MFP3_PA12MFP_BMC12       (0x14UL<<SYS_GPA_MFP3_PA12MFP_Pos)/*!< GPA_MFP3 PA12 setting for BMC12      */
 
 /* PA.13 MFP */
 #define SYS_GPA_MFP3_PA13MFP_GPIO        (0x00UL<<SYS_GPA_MFP3_PA13MFP_Pos)/*!< GPA_MFP3 PA13 setting for GPIO       */
@@ -427,6 +438,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPA_MFP3_PA13MFP_USB_D_N     (0x0eUL<<SYS_GPA_MFP3_PA13MFP_Pos)/*!< GPA_MFP3 PA13 setting for USB_D-     */
 #define SYS_GPA_MFP3_PA13MFP_PSIO0_CH5   (0x11UL<<SYS_GPA_MFP3_PA13MFP_Pos)/*!< GPA_MFP3 PA13 setting for PSIO0_CH5  */
 #define SYS_GPA_MFP3_PA13MFP_SPI10_CLK   (0x13UL<<SYS_GPA_MFP3_PA13MFP_Pos)/*!< GPA_MFP3 PA13 setting for SPI10_CLK  */
+#define SYS_GPA_MFP3_PA13MFP_BMC13       (0x14UL<<SYS_GPA_MFP3_PA13MFP_Pos)/*!< GPA_MFP3 PA13 setting for BMC13      */
 
 /* PA.14 MFP */
 #define SYS_GPA_MFP3_PA14MFP_GPIO        (0x00UL<<SYS_GPA_MFP3_PA14MFP_Pos)/*!< GPA_MFP3 PA14 setting for GPIO       */
@@ -444,6 +456,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPA_MFP3_PA14MFP_I2C0_SCL    (0x10UL<<SYS_GPA_MFP3_PA14MFP_Pos)/*!< GPA_MFP3 PA14 setting for I2C0_SCL   */
 #define SYS_GPA_MFP3_PA14MFP_PSIO0_CH6   (0x11UL<<SYS_GPA_MFP3_PA14MFP_Pos)/*!< GPA_MFP3 PA14 setting for PSIO0_CH6  */
 #define SYS_GPA_MFP3_PA14MFP_SPI10_MISO  (0x13UL<<SYS_GPA_MFP3_PA14MFP_Pos)/*!< GPA_MFP3 PA14 setting for SPI10_MISO */
+#define SYS_GPA_MFP3_PA14MFP_BMC14       (0x14UL<<SYS_GPA_MFP3_PA14MFP_Pos)/*!< GPA_MFP3 PA14 setting for BMC14      */
 
 /* PA.15 MFP */
 #define SYS_GPA_MFP3_PA15MFP_GPIO        (0x00UL<<SYS_GPA_MFP3_PA15MFP_Pos)/*!< GPA_MFP3 PA15 setting for GPIO       */
@@ -461,6 +474,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPA_MFP3_PA15MFP_I2C0_SDA    (0x10UL<<SYS_GPA_MFP3_PA15MFP_Pos)/*!< GPA_MFP3 PA15 setting for I2C0_SDA   */
 #define SYS_GPA_MFP3_PA15MFP_PSIO0_CH7   (0x11UL<<SYS_GPA_MFP3_PA15MFP_Pos)/*!< GPA_MFP3 PA15 setting for PSIO0_CH7  */
 #define SYS_GPA_MFP3_PA15MFP_SPI10_MOSI  (0x13UL<<SYS_GPA_MFP3_PA15MFP_Pos)/*!< GPA_MFP3 PA15 setting for SPI10_MOSI */
+#define SYS_GPA_MFP3_PA15MFP_BMC15       (0x14UL<<SYS_GPA_MFP3_PA15MFP_Pos)/*!< GPA_MFP3 PA15 setting for BMC15      */
 
 /* PB.0 MFP */
 #define SYS_GPB_MFP0_PB0MFP_GPIO         (0x00UL<<SYS_GPB_MFP0_PB0MFP_Pos) /*!< GPB_MFP0 PB0 setting for GPIO        */
@@ -483,6 +497,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPB_MFP0_PB0MFP_QSPI0_MOSI1  (0x0fUL<<SYS_GPB_MFP0_PB0MFP_Pos) /*!< GPB_MFP0 PB0 setting for QSPI0_MOSI1 */
 #define SYS_GPB_MFP0_PB0MFP_KPI_ROW3     (0x12UL<<SYS_GPB_MFP0_PB0MFP_Pos) /*!< GPB_MFP0 PB0 setting for KPI_ROW3    */
 #define SYS_GPB_MFP0_PB0MFP_SPI4_MOSI    (0x13UL<<SYS_GPB_MFP0_PB0MFP_Pos) /*!< GPB_MFP0 PB0 setting for SPI4_MOSI   */
+#define SYS_GPB_MFP0_PB0MFP_BMC5         (0x14UL<<SYS_GPB_MFP0_PB0MFP_Pos) /*!< GPB_MFP0 PB0 setting for BMC5        */
 
 /* PB.1 MFP */
 #define SYS_GPB_MFP0_PB1MFP_GPIO         (0x00UL<<SYS_GPB_MFP0_PB1MFP_Pos) /*!< GPB_MFP0 PB1 setting for GPIO        */
@@ -505,6 +520,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPB_MFP0_PB1MFP_QSPI0_MISO1  (0x0fUL<<SYS_GPB_MFP0_PB1MFP_Pos) /*!< GPB_MFP0 PB1 setting for QSPI0_MISO1 */
 #define SYS_GPB_MFP0_PB1MFP_KPI_ROW2     (0x12UL<<SYS_GPB_MFP0_PB1MFP_Pos) /*!< GPB_MFP0 PB1 setting for KPI_ROW2    */
 #define SYS_GPB_MFP0_PB1MFP_SPI4_MISO    (0x13UL<<SYS_GPB_MFP0_PB1MFP_Pos) /*!< GPB_MFP0 PB1 setting for SPI4_MISO   */
+#define SYS_GPB_MFP0_PB1MFP_BMC4         (0x14UL<<SYS_GPB_MFP0_PB1MFP_Pos) /*!< GPB_MFP0 PB1 setting for BMC4        */
 
 /* PB.2 MFP */
 #define SYS_GPB_MFP0_PB2MFP_GPIO         (0x00UL<<SYS_GPB_MFP0_PB2MFP_Pos) /*!< GPB_MFP0 PB2 setting for GPIO        */
@@ -526,6 +542,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPB_MFP0_PB2MFP_PSIO0_CH7    (0x11UL<<SYS_GPB_MFP0_PB2MFP_Pos) /*!< GPB_MFP0 PB2 setting for PSIO0_CH7   */
 #define SYS_GPB_MFP0_PB2MFP_KPI_ROW1     (0x12UL<<SYS_GPB_MFP0_PB2MFP_Pos) /*!< GPB_MFP0 PB2 setting for KPI_ROW1    */
 #define SYS_GPB_MFP0_PB2MFP_SPI4_CLK     (0x13UL<<SYS_GPB_MFP0_PB2MFP_Pos) /*!< GPB_MFP0 PB2 setting for SPI4_CLK    */
+#define SYS_GPB_MFP0_PB2MFP_BMC3         (0x14UL<<SYS_GPB_MFP0_PB2MFP_Pos) /*!< GPB_MFP0 PB2 setting for BMC3        */
 
 /* PB.3 MFP */
 #define SYS_GPB_MFP0_PB3MFP_GPIO         (0x00UL<<SYS_GPB_MFP0_PB3MFP_Pos) /*!< GPB_MFP0 PB3 setting for GPIO        */
@@ -547,6 +564,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPB_MFP0_PB3MFP_PSIO0_CH6    (0x11UL<<SYS_GPB_MFP0_PB3MFP_Pos) /*!< GPB_MFP0 PB3 setting for PSIO0_CH6   */
 #define SYS_GPB_MFP0_PB3MFP_KPI_ROW0     (0x12UL<<SYS_GPB_MFP0_PB3MFP_Pos) /*!< GPB_MFP0 PB3 setting for KPI_ROW0    */
 #define SYS_GPB_MFP0_PB3MFP_SPI4_SS      (0x13UL<<SYS_GPB_MFP0_PB3MFP_Pos) /*!< GPB_MFP0 PB3 setting for SPI4_SS     */
+#define SYS_GPB_MFP0_PB3MFP_BMC2         (0x14UL<<SYS_GPB_MFP0_PB3MFP_Pos) /*!< GPB_MFP0 PB3 setting for BMC2        */
 
 /* PB.4 MFP */
 #define SYS_GPB_MFP1_PB4MFP_GPIO         (0x00UL<<SYS_GPB_MFP1_PB4MFP_Pos) /*!< GPB_MFP1 PB4 setting for GPIO        */
@@ -566,6 +584,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPB_MFP1_PB4MFP_INT1         (0x0fUL<<SYS_GPB_MFP1_PB4MFP_Pos) /*!< GPB_MFP1 PB4 setting for INT1        */
 #define SYS_GPB_MFP1_PB4MFP_PSIO0_CH5    (0x11UL<<SYS_GPB_MFP1_PB4MFP_Pos) /*!< GPB_MFP1 PB4 setting for PSIO0_CH5   */
 #define SYS_GPB_MFP1_PB4MFP_KPI_COL7     (0x12UL<<SYS_GPB_MFP1_PB4MFP_Pos) /*!< GPB_MFP1 PB4 setting for KPI_COL7    */
+#define SYS_GPB_MFP1_PB4MFP_BMC1         (0x14UL<<SYS_GPB_MFP1_PB4MFP_Pos) /*!< GPB_MFP1 PB4 setting for BMC1        */
 
 /* PB.5 MFP */
 #define SYS_GPB_MFP1_PB5MFP_GPIO         (0x00UL<<SYS_GPB_MFP1_PB5MFP_Pos) /*!< GPB_MFP1 PB5 setting for GPIO        */
@@ -585,6 +604,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPB_MFP1_PB5MFP_INT0         (0x0fUL<<SYS_GPB_MFP1_PB5MFP_Pos) /*!< GPB_MFP1 PB5 setting for INT0        */
 #define SYS_GPB_MFP1_PB5MFP_PSIO0_CH4    (0x11UL<<SYS_GPB_MFP1_PB5MFP_Pos) /*!< GPB_MFP1 PB5 setting for PSIO0_CH4   */
 #define SYS_GPB_MFP1_PB5MFP_KPI_COL6     (0x12UL<<SYS_GPB_MFP1_PB5MFP_Pos) /*!< GPB_MFP1 PB5 setting for KPI_COL6    */
+#define SYS_GPB_MFP1_PB5MFP_BMC0         (0x14UL<<SYS_GPB_MFP1_PB5MFP_Pos) /*!< GPB_MFP1 PB5 setting for BMC0        */
 
 /* PB.6 MFP */
 #define SYS_GPB_MFP1_PB6MFP_GPIO         (0x00UL<<SYS_GPB_MFP1_PB6MFP_Pos) /*!< GPB_MFP1 PB6 setting for GPIO        */
@@ -603,8 +623,10 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPB_MFP1_PB6MFP_INT4         (0x0dUL<<SYS_GPB_MFP1_PB6MFP_Pos) /*!< GPB_MFP1 PB6 setting for INT4        */
 #define SYS_GPB_MFP1_PB6MFP_USB_VBUS_EN  (0x0eUL<<SYS_GPB_MFP1_PB6MFP_Pos) /*!< GPB_MFP1 PB6 setting for USB_VBUS_EN */
 #define SYS_GPB_MFP1_PB6MFP_ACMP1_O      (0x0fUL<<SYS_GPB_MFP1_PB6MFP_Pos) /*!< GPB_MFP1 PB6 setting for ACMP1_O     */
+#define SYS_GPB_MFP1_PB6MFP_SPI3_MOSI    (0x10UL<<SYS_GPB_MFP1_PB6MFP_Pos) /*!< GPB_MFP1 PB6 setting for SPI3_MOSI   */
 #define SYS_GPB_MFP1_PB6MFP_KPI_COL5     (0x12UL<<SYS_GPB_MFP1_PB6MFP_Pos) /*!< GPB_MFP1 PB6 setting for KPI_COL5    */
 #define SYS_GPB_MFP1_PB6MFP_SPI1_SS      (0x13UL<<SYS_GPB_MFP1_PB6MFP_Pos) /*!< GPB_MFP1 PB6 setting for SPI1_SS     */
+#define SYS_GPB_MFP1_PB6MFP_BMC31        (0x14UL<<SYS_GPB_MFP1_PB6MFP_Pos) /*!< GPB_MFP1 PB6 setting for BMC31       */
 
 /* PB.7 MFP */
 #define SYS_GPB_MFP1_PB7MFP_GPIO         (0x00UL<<SYS_GPB_MFP1_PB7MFP_Pos) /*!< GPB_MFP1 PB7 setting for GPIO        */
@@ -623,8 +645,10 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPB_MFP1_PB7MFP_INT5         (0x0dUL<<SYS_GPB_MFP1_PB7MFP_Pos) /*!< GPB_MFP1 PB7 setting for INT5        */
 #define SYS_GPB_MFP1_PB7MFP_USB_VBUS_ST  (0x0eUL<<SYS_GPB_MFP1_PB7MFP_Pos) /*!< GPB_MFP1 PB7 setting for USB_VBUS_ST */
 #define SYS_GPB_MFP1_PB7MFP_ACMP0_O      (0x0fUL<<SYS_GPB_MFP1_PB7MFP_Pos) /*!< GPB_MFP1 PB7 setting for ACMP0_O     */
+#define SYS_GPB_MFP1_PB7MFP_SPI3_MISO    (0x10UL<<SYS_GPB_MFP1_PB7MFP_Pos) /*!< GPB_MFP1 PB7 setting for SPI3_MISO   */
 #define SYS_GPB_MFP1_PB7MFP_KPI_COL4     (0x12UL<<SYS_GPB_MFP1_PB7MFP_Pos) /*!< GPB_MFP1 PB7 setting for KPI_COL4    */
 #define SYS_GPB_MFP1_PB7MFP_SPI1_CLK     (0x13UL<<SYS_GPB_MFP1_PB7MFP_Pos) /*!< GPB_MFP1 PB7 setting for SPI1_CLK    */
+#define SYS_GPB_MFP1_PB7MFP_BMC30        (0x14UL<<SYS_GPB_MFP1_PB7MFP_Pos) /*!< GPB_MFP1 PB7 setting for BMC30       */
 
 /* PB.8 MFP */
 #define SYS_GPB_MFP2_PB8MFP_GPIO         (0x00UL<<SYS_GPB_MFP2_PB8MFP_Pos) /*!< GPB_MFP2 PB8 setting for GPIO        */
@@ -642,6 +666,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPB_MFP2_PB8MFP_CAN2_RXD     (0x0cUL<<SYS_GPB_MFP2_PB8MFP_Pos) /*!< GPB_MFP2 PB8 setting for CAN2_RXD    */
 #define SYS_GPB_MFP2_PB8MFP_INT6         (0x0dUL<<SYS_GPB_MFP2_PB8MFP_Pos) /*!< GPB_MFP2 PB8 setting for INT6        */
 #define SYS_GPB_MFP2_PB8MFP_EADC2_ST     (0x0eUL<<SYS_GPB_MFP2_PB8MFP_Pos) /*!< GPB_MFP2 PB8 setting for EADC2_ST    */
+#define SYS_GPB_MFP2_PB8MFP_BMC23        (0x14UL<<SYS_GPB_MFP2_PB8MFP_Pos) /*!< GPB_MFP2 PB8 setting for BMC23       */
 
 /* PB.9 MFP */
 #define SYS_GPB_MFP2_PB9MFP_GPIO         (0x00UL<<SYS_GPB_MFP2_PB9MFP_Pos) /*!< GPB_MFP2 PB9 setting for GPIO        */
@@ -659,6 +684,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPB_MFP2_PB9MFP_CAN2_TXD     (0x0cUL<<SYS_GPB_MFP2_PB9MFP_Pos) /*!< GPB_MFP2 PB9 setting for CAN2_TXD    */
 #define SYS_GPB_MFP2_PB9MFP_INT7         (0x0dUL<<SYS_GPB_MFP2_PB9MFP_Pos) /*!< GPB_MFP2 PB9 setting for INT7        */
 #define SYS_GPB_MFP2_PB9MFP_CCAP_HSYNC   (0x0eUL<<SYS_GPB_MFP2_PB9MFP_Pos) /*!< GPB_MFP2 PB9 setting for CCAP_HSYNC  */
+#define SYS_GPB_MFP2_PB9MFP_BMC22        (0x14UL<<SYS_GPB_MFP2_PB9MFP_Pos) /*!< GPB_MFP2 PB9 setting for BMC22       */
 
 /* PB.10 MFP */
 #define SYS_GPB_MFP2_PB10MFP_GPIO        (0x00UL<<SYS_GPB_MFP2_PB10MFP_Pos)/*!< GPB_MFP2 PB10 setting for GPIO       */
@@ -674,6 +700,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPB_MFP2_PB10MFP_SPI3_SS     (0x0bUL<<SYS_GPB_MFP2_PB10MFP_Pos)/*!< GPB_MFP2 PB10 setting for SPI3_SS    */
 #define SYS_GPB_MFP2_PB10MFP_CCAP_VSYNC  (0x0cUL<<SYS_GPB_MFP2_PB10MFP_Pos)/*!< GPB_MFP2 PB10 setting for CCAP_VSYNC */
 #define SYS_GPB_MFP2_PB10MFP_HSUSB_VBUS_EN (0x0eUL<<SYS_GPB_MFP2_PB10MFP_Pos)/*!< GPB_MFP2 PB10 setting for HSUSB_VBUS_EN*/
+#define SYS_GPB_MFP2_PB10MFP_BMC21       (0x14UL<<SYS_GPB_MFP2_PB10MFP_Pos)/*!< GPB_MFP2 PB10 setting for BMC21      */
 
 /* PB.11 MFP */
 #define SYS_GPB_MFP2_PB11MFP_GPIO        (0x00UL<<SYS_GPB_MFP2_PB11MFP_Pos)/*!< GPB_MFP2 PB11 setting for GPIO       */
@@ -689,6 +716,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPB_MFP2_PB11MFP_SPI3_CLK    (0x0bUL<<SYS_GPB_MFP2_PB11MFP_Pos)/*!< GPB_MFP2 PB11 setting for SPI3_CLK   */
 #define SYS_GPB_MFP2_PB11MFP_CCAP_SFIELD (0x0cUL<<SYS_GPB_MFP2_PB11MFP_Pos)/*!< GPB_MFP2 PB11 setting for CCAP_SFIELD*/
 #define SYS_GPB_MFP2_PB11MFP_HSUSB_VBUS_ST (0x0eUL<<SYS_GPB_MFP2_PB11MFP_Pos)/*!< GPB_MFP2 PB11 setting for HSUSB_VBUS_ST*/
+#define SYS_GPB_MFP2_PB11MFP_BMC20       (0x14UL<<SYS_GPB_MFP2_PB11MFP_Pos)/*!< GPB_MFP2 PB11 setting for BMC20      */
 
 /* PB.12 MFP */
 #define SYS_GPB_MFP3_PB12MFP_GPIO        (0x00UL<<SYS_GPB_MFP3_PB12MFP_Pos)/*!< GPB_MFP3 PB12 setting for GPIO       */
@@ -710,8 +738,10 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPB_MFP3_PB12MFP_ETMC_TRACE_DATA3 (0x0cUL<<SYS_GPB_MFP3_PB12MFP_Pos)/*!< GPB_MFP3 PB12 setting for ETMC_TRACE_DATA3*/
 #define SYS_GPB_MFP3_PB12MFP_TM3_EXT     (0x0dUL<<SYS_GPB_MFP3_PB12MFP_Pos)/*!< GPB_MFP3 PB12 setting for TM3_EXT    */
 #define SYS_GPB_MFP3_PB12MFP_CAN3_RXD    (0x0eUL<<SYS_GPB_MFP3_PB12MFP_Pos)/*!< GPB_MFP3 PB12 setting for CAN3_RXD   */
+#define SYS_GPB_MFP3_PB12MFP_SPI3_SS     (0x10UL<<SYS_GPB_MFP3_PB12MFP_Pos)/*!< GPB_MFP3 PB12 setting for SPI3_SS    */
 #define SYS_GPB_MFP3_PB12MFP_PSIO0_CH3   (0x11UL<<SYS_GPB_MFP3_PB12MFP_Pos)/*!< GPB_MFP3 PB12 setting for PSIO0_CH3  */
 #define SYS_GPB_MFP3_PB12MFP_KPI_COL3    (0x12UL<<SYS_GPB_MFP3_PB12MFP_Pos)/*!< GPB_MFP3 PB12 setting for KPI_COL3   */
+#define SYS_GPB_MFP3_PB12MFP_BMC29       (0x14UL<<SYS_GPB_MFP3_PB12MFP_Pos)/*!< GPB_MFP3 PB12 setting for BMC29      */
 
 /* PB.13 MFP */
 #define SYS_GPB_MFP3_PB13MFP_GPIO        (0x00UL<<SYS_GPB_MFP3_PB13MFP_Pos)/*!< GPB_MFP3 PB13 setting for GPIO       */
@@ -732,9 +762,11 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPB_MFP3_PB13MFP_ETMC_TRACE_DATA2 (0x0cUL<<SYS_GPB_MFP3_PB13MFP_Pos)/*!< GPB_MFP3 PB13 setting for ETMC_TRACE_DATA2*/
 #define SYS_GPB_MFP3_PB13MFP_TM2_EXT     (0x0dUL<<SYS_GPB_MFP3_PB13MFP_Pos)/*!< GPB_MFP3 PB13 setting for TM2_EXT    */
 #define SYS_GPB_MFP3_PB13MFP_CAN3_TXD    (0x0eUL<<SYS_GPB_MFP3_PB13MFP_Pos)/*!< GPB_MFP3 PB13 setting for CAN3_TXD   */
+#define SYS_GPB_MFP3_PB13MFP_SPI3_CLK    (0x10UL<<SYS_GPB_MFP3_PB13MFP_Pos)/*!< GPB_MFP3 PB13 setting for SPI3_CLK   */
 #define SYS_GPB_MFP3_PB13MFP_PSIO0_CH2   (0x11UL<<SYS_GPB_MFP3_PB13MFP_Pos)/*!< GPB_MFP3 PB13 setting for PSIO0_CH2  */
 #define SYS_GPB_MFP3_PB13MFP_KPI_COL2    (0x12UL<<SYS_GPB_MFP3_PB13MFP_Pos)/*!< GPB_MFP3 PB13 setting for KPI_COL2   */
 #define SYS_GPB_MFP3_PB13MFP_SPI9_MISO   (0x13UL<<SYS_GPB_MFP3_PB13MFP_Pos)/*!< GPB_MFP3 PB13 setting for SPI9_MISO  */
+#define SYS_GPB_MFP3_PB13MFP_BMC28       (0x14UL<<SYS_GPB_MFP3_PB13MFP_Pos)/*!< GPB_MFP3 PB13 setting for BMC28      */
 
 /* PB.14 MFP */
 #define SYS_GPB_MFP3_PB14MFP_GPIO        (0x00UL<<SYS_GPB_MFP3_PB14MFP_Pos)/*!< GPB_MFP3 PB14 setting for GPIO       */
@@ -778,6 +810,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPB_MFP3_PB15MFP_PSIO0_CH0   (0x11UL<<SYS_GPB_MFP3_PB15MFP_Pos)/*!< GPB_MFP3 PB15 setting for PSIO0_CH0  */
 #define SYS_GPB_MFP3_PB15MFP_KPI_COL0    (0x12UL<<SYS_GPB_MFP3_PB15MFP_Pos)/*!< GPB_MFP3 PB15 setting for KPI_COL0   */
 #define SYS_GPB_MFP3_PB15MFP_SPI9_CLK    (0x13UL<<SYS_GPB_MFP3_PB15MFP_Pos)/*!< GPB_MFP3 PB15 setting for SPI9_CLK   */
+#define SYS_GPB_MFP3_PB15MFP_BMC27       (0x14UL<<SYS_GPB_MFP3_PB15MFP_Pos)/*!< GPB_MFP3 PB15 setting for BMC27      */
 
 /* PC.0 MFP */
 #define SYS_GPC_MFP0_PC0MFP_GPIO         (0x00UL<<SYS_GPC_MFP0_PC0MFP_Pos) /*!< GPC_MFP0 PC0 setting for GPIO        */
@@ -798,6 +831,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPC_MFP0_PC0MFP_QSPI1_CLK    (0x11UL<<SYS_GPC_MFP0_PC0MFP_Pos) /*!< GPC_MFP0 PC0 setting for QSPI1_CLK   */
 #define SYS_GPC_MFP0_PC0MFP_KPI_ROW5     (0x12UL<<SYS_GPC_MFP0_PC0MFP_Pos) /*!< GPC_MFP0 PC0 setting for KPI_ROW5    */
 #define SYS_GPC_MFP0_PC0MFP_SPI7_MOSI    (0x13UL<<SYS_GPC_MFP0_PC0MFP_Pos) /*!< GPC_MFP0 PC0 setting for SPI7_MOSI   */
+#define SYS_GPC_MFP0_PC0MFP_BMC25        (0x14UL<<SYS_GPC_MFP0_PC0MFP_Pos) /*!< GPC_MFP0 PC0 setting for BMC25       */
 
 /* PC.1 MFP */
 #define SYS_GPC_MFP0_PC1MFP_GPIO         (0x00UL<<SYS_GPC_MFP0_PC1MFP_Pos) /*!< GPC_MFP0 PC1 setting for GPIO        */
@@ -818,6 +852,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPC_MFP0_PC1MFP_QSPI1_SS     (0x11UL<<SYS_GPC_MFP0_PC1MFP_Pos) /*!< GPC_MFP0 PC1 setting for QSPI1_SS    */
 #define SYS_GPC_MFP0_PC1MFP_KPI_ROW4     (0x12UL<<SYS_GPC_MFP0_PC1MFP_Pos) /*!< GPC_MFP0 PC1 setting for KPI_ROW4    */
 #define SYS_GPC_MFP0_PC1MFP_SPI7_MISO    (0x13UL<<SYS_GPC_MFP0_PC1MFP_Pos) /*!< GPC_MFP0 PC1 setting for SPI7_MISO   */
+#define SYS_GPC_MFP0_PC1MFP_BMC24        (0x14UL<<SYS_GPC_MFP0_PC1MFP_Pos) /*!< GPC_MFP0 PC1 setting for BMC24       */
 
 /* PC.2 MFP */
 #define SYS_GPC_MFP0_PC2MFP_GPIO         (0x00UL<<SYS_GPC_MFP0_PC2MFP_Pos) /*!< GPC_MFP0 PC2 setting for GPIO        */
@@ -839,6 +874,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPC_MFP0_PC2MFP_PSIO0_CH3    (0x11UL<<SYS_GPC_MFP0_PC2MFP_Pos) /*!< GPC_MFP0 PC2 setting for PSIO0_CH3   */
 #define SYS_GPC_MFP0_PC2MFP_KPI_ROW3     (0x12UL<<SYS_GPC_MFP0_PC2MFP_Pos) /*!< GPC_MFP0 PC2 setting for KPI_ROW3    */
 #define SYS_GPC_MFP0_PC2MFP_SPI7_CLK     (0x13UL<<SYS_GPC_MFP0_PC2MFP_Pos) /*!< GPC_MFP0 PC2 setting for SPI7_CLK    */
+#define SYS_GPC_MFP0_PC2MFP_BMC23        (0x14UL<<SYS_GPC_MFP0_PC2MFP_Pos) /*!< GPC_MFP0 PC2 setting for BMC23       */
 
 /* PC.3 MFP */
 #define SYS_GPC_MFP0_PC3MFP_GPIO         (0x00UL<<SYS_GPC_MFP0_PC3MFP_Pos) /*!< GPC_MFP0 PC3 setting for GPIO        */
@@ -860,6 +896,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPC_MFP0_PC3MFP_PSIO0_CH2    (0x11UL<<SYS_GPC_MFP0_PC3MFP_Pos) /*!< GPC_MFP0 PC3 setting for PSIO0_CH2   */
 #define SYS_GPC_MFP0_PC3MFP_KPI_ROW2     (0x12UL<<SYS_GPC_MFP0_PC3MFP_Pos) /*!< GPC_MFP0 PC3 setting for KPI_ROW2    */
 #define SYS_GPC_MFP0_PC3MFP_SPI7_SS      (0x13UL<<SYS_GPC_MFP0_PC3MFP_Pos) /*!< GPC_MFP0 PC3 setting for SPI7_SS     */
+#define SYS_GPC_MFP0_PC3MFP_BMC22        (0x14UL<<SYS_GPC_MFP0_PC3MFP_Pos) /*!< GPC_MFP0 PC3 setting for BMC22       */
 
 /* PC.4 MFP */
 #define SYS_GPC_MFP1_PC4MFP_GPIO         (0x00UL<<SYS_GPC_MFP1_PC4MFP_Pos) /*!< GPC_MFP1 PC4 setting for GPIO        */
@@ -880,6 +917,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPC_MFP1_PC4MFP_HBI_CK       (0x10UL<<SYS_GPC_MFP1_PC4MFP_Pos) /*!< GPC_MFP1 PC4 setting for HBI_CK      */
 #define SYS_GPC_MFP1_PC4MFP_PSIO0_CH1    (0x11UL<<SYS_GPC_MFP1_PC4MFP_Pos) /*!< GPC_MFP1 PC4 setting for PSIO0_CH1   */
 #define SYS_GPC_MFP1_PC4MFP_KPI_ROW1     (0x12UL<<SYS_GPC_MFP1_PC4MFP_Pos) /*!< GPC_MFP1 PC4 setting for KPI_ROW1    */
+#define SYS_GPC_MFP1_PC4MFP_BMC21        (0x14UL<<SYS_GPC_MFP1_PC4MFP_Pos) /*!< GPC_MFP1 PC4 setting for BMC21       */
 
 /* PC.5 MFP */
 #define SYS_GPC_MFP1_PC5MFP_GPIO         (0x00UL<<SYS_GPC_MFP1_PC5MFP_Pos) /*!< GPC_MFP1 PC5 setting for GPIO        */
@@ -897,6 +935,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPC_MFP1_PC5MFP_HBI_nCK      (0x10UL<<SYS_GPC_MFP1_PC5MFP_Pos) /*!< GPC_MFP1 PC5 setting for HBI_nCK     */
 #define SYS_GPC_MFP1_PC5MFP_PSIO0_CH0    (0x11UL<<SYS_GPC_MFP1_PC5MFP_Pos) /*!< GPC_MFP1 PC5 setting for PSIO0_CH0   */
 #define SYS_GPC_MFP1_PC5MFP_KPI_ROW0     (0x12UL<<SYS_GPC_MFP1_PC5MFP_Pos) /*!< GPC_MFP1 PC5 setting for KPI_ROW0    */
+#define SYS_GPC_MFP1_PC5MFP_BMC20        (0x14UL<<SYS_GPC_MFP1_PC5MFP_Pos) /*!< GPC_MFP1 PC5 setting for BMC20       */
 
 /* PC.6 MFP */
 #define SYS_GPC_MFP1_PC6MFP_GPIO         (0x00UL<<SYS_GPC_MFP1_PC6MFP_Pos) /*!< GPC_MFP1 PC6 setting for GPIO        */
@@ -916,6 +955,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPC_MFP1_PC6MFP_INT2         (0x0fUL<<SYS_GPC_MFP1_PC6MFP_Pos) /*!< GPC_MFP1 PC6 setting for INT2        */
 #define SYS_GPC_MFP1_PC6MFP_KPI_COL2     (0x12UL<<SYS_GPC_MFP1_PC6MFP_Pos) /*!< GPC_MFP1 PC6 setting for KPI_COL2    */
 #define SYS_GPC_MFP1_PC6MFP_SPI6_MOSI    (0x13UL<<SYS_GPC_MFP1_PC6MFP_Pos) /*!< GPC_MFP1 PC6 setting for SPI6_MOSI   */
+#define SYS_GPC_MFP1_PC6MFP_BMC25        (0x14UL<<SYS_GPC_MFP1_PC6MFP_Pos) /*!< GPC_MFP1 PC6 setting for BMC25       */
 
 /* PC.7 MFP */
 #define SYS_GPC_MFP1_PC7MFP_GPIO         (0x00UL<<SYS_GPC_MFP1_PC7MFP_Pos) /*!< GPC_MFP1 PC7 setting for GPIO        */
@@ -935,6 +975,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPC_MFP1_PC7MFP_INT3         (0x0fUL<<SYS_GPC_MFP1_PC7MFP_Pos) /*!< GPC_MFP1 PC7 setting for INT3        */
 #define SYS_GPC_MFP1_PC7MFP_KPI_COL3     (0x12UL<<SYS_GPC_MFP1_PC7MFP_Pos) /*!< GPC_MFP1 PC7 setting for KPI_COL3    */
 #define SYS_GPC_MFP1_PC7MFP_SPI6_MISO    (0x13UL<<SYS_GPC_MFP1_PC7MFP_Pos) /*!< GPC_MFP1 PC7 setting for SPI6_MISO   */
+#define SYS_GPC_MFP1_PC7MFP_BMC24        (0x14UL<<SYS_GPC_MFP1_PC7MFP_Pos) /*!< GPC_MFP1 PC7 setting for BMC24       */
 
 /* PC.8 MFP */
 #define SYS_GPC_MFP2_PC8MFP_GPIO         (0x00UL<<SYS_GPC_MFP2_PC8MFP_Pos) /*!< GPC_MFP2 PC8 setting for GPIO        */
@@ -1032,6 +1073,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPC_MFP3_PC14MFP_USB_VBUS_ST (0x0eUL<<SYS_GPC_MFP3_PC14MFP_Pos)/*!< GPC_MFP3 PC14 setting for USB_VBUS_ST*/
 #define SYS_GPC_MFP3_PC14MFP_HSUSB_VBUS_ST (0x0fUL<<SYS_GPC_MFP3_PC14MFP_Pos)/*!< GPC_MFP3 PC14 setting for HSUSB_VBUS_ST*/
 #define SYS_GPC_MFP3_PC14MFP_SPI9_MOSI   (0x13UL<<SYS_GPC_MFP3_PC14MFP_Pos)/*!< GPC_MFP3 PC14 setting for SPI9_MOSI  */
+#define SYS_GPC_MFP3_PC14MFP_BMC26       (0x14UL<<SYS_GPC_MFP3_PC14MFP_Pos)/*!< GPC_MFP3 PC14 setting for BMC26      */
 
 /* PD.0 MFP */
 #define SYS_GPD_MFP0_PD0MFP_GPIO         (0x00UL<<SYS_GPD_MFP0_PD0MFP_Pos) /*!< GPD_MFP0 PD0 setting for GPIO        */
@@ -1471,6 +1513,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPF_MFP0_PF2MFP_BPWM1_CH1    (0x0bUL<<SYS_GPF_MFP0_PF2MFP_Pos) /*!< GPF_MFP0 PF2 setting for BPWM1_CH1   */
 #define SYS_GPF_MFP0_PF2MFP_I2C4_SMBSUS  (0x0cUL<<SYS_GPF_MFP0_PF2MFP_Pos) /*!< GPF_MFP0 PF2 setting for I2C4_SMBSUS */
 #define SYS_GPF_MFP0_PF2MFP_ACMP3_O      (0x0dUL<<SYS_GPF_MFP0_PF2MFP_Pos) /*!< GPF_MFP0 PF2 setting for ACMP3_O     */
+#define SYS_GPF_MFP0_PF2MFP_BMC13        (0x14UL<<SYS_GPF_MFP0_PF2MFP_Pos) /*!< GPF_MFP0 PF2 setting for BMC13       */
 
 /* PF.3 MFP */
 #define SYS_GPF_MFP0_PF3MFP_GPIO         (0x00UL<<SYS_GPF_MFP0_PF3MFP_Pos) /*!< GPF_MFP0 PF3 setting for GPIO        */
@@ -1483,6 +1526,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPF_MFP0_PF3MFP_I2C4_SMBAL   (0x0cUL<<SYS_GPF_MFP0_PF3MFP_Pos) /*!< GPF_MFP0 PF3 setting for I2C4_SMBAL  */
 #define SYS_GPF_MFP0_PF3MFP_ACMP2_O      (0x0dUL<<SYS_GPF_MFP0_PF3MFP_Pos) /*!< GPF_MFP0 PF3 setting for ACMP2_O     */
 #define SYS_GPF_MFP0_PF3MFP_EADC2_ST     (0x0fUL<<SYS_GPF_MFP0_PF3MFP_Pos) /*!< GPF_MFP0 PF3 setting for EADC2_ST    */
+#define SYS_GPF_MFP0_PF3MFP_BMC12        (0x14UL<<SYS_GPF_MFP0_PF3MFP_Pos) /*!< GPF_MFP0 PF3 setting for BMC12       */
 
 /* PF.4 MFP */
 #define SYS_GPF_MFP1_PF4MFP_GPIO         (0x00UL<<SYS_GPF_MFP1_PF4MFP_Pos) /*!< GPF_MFP1 PF4 setting for GPIO        */
@@ -1496,6 +1540,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPF_MFP1_PF4MFP_I2C4_SDA     (0x0cUL<<SYS_GPF_MFP1_PF4MFP_Pos) /*!< GPF_MFP1 PF4 setting for I2C4_SDA    */
 #define SYS_GPF_MFP1_PF4MFP_EQEI2_B      (0x0dUL<<SYS_GPF_MFP1_PF4MFP_Pos) /*!< GPF_MFP1 PF4 setting for EQEI2_B     */
 #define SYS_GPF_MFP1_PF4MFP_SPI5_MISO    (0x13UL<<SYS_GPF_MFP1_PF4MFP_Pos) /*!< GPF_MFP1 PF4 setting for SPI5_MISO   */
+#define SYS_GPF_MFP1_PF4MFP_BMC11        (0x14UL<<SYS_GPF_MFP1_PF4MFP_Pos) /*!< GPF_MFP1 PF4 setting for BMC11       */
 
 /* PF.5 MFP */
 #define SYS_GPF_MFP1_PF5MFP_GPIO         (0x00UL<<SYS_GPF_MFP1_PF5MFP_Pos) /*!< GPF_MFP1 PF5 setting for GPIO        */
@@ -1510,6 +1555,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPF_MFP1_PF5MFP_I2C4_SCL     (0x0cUL<<SYS_GPF_MFP1_PF5MFP_Pos) /*!< GPF_MFP1 PF5 setting for I2C4_SCL    */
 #define SYS_GPF_MFP1_PF5MFP_EQEI2_A      (0x0dUL<<SYS_GPF_MFP1_PF5MFP_Pos) /*!< GPF_MFP1 PF5 setting for EQEI2_A     */
 #define SYS_GPF_MFP1_PF5MFP_SPI5_MOSI    (0x13UL<<SYS_GPF_MFP1_PF5MFP_Pos) /*!< GPF_MFP1 PF5 setting for SPI5_MOSI   */
+#define SYS_GPF_MFP1_PF5MFP_BMC10        (0x14UL<<SYS_GPF_MFP1_PF5MFP_Pos) /*!< GPF_MFP1 PF5 setting for BMC10       */
 
 /* PF.6 MFP */
 #define SYS_GPF_MFP1_PF6MFP_GPIO         (0x00UL<<SYS_GPF_MFP1_PF6MFP_Pos) /*!< GPF_MFP1 PF6 setting for GPIO        */
@@ -1536,6 +1582,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPF_MFP1_PF7MFP_CCAP_DATA0   (0x07UL<<SYS_GPF_MFP1_PF7MFP_Pos) /*!< GPF_MFP1 PF7 setting for CCAP_DATA0  */
 #define SYS_GPF_MFP1_PF7MFP_CAN2_TXD     (0x08UL<<SYS_GPF_MFP1_PF7MFP_Pos) /*!< GPF_MFP1 PF7 setting for CAN2_TXD    */
 #define SYS_GPF_MFP1_PF7MFP_TAMPER1      (0x0aUL<<SYS_GPF_MFP1_PF7MFP_Pos) /*!< GPF_MFP1 PF7 setting for TAMPER1     */
+#define SYS_GPF_MFP1_PF7MFP_SPI5_SS      (0x13UL<<SYS_GPF_MFP1_PF7MFP_Pos) /*!< GPF_MFP1 PF7 setting for SPI5_SS     */
 
 /* PF.8 MFP */
 #define SYS_GPF_MFP2_PF8MFP_GPIO         (0x00UL<<SYS_GPF_MFP2_PF8MFP_Pos) /*!< GPF_MFP2 PF8 setting for GPIO        */
@@ -1680,6 +1727,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPG_MFP2_PG9MFP_BPWM0_CH5    (0x0cUL<<SYS_GPG_MFP2_PG9MFP_Pos) /*!< GPG_MFP2 PG9 setting for BPWM0_CH5   */
 #define SYS_GPG_MFP2_PG9MFP_HBI_D4       (0x10UL<<SYS_GPG_MFP2_PG9MFP_Pos) /*!< GPG_MFP2 PG9 setting for HBI_D4      */
 #define SYS_GPG_MFP2_PG9MFP_SPI8_SS      (0x13UL<<SYS_GPG_MFP2_PG9MFP_Pos) /*!< GPG_MFP2 PG9 setting for SPI8_SS     */
+#define SYS_GPG_MFP2_PG9MFP_BMC16        (0x14UL<<SYS_GPG_MFP2_PG9MFP_Pos) /*!< GPG_MFP2 PG9 setting for BMC16       */
 
 /* PG.10 MFP */
 #define SYS_GPG_MFP2_PG10MFP_GPIO        (0x00UL<<SYS_GPG_MFP2_PG10MFP_Pos)/*!< GPG_MFP2 PG10 setting for GPIO       */
@@ -1693,6 +1741,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPG_MFP2_PG10MFP_BPWM0_CH4   (0x0cUL<<SYS_GPG_MFP2_PG10MFP_Pos)/*!< GPG_MFP2 PG10 setting for BPWM0_CH4  */
 #define SYS_GPG_MFP2_PG10MFP_HBI_D3      (0x10UL<<SYS_GPG_MFP2_PG10MFP_Pos)/*!< GPG_MFP2 PG10 setting for HBI_D3     */
 #define SYS_GPG_MFP2_PG10MFP_SPI8_CLK    (0x13UL<<SYS_GPG_MFP2_PG10MFP_Pos)/*!< GPG_MFP2 PG10 setting for SPI8_CLK   */
+#define SYS_GPG_MFP2_PG10MFP_BMC17       (0x14UL<<SYS_GPG_MFP2_PG10MFP_Pos)/*!< GPG_MFP2 PG10 setting for BMC17      */
 
 /* PG.11 MFP */
 #define SYS_GPG_MFP2_PG11MFP_GPIO        (0x00UL<<SYS_GPG_MFP2_PG11MFP_Pos)/*!< GPG_MFP2 PG11 setting for GPIO       */
@@ -1707,6 +1756,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPG_MFP2_PG11MFP_BPWM0_CH3   (0x0cUL<<SYS_GPG_MFP2_PG11MFP_Pos)/*!< GPG_MFP2 PG11 setting for BPWM0_CH3  */
 #define SYS_GPG_MFP2_PG11MFP_HBI_D0      (0x10UL<<SYS_GPG_MFP2_PG11MFP_Pos)/*!< GPG_MFP2 PG11 setting for HBI_D0     */
 #define SYS_GPG_MFP2_PG11MFP_SPI8_MOSI   (0x13UL<<SYS_GPG_MFP2_PG11MFP_Pos)/*!< GPG_MFP2 PG11 setting for SPI8_MOSI  */
+#define SYS_GPG_MFP2_PG11MFP_BMC18       (0x14UL<<SYS_GPG_MFP2_PG11MFP_Pos)/*!< GPG_MFP2 PG11 setting for BMC18      */
 
 /* PG.12 MFP */
 #define SYS_GPG_MFP3_PG12MFP_GPIO        (0x00UL<<SYS_GPG_MFP3_PG12MFP_Pos)/*!< GPG_MFP3 PG12 setting for GPIO       */
@@ -1720,6 +1770,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SYS_GPG_MFP3_PG12MFP_BPWM0_CH2   (0x0cUL<<SYS_GPG_MFP3_PG12MFP_Pos)/*!< GPG_MFP3 PG12 setting for BPWM0_CH2  */
 #define SYS_GPG_MFP3_PG12MFP_HBI_D1      (0x10UL<<SYS_GPG_MFP3_PG12MFP_Pos)/*!< GPG_MFP3 PG12 setting for HBI_D1     */
 #define SYS_GPG_MFP3_PG12MFP_SPI8_MISO   (0x13UL<<SYS_GPG_MFP3_PG12MFP_Pos)/*!< GPG_MFP3 PG12 setting for SPI8_MISO  */
+#define SYS_GPG_MFP3_PG12MFP_BMC19       (0x14UL<<SYS_GPG_MFP3_PG12MFP_Pos)/*!< GPG_MFP3 PG12 setting for BMC19      */
 
 /* PG.13 MFP */
 #define SYS_GPG_MFP3_PG13MFP_GPIO        (0x00UL<<SYS_GPG_MFP3_PG13MFP_Pos)/*!< GPG_MFP3 PG13 setting for GPIO       */
@@ -2148,6 +2199,52 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define ACMP3_P2_PC10            SYS_GPC_MFP2_PC10MFP_ACMP3_P2        /*!< GPC_MFP2 PC10 setting for ACMP3_P2*/
 #define ACMP3_P3_PC11            SYS_GPC_MFP2_PC11MFP_ACMP3_P3        /*!< GPC_MFP2 PC11 setting for ACMP3_P3*/
 #define ACMP3_WLAT_PC6           SYS_GPC_MFP1_PC6MFP_ACMP3_WLAT       /*!< GPC_MFP1 PC6 setting for ACMP3_WLAT*/
+#define BMC0_PB5                 SYS_GPB_MFP1_PB5MFP_BMC0             /*!< GPB_MFP1 PB5 setting for BMC0*/
+#define BMC1_PB4                 SYS_GPB_MFP1_PB4MFP_BMC1             /*!< GPB_MFP1 PB4 setting for BMC1*/
+#define BMC10_PF5                SYS_GPF_MFP1_PF5MFP_BMC10            /*!< GPF_MFP1 PF5 setting for BMC10*/
+#define BMC11_PF4                SYS_GPF_MFP1_PF4MFP_BMC11            /*!< GPF_MFP1 PF4 setting for BMC11*/
+#define BMC12_PA12               SYS_GPA_MFP3_PA12MFP_BMC12           /*!< GPA_MFP3 PA12 setting for BMC12*/
+#define BMC12_PF3                SYS_GPF_MFP0_PF3MFP_BMC12            /*!< GPF_MFP0 PF3 setting for BMC12*/
+#define BMC13_PF2                SYS_GPF_MFP0_PF2MFP_BMC13            /*!< GPF_MFP0 PF2 setting for BMC13*/
+#define BMC13_PA13               SYS_GPA_MFP3_PA13MFP_BMC13           /*!< GPA_MFP3 PA13 setting for BMC13*/
+#define BMC14_PA7                SYS_GPA_MFP1_PA7MFP_BMC14            /*!< GPA_MFP1 PA7 setting for BMC14*/
+#define BMC14_PA14               SYS_GPA_MFP3_PA14MFP_BMC14           /*!< GPA_MFP3 PA14 setting for BMC14*/
+#define BMC15_PA6                SYS_GPA_MFP1_PA6MFP_BMC15            /*!< GPA_MFP1 PA6 setting for BMC15*/
+#define BMC15_PA15               SYS_GPA_MFP3_PA15MFP_BMC15           /*!< GPA_MFP3 PA15 setting for BMC15*/
+#define BMC16_PA3                SYS_GPA_MFP0_PA3MFP_BMC16            /*!< GPA_MFP0 PA3 setting for BMC16*/
+#define BMC16_PG9                SYS_GPG_MFP2_PG9MFP_BMC16            /*!< GPG_MFP2 PG9 setting for BMC16*/
+#define BMC17_PA2                SYS_GPA_MFP0_PA2MFP_BMC17            /*!< GPA_MFP0 PA2 setting for BMC17*/
+#define BMC17_PG10               SYS_GPG_MFP2_PG10MFP_BMC17           /*!< GPG_MFP2 PG10 setting for BMC17*/
+#define BMC18_PA1                SYS_GPA_MFP0_PA1MFP_BMC18            /*!< GPA_MFP0 PA1 setting for BMC18*/
+#define BMC18_PG11               SYS_GPG_MFP2_PG11MFP_BMC18           /*!< GPG_MFP2 PG11 setting for BMC18*/
+#define BMC19_PA0                SYS_GPA_MFP0_PA0MFP_BMC19            /*!< GPA_MFP0 PA0 setting for BMC19*/
+#define BMC19_PG12               SYS_GPG_MFP3_PG12MFP_BMC19           /*!< GPG_MFP3 PG12 setting for BMC19*/
+#define BMC2_PB3                 SYS_GPB_MFP0_PB3MFP_BMC2             /*!< GPB_MFP0 PB3 setting for BMC2*/
+#define BMC20_PB11               SYS_GPB_MFP2_PB11MFP_BMC20           /*!< GPB_MFP2 PB11 setting for BMC20*/
+#define BMC20_PC5                SYS_GPC_MFP1_PC5MFP_BMC20            /*!< GPC_MFP1 PC5 setting for BMC20*/
+#define BMC21_PC4                SYS_GPC_MFP1_PC4MFP_BMC21            /*!< GPC_MFP1 PC4 setting for BMC21*/
+#define BMC21_PB10               SYS_GPB_MFP2_PB10MFP_BMC21           /*!< GPB_MFP2 PB10 setting for BMC21*/
+#define BMC22_PB9                SYS_GPB_MFP2_PB9MFP_BMC22            /*!< GPB_MFP2 PB9 setting for BMC22*/
+#define BMC22_PC3                SYS_GPC_MFP0_PC3MFP_BMC22            /*!< GPC_MFP0 PC3 setting for BMC22*/
+#define BMC23_PC2                SYS_GPC_MFP0_PC2MFP_BMC23            /*!< GPC_MFP0 PC2 setting for BMC23*/
+#define BMC23_PB8                SYS_GPB_MFP2_PB8MFP_BMC23            /*!< GPB_MFP2 PB8 setting for BMC23*/
+#define BMC24_PC1                SYS_GPC_MFP0_PC1MFP_BMC24            /*!< GPC_MFP0 PC1 setting for BMC24*/
+#define BMC24_PC7                SYS_GPC_MFP1_PC7MFP_BMC24            /*!< GPC_MFP1 PC7 setting for BMC24*/
+#define BMC25_PC6                SYS_GPC_MFP1_PC6MFP_BMC25            /*!< GPC_MFP1 PC6 setting for BMC25*/
+#define BMC25_PC0                SYS_GPC_MFP0_PC0MFP_BMC25            /*!< GPC_MFP0 PC0 setting for BMC25*/
+#define BMC26_PC14               SYS_GPC_MFP3_PC14MFP_BMC26           /*!< GPC_MFP3 PC14 setting for BMC26*/
+#define BMC27_PB15               SYS_GPB_MFP3_PB15MFP_BMC27           /*!< GPB_MFP3 PB15 setting for BMC27*/
+#define BMC28_PB13               SYS_GPB_MFP3_PB13MFP_BMC28           /*!< GPB_MFP3 PB13 setting for BMC28*/
+#define BMC29_PB12               SYS_GPB_MFP3_PB12MFP_BMC29           /*!< GPB_MFP3 PB12 setting for BMC29*/
+#define BMC3_PB2                 SYS_GPB_MFP0_PB2MFP_BMC3             /*!< GPB_MFP0 PB2 setting for BMC3*/
+#define BMC30_PB7                SYS_GPB_MFP1_PB7MFP_BMC30            /*!< GPB_MFP1 PB7 setting for BMC30*/
+#define BMC31_PB6                SYS_GPB_MFP1_PB6MFP_BMC31            /*!< GPB_MFP1 PB6 setting for BMC31*/
+#define BMC4_PB1                 SYS_GPB_MFP0_PB1MFP_BMC4             /*!< GPB_MFP0 PB1 setting for BMC4*/
+#define BMC5_PB0                 SYS_GPB_MFP0_PB0MFP_BMC5             /*!< GPB_MFP0 PB0 setting for BMC5*/
+#define BMC6_PA11                SYS_GPA_MFP2_PA11MFP_BMC6            /*!< GPA_MFP2 PA11 setting for BMC6*/
+#define BMC7_PA10                SYS_GPA_MFP2_PA10MFP_BMC7            /*!< GPA_MFP2 PA10 setting for BMC7*/
+#define BMC8_PA9                 SYS_GPA_MFP2_PA9MFP_BMC8             /*!< GPA_MFP2 PA9 setting for BMC8*/
+#define BMC9_PA8                 SYS_GPA_MFP2_PA8MFP_BMC9             /*!< GPA_MFP2 PA8 setting for BMC9*/
 #define BPWM0_CH0_PD13           SYS_GPD_MFP3_PD13MFP_BPWM0_CH0       /*!< GPD_MFP3 PD13 setting for BPWM0_CH0*/
 #define BPWM0_CH0_PE2            SYS_GPE_MFP0_PE2MFP_BPWM0_CH0        /*!< GPE_MFP0 PE2 setting for BPWM0_CH0*/
 #define BPWM0_CH0_PA0            SYS_GPA_MFP0_PA0MFP_BPWM0_CH0        /*!< GPA_MFP0 PA0 setting for BPWM0_CH0*/
@@ -3209,6 +3306,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SPI3_CLK_PB11            SYS_GPB_MFP2_PB11MFP_SPI3_CLK        /*!< GPB_MFP2 PB11 setting for SPI3_CLK*/
 #define SPI3_CLK_PE4             SYS_GPE_MFP1_PE4MFP_SPI3_CLK         /*!< GPE_MFP1 PE4 setting for SPI3_CLK*/
 #define SPI3_CLK_PG6             SYS_GPG_MFP1_PG6MFP_SPI3_CLK         /*!< GPG_MFP1 PG6 setting for SPI3_CLK*/
+#define SPI3_CLK_PB13            SYS_GPB_MFP3_PB13MFP_SPI3_CLK        /*!< GPB_MFP3 PB13 setting for SPI3_CLK*/
 #define SPI3_I2SMCLK_PF6         SYS_GPF_MFP1_PF6MFP_SPI3_I2SMCLK     /*!< GPF_MFP1 PF6 setting for SPI3_I2SMCLK*/
 #define SPI3_I2SMCLK_PB1         SYS_GPB_MFP0_PB1MFP_SPI3_I2SMCLK     /*!< GPB_MFP0 PB1 setting for SPI3_I2SMCLK*/
 #define SPI3_I2SMCLK_PD14        SYS_GPD_MFP3_PD14MFP_SPI3_I2SMCLK    /*!< GPD_MFP3 PD14 setting for SPI3_I2SMCLK*/
@@ -3217,14 +3315,17 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SPI3_MISO_PB9            SYS_GPB_MFP2_PB9MFP_SPI3_MISO        /*!< GPB_MFP2 PB9 setting for SPI3_MISO*/
 #define SPI3_MISO_PC12           SYS_GPC_MFP3_PC12MFP_SPI3_MISO       /*!< GPC_MFP3 PC12 setting for SPI3_MISO*/
 #define SPI3_MISO_PE3            SYS_GPE_MFP0_PE3MFP_SPI3_MISO        /*!< GPE_MFP0 PE3 setting for SPI3_MISO*/
+#define SPI3_MISO_PB7            SYS_GPB_MFP1_PB7MFP_SPI3_MISO        /*!< GPB_MFP1 PB7 setting for SPI3_MISO*/
 #define SPI3_MOSI_PB8            SYS_GPB_MFP2_PB8MFP_SPI3_MOSI        /*!< GPB_MFP2 PB8 setting for SPI3_MOSI*/
 #define SPI3_MOSI_PG8            SYS_GPG_MFP2_PG8MFP_SPI3_MOSI        /*!< GPG_MFP2 PG8 setting for SPI3_MOSI*/
 #define SPI3_MOSI_PC11           SYS_GPC_MFP2_PC11MFP_SPI3_MOSI       /*!< GPC_MFP2 PC11 setting for SPI3_MOSI*/
 #define SPI3_MOSI_PE2            SYS_GPE_MFP0_PE2MFP_SPI3_MOSI        /*!< GPE_MFP0 PE2 setting for SPI3_MOSI*/
+#define SPI3_MOSI_PB6            SYS_GPB_MFP1_PB6MFP_SPI3_MOSI        /*!< GPB_MFP1 PB6 setting for SPI3_MOSI*/
 #define SPI3_SS_PE5              SYS_GPE_MFP1_PE5MFP_SPI3_SS          /*!< GPE_MFP1 PE5 setting for SPI3_SS*/
 #define SPI3_SS_PB10             SYS_GPB_MFP2_PB10MFP_SPI3_SS         /*!< GPB_MFP2 PB10 setting for SPI3_SS*/
 #define SPI3_SS_PC9              SYS_GPC_MFP2_PC9MFP_SPI3_SS          /*!< GPC_MFP2 PC9 setting for SPI3_SS*/
 #define SPI3_SS_PG5              SYS_GPG_MFP1_PG5MFP_SPI3_SS          /*!< GPG_MFP1 PG5 setting for SPI3_SS*/
+#define SPI3_SS_PB12             SYS_GPB_MFP3_PB12MFP_SPI3_SS         /*!< GPB_MFP3 PB12 setting for SPI3_SS*/
 #define SPI4_CLK_PB2             SYS_GPB_MFP0_PB2MFP_SPI4_CLK         /*!< GPB_MFP0 PB2 setting for SPI4_CLK*/
 #define SPI4_MISO_PB1            SYS_GPB_MFP0_PB1MFP_SPI4_MISO        /*!< GPB_MFP0 PB1 setting for SPI4_MISO*/
 #define SPI4_MOSI_PB0            SYS_GPB_MFP0_PB0MFP_SPI4_MOSI        /*!< GPB_MFP0 PB0 setting for SPI4_MOSI*/
@@ -3638,6 +3739,52 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define ACMP3_P2_PC10_Msk       SYS_GPC_MFP2_PC10MFP_Msk       /*<! ACMP3_P2        PC10     MFP Mask */
 #define ACMP3_P3_PC11_Msk       SYS_GPC_MFP2_PC11MFP_Msk       /*<! ACMP3_P3        PC11     MFP Mask */
 #define ACMP3_WLAT_PC6_Msk      SYS_GPC_MFP1_PC6MFP_Msk        /*<! ACMP3_WLAT      PC6      MFP Mask */
+#define BMC0_PB5_Msk            SYS_GPB_MFP1_PB5MFP_Msk        /*!< BMC0            PB5      MFP Mask */
+#define BMC1_PB4_Msk            SYS_GPB_MFP1_PB4MFP_Msk        /*!< BMC1            PB4      MFP Mask */
+#define BMC10_PF5_Msk           SYS_GPF_MFP1_PF5MFP_Msk        /*!< BMC10           PF5      MFP Mask */
+#define BMC11_PF4_Msk           SYS_GPF_MFP1_PF4MFP_Msk        /*!< BMC11           PF4      MFP Mask */
+#define BMC12_PA12_Msk          SYS_GPA_MFP3_PA12MFP_Msk       /*!< BMC12           PA12     MFP Mask */
+#define BMC12_PF3_Msk           SYS_GPF_MFP0_PF3MFP_Msk        /*!< BMC12           PF3      MFP Mask */
+#define BMC13_PF2_Msk           SYS_GPF_MFP0_PF2MFP_Msk        /*!< BMC13           PF2      MFP Mask */
+#define BMC13_PA13_Msk          SYS_GPA_MFP3_PA13MFP_Msk       /*!< BMC13           PA13     MFP Mask */
+#define BMC14_PA7_Msk           SYS_GPA_MFP1_PA7MFP_Msk        /*!< BMC14           PA7      MFP Mask */
+#define BMC14_PA14_Msk          SYS_GPA_MFP3_PA14MFP_Msk       /*!< BMC14           PA14     MFP Mask */
+#define BMC15_PA6_Msk           SYS_GPA_MFP1_PA6MFP_Msk        /*!< BMC15           PA6      MFP Mask */
+#define BMC15_PA15_Msk          SYS_GPA_MFP3_PA15MFP_Msk       /*!< BMC15           PA15     MFP Mask */
+#define BMC16_PA3_Msk           SYS_GPA_MFP0_PA3MFP_Msk        /*!< BMC16           PA3      MFP Mask */
+#define BMC16_PG9_Msk           SYS_GPG_MFP2_PG9MFP_Msk        /*!< BMC16           PG9      MFP Mask */
+#define BMC17_PA2_Msk           SYS_GPA_MFP0_PA2MFP_Msk        /*!< BMC17           PA2      MFP Mask */
+#define BMC17_PG10_Msk          SYS_GPG_MFP2_PG10MFP_Msk       /*!< BMC17           PG10     MFP Mask */
+#define BMC18_PA1_Msk           SYS_GPA_MFP0_PA1MFP_Msk        /*!< BMC18           PA1      MFP Mask */
+#define BMC18_PG11_Msk          SYS_GPG_MFP2_PG11MFP_Msk       /*!< BMC18           PG11     MFP Mask */
+#define BMC19_PA0_Msk           SYS_GPA_MFP0_PA0MFP_Msk        /*!< BMC19           PA0      MFP Mask */
+#define BMC19_PG12_Msk          SYS_GPG_MFP3_PG12MFP_Msk       /*!< BMC19           PG12     MFP Mask */
+#define BMC2_PB3_Msk            SYS_GPB_MFP0_PB3MFP_Msk        /*!< BMC2            PB3      MFP Mask */
+#define BMC20_PB11_Msk          SYS_GPB_MFP2_PB11MFP_Msk       /*!< BMC20           PB11     MFP Mask */
+#define BMC20_PC5_Msk           SYS_GPC_MFP1_PC5MFP_Msk        /*!< BMC20           PC5      MFP Mask */
+#define BMC21_PC4_Msk           SYS_GPC_MFP1_PC4MFP_Msk        /*!< BMC21           PC4      MFP Mask */
+#define BMC21_PB10_Msk          SYS_GPB_MFP2_PB10MFP_Msk       /*!< BMC21           PB10     MFP Mask */
+#define BMC22_PB9_Msk           SYS_GPB_MFP2_PB9MFP_Msk        /*!< BMC22           PB9      MFP Mask */
+#define BMC22_PC3_Msk           SYS_GPC_MFP0_PC3MFP_Msk        /*!< BMC22           PC3      MFP Mask */
+#define BMC23_PC2_Msk           SYS_GPC_MFP0_PC2MFP_Msk        /*!< BMC23           PC2      MFP Mask */
+#define BMC23_PB8_Msk           SYS_GPB_MFP2_PB8MFP_Msk        /*!< BMC23           PB8      MFP Mask */
+#define BMC24_PC1_Msk           SYS_GPC_MFP0_PC1MFP_Msk        /*!< BMC24           PC1      MFP Mask */
+#define BMC24_PC7_Msk           SYS_GPC_MFP1_PC7MFP_Msk        /*!< BMC24           PC7      MFP Mask */
+#define BMC25_PC6_Msk           SYS_GPC_MFP1_PC6MFP_Msk        /*!< BMC25           PC6      MFP Mask */
+#define BMC25_PC0_Msk           SYS_GPC_MFP0_PC0MFP_Msk        /*!< BMC25           PC0      MFP Mask */
+#define BMC26_PC14_Msk          SYS_GPC_MFP3_PC14MFP_Msk       /*!< BMC26           PC14     MFP Mask */
+#define BMC27_PB15_Msk          SYS_GPB_MFP3_PB15MFP_Msk       /*!< BMC27           PB15     MFP Mask */
+#define BMC28_PB13_Msk          SYS_GPB_MFP3_PB13MFP_Msk       /*!< BMC28           PB13     MFP Mask */
+#define BMC29_PB12_Msk          SYS_GPB_MFP3_PB12MFP_Msk       /*!< BMC29           PB12     MFP Mask */
+#define BMC3_PB2_Msk            SYS_GPB_MFP0_PB2MFP_Msk        /*!< BMC3            PB2      MFP Mask */
+#define BMC30_PB7_Msk           SYS_GPB_MFP1_PB7MFP_Msk        /*!< BMC30           PB7      MFP Mask */
+#define BMC31_PB6_Msk           SYS_GPB_MFP1_PB6MFP_Msk        /*!< BMC31           PB6      MFP Mask */
+#define BMC4_PB1_Msk            SYS_GPB_MFP0_PB1MFP_Msk        /*!< BMC4            PB1      MFP Mask */
+#define BMC5_PB0_Msk            SYS_GPB_MFP0_PB0MFP_Msk        /*!< BMC5            PB0      MFP Mask */
+#define BMC6_PA11_Msk           SYS_GPA_MFP2_PA11MFP_Msk       /*!< BMC6            PA11     MFP Mask */
+#define BMC7_PA10_Msk           SYS_GPA_MFP2_PA10MFP_Msk       /*!< BMC7            PA10     MFP Mask */
+#define BMC8_PA9_Msk            SYS_GPA_MFP2_PA9MFP_Msk        /*!< BMC8            PA9      MFP Mask */
+#define BMC9_PA8_Msk            SYS_GPA_MFP2_PA8MFP_Msk        /*!< BMC9            PA8      MFP Mask */
 #define BPWM0_CH0_PD13_Msk      SYS_GPD_MFP3_PD13MFP_Msk       /*<! BPWM0_CH0       PD13     MFP Mask */
 #define BPWM0_CH0_PE2_Msk       SYS_GPE_MFP0_PE2MFP_Msk        /*<! BPWM0_CH0       PE2      MFP Mask */
 #define BPWM0_CH0_PA0_Msk       SYS_GPA_MFP0_PA0MFP_Msk        /*<! BPWM0_CH0       PA0      MFP Mask */
@@ -4699,6 +4846,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SPI3_CLK_PB11_Msk       SYS_GPB_MFP2_PB11MFP_Msk       /*<! SPI3_CLK        PB11     MFP Mask */
 #define SPI3_CLK_PE4_Msk        SYS_GPE_MFP1_PE4MFP_Msk        /*<! SPI3_CLK        PE4      MFP Mask */
 #define SPI3_CLK_PG6_Msk        SYS_GPG_MFP1_PG6MFP_Msk        /*<! SPI3_CLK        PG6      MFP Mask */
+#define SPI3_CLK_PB13_Msk       SYS_GPB_MFP3_PB13MFP_Msk       /*!< SPI3_CLK        PB13     MFP Mask */
 #define SPI3_I2SMCLK_PF6_Msk    SYS_GPF_MFP1_PF6MFP_Msk        /*<! SPI3_I2SMCLK    PF6      MFP Mask */
 #define SPI3_I2SMCLK_PB1_Msk    SYS_GPB_MFP0_PB1MFP_Msk        /*<! SPI3_I2SMCLK    PB1      MFP Mask */
 #define SPI3_I2SMCLK_PD14_Msk   SYS_GPD_MFP3_PD14MFP_Msk       /*<! SPI3_I2SMCLK    PD14     MFP Mask */
@@ -4707,14 +4855,17 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SPI3_MISO_PB9_Msk       SYS_GPB_MFP2_PB9MFP_Msk        /*<! SPI3_MISO       PB9      MFP Mask */
 #define SPI3_MISO_PC12_Msk      SYS_GPC_MFP3_PC12MFP_Msk       /*<! SPI3_MISO       PC12     MFP Mask */
 #define SPI3_MISO_PE3_Msk       SYS_GPE_MFP0_PE3MFP_Msk        /*<! SPI3_MISO       PE3      MFP Mask */
+#define SPI3_MISO_PB7_Msk       SYS_GPB_MFP1_PB7MFP_Msk        /*!< SPI3_MISO       PB7      MFP Mask */
 #define SPI3_MOSI_PB8_Msk       SYS_GPB_MFP2_PB8MFP_Msk        /*<! SPI3_MOSI       PB8      MFP Mask */
 #define SPI3_MOSI_PG8_Msk       SYS_GPG_MFP2_PG8MFP_Msk        /*<! SPI3_MOSI       PG8      MFP Mask */
 #define SPI3_MOSI_PC11_Msk      SYS_GPC_MFP2_PC11MFP_Msk       /*<! SPI3_MOSI       PC11     MFP Mask */
 #define SPI3_MOSI_PE2_Msk       SYS_GPE_MFP0_PE2MFP_Msk        /*<! SPI3_MOSI       PE2      MFP Mask */
+#define SPI3_MOSI_PB6_Msk       SYS_GPB_MFP1_PB6MFP_Msk        /*!< SPI3_MOSI       PB6      MFP Mask */
 #define SPI3_SS_PE5_Msk         SYS_GPE_MFP1_PE5MFP_Msk        /*<! SPI3_SS         PE5      MFP Mask */
 #define SPI3_SS_PB10_Msk        SYS_GPB_MFP2_PB10MFP_Msk       /*<! SPI3_SS         PB10     MFP Mask */
 #define SPI3_SS_PC9_Msk         SYS_GPC_MFP2_PC9MFP_Msk        /*<! SPI3_SS         PC9      MFP Mask */
 #define SPI3_SS_PG5_Msk         SYS_GPG_MFP1_PG5MFP_Msk        /*<! SPI3_SS         PG5      MFP Mask */
+#define SPI3_SS_PB12_Msk        SYS_GPB_MFP3_PB12MFP_Msk       /*!< SPI3_SS         PB12     MFP Mask */
 #define SPI4_CLK_PB2_Msk        SYS_GPB_MFP0_PB2MFP_Msk        /*<! SPI4_CLK        PB2      MFP Mask */
 #define SPI4_MISO_PB1_Msk       SYS_GPB_MFP0_PB1MFP_Msk        /*<! SPI4_MISO       PB1      MFP Mask */
 #define SPI4_MOSI_PB0_Msk       SYS_GPB_MFP0_PB0MFP_Msk        /*<! SPI4_MOSI       PB0      MFP Mask */
@@ -5135,6 +5286,52 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SET_ACMP3_P2_PC10()      SYS->GPC_MFP2 = (SYS->GPC_MFP2 & (~ACMP3_P2_PC10_Msk)) | ACMP3_P2_PC10          /*!< Set PC10 function to ACMP3_P2        */
 #define SET_ACMP3_P3_PC11()      SYS->GPC_MFP2 = (SYS->GPC_MFP2 & (~ACMP3_P3_PC11_Msk)) | ACMP3_P3_PC11          /*!< Set PC11 function to ACMP3_P3        */
 #define SET_ACMP3_WLAT_PC6()     SYS->GPC_MFP1 = (SYS->GPC_MFP1 & (~ACMP3_WLAT_PC6_Msk)) | ACMP3_WLAT_PC6        /*!< Set PC6 function to ACMP3_WLAT       */
+#define SET_BMC0_PB5()           SYS->GPB_MFP1 = (SYS->GPB_MFP1 & (~BMC0_PB5_Msk)) | BMC0_PB5                    /*!< Set PB5 function to BMC0             */
+#define SET_BMC1_PB4()           SYS->GPB_MFP1 = (SYS->GPB_MFP1 & (~BMC1_PB4_Msk)) | BMC1_PB4                    /*!< Set PB4 function to BMC1             */
+#define SET_BMC10_PF5()          SYS->GPF_MFP1 = (SYS->GPF_MFP1 & (~BMC10_PF5_Msk)) | BMC10_PF5                  /*!< Set PF5 function to BMC10            */
+#define SET_BMC11_PF4()          SYS->GPF_MFP1 = (SYS->GPF_MFP1 & (~BMC11_PF4_Msk)) | BMC11_PF4                  /*!< Set PF4 function to BMC11            */
+#define SET_BMC12_PA12()         SYS->GPA_MFP3 = (SYS->GPA_MFP3 & (~BMC12_PA12_Msk)) | BMC12_PA12                /*!< Set PA12 function to BMC12           */
+#define SET_BMC12_PF3()          SYS->GPF_MFP0 = (SYS->GPF_MFP0 & (~BMC12_PF3_Msk)) | BMC12_PF3                  /*!< Set PF3 function to BMC12            */
+#define SET_BMC13_PF2()          SYS->GPF_MFP0 = (SYS->GPF_MFP0 & (~BMC13_PF2_Msk)) | BMC13_PF2                  /*!< Set PF2 function to BMC13            */
+#define SET_BMC13_PA13()         SYS->GPA_MFP3 = (SYS->GPA_MFP3 & (~BMC13_PA13_Msk)) | BMC13_PA13                /*!< Set PA13 function to BMC13           */
+#define SET_BMC14_PA7()          SYS->GPA_MFP1 = (SYS->GPA_MFP1 & (~BMC14_PA7_Msk)) | BMC14_PA7                  /*!< Set PA7 function to BMC14            */
+#define SET_BMC14_PA14()         SYS->GPA_MFP3 = (SYS->GPA_MFP3 & (~BMC14_PA14_Msk)) | BMC14_PA14                /*!< Set PA14 function to BMC14           */
+#define SET_BMC15_PA6()          SYS->GPA_MFP1 = (SYS->GPA_MFP1 & (~BMC15_PA6_Msk)) | BMC15_PA6                  /*!< Set PA6 function to BMC15            */
+#define SET_BMC15_PA15()         SYS->GPA_MFP3 = (SYS->GPA_MFP3 & (~BMC15_PA15_Msk)) | BMC15_PA15                /*!< Set PA15 function to BMC15           */
+#define SET_BMC16_PA3()          SYS->GPA_MFP0 = (SYS->GPA_MFP0 & (~BMC16_PA3_Msk)) | BMC16_PA3                  /*!< Set PA3 function to BMC16            */
+#define SET_BMC16_PG9()          SYS->GPG_MFP2 = (SYS->GPG_MFP2 & (~BMC16_PG9_Msk)) | BMC16_PG9                  /*!< Set PG9 function to BMC16            */
+#define SET_BMC17_PA2()          SYS->GPA_MFP0 = (SYS->GPA_MFP0 & (~BMC17_PA2_Msk)) | BMC17_PA2                  /*!< Set PA2 function to BMC17            */
+#define SET_BMC17_PG10()         SYS->GPG_MFP2 = (SYS->GPG_MFP2 & (~BMC17_PG10_Msk)) | BMC17_PG10                /*!< Set PG10 function to BMC17           */
+#define SET_BMC18_PA1()          SYS->GPA_MFP0 = (SYS->GPA_MFP0 & (~BMC18_PA1_Msk)) | BMC18_PA1                  /*!< Set PA1 function to BMC18            */
+#define SET_BMC18_PG11()         SYS->GPG_MFP2 = (SYS->GPG_MFP2 & (~BMC18_PG11_Msk)) | BMC18_PG11                /*!< Set PG11 function to BMC18           */
+#define SET_BMC19_PA0()          SYS->GPA_MFP0 = (SYS->GPA_MFP0 & (~BMC19_PA0_Msk)) | BMC19_PA0                  /*!< Set PA0 function to BMC19            */
+#define SET_BMC19_PG12()         SYS->GPG_MFP3 = (SYS->GPG_MFP3 & (~BMC19_PG12_Msk)) | BMC19_PG12                /*!< Set PG12 function to BMC19           */
+#define SET_BMC2_PB3()           SYS->GPB_MFP0 = (SYS->GPB_MFP0 & (~BMC2_PB3_Msk)) | BMC2_PB3                    /*!< Set PB3 function to BMC2             */
+#define SET_BMC20_PB11()         SYS->GPB_MFP2 = (SYS->GPB_MFP2 & (~BMC20_PB11_Msk)) | BMC20_PB11                /*!< Set PB11 function to BMC20           */
+#define SET_BMC20_PC5()          SYS->GPC_MFP1 = (SYS->GPC_MFP1 & (~BMC20_PC5_Msk)) | BMC20_PC5                  /*!< Set PC5 function to BMC20            */
+#define SET_BMC21_PC4()          SYS->GPC_MFP1 = (SYS->GPC_MFP1 & (~BMC21_PC4_Msk)) | BMC21_PC4                  /*!< Set PC4 function to BMC21            */
+#define SET_BMC21_PB10()         SYS->GPB_MFP2 = (SYS->GPB_MFP2 & (~BMC21_PB10_Msk)) | BMC21_PB10                /*!< Set PB10 function to BMC21           */
+#define SET_BMC22_PB9()          SYS->GPB_MFP2 = (SYS->GPB_MFP2 & (~BMC22_PB9_Msk)) | BMC22_PB9                  /*!< Set PB9 function to BMC22            */
+#define SET_BMC22_PC3()          SYS->GPC_MFP0 = (SYS->GPC_MFP0 & (~BMC22_PC3_Msk)) | BMC22_PC3                  /*!< Set PC3 function to BMC22            */
+#define SET_BMC23_PC2()          SYS->GPC_MFP0 = (SYS->GPC_MFP0 & (~BMC23_PC2_Msk)) | BMC23_PC2                  /*!< Set PC2 function to BMC23            */
+#define SET_BMC23_PB8()          SYS->GPB_MFP2 = (SYS->GPB_MFP2 & (~BMC23_PB8_Msk)) | BMC23_PB8                  /*!< Set PB8 function to BMC23            */
+#define SET_BMC24_PC1()          SYS->GPC_MFP0 = (SYS->GPC_MFP0 & (~BMC24_PC1_Msk)) | BMC24_PC1                  /*!< Set PC1 function to BMC24            */
+#define SET_BMC24_PC7()          SYS->GPC_MFP1 = (SYS->GPC_MFP1 & (~BMC24_PC7_Msk)) | BMC24_PC7                  /*!< Set PC7 function to BMC24            */
+#define SET_BMC25_PC6()          SYS->GPC_MFP1 = (SYS->GPC_MFP1 & (~BMC25_PC6_Msk)) | BMC25_PC6                  /*!< Set PC6 function to BMC25            */
+#define SET_BMC25_PC0()          SYS->GPC_MFP0 = (SYS->GPC_MFP0 & (~BMC25_PC0_Msk)) | BMC25_PC0                  /*!< Set PC0 function to BMC25            */
+#define SET_BMC26_PC14()         SYS->GPC_MFP3 = (SYS->GPC_MFP3 & (~BMC26_PC14_Msk)) | BMC26_PC14                /*!< Set PC14 function to BMC26           */
+#define SET_BMC27_PB15()         SYS->GPB_MFP3 = (SYS->GPB_MFP3 & (~BMC27_PB15_Msk)) | BMC27_PB15                /*!< Set PB15 function to BMC27           */
+#define SET_BMC28_PB13()         SYS->GPB_MFP3 = (SYS->GPB_MFP3 & (~BMC28_PB13_Msk)) | BMC28_PB13                /*!< Set PB13 function to BMC28           */
+#define SET_BMC29_PB12()         SYS->GPB_MFP3 = (SYS->GPB_MFP3 & (~BMC29_PB12_Msk)) | BMC29_PB12                /*!< Set PB12 function to BMC29           */
+#define SET_BMC3_PB2()           SYS->GPB_MFP0 = (SYS->GPB_MFP0 & (~BMC3_PB2_Msk)) | BMC3_PB2                    /*!< Set PB2 function to BMC3             */
+#define SET_BMC30_PB7()          SYS->GPB_MFP1 = (SYS->GPB_MFP1 & (~BMC30_PB7_Msk)) | BMC30_PB7                  /*!< Set PB7 function to BMC30            */
+#define SET_BMC31_PB6()          SYS->GPB_MFP1 = (SYS->GPB_MFP1 & (~BMC31_PB6_Msk)) | BMC31_PB6                  /*!< Set PB6 function to BMC31            */
+#define SET_BMC4_PB1()           SYS->GPB_MFP0 = (SYS->GPB_MFP0 & (~BMC4_PB1_Msk)) | BMC4_PB1                    /*!< Set PB1 function to BMC4             */
+#define SET_BMC5_PB0()           SYS->GPB_MFP0 = (SYS->GPB_MFP0 & (~BMC5_PB0_Msk)) | BMC5_PB0                    /*!< Set PB0 function to BMC5             */
+#define SET_BMC6_PA11()          SYS->GPA_MFP2 = (SYS->GPA_MFP2 & (~BMC6_PA11_Msk)) | BMC6_PA11                  /*!< Set PA11 function to BMC6            */
+#define SET_BMC7_PA10()          SYS->GPA_MFP2 = (SYS->GPA_MFP2 & (~BMC7_PA10_Msk)) | BMC7_PA10                  /*!< Set PA10 function to BMC7            */
+#define SET_BMC8_PA9()           SYS->GPA_MFP2 = (SYS->GPA_MFP2 & (~BMC8_PA9_Msk)) | BMC8_PA9                    /*!< Set PA9 function to BMC8             */
+#define SET_BMC9_PA8()           SYS->GPA_MFP2 = (SYS->GPA_MFP2 & (~BMC9_PA8_Msk)) | BMC9_PA8                    /*!< Set PA8 function to BMC9             */
 #define SET_BPWM0_CH0_PD13()     SYS->GPD_MFP3 = (SYS->GPD_MFP3 & (~BPWM0_CH0_PD13_Msk)) | BPWM0_CH0_PD13        /*!< Set PD13 function to BPWM0_CH0       */
 #define SET_BPWM0_CH0_PE2()      SYS->GPE_MFP0 = (SYS->GPE_MFP0 & (~BPWM0_CH0_PE2_Msk)) | BPWM0_CH0_PE2          /*!< Set PE2 function to BPWM0_CH0        */
 #define SET_BPWM0_CH0_PA0()      SYS->GPA_MFP0 = (SYS->GPA_MFP0 & (~BPWM0_CH0_PA0_Msk)) | BPWM0_CH0_PA0          /*!< Set PA0 function to BPWM0_CH0        */
@@ -6196,6 +6393,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SET_SPI3_CLK_PB11()      SYS->GPB_MFP2 = (SYS->GPB_MFP2 & (~SPI3_CLK_PB11_Msk)) | SPI3_CLK_PB11          /*!< Set PB11 function to SPI3_CLK        */
 #define SET_SPI3_CLK_PE4()       SYS->GPE_MFP1 = (SYS->GPE_MFP1 & (~SPI3_CLK_PE4_Msk)) | SPI3_CLK_PE4            /*!< Set PE4 function to SPI3_CLK         */
 #define SET_SPI3_CLK_PG6()       SYS->GPG_MFP1 = (SYS->GPG_MFP1 & (~SPI3_CLK_PG6_Msk)) | SPI3_CLK_PG6            /*!< Set PG6 function to SPI3_CLK         */
+#define SET_SPI3_CLK_PB13()      SYS->GPB_MFP3 = (SYS->GPB_MFP3 & (~SPI3_CLK_PB13_Msk)) | SPI3_CLK_PB13          /*!< Set PB13 function to SPI3_CLK        */
 #define SET_SPI3_I2SMCLK_PF6()   SYS->GPF_MFP1 = (SYS->GPF_MFP1 & (~SPI3_I2SMCLK_PF6_Msk)) | SPI3_I2SMCLK_PF6    /*!< Set PF6 function to SPI3_I2SMCLK     */
 #define SET_SPI3_I2SMCLK_PB1()   SYS->GPB_MFP0 = (SYS->GPB_MFP0 & (~SPI3_I2SMCLK_PB1_Msk)) | SPI3_I2SMCLK_PB1    /*!< Set PB1 function to SPI3_I2SMCLK     */
 #define SET_SPI3_I2SMCLK_PD14()  SYS->GPD_MFP3 = (SYS->GPD_MFP3 & (~SPI3_I2SMCLK_PD14_Msk)) | SPI3_I2SMCLK_PD14  /*!< Set PD14 function to SPI3_I2SMCLK    */
@@ -6204,14 +6402,17 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SET_SPI3_MISO_PB9()      SYS->GPB_MFP2 = (SYS->GPB_MFP2 & (~SPI3_MISO_PB9_Msk)) | SPI3_MISO_PB9          /*!< Set PB9 function to SPI3_MISO        */
 #define SET_SPI3_MISO_PC12()     SYS->GPC_MFP3 = (SYS->GPC_MFP3 & (~SPI3_MISO_PC12_Msk)) | SPI3_MISO_PC12        /*!< Set PC12 function to SPI3_MISO       */
 #define SET_SPI3_MISO_PE3()      SYS->GPE_MFP0 = (SYS->GPE_MFP0 & (~SPI3_MISO_PE3_Msk)) | SPI3_MISO_PE3          /*!< Set PE3 function to SPI3_MISO        */
+#define SET_SPI3_MISO_PB7()      SYS->GPB_MFP1 = (SYS->GPB_MFP1 & (~SPI3_MISO_PB7_Msk)) | SPI3_MISO_PB7          /*!< Set PB7 function to SPI3_MISO        */
 #define SET_SPI3_MOSI_PB8()      SYS->GPB_MFP2 = (SYS->GPB_MFP2 & (~SPI3_MOSI_PB8_Msk)) | SPI3_MOSI_PB8          /*!< Set PB8 function to SPI3_MOSI        */
 #define SET_SPI3_MOSI_PG8()      SYS->GPG_MFP2 = (SYS->GPG_MFP2 & (~SPI3_MOSI_PG8_Msk)) | SPI3_MOSI_PG8          /*!< Set PG8 function to SPI3_MOSI        */
 #define SET_SPI3_MOSI_PC11()     SYS->GPC_MFP2 = (SYS->GPC_MFP2 & (~SPI3_MOSI_PC11_Msk)) | SPI3_MOSI_PC11        /*!< Set PC11 function to SPI3_MOSI       */
 #define SET_SPI3_MOSI_PE2()      SYS->GPE_MFP0 = (SYS->GPE_MFP0 & (~SPI3_MOSI_PE2_Msk)) | SPI3_MOSI_PE2          /*!< Set PE2 function to SPI3_MOSI        */
+#define SET_SPI3_MOSI_PB6()      SYS->GPB_MFP1 = (SYS->GPB_MFP1 & (~SPI3_MOSI_PB6_Msk)) | SPI3_MOSI_PB6          /*!< Set PB6 function to SPI3_MOSI        */
 #define SET_SPI3_SS_PE5()        SYS->GPE_MFP1 = (SYS->GPE_MFP1 & (~SPI3_SS_PE5_Msk)) | SPI3_SS_PE5              /*!< Set PE5 function to SPI3_SS          */
 #define SET_SPI3_SS_PB10()       SYS->GPB_MFP2 = (SYS->GPB_MFP2 & (~SPI3_SS_PB10_Msk)) | SPI3_SS_PB10            /*!< Set PB10 function to SPI3_SS         */
 #define SET_SPI3_SS_PC9()        SYS->GPC_MFP2 = (SYS->GPC_MFP2 & (~SPI3_SS_PC9_Msk)) | SPI3_SS_PC9              /*!< Set PC9 function to SPI3_SS          */
 #define SET_SPI3_SS_PG5()        SYS->GPG_MFP1 = (SYS->GPG_MFP1 & (~SPI3_SS_PG5_Msk)) | SPI3_SS_PG5              /*!< Set PG5 function to SPI3_SS          */
+#define SET_SPI3_SS_PB12()       SYS->GPB_MFP3 = (SYS->GPB_MFP3 & (~SPI3_SS_PB12_Msk)) | SPI3_SS_PB12            /*!< Set PB12 function to SPI3_SS         */
 #define SET_SPI4_CLK_PB2()       SYS->GPB_MFP0 = (SYS->GPB_MFP0 & (~SPI4_CLK_PB2_Msk)) | SPI4_CLK_PB2            /*!< Set PB2 function to SPI4_CLK         */
 #define SET_SPI4_MISO_PB1()      SYS->GPB_MFP0 = (SYS->GPB_MFP0 & (~SPI4_MISO_PB1_Msk)) | SPI4_MISO_PB1          /*!< Set PB1 function to SPI4_MISO        */
 #define SET_SPI4_MOSI_PB0()      SYS->GPB_MFP0 = (SYS->GPB_MFP0 & (~SPI4_MOSI_PB0_Msk)) | SPI4_MOSI_PB0          /*!< Set PB0 function to SPI4_MOSI        */

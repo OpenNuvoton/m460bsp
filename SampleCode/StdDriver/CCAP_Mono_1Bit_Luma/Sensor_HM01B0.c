@@ -125,7 +125,7 @@ int InitHM01B0_4BIT_YUV422(void)
 
     /* switch I2C pin function */
     SWI2C_Open(eDRVGPIO_GPIOD,eDRVGPIO_PIN9,eDRVGPIO_GPIOD,eDRVGPIO_PIN8,Delay);
-    printf("HM01B0_RegNum=%3d\n",sizeof(g_HM01B0_RegValue)/sizeof(struct NT_RegValue));
+    printf("HM01B0_RegNum=%d\n",sizeof(g_HM01B0_RegValue)/sizeof(struct NT_RegValue));
     for(i=0; i<sizeof(g_HM01B0_RegValue)/sizeof(struct NT_RegValue); i++)
     {
         SWI2C_Write_8bitSlaveAddr_16bitReg_8bitData(u8DeviceID,g_HM01B0_RegValue[i].u16RegAddr,g_HM01B0_RegValue[i].u8Value);
