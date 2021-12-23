@@ -251,8 +251,6 @@ int main()
         goto lexit;                                /* LDROM test failed. Program aborted. */
     }
 
-    FMC_DISABLE_AP_UPDATE();           /* Disable APROM update. */
-
     printf("\n\nData Flash test =>\n");            /* information message */
 
     /* Execute flash program/verify test on Data Flash. */
@@ -261,6 +259,8 @@ int main()
         printf("\n\nData flash read/write test failed!\n");
         goto lexit;                    /* flash test failed */
     }
+
+    FMC_DISABLE_AP_UPDATE();           /* Disable APROM update. */
 
 lexit:
 
