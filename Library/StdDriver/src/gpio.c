@@ -145,12 +145,12 @@ void GPIO_SetSlewCtl(GPIO_T *port, uint32_t u32PinMask, uint32_t u32Mode)
  * @brief       Set GPIO Pull-up and Pull-down control
  *
  * @param[in]   port        GPIO port. It could be \ref PA, \ref PB, \ref PC, \ref PD, \ref PE, \ref PF, \ref PG, \ref PH, \ref PI or \ref PJ.
- * @param[in]   u32Pin      The pin of specified GPIO port. \n
- *                          It could be 0 ~ 15 for PA, PB, PE, PG and PH GPIO port. \n
- *                          It could be 0 ~ 14 for PC and PD GPIO port. \n
- *                          It could be 0 ~ 11 for PF GPIO port. \n
- *                          It could be 6 ~ 15 for PI GPIO port. \n
- *                          It could be 0 ~ 13 for PJ GPIO port.
+ * @param[in]   u32PinMask  The single or multiple pins of specified GPIO port. \n
+ *                          It could be BIT0 ~ BIT15 for PA, PB, PE, PG and PH GPIO port. \n
+ *                          It could be BIT0 ~ BIT14 for PC and PD GPIO port. \n
+ *                          It could be BIT0 ~ BIT11 for PF GPIO port. \n
+ *                          It could be BIT6 ~ BIT15 for PI GPIO port. \n
+ *                          It could be BIT0 ~ BIT13 for PJ GPIO port. 
  * @param[in]   u32Mode     The pin mode of specified GPIO pin. It could be
  *                          - \ref GPIO_PUSEL_DISABLE
  *                          - \ref GPIO_PUSEL_PULL_UP

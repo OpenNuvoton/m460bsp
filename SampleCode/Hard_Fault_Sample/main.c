@@ -162,7 +162,7 @@ uint32_t ProcessHardFault(uint32_t lr, uint32_t msp, uint32_t psp)
         while(1);
     }
 
-    printf("Hard fault location is at 0x%08x\n", pc);
+    printf("Hard fault location is at 0x%x\n", pc);
     /*
         If the hard fault location is a memory access instruction, You may debug the load/store issues.
 

@@ -286,48 +286,6 @@ void CheckPowerSource(void)
 /*-----------------------------------------------------------------------------------------------------------*/
 void GpioPinSetting(void)
 {
-    /* Set function pin to GPIO mode */
-    SYS->GPA_MFP0 = 0;
-    SYS->GPA_MFP1 = 0;
-    SYS->GPA_MFP2 = 0;
-    SYS->GPA_MFP3 = 0;
-    SYS->GPB_MFP0 = 0;
-    SYS->GPB_MFP1 = 0;
-    SYS->GPB_MFP2 = 0;
-    SYS->GPB_MFP3 = 0;
-    SYS->GPC_MFP0 = 0;
-    SYS->GPC_MFP1 = 0;
-    SYS->GPC_MFP2 = 0;
-    SYS->GPC_MFP3 = 0;
-    SYS->GPD_MFP0 = 0;
-    SYS->GPD_MFP1 = 0;
-    SYS->GPD_MFP2 = 0;
-    SYS->GPD_MFP3 = 0;
-    SYS->GPE_MFP0 = 0;
-    SYS->GPE_MFP1 = 0;
-    SYS->GPE_MFP2 = 0;
-    SYS->GPE_MFP3 = 0;
-    SYS->GPF_MFP0 = 0x00000E0E; //ICE pin
-    SYS->GPF_MFP1 = 0;
-    SYS->GPF_MFP2 = 0;
-    SYS->GPF_MFP3 = 0;
-    SYS->GPG_MFP0 = 0;
-    SYS->GPG_MFP1 = 0;
-    SYS->GPG_MFP2 = 0;
-    SYS->GPG_MFP3 = 0;
-    SYS->GPH_MFP0 = 0;
-    SYS->GPH_MFP1 = 0;
-    SYS->GPH_MFP2 = 0;
-    SYS->GPH_MFP3 = 0;
-    SYS->GPI_MFP0 = 0;
-    SYS->GPI_MFP1 = 0;
-    SYS->GPI_MFP2 = 0;
-    SYS->GPI_MFP3 = 0;
-    SYS->GPJ_MFP0 = 0;
-    SYS->GPJ_MFP1 = 0;
-    SYS->GPJ_MFP2 = 0;
-    SYS->GPJ_MFP3 = 0;
-
     /* Set all GPIOs are output mode */
     PA->MODE = 0x55555555;
     PB->MODE = 0x55555555;
@@ -341,16 +299,28 @@ void GpioPinSetting(void)
     PJ->MODE = 0x55555555;
 
     /* Set all GPIOs are output high */
-    PA->DOUT = 0xFFFFFFFF;
-    PB->DOUT = 0xFFFFFFFF;
-    PC->DOUT = 0xFFFFFFFF;
-    PD->DOUT = 0xFFFFFFFF;
-    PE->DOUT = 0xFFFFFFFF;
-    PF->DOUT = 0xFFFFFFFF;
-    PG->DOUT = 0xFFFFFFFF;
-    PH->DOUT = 0xFFFFFFFF;
-    PI->DOUT = 0xFFFFFFFF;
-    PJ->DOUT = 0xFFFFFFFF;
+    PA->DOUT = 0x0000FFFF;
+    PB->DOUT = 0x0000FFFF;
+    PC->DOUT = 0x0000FFFF;
+    PD->DOUT = 0x0000FFFF;
+    PE->DOUT = 0x0000FFFF;
+    PF->DOUT = 0x0000FFFF;
+    PG->DOUT = 0x0000FFFF;
+    PH->DOUT = 0x0000FFFF;
+    PI->DOUT = 0x0000FFFF;
+    PJ->DOUT = 0x0000FFFF;
+
+    /* Set PF.4~PF.11 as Quasi mode output high */
+    CLK->APBCLK0 |= CLK_APBCLK0_RTCCKEN_Msk;
+    RTC->GPIOCTL1 = RTC_GPIOCTL1_DOUT7_Msk | (RTC_IO_MODE_QUASI<<RTC_GPIOCTL1_OPMODE7_Pos) |
+                    RTC_GPIOCTL1_DOUT6_Msk | (RTC_IO_MODE_QUASI<<RTC_GPIOCTL1_OPMODE6_Pos) |
+                    RTC_GPIOCTL1_DOUT5_Msk | (RTC_IO_MODE_QUASI<<RTC_GPIOCTL1_OPMODE5_Pos) |
+                    RTC_GPIOCTL1_DOUT4_Msk | (RTC_IO_MODE_QUASI<<RTC_GPIOCTL1_OPMODE4_Pos);
+    RTC->GPIOCTL0 = RTC_GPIOCTL0_DOUT3_Msk | (RTC_IO_MODE_QUASI<<RTC_GPIOCTL0_OPMODE3_Pos) |
+                    RTC_GPIOCTL0_DOUT2_Msk | (RTC_IO_MODE_QUASI<<RTC_GPIOCTL0_OPMODE2_Pos) |
+                    RTC_GPIOCTL0_DOUT1_Msk | (RTC_IO_MODE_QUASI<<RTC_GPIOCTL0_OPMODE1_Pos) |
+                    RTC_GPIOCTL0_DOUT0_Msk | (RTC_IO_MODE_QUASI<<RTC_GPIOCTL0_OPMODE0_Pos);
+    CLK->APBCLK0 &= ~CLK_APBCLK0_RTCCKEN_Msk;
 }
 
 void SYS_Init(void)
@@ -425,17 +395,6 @@ int32_t main(void)
     /* Unlock protected registers */
     SYS_UnlockReg();
 
-    /* Set I/O state and all peripherals clock disable for power consumption */
-    GpioPinSetting();
-    CLK->APBCLK0 = 0x00000000;
-    CLK->APBCLK1 = 0x00000000;
-    CLK->APBCLK2 = 0x00000000;
-
-    /* ---------- Turn off RTC  -------- */
-    CLK->APBCLK0 |= CLK_APBCLK0_RTCCKEN_Msk;
-    RTC->INTEN = 0;
-    CLK->APBCLK0 &= ~CLK_APBCLK0_RTCCKEN_Msk;
-
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
 
@@ -445,13 +404,14 @@ int32_t main(void)
     /* Init UART0 for printf */
     UART0_Init();
 
-    printf("\n\nCPU @ %d Hz\n", SystemCoreClock);
-
     /* Unlock protected registers before setting Power-down mode */
     SYS_UnlockReg();
 
-    /* Output selected clock to CKO, CKO Clock = HCLK / 2^(3 + 1) */
+    printf("\n\nCPU @ %d Hz\n", SystemCoreClock);
     CLK_EnableCKO(CLK_CLKSEL1_CLKOSEL_HCLK, 3, 0);
+    
+    /* Set I/O state to prevent floating */
+    GpioPinSetting();
 
     /* Get power manager wake up source */
     CheckPowerSource();

@@ -146,8 +146,9 @@ int32_t main(void)
     printf("|  3. Disable LVR                                                  |\n");
     printf("|  4. Disable analog function, e.g. POR module                     |\n");
     printf("|  5. Disable unused clock, e.g. LIRC                              |\n");
-    printf("|  6. Enter to Power-Down                                          |\n");
-    printf("|  7. Wait for PB.3 rising-edge interrupt event to wake-up the MCU |\n");
+    printf("|  6. Disable SRAM retention for SPD mode                          |\n");   
+    printf("|  7. Enter to Power-Down                                          |\n");
+    printf("|  8. Wait for PB.3 rising-edge interrupt event to wake-up the MCU |\n");
     printf("+------------------------------------------------------------------+\n\n");
 
     /* Check if all the debug messages are finished */
@@ -223,6 +224,9 @@ int32_t main(void)
 
     /* Disable unused clock */
     CLK->PWRCTL &= ~CLK_PWRCTL_LIRCEN_Msk;
+
+    /* Disable SRAM retention for SPD mode */
+    CLK->PMUCTL &= ~CLK_PMUCTL_SRETSEL_Msk;
 
     /* Enter to Power-down mode */
     printf("Enter to Power-Down ......\n");

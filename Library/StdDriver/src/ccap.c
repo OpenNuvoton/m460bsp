@@ -234,7 +234,7 @@ void CCAP_Stop(uint32_t u32FrameComplete)
     else
     {
         CCAP->CTL |= CCAP_CTL_SHUTTER_Msk;
-        while(CCAP_IS_STOPPED());
+        while(!CCAP_IS_STOPPED());
     }
 }
 

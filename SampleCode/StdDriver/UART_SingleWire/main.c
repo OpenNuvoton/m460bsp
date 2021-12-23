@@ -81,9 +81,9 @@ void SYS_Init(void)
     SET_UART2_RXD_PB0();
 
     /* The RX pin needs to pull-high for single-wire */
-    /* If the external circuit doesn't pull-high, set GPIO pin as Quasi-directional mode for this purpose here */
-    GPIO_SetMode(PA, BIT2, GPIO_MODE_QUASI);
-    GPIO_SetMode(PB, BIT0, GPIO_MODE_QUASI);
+    /* If the external circuit doesn't pull-high, set GPIO pin as pull-high for this purpose here */
+    PA->PUSEL = (PA->PUSEL & (~GPIO_PUSEL_PUSEL2_Msk)) | (GPIO_PUSEL_PULL_UP<<GPIO_PUSEL_PUSEL2_Pos);
+    PB->PUSEL = (PB->PUSEL & (~GPIO_PUSEL_PUSEL0_Msk)) | (GPIO_PUSEL_PULL_UP<<GPIO_PUSEL_PUSEL0_Pos);
 
 }
 

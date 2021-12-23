@@ -1043,6 +1043,9 @@
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\m460\Source\IAR\startup_M460.s</name>
         </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\m460\Source\system_m460.c</name>
+        </file>
     </group>
     <group>
         <name>Library</name>
@@ -1065,7 +1068,4 @@
             <name>$PROJ_DIR$\..\main.c</name>
         </file>
     </group>
-    <file>
-        <name>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\m460\Source\system_m460.c</name>
-    </file>
 </project>

@@ -227,5 +227,8 @@ int32_t main(void)
         JpegEncode(u8FrameBuffer, u8JpegBuffer, &u32JpegSize, SYSTEM_WIDTH, SYSTEM_HEIGHT);
     }
 
+    /* Forces a write of all user-space buffered data for the given output */
+    fflush(stdout);
+
     while(1);
 }
