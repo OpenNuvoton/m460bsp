@@ -958,223 +958,6 @@ void AES_Run(uint32_t u32Option)
 }
 
 
-/*
-    AES_GCMTag is only used by AES_GCMEnc to calculate tag.
-*/
-static void AES_GCMTag(uint8_t *key, uint32_t klen, uint8_t *iv, uint32_t ivlen, uint8_t *A, uint32_t alen, uint8_t *P, uint32_t plen, uint8_t *tagbuf)
-{
-    int32_t i, len, plen_cur;
-    uint8_t *pin, *pout;
-    uint32_t inputblock[GCM_PBLOCK_SIZE * 2] = {0}; /* 2 block buffer, 1 for A, 1 for P */
-    uint32_t ghashbuf[GCM_PBLOCK_SIZE + 16] = {0};
-    uint8_t *pblock;
-    uint32_t u32OptBasic;
-    uint32_t u32OptKeySize;
-
-    /* Prepare key size option */
-    i = klen >> 3;
-    u32OptKeySize = (((i >> 2) << 1) | (i & 1)) << CRPT_AES_CTL_KEYSZ_Pos;
-
-    /* Basic options for AES */
-    u32OptBasic = CRPT_AES_CTL_ENCRPT_Msk | CRPT_AES_CTL_INSWAP_Msk | CRPT_AES_CTL_OUTSWAP_Msk | u32OptKeySize;
-
-    /* Set byte count of IV */
-    CRPT->AES_GCM_IVCNT[0] = ivlen;
-    CRPT->AES_GCM_IVCNT[1] = 0;
-    /* Set bytes count of A */
-    CRPT->AES_GCM_ACNT[0] = alen;
-    CRPT->AES_GCM_ACNT[1] = 0;
-    /* Set bytes count of P */
-    CRPT->AES_GCM_PCNT[0] = plen;
-    CRPT->AES_GCM_PCNT[1] = 0;
-
-
-    // GHASH(128'align(A) || 128'align(C) || 64'bitlen(A) || 64'bitlen(C))
-    // GHASH Calculation
-    if(plen <= GCM_PBLOCK_SIZE)
-    {
-        /* Just one shot if plen < maximum block size */
-
-        pblock = (uint8_t *)&inputblock[0];
-        AES_GCMPacker(0, 0, A, alen, P, plen, pblock, (uint32_t *)&len);
-
-        /* append 64'bitlen(A) || 64'bitlen(C) */
-        pblock += len;
-        *((uint64_t *)pblock) = alen * 8;
-        swap64(pblock);
-        pblock += 8;
-
-        *((uint64_t *)pblock) = plen * 8;
-        swap64(pblock);
-        pblock += 8;
-
-        /* adding the length of 64'bitlen(A) and 64'bitlen(C) */
-        len += 16;
-
-        pblock = (uint8_t *)&inputblock[0];
-        printf("GHASH input (%d):\n", len);
-        DumpBuffHex(pblock, len);
-
-        AES_SetDMATransfer(CRPT, 0, (uint32_t)pblock, (uint32_t)&ghashbuf[0], len);
-
-        AES_Run(u32OptBasic | GHASH_MODE | DMAEN | DMALAST);
-
-        printf("GHASH output (%d):\n", len);
-        DumpBuffHex((uint8_t *)&ghashbuf[0], len);
-
-    }
-    else
-    {
-        /* Calculate GHASH block by block, DMA casecade mode */
-
-        /* feedback buffer is necessary for casecade mode */
-        CRPT->AES_FBADDR = (uint32_t)&g_au8FeedBackBuf[0];
-        memset(g_au8FeedBackBuf, 0, sizeof(g_au8FeedBackBuf));
-
-        /* inital DMA for GHASH casecade */
-        if(alen)
-        {
-            /* Prepare the blocked buffer for GCM */
-            AES_GCMPacker(0, 0, A, alen, 0, 0, g_au8Buf, (uint32_t *)&len);
-
-            printf("GHASH input (%d):\n", len);
-            DumpBuffHex(g_au8Buf, len);
-
-            AES_SetDMATransfer(CRPT, 0, (uint32_t)g_au8Buf, (uint32_t)&ghashbuf[0], len);
-
-            AES_Run(u32OptBasic | GHASH_MODE | FBOUT | DMAEN);
-        }
-
-        /* Caculate GHASH block by block */
-        pin = P;
-        pout = (uint8_t *)&ghashbuf[0];
-        plen_cur = plen;
-        len = GCM_PBLOCK_SIZE;
-        while(plen_cur)
-        {
-
-            len = plen_cur;
-            if(len > GCM_PBLOCK_SIZE)
-                len = GCM_PBLOCK_SIZE;
-            plen_cur -= len;
-
-            if(plen_cur)
-            {
-                /* Sill has data for next block, it means current block size is full size */
-
-                printf("GHASH block input (%d):\n", len);
-                DumpBuffHex(pin, len);
-
-                /* len should be alway 16 bytes alignment in here */
-                AES_SetDMATransfer(CRPT, 0, (uint32_t)pin, (uint32_t)pout, len);
-
-                AES_Run(u32OptBasic | GHASH_MODE | FBIN | FBOUT | DMAEN | DMACC);
-            }
-            else
-            {
-                /* Next block data size is 0, it means current block size is not full size and this is last block */
-
-                /* copy last C data to inputblock for zero padding */
-                memcpy((uint8_t *)&inputblock[0], pin, len);
-                pin = (uint8_t *)&inputblock[0];
-
-                /* 16 bytes alignment check */
-                if(len & 0xf)
-                {
-                    /* zero padding */
-                    memset(pin + len, 0, 16 - (len & 0xf));
-
-                    /* len must be 16 bytes alignment */
-                    len = ((len + 16) >> 4) << 4;
-                }
-
-                /* append 64'bitlen(A) || 64'bitlen(C) */
-                pblock = pin + len;
-                *((uint64_t *)pblock) = alen * 8;
-                swap64(pblock);
-                pblock += 8;
-
-                *((uint64_t *)pblock) = plen * 8;
-                swap64(pblock);
-                pblock += 8;
-
-                /* adding the length of 64'bitlen(A) and 64'bitlen(C) */
-                len += 16;
-
-                printf("GHASH block input (%d):\n", len);
-                DumpBuffHex(pin, len);
-
-
-                AES_SetDMATransfer(CRPT, 0, (uint32_t)pin, (uint32_t)pout, len);
-
-                AES_Run(u32OptBasic | GHASH_MODE | FBIN | FBOUT | DMAEN | DMACC | DMALAST);
-
-            }
-
-            printf("GHASH block output (%d):\n", len);
-            DumpBuffHex(pout, len);
-
-
-            pin += len;
-        }
-    }
-
-    // CTR(IV, GHASH(128'align(A) || 128'align(C) || 64'bitlen(A) || 64'bitlen(C)))
-    // CTR calculation
-
-    /* Prepare IV */
-    if(ivlen != 12)
-    {
-        uint32_t u32ivbuf[4] = {0};
-        uint8_t *piv;
-
-        // IV = GHASH(128'align(IV) || 64'bitlen(0) || 64'bitlen(IV))
-
-        piv = (uint8_t *)&u32ivbuf[0];
-        AES_GCMPacker(iv, ivlen, 0, 0, 0, 0, g_au8Buf, (uint32_t *)&len);
-
-        printf("IV GHASH input (%d):\n", len);
-        DumpBuffHex(g_au8Buf, len);
-
-
-        AES_SetDMATransfer(CRPT, 0, (uint32_t)g_au8Buf, (uint32_t)piv, len);
-
-        AES_Run(u32OptBasic | GHASH_MODE | DMAEN | DMALAST);
-
-        printf("IV GHASH output (%d):\n", len);
-        DumpBuffHex(piv, len);
-
-        /* SET CTR IV */
-        for(i = 0; i < 4; i++)
-        {
-            CRPT->AES_IV[i] = (piv[i * 4 + 0] << 24) | (piv[i * 4 + 1] << 16) |
-                              (piv[i * 4 + 2] << 8) | piv[i * 4 + 3];
-        }
-    }
-    else
-    {
-        // IV = 128'align(IV) || 31'bitlen(0) || 1
-
-        /* SET CTR IV */
-        for(i = 0; i < 3; i++)
-        {
-            CRPT->AES_IV[i] = (iv[i * 4 + 0] << 24) | (iv[i * 4 + 1] << 16) |
-                              (iv[i * 4 + 2] << 8) | iv[i * 4 + 3];
-        }
-        CRPT->AES_IV[3] = 0x00000001;
-    }
-
-
-    AES_SetDMATransfer(CRPT, 0, (uint32_t)&ghashbuf[0], (uint32_t)&tagbuf[0], 16);
-
-    AES_Run(u32OptBasic | CTR_MODE | DMAEN | DMALAST);
-
-    printf("Tag calculation:\n");
-    DumpBuffHex((uint8_t *)&tagbuf[0], 16);
-
-}
-
-
 int32_t AES_GCMEnc(uint8_t *key, uint32_t klen, uint8_t *iv, uint32_t ivlen, uint8_t *A, uint32_t alen, uint8_t *P, uint32_t plen, uint8_t *buf, uint32_t *size, uint32_t *plen_aligned)
 {
     int32_t plen_cur;
@@ -1239,7 +1022,7 @@ int32_t AES_GCMEnc(uint8_t *key, uint32_t klen, uint8_t *iv, uint32_t ivlen, uin
 
         AES_SetDMATransfer(CRPT, 0, (uint32_t)g_au8Buf, (uint32_t)buf, *size);
 
-        AES_Run(u32OptBasic | GCM_MODE | DMAEN | DMALAST);
+        AES_Run(u32OptBasic | GCM_MODE | DMAEN);
 
         printf("output blocks (%d):\n", *size);
         DumpBuffHex(buf, *size);
@@ -1316,18 +1099,6 @@ int32_t AES_GCMEnc(uint8_t *key, uint32_t klen, uint8_t *iv, uint32_t ivlen, uin
 
     }
 
-    /* Need to calculate Tag when plen % 16 == 1 or 15 */
-    if(((plen & 0xf) == 1) || ((plen & 0xf) == 15))
-    {
-        uint32_t tagbuf[4] = {0};
-
-        AES_GCMTag(key, klen, iv, ivlen, A, alen, buf, plen, (uint8_t *)&tagbuf[0]);
-
-        /* Update tag to output buffer */
-        memcpy(buf + *plen_aligned, (uint8_t *)&tagbuf[0], 16);
-
-    }
-
     return 0;
 }
 
@@ -1388,7 +1159,7 @@ int32_t AES_GCMDec(uint8_t *key, uint32_t klen, uint8_t *iv, uint32_t ivlen, uin
         DumpBuffHex(g_au8Buf, *size);
 
         AES_SetDMATransfer(CRPT, 0, (uint32_t)g_au8Buf, (uint32_t)buf, *size);
-        AES_Run(u32OptBasic | GCM_MODE | DMAEN | DMALAST);
+        AES_Run(u32OptBasic | GCM_MODE | DMAEN);
 
         printf("output blocks (%d):\n", *size);
         DumpBuffHex(buf, *size);
