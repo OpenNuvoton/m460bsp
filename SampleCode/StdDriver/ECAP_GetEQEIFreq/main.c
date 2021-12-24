@@ -109,7 +109,7 @@ void SYS_Init(void)
     CLK_EnableModuleClock(TMR0_MODULE);
 
     /* Select TMR0 module clock source */
-    CLK_SetModuleClock(TMR0_MODULE, CLK_CLKSEL1_TMR0SEL_HXT, 0);
+    CLK_SetModuleClock(TMR0_MODULE, CLK_CLKSEL1_TMR0SEL_HIRC, 0);
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -159,6 +159,7 @@ void ECAP0_Init(void)
 void EQEI0_Init(void)
 {
     EQEI_Open(EQEI0,EQEI_CTL_X4_FREE_COUNTING_MODE,0);
+    EQEI_Start(EQEI0);
 }
 
 void Timer0_Init(void)
