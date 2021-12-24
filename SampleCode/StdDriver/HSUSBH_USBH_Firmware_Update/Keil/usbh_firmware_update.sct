@@ -1,7 +1,7 @@
 
-LOAD_ROM_1  0x100000
+LOAD_ROM_1  0xF100000
 {
-	LDROM_Boot.bin  0x100000
+	LDROM_Boot.bin  0xF100000
 	{
 		startup_M460.o (RESET, +FIRST)
 		main.o (+RO)

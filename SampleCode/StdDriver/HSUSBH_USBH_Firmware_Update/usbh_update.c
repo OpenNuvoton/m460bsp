@@ -93,7 +93,7 @@ int  program_flash_page(uint32_t page_addr, uint32_t *buff, int count)
     {
         if(FMC_Read(addr) != *p)            /* Read flash word and verify                 */
         {
-            printf("Verify failed at 0x%x, read:0x%x, epect:0x%x\n", addr, FMC_Read(addr), *p);
+            printf("Verify failed at 0x%x, read:0x%x, expect:0x%x\n", addr, FMC_Read(addr), *p);
             return -1;                      /* verify data mismatched                     */
         }
     }
