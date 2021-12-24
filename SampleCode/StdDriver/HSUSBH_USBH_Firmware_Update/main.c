@@ -205,6 +205,9 @@ int32_t main(void)
     printf("|                                             |\n");
     printf("+---------------------------------------------+\n");
 
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
     FMC_Open();                             /* Enable FMC ISP functions                   */
 
     usbh_core_init();
