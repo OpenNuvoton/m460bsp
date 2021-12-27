@@ -20,6 +20,9 @@
   @{
 */
 
+int32_t g_EADC_i32ErrCode = 0;   /*!< EADC global error code */
+
+
 /**
   * @brief This function make EADC_module be ready to convert.
   * @param[in] eadc The pointer of the specified EADC module.
@@ -29,18 +32,107 @@
   * @return None
   * @details This function is used to set analog input mode and enable A/D Converter.
   *         Before starting A/D conversion function, ADCEN bit (EADC_CTL[0]) should be set to 1.
-  * @note
+  * @note This API will reset and calibrate EADC if EADC never be calibrated after chip power on.
+  * @note This function sets g_EADC_i32ErrCode to ADC_TIMEOUT_ERR if CALIF(CALSR[16]) is not set to 1.
   */
 void EADC_Open(EADC_T *eadc, uint32_t u32InputMode)
 {
+    uint32_t u32Delay = SystemCoreClock >> 4;
+    uint32_t u32ClkSel0Backup, u32EadcDivBackup, u32PclkDivBackup, u32RegLockBackup = 0;
+
+    g_EADC_i32ErrCode = 0;
+
     eadc->CTL &= (~EADC_CTL_DIFFEN_Msk);
 
     eadc->CTL |= (u32InputMode | EADC_CTL_ADCEN_Msk);
+
+    /* Do calibration for EADC to decrease the effect of electrical random noise. */
+    if ((eadc->CALSR & EADC_CALSR_CALIF_Msk) == 0)
+    {
+        /* Must reset ADC before ADC calibration */
+        eadc->CTL |= EADC_CTL_ADCRST_Msk;
+        while((eadc->CTL & EADC_CTL_ADCRST_Msk) == EADC_CTL_ADCRST_Msk)
+        {
+            if (--u32Delay == 0)
+            {
+                g_EADC_i32ErrCode = EADC_TIMEOUT_ERR;
+                break;
+            }
+        }
+
+        /* Registers backup */
+        u32ClkSel0Backup = CLK->CLKSEL0;
+        u32PclkDivBackup = CLK->PCLKDIV;
+
+        u32RegLockBackup = SYS_IsRegLocked();
+
+        /* Unlock protected registers */
+        SYS_UnlockReg();
+
+        /* Set PCLK and EADC clock to the same frequency. */
+        if (eadc == EADC0)
+        {
+            u32EadcDivBackup = CLK->CLKDIV0;
+            CLK->CLKDIV0 = (CLK->CLKDIV0 & ~CLK_CLKDIV0_EADC0DIV_Msk);
+            CLK->CLKSEL0 = (CLK->CLKSEL0 & ~CLK_CLKSEL0_EADC0SEL_Msk) | CLK_CLKSEL0_EADC0SEL_HCLK;
+        }
+        else if (eadc == EADC1)
+        {
+            u32EadcDivBackup = CLK->CLKDIV2;
+            CLK->CLKDIV2 = (CLK->CLKDIV2 & ~CLK_CLKDIV2_EADC1DIV_Msk);
+            CLK->CLKSEL0 = (CLK->CLKSEL0 & ~CLK_CLKSEL0_EADC1SEL_Msk) | CLK_CLKSEL0_EADC1SEL_HCLK;
+        }
+        else if (eadc == EADC2)
+        {
+            u32EadcDivBackup = CLK->CLKDIV5;
+            CLK->CLKDIV5 = (CLK->CLKDIV5 & ~CLK_CLKDIV5_EADC2DIV_Msk);
+            CLK->CLKSEL0 = (CLK->CLKSEL0 & ~CLK_CLKSEL0_EADC2SEL_Msk) | CLK_CLKSEL0_EADC2SEL_HCLK;
+        }
+        CLK->PCLKDIV = (CLK->PCLKDIV & ~CLK_PCLKDIV_APB1DIV_Msk);
+
+        eadc->CALSR |= EADC_CALSR_CALIF_Msk;  /* Clear Calibration Finish Interrupt Flag */
+        eadc->CALCTL = (eadc->CALCTL & ~(0x000F0000))|0x00020000;
+        eadc->CALCTL |= EADC_CALCTL_CAL_Msk;  /* Enable Calibration function */
+
+        u32Delay = SystemCoreClock >> 4;
+        while((eadc->CALSR & EADC_CALSR_CALIF_Msk) != EADC_CALSR_CALIF_Msk)
+        {
+            if (--u32Delay == 0)
+            {
+                g_EADC_i32ErrCode = EADC_TIMEOUT_ERR;
+
+                break;
+            }
+        }
+
+        /* Restore registers */
+        CLK->PCLKDIV = (CLK->PCLKDIV & ~CLK_PCLKDIV_APB1DIV_Msk) | (u32PclkDivBackup & CLK_PCLKDIV_APB1DIV_Msk);
+        if (eadc == EADC0)
+        {
+            CLK->CLKDIV0 = (u32EadcDivBackup & CLK_CLKDIV0_EADC0DIV_Msk);
+            CLK->CLKSEL0 = (CLK->CLKSEL0 & ~CLK_CLKSEL0_EADC0SEL_Msk) | (u32ClkSel0Backup & CLK_CLKSEL0_EADC0SEL_Msk);
+        }
+        else if (eadc == EADC1)
+        {
+            CLK->CLKDIV2 = (u32EadcDivBackup & CLK_CLKDIV2_EADC1DIV_Msk);
+            CLK->CLKSEL0 = (CLK->CLKSEL0 & ~CLK_CLKSEL0_EADC1SEL_Msk) | (u32ClkSel0Backup & CLK_CLKSEL0_EADC1SEL_Msk);
+        }
+        else if (eadc == EADC2)
+        {
+            CLK->CLKDIV5 = (u32EadcDivBackup & CLK_CLKDIV5_EADC2DIV_Msk);
+            CLK->CLKSEL0 = (CLK->CLKSEL0 & ~CLK_CLKSEL0_EADC2SEL_Msk) | (u32ClkSel0Backup & CLK_CLKSEL0_EADC2SEL_Msk);
+        }
+        if (u32RegLockBackup)
+        {
+            /* Lock protected registers */
+            SYS_LockReg();
+        }
+    }
 }
 
 /**
   * @brief Disable EADC_module.
-  * @param[in] eadc The pointer of the specified EADC module..
+  * @param[in] eadc The pointer of the specified EADC module.
   * @return None
   * @details Clear ADCEN bit (EADC_CTL[0]) to disable A/D converter analog circuit power consumption.
   */
