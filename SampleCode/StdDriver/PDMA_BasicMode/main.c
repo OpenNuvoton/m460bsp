@@ -34,7 +34,7 @@ void UART0_Init(void);
  *
  * @return      None
  *
- * @details     The DMA default IRQ, declared in startup_M2354.s.
+ * @details     The DMA default IRQ, declared in startup_m460.s.
  */
 void PDMA0_IRQHandler(void)
 {
@@ -119,6 +119,8 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int main(void)
 {
+    uint32_t u32TimeOutCnt;
+
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -193,7 +195,15 @@ int main(void)
     PDMA_Trigger(PDMA0, 2);
 
     /* Waiting for transfer done */
-    while(g_u32IsTestOver == 0);
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while(g_u32IsTestOver == 0)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for PDMA time-out!\n");
+            while(1);
+        }
+    }
 
     /* Check transfer result */
     if(g_u32IsTestOver == 1)

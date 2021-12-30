@@ -16,6 +16,7 @@ int FMC_Proc(unsigned int u32Cmd, unsigned int addr_start, unsigned int addr_end
 int FMC_Proc(unsigned int u32Cmd, unsigned int addr_start, unsigned int addr_end, unsigned int *data)
 {
     unsigned int u32Addr, Reg;
+    uint32_t u32TimeOutCount;
 
     for(u32Addr = addr_start; u32Addr < addr_end; data++, u32Addr += 4)
     {
@@ -26,7 +27,12 @@ int FMC_Proc(unsigned int u32Cmd, unsigned int addr_start, unsigned int addr_end
             FMC->ISPCMD = FMC_ISPCMD_PAGE_ERASE;
             FMC->ISPTRG = 0x1;
 
-            while(FMC->ISPTRG & 0x1) ;
+            u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
+            while(FMC->ISPTRG & 0x1)
+            {
+                if(--u32TimeOutCount == 0)
+                    return -1;
+            }
         }
 
         FMC->ISPCMD = u32Cmd;
@@ -40,7 +46,12 @@ int FMC_Proc(unsigned int u32Cmd, unsigned int addr_start, unsigned int addr_end
         //__ISB();
 
         /* Wait ISP cmd complete */
-        while(FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk);
+        u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
+        while(FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk)
+        {
+            if(--u32TimeOutCount == 0)
+                return -1;
+        }
 
         Reg = FMC->ISPCTL;
 
@@ -111,6 +122,7 @@ int EraseAP(unsigned int addr_start, unsigned int size)
 {
     unsigned int u32Addr, u32Cmd, u32Size;
     int32_t i32Size;
+    uint32_t u32TimeOutCount = FMC_TIMEOUT_ERASE;
 
     u32Addr = addr_start;
     i32Size = (int32_t)size;
@@ -138,7 +150,11 @@ int EraseAP(unsigned int addr_start, unsigned int size)
         FMC->ISPTRG = FMC_ISPTRG_ISPGO_Msk;
         __ISB();
 
-        while(FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk) ;   /* Wait for ISP command done. */
+        while(FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk)   /* Wait for ISP command done. */
+        {
+            if(--u32TimeOutCount == 0)
+                return -1;
+        }
 
         if(FMC->ISPCTL & FMC_ISPCTL_ISPFF_Msk)
         {

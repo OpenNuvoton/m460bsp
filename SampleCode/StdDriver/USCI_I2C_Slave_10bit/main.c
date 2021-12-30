@@ -3,12 +3,13 @@
  * @version  V1.00
  * @brief    Show a 10-bit address Slave how to receive data from Master
  *           This sample code need works with USCI_I2C_Master_10bit sample code
- * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ *
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
 
-#define PLL_CLOCK       192000000
 
 #define SLV_10BIT_ADDR (0x1E<<2)             //1111+0xx+r/w
 
@@ -219,11 +220,6 @@ int main()
     /* Init UART for print message */
     UART_Open(UART0, 115200);
 
-#ifdef _PZ
-    /* For palladium */
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400);
-#endif
-
     /*
         This sample code sets USCI_I2C bus clock to 100kHz. Then, Master accesses Slave with Byte Write
         and Byte Read operations, and check if the read data is equal to the programmed data.
@@ -256,5 +252,3 @@ int main()
 
     while(1);
 }
-
-/*** (C) COPYRIGHT 2021 Nuvoton Technology Corp. ***/

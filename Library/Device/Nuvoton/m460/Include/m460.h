@@ -245,7 +245,6 @@ IRQn_Type;
 /*                            Register definitions                            */
 /******************************************************************************/
 
-#include "tcm_reg.h"
 #include "sys_reg.h"
 #include "clk_reg.h"
 #include "fmc_reg.h"
@@ -285,7 +284,6 @@ IRQn_Type;
 #include "eadc_reg.h"
 #include "dac_reg.h"
 #include "acmp_reg.h"
-#include "opa_reg.h"
 #include "ccap_reg.h"
 #include "keystore_reg.h"
 #include "kpi_reg.h"
@@ -790,7 +788,6 @@ typedef volatile unsigned int   vu32;       ///< Define 32-bit unsigned volatile
 #include "bpwm.h"
 #include "wdt.h"
 #include "wwdt.h"
-#include "opa.h"
 #include "crc.h"
 #include "ebi.h"
 #include "usci_i2c.h"

@@ -25,6 +25,7 @@
 # pragma diag_suppress=Pm073, Pm143        /* Misra C rule 14.7 */
 #endif
 
+#define TIMEOUT_ECC        SystemCoreClock    /* 1 second time-out */
 
 /** @addtogroup Standard_Driver Standard Driver
   @{
@@ -85,15 +86,25 @@ void PRNG_Open(CRPT_T *crpt, uint32_t u32KeySize, uint32_t u32SeedReload, uint32
 /**
   * @brief  Start to generate one PRNG key.
   * @param[in]  crpt         The pointer of CRYPTO module
-  * @return None
+  * @retval  0 Generate PRNG key success.
+  * @retval -1 Generate PRNG key time-out.
   */
-void PRNG_Start(CRPT_T *crpt)
+int32_t PRNG_Start(CRPT_T *crpt)
 {
+    int32_t i32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     crpt->PRNG_CTL |= CRPT_PRNG_CTL_START_Msk;
 
     /* Waiting for PRNG Busy */
-    while(crpt->PRNG_CTL & CRPT_PRNG_CTL_BUSY_Msk) {}
+    while(crpt->PRNG_CTL & CRPT_PRNG_CTL_BUSY_Msk)
+    {
+        if( i32TimeOutCnt-- <= 0)
+        {
+            return -1;
+        }
+    }
 
+    return 0;
 }
 
 /**
@@ -811,7 +822,7 @@ static ECC_CURVE  Curve_Copy;
 
 static ECC_CURVE * get_curve(E_ECC_CURVE ecc_curve);
 static int32_t ecc_init_curve(CRPT_T *crpt, E_ECC_CURVE ecc_curve);
-static void run_ecc_codec(CRPT_T *crpt, uint32_t mode);
+static int32_t run_ecc_codec(CRPT_T *crpt, uint32_t mode);
 
 static char  temp_hex_str[160];
 
@@ -1106,16 +1117,16 @@ int ECC_IsPrivateKeyValid(CRPT_T *crpt, E_ECC_CURVE ecc_curve,  char private_k[]
   * @param[out] public_k1   The output publick key 1.
   * @param[out] public_k2   The output publick key 2.
   * @return  0    Success.
-  * @return  -1   "ecc_curve" value is invalid.
+  * @return  -1   Hardware error or time-out.
+  * @return  -2   "ecc_curve" value is invalid.
   */
 int32_t  ECC_GeneratePublicKey(CRPT_T *crpt, E_ECC_CURVE ecc_curve, char *private_k, char public_k1[], char public_k2[])
 {
-    int32_t  ret = 0, i;
-    uint32_t u32Tmp;
+    int32_t  ret = 0, i, i32TimeOutCnt;
 
     if(ecc_init_curve(crpt, ecc_curve) != 0)
     {
-        ret = -1;
+        ret = -2;
     }
 
     if(ret == 0)
@@ -1143,12 +1154,15 @@ int32_t  ECC_GeneratePublicKey(CRPT_T *crpt, E_ECC_CURVE ecc_curve, char *privat
         crpt->ECC_CTL |= ((uint32_t)pCurve->key_len << CRPT_ECC_CTL_CURVEM_Pos) |
                          ECCOP_POINT_MUL | CRPT_ECC_CTL_START_Msk;
 
-        do
+        i32TimeOutCnt = TIMEOUT_ECC;
+        while(g_ECC_done == 0UL)
         {
-            u32Tmp = g_ECC_done;
-            u32Tmp |= g_ECCERR_done;
+            if( (i32TimeOutCnt-- <= 0) || g_ECCERR_done )
+            {
+                ret = -1;
+                break;
+            }
         }
-        while(u32Tmp == 0UL);
 
         Reg2Hex(pCurve->Echar, crpt->ECC_X1, public_k1);
         Reg2Hex(pCurve->Echar, crpt->ECC_Y1, public_k2);
@@ -1169,18 +1183,18 @@ int32_t  ECC_GeneratePublicKey(CRPT_T *crpt, E_ECC_CURVE ecc_curve, char *privat
   * @param[out] public_k1   The output publick key 1.
   * @param[out] public_k2   The output publick key 2.
   * @param[in]  u32ExtraOp  Extra options for ECC_KSCTL register.
-
   * @return  0    Success.
-  * @return  -1   "ecc_curve" value is invalid.
+  * @return  0    Success.
+  * @return  -1   Hardware error or time-out.
+  * @return  -2   "ecc_curve" value is invalid.
   */
 int32_t  ECC_GeneratePublicKey_KS(CRPT_T *crpt, E_ECC_CURVE ecc_curve, KS_MEM_Type mem, int32_t i32KeyIdx, char public_k1[], char public_k2[], uint32_t u32ExtraOp)
 {
-    int32_t  ret = 0;
-    uint32_t u32Tmp;
+    int32_t  ret = 0, i32TimeOutCnt;
 
     if(ecc_init_curve(crpt, ecc_curve) != 0)
     {
-        ret = -1;
+        ret = -2;
     }
 
     if(ret == 0)
@@ -1206,12 +1220,15 @@ int32_t  ECC_GeneratePublicKey_KS(CRPT_T *crpt, E_ECC_CURVE ecc_curve, KS_MEM_Ty
         crpt->ECC_CTL |= ((uint32_t)pCurve->key_len << CRPT_ECC_CTL_CURVEM_Pos) |
                          ECCOP_POINT_MUL | CRPT_ECC_CTL_START_Msk;
 
-        do
+        i32TimeOutCnt = TIMEOUT_ECC;
+        while(g_ECC_done == 0UL)
         {
-            u32Tmp = g_ECC_done;
-            u32Tmp |= g_ECCERR_done;
+            if( (i32TimeOutCnt-- <= 0) || g_ECCERR_done )
+            {
+                ret = -1;
+                break;
+            }
         }
-        while(u32Tmp == 0UL);
 
         Reg2Hex(pCurve->Echar, crpt->ECC_X1, public_k1);
         Reg2Hex(pCurve->Echar, crpt->ECC_Y1, public_k2);
@@ -1230,15 +1247,16 @@ int32_t  ECC_GeneratePublicKey_KS(CRPT_T *crpt, E_ECC_CURVE ecc_curve, KS_MEM_Ty
   * @param[out] x2          The x-coordinate of output point.
   * @param[out] y2          The y-coordinate of output point.
   * @return  0    Success.
-  * @return  -1   "ecc_curve" value is invalid.
+  * @return  -1   Hardware error or time-out.
+  * @return  -2   "ecc_curve" value is invalid.
   */
 int32_t  ECC_Mutiply(CRPT_T *crpt, E_ECC_CURVE ecc_curve, char x1[], char y1[], char *k, char x2[], char y2[])
 {
-    int32_t  i, ret = 0;
+    int32_t  i, ret = 0, i32TimeOutCnt;
 
     if(ecc_init_curve(crpt, ecc_curve) != 0)
     {
-        ret = -1;
+        ret = -2;
     }
 
     if(ret == 0)
@@ -1283,8 +1301,14 @@ int32_t  ECC_Mutiply(CRPT_T *crpt, E_ECC_CURVE ecc_curve, char x1[], char y1[], 
         crpt->ECC_CTL |= ((uint32_t)pCurve->key_len << CRPT_ECC_CTL_CURVEM_Pos) |
                          ECCOP_POINT_MUL | CRPT_ECC_CTL_START_Msk;
 
-        while((g_ECC_done == 0UL) && (g_ECCERR_done == 0UL))
+        i32TimeOutCnt = TIMEOUT_ECC;
+        while(g_ECC_done == 0UL)
         {
+            if( (i32TimeOutCnt-- <= 0) || g_ECCERR_done )
+            {
+                ret = -1;
+                break;
+            }
         }
 
         Reg2Hex(pCurve->Echar, crpt->ECC_X1, x2);
@@ -1305,16 +1329,16 @@ int32_t  ECC_Mutiply(CRPT_T *crpt, E_ECC_CURVE ecc_curve, char x1[], char y1[], 
   * @param[in]  public_k2   The other party's publick key 2.
   * @param[out] secret_z    The ECC CDH secret Z.
   * @return  0    Success.
-  * @return  -1   "ecc_curve" value is invalid.
+  * @return  -1   Hardware error or time-out.
+  * @return  -2   "ecc_curve" value is invalid.
   */
 int32_t  ECC_GenerateSecretZ(CRPT_T *crpt, E_ECC_CURVE ecc_curve, char *private_k, char public_k1[], char public_k2[], char secret_z[])
 {
-    int32_t  i, ret = 0;
-    uint32_t u32Tmp;
+    int32_t  i, ret = 0, i32TimeOutCnt;
 
     if(ecc_init_curve(crpt, ecc_curve) != 0)
     {
-        ret = -1;
+        ret = -2;
     }
 
     if(ret == 0)
@@ -1357,12 +1381,15 @@ int32_t  ECC_GenerateSecretZ(CRPT_T *crpt, E_ECC_CURVE ecc_curve, char *private_
         crpt->ECC_CTL |= ((uint32_t)pCurve->key_len << CRPT_ECC_CTL_CURVEM_Pos) |
                          ECCOP_POINT_MUL | CRPT_ECC_CTL_START_Msk;
 
-        do
+        i32TimeOutCnt = TIMEOUT_ECC;
+        while(g_ECC_done == 0UL)
         {
-            u32Tmp = g_ECC_done;
-            u32Tmp |= g_ECCERR_done;
+            if( (i32TimeOutCnt-- <= 0) || g_ECCERR_done )
+            {
+                ret = -1;
+                break;
+            }
         }
-        while(u32Tmp == 0UL);
 
         Reg2Hex(pCurve->Echar, crpt->ECC_X1, secret_z);
     }
@@ -1380,16 +1407,16 @@ int32_t  ECC_GenerateSecretZ(CRPT_T *crpt, E_ECC_CURVE ecc_curve, char *private_
   * @param[in]  public_k2   The other party's publick key 2.
   * @param[out] secret_z    The ECC CDH secret Z.
   * @return  0    Success.
-  * @return  -1   "ecc_curve" value is invalid.
+  * @return  -1   Hardware error or time-out.
+  * @return  -2   "ecc_curve" value is invalid.
   */
 int32_t ECC_GenerateSecretZ_KS(CRPT_T *crpt, E_ECC_CURVE ecc_curve, KS_MEM_Type mem, int32_t i32KeyIdx, char public_k1[], char public_k2[])
 {
-    int32_t  i;
-    uint32_t u32Tmp;
+    int32_t  i, i32TimeOutCnt;
 
     if(ecc_init_curve(crpt, ecc_curve) != 0)
     {
-        return -1;
+        return -2;
     }
 
     for(i = 0; i < 18; i++)
@@ -1421,25 +1448,24 @@ int32_t ECC_GenerateSecretZ_KS(CRPT_T *crpt, E_ECC_CURVE ecc_curve, KS_MEM_Type 
     crpt->ECC_CTL |= ((uint32_t)pCurve->key_len << CRPT_ECC_CTL_CURVEM_Pos) |
                      ECCOP_POINT_MUL | CRPT_ECC_CTL_START_Msk;
 
-    do
+    i32TimeOutCnt = TIMEOUT_ECC;
+    while(g_ECC_done == 0UL)
     {
-        u32Tmp = g_ECC_done;
-        u32Tmp |= g_ECCERR_done;
+        if( (i32TimeOutCnt-- <= 0) || g_ECCERR_done )
+        {
+            return -1;
+        }
     }
-    while(u32Tmp == 0UL);
-
-    if(g_ECCERR_done)
-        return -1;
 
     return (crpt->ECC_KSSTS & 0x1f);
 
 }
 
 
-static void run_ecc_codec(CRPT_T *crpt, uint32_t mode)
+static int32_t run_ecc_codec(CRPT_T *crpt, uint32_t mode)
 {
-    uint32_t u32Tmp;
     uint32_t eccop;
+    int32_t i32TimeOutCnt;
 
     eccop = mode & CRPT_ECC_CTL_ECCOP_Msk;
     if(eccop == ECCOP_MODULE)
@@ -1475,14 +1501,25 @@ static void run_ecc_codec(CRPT_T *crpt, uint32_t mode)
 
     crpt->ECC_CTL |= ((uint32_t)pCurve->key_len << CRPT_ECC_CTL_CURVEM_Pos) | mode | CRPT_ECC_CTL_START_Msk;
 
-    do
+    i32TimeOutCnt = TIMEOUT_ECC;
+    while(g_ECC_done == 0UL)
     {
-        u32Tmp = g_ECC_done;
-        u32Tmp |= g_ECCERR_done;
+        if( (i32TimeOutCnt-- <= 0) || g_ECCERR_done )
+        {
+            return -1;
+        }
     }
-    while(u32Tmp == 0UL);
 
-    while(crpt->ECC_STS & CRPT_ECC_STS_BUSY_Msk) { }
+    i32TimeOutCnt = TIMEOUT_ECC;
+    while(crpt->ECC_STS & CRPT_ECC_STS_BUSY_Msk)
+    {
+        if( i32TimeOutCnt-- <= 0)
+        {
+            return -1;
+        }
+    }
+
+    return 0;
 }
 
 /**

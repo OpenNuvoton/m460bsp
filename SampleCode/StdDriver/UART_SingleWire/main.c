@@ -313,7 +313,8 @@ uint8_t Check_Pattern(uint32_t u32Addr0, uint32_t u32Addr1, uint32_t u32Length)
 /*---------------------------------------------------------------------------------------------------------*/
 void UART_FunctionTest()
 {
-    char cmmd ;
+    uint8_t u8Cmd;
+    uint32_t u32TimeOutCnt;
 
     printf("+------------------------------------------------------------+\n");
     printf("|            UART Single Wire Function Test                  |\n");
@@ -353,9 +354,9 @@ void UART_FunctionTest()
         printf("|   (E)Exit                                                  |\n");
         printf("+------------------------------------------------------------+\n");
 
-        cmmd = (uint8_t)getchar();
+        u8Cmd = (uint8_t)getchar();
 
-        switch(cmmd)
+        switch(u8Cmd)
         {
             case '1':
             {
@@ -364,9 +365,25 @@ void UART_FunctionTest()
                 Build_Src_Pattern((uint32_t)g_u8TxData, UART_WORD_LEN_8, BUFSIZE);
 
                 /* Check the Rx status is Idle */
-                while(!UART_RX_IDLE(UART1)) {}
+                u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+                while(!UART_RX_IDLE(UART1))
+                {
+                    if(--u32TimeOutCnt == 0)
+                    {
+                        printf("Wait for UART time-out!\n");
+                        while(1);
+                    }
+                }
                 UART_Write(UART1, g_u8TxData, BUFSIZE);
-                while(g_i32RecOK != TRUE) {}
+                u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+                while(g_i32RecOK != TRUE)
+                {
+                    if(--u32TimeOutCnt == 0)
+                    {
+                        printf("Wait for UART time-out!\n");
+                        while(1);
+                    }
+                }
 
                 Check_Pattern((uint32_t)g_u8TxData, (uint32_t)g_u8RecData, BUFSIZE) ? printf(" Pass\n") : printf(" Fail\n");
                 /* Clear the Tx and Rx data buffer */
@@ -382,9 +399,25 @@ void UART_FunctionTest()
                 Build_Src_Pattern((uint32_t)g_u8TxData, UART_WORD_LEN_8, BUFSIZE);
 
                 /* Check the Rx status is Idle */
-                while(!UART_RX_IDLE(UART2)) {}
+                u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+                while(!UART_RX_IDLE(UART2))
+                {
+                    if(--u32TimeOutCnt == 0)
+                    {
+                        printf("Wait for UART time-out!\n");
+                        while(1);
+                    }
+                }
                 UART_Write(UART2, g_u8TxData, BUFSIZE);
-                while(g_i32RecOK != TRUE) {}
+                u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+                while(g_i32RecOK != TRUE)
+                {
+                    if(--u32TimeOutCnt == 0)
+                    {
+                        printf("Wait for UART time-out!\n");
+                        while(1);
+                    }
+                }
 
                 Check_Pattern((uint32_t)g_u8TxData, (uint32_t)g_u8RecData, BUFSIZE) ? printf(" Pass\n") :   printf(" Fail\n");
 
@@ -399,13 +432,15 @@ void UART_FunctionTest()
         }
 
     }
-    while((cmmd != 'E') && (cmmd != 'e'));
+    while((u8Cmd != 'E') && (u8Cmd != 'e'));
 
     /* Disable UART1 RDA/Single-wire Bit Error Detection interrupt */
     UART_DisableInt(UART1, (UART_INTEN_RDAIEN_Msk | UART_INTEN_SWBEIEN_Msk));
+    NVIC_DisableIRQ(UART1_IRQn);
 
     /* Disable UART2 RDA/Single-wire Bit Error Detection interrupt */
     UART_DisableInt(UART2, (UART_INTEN_RDAIEN_Msk | UART_INTEN_SWBEIEN_Msk));
+    NVIC_DisableIRQ(UART1_IRQn);
     printf("\nUART Sample Demo End.\n");
 
 }

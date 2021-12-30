@@ -35,14 +35,23 @@ void CalPeriodTime(BPWM_T *BPWM, uint32_t u32Ch)
     uint16_t au32Count[4];
     uint32_t u32i;
     uint16_t u16RisingTime, u16FallingTime, u16HighPeriod, u16LowPeriod, u16TotalPeriod;
+    uint32_t u32TimeOutCnt;
 
     /* Clear Capture Falling Indicator (Time A) */
     BPWM_ClearCaptureIntFlag(BPWM, u32Ch, BPWM_CAPTURE_INT_FALLING_LATCH | BPWM_CAPTURE_INT_RISING_LATCH);
 
-    /* Wait for Capture Falling Indicator  */
-    while(BPWM_GetCaptureIntFlag(BPWM, u32Ch) < 2);
+    /* Wait for Capture Falling Indicator */
+    u32TimeOutCnt = SystemCoreClock;
+    while(BPWM_GetCaptureIntFlag(BPWM, u32Ch) < 2)
+    {
+        if(--u32TimeOutCnt == 0) /* 1 second time-out */
+        {
+            printf("Wait for BPWM time-out!\n");
+            while(1);
+        }
+    }
 
-    /* Clear Capture Falling Indicator (Time B)*/
+    /* Clear Capture Falling Indicator (Time B) */
     BPWM_ClearCaptureIntFlag(BPWM, u32Ch, BPWM_CAPTURE_INT_FALLING_LATCH);
 
     u32i = 0;
@@ -50,7 +59,15 @@ void CalPeriodTime(BPWM_T *BPWM, uint32_t u32Ch)
     while(u32i < 4)
     {
         /* Wait for Capture Falling Indicator */
-        while(BPWM_GetCaptureIntFlag(BPWM, u32Ch) < 2);
+        u32TimeOutCnt = SystemCoreClock;
+        while(BPWM_GetCaptureIntFlag(BPWM, u32Ch) < 2)
+        {
+            if(--u32TimeOutCnt == 0) /* 1 second time-out */
+            {
+                printf("Wait for BPWM time-out!\n");
+                while(1);
+            }
+        }
 
         /* Clear Capture Falling and Rising Indicator */
         BPWM_ClearCaptureIntFlag(BPWM, u32Ch, BPWM_CAPTURE_INT_FALLING_LATCH | BPWM_CAPTURE_INT_RISING_LATCH);
@@ -59,7 +76,15 @@ void CalPeriodTime(BPWM_T *BPWM, uint32_t u32Ch)
         au32Count[u32i++] = (uint16_t)BPWM_GET_CAPTURE_FALLING_DATA(BPWM, u32Ch);
 
         /* Wait for Capture Rising Indicator */
-        while(BPWM_GetCaptureIntFlag(BPWM, u32Ch) < 1);
+        u32TimeOutCnt = SystemCoreClock;
+        while(BPWM_GetCaptureIntFlag(BPWM, u32Ch) < 1)
+        {
+            if(--u32TimeOutCnt == 0) /* 1 second time-out */
+            {
+                printf("Wait for BPWM time-out!\n");
+                while(1);
+            }
+        }
 
         /* Clear Capture Rising Indicator */
         BPWM_ClearCaptureIntFlag(BPWM, u32Ch, BPWM_CAPTURE_INT_RISING_LATCH);
@@ -158,6 +183,8 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
+    uint32_t u32TimeOutCnt;
+
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -241,7 +268,15 @@ int32_t main(void)
         BPWM0->CAPCTL |= BPWM_CAPCTL_FCRLDEN0_Msk;
 
         /* Wait until BPWM0 channel 0 Timer start to count */
-        while((BPWM0->CNT) == 0);
+        u32TimeOutCnt = SystemCoreClock;
+        while((BPWM0->CNT) == 0)
+        {
+            if(--u32TimeOutCnt == 0) /* 1 second time-out */
+            {
+                printf("Wait for BPWM time-out!\n");
+                while(1);
+            }
+        }
 
         /* Capture the Input Waveform Data */
         CalPeriodTime(BPWM0, 0);
@@ -254,7 +289,15 @@ int32_t main(void)
         BPWM_Stop(BPWM1, BPWM_CH_0_MASK);
 
         /* Wait until BPWM1 channel 0 Timer Stop */
-        while((BPWM1->CNT & BPWM_CNT_CNT_Msk) != 0);
+        u32TimeOutCnt = SystemCoreClock;
+        while((BPWM1->CNT & BPWM_CNT_CNT_Msk) != 0)
+        {
+            if(--u32TimeOutCnt == 0) /* 1 second time-out */
+            {
+                printf("Wait for BPWM time-out!\n");
+                while(1);
+            }
+        }
 
         /* Disable Timer for BPWM1 channel 0 */
         BPWM_ForceStop(BPWM1, BPWM_CH_0_MASK);
@@ -271,7 +314,15 @@ int32_t main(void)
         BPWM_Stop(BPWM0, BPWM_CH_0_MASK);
 
         /* Wait until BPWM0 channel 0 current counter reach to 0 */
-        while((BPWM0->CNT & BPWM_CNT_CNT_Msk) != 0);
+        u32TimeOutCnt = SystemCoreClock;
+        while((BPWM0->CNT & BPWM_CNT_CNT_Msk) != 0)
+        {
+            if(--u32TimeOutCnt == 0) /* 1 second time-out */
+            {
+                printf("Wait for BPWM time-out!\n");
+                while(1);
+            }
+        }
 
         /* Disable Timer for BPWM0 channel 0 */
         BPWM_ForceStop(BPWM0, BPWM_CH_0_MASK);
@@ -283,6 +334,3 @@ int32_t main(void)
         BPWM_ClearCaptureIntFlag(BPWM0, 0, BPWM_CAPTURE_INT_FALLING_LATCH);
     }
 }
-
-
-/*** (C) COPYRIGHT 2021 Nuvoton Technology Corp. ***/

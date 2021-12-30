@@ -86,7 +86,11 @@ int  dma_read_write(int is4ByteAddr, uint32_t u32RdCmd, uint32_t WrCmd, int dc_n
     uint32_t    i, offset;             /* variables */
     uint32_t    *pData;
 
-    SPIM_Enable_4Bytes_Mode(is4ByteAddr, 1);
+    if (SPIM_Enable_4Bytes_Mode(is4ByteAddr, 1) != 0)
+    {
+        printf("SPIM_Enable_4Bytes_Mode failed!\n");
+        return -1;
+    }
 
     SPIM_SET_DCNUM(dc_num);
 
@@ -180,11 +184,6 @@ int main()
     SYS_Init();                        /* Init System, IP clock and multi-function I/O */
 
     UART0_Init();                      /* Initialize UART0 */
-
-#ifdef _PZ
-    /* For palladium */
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400);
-#endif
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* SAMPLE CODE                                                                                             */

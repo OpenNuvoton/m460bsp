@@ -82,7 +82,7 @@ void I2C0_Close(void)
 
 int32_t main(void)
 {
-    uint32_t i;
+    uint32_t i, u32TimeOutCnt;
     uint8_t u8data, u8tmp, err;
 
     /* Unlock protected registers */
@@ -91,14 +91,8 @@ int32_t main(void)
     /* Init System, IP clock and multi-function I/O. */
     SYS_Init();
 
-
     /* Configure UART0: 115200, 8-bit word, no parity bit, 1 stop bit. */
     UART_Open(UART0, 115200);
-
-#ifdef _PZ
-    /* For palladium */
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400);
-#endif
 
     /*
         This sample code sets I2C bus clock to 100kHz. Then, Master accesses Slave with Byte Write
@@ -127,7 +121,17 @@ int32_t main(void)
         u8tmp = (uint8_t)i + 3;
 
         /* Single Byte Write (Two Registers) */
-        while(I2C_WriteByteTwoRegs(I2C0, g_u8DeviceAddr, i, u8tmp));
+        u32TimeOutCnt = I2C_TIMEOUT;
+        while(I2C_WriteByteTwoRegs(I2C0, g_u8DeviceAddr, i, u8tmp))
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                err = 1;
+                printf("Wait for I2C time-out!\n");
+                break;
+            }
+        }
+        if(u32TimeOutCnt == 0) break;
 
         /* Single Byte Read (Two Registers) */
         u8data = I2C_ReadByteTwoRegs(I2C0, g_u8DeviceAddr, i);

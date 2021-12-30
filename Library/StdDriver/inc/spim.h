@@ -134,8 +134,11 @@ E_MFGID;
 
 /** @endcond HIDDEN_SYMBOLS */
 
+#define SPIM_TIMEOUT_ERR        (-1L)   /*!< SPIM operation abort due to timeout error \hideinitializer */
+
 /*@}*/ /* end of group SPIM_EXPORTED_CONSTANTS */
 
+extern int32_t g_SPIM_i32ErrCode;
 
 /** @addtogroup SPIM_EXPORTED_FUNCTIONS SPIM Exported Functions
   @{
@@ -354,10 +357,7 @@ E_MFGID;
  * @details    Wait for free.
  * \hideinitializer
  */
-#define SPIM_WAIT_FREE()   \
-    do {    \
-        while (SPIM->CTL1 & SPIM_CTL1_SPIMEN_Msk) { }   \
-    } while (0)
+#define SPIM_WAIT_FREE()            while (SPIM->CTL1 & SPIM_CTL1_SPIMEN_Msk)
 
 /**
  * @details    Enable cache.

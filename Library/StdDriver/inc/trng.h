@@ -1,10 +1,10 @@
 /**************************************************************************//**
  * @file     trng.h
- * @version  V1.10
+ * @version  V3.00
  * @brief    TRNG driver header file
  *
- * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2016-2020 Nuvoton Technology Corp. All rights reserved.
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #ifndef __TRNG_H__
 #define __TRNG_H__
@@ -23,7 +23,7 @@ extern "C"
 */
 
 
-/** @addtogroup M480_TRNG_EXPORTED_MACROS TRNG Exported Macros
+/** @addtogroup M460_TRNG_EXPORTED_MACROS TRNG Exported Macros
   @{
 */
 
@@ -32,8 +32,8 @@ extern "C"
 /*----------------------------------------------------------------------------------------------*/
 
 /**
-  * @brief  Let TRNG engine know the currrent PCLK frequency. The CLKPSC is the peripheral 
-  *         clock frequency range for the selected value , the CLKPSC setting must be higher 
+  * @brief  Let TRNG engine know the currrent PCLK frequency. The CLKPSC is the peripheral
+  *         clock frequency range for the selected value , the CLKPSC setting must be higher
   *         than or equal to the actual peripheral clock frequency (for correct random generation).
   * @param  clkpsc   0: PCLK is 80~100 MHz
   *                  1: PCLK is 60~80 MHz
@@ -52,7 +52,7 @@ extern "C"
 #define TRNG_SET_CLKP(clkpsc) do { TRNG->CTL = (TRNG->CTL&~TRNG_CTL_CLKP_Msk)|((clkpsc & 0xf)<<TRNG_CTL_CLKP_Pos); } while(0);
 
 
-/*@}*/ /* end of group M480_TRNG_EXPORTED_MACROS */
+/*@}*/ /* end of group M460_TRNG_EXPORTED_MACROS */
 
 
 /** @addtogroup TRNG_EXPORTED_FUNCTIONS TRNG Exported Functions
@@ -64,7 +64,7 @@ extern "C"
 /*  Functions                                                                                      */
 /*---------------------------------------------------------------------------------------------------------*/
 
-void TRNG_Open(void);
+int32_t TRNG_Open(void);
 int32_t TRNG_GenWord(uint32_t *u32RndNum);
 int32_t TRNG_GenBignum(uint8_t u8BigNum[], int32_t i32Len);
 int32_t TRNG_GenBignumHex(char cBigNumHex[], int32_t i32Len);
@@ -81,6 +81,3 @@ int32_t TRNG_GenBignumHex(char cBigNumHex[], int32_t i32Len);
 #endif
 
 #endif  /* __TRNG_H__ */
-
-/*** (C) COPYRIGHT 2019 Nuvoton Technology Corp. ***/
-

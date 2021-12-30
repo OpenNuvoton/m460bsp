@@ -80,7 +80,7 @@ int32_t main(void)
 {
     S_PSIO_DMX512_CFG sConfig;
     uint16_t au16RxBuf[5];
-    uint32_t i;
+    uint32_t i, u32TimeOutCnt;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -137,7 +137,15 @@ int32_t main(void)
             PSIO_DMX512_Tx(&sConfig, 0x55, eDMX512_DATA);     /* Channel 5 data */
             CLK_SysTickDelay(50);
 
-            while (!(*sConfig.pu8RcvDone));
+            u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+            while (!(*sConfig.pu8RcvDone))
+            {
+                if(--u32TimeOutCnt == 0)
+                {
+                    printf("Wait for data time-out!\n");
+                    while(1);
+                }
+            }
 
             printf("%u: 0x%02X\n", i, (uint8_t)DMX512_GET_DATA(au16RxBuf[0]));
         }

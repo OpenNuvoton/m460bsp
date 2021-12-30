@@ -10,8 +10,6 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-#define PLL_CLOCK       192000000
-
 
 #define EQEI0A   PA0
 #define EQEI0B   PA1
@@ -90,11 +88,6 @@ int32_t main(void)
 
     /* Init UART0 for printf */
     UART0_Init();
-
-#ifdef _PZ
-    /* For palladium */
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400);
-#endif
 
     printf("\n\nCPU @ %dHz\n", SystemCoreClock);
 

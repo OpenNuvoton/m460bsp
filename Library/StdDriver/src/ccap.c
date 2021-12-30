@@ -16,6 +16,8 @@
   @{
 */
 
+int32_t g_CCAP_i32ErrCode = 0;       /*!< CCAP global error code */
+
 /** @addtogroup CCAP_EXPORTED_FUNCTIONS CCAP Exported Functions
   @{
 */
@@ -226,15 +228,25 @@ void CCAP_Start(void)
  * @return     None
  *
  * @details    If u32FrameComplete is set to TRUE then get a new frame and disable CCAP module.
+ *
+ * @note       This function sets g_CCAP_i32ErrCode to CCAP_TIMEOUT_ERR if the CCAP_IS_STOPPED() longer than expected.
  */
 void CCAP_Stop(uint32_t u32FrameComplete)
 {
+    uint32_t u32TimeOutCount = SystemCoreClock<<1;  /* 2 second */
+
     if(u32FrameComplete==FALSE)
         CCAP->CTL &= ~CCAP_CTL_CCAPEN;
     else
     {
         CCAP->CTL |= CCAP_CTL_SHUTTER_Msk;
-        while(!CCAP_IS_STOPPED());
+        while(!CCAP_IS_STOPPED())
+        {
+            if(--u32TimeOutCount == 0){
+                g_CCAP_i32ErrCode = CCAP_TIMEOUT_ERR;
+                break;
+            }
+        }
     }
 }
 

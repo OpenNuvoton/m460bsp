@@ -14,15 +14,15 @@ PS2_HOST_STATUS g_Status = eHOST_IDLE;
 
 static void PSIO_PS2_H2D_ReadConfig(S_PSIO_PS2 *psConfig)
 {
-    const S_PSIO_CP_CONFIG sClockConfig 
+    const S_PSIO_CP_CONFIG sClockConfig
                      = {/* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
       /* Slot */        PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
       /* Action */      PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION};   
-    const S_PSIO_CP_CONFIG sDataConfig 
+    const S_PSIO_CP_CONFIG sDataConfig
                      = {/* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
       /* Slot */        PSIO_SLOT0,         PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
       /* Action */      PSIO_IN_BUFFER,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION};    
-    
+
     /* Update status */
     PSIO_PS2_SET_STATUS(eHOST_READY_TO_READ);
 
@@ -49,15 +49,16 @@ static void PSIO_PS2_H2D_ReadConfig(S_PSIO_PS2 *psConfig)
 
 static void PSIO_PS2_H2D_Send_Header(S_PSIO_PS2 *psConfig)
 {
-    const S_PSIO_CP_CONFIG sClockConfig 
+    uint32_t u32TimeOutCnt;
+    const S_PSIO_CP_CONFIG sClockConfig
                      = {/* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
       /* Slot */        PSIO_SLOT0,         PSIO_SLOT1,         PSIO_SLOT2,         PSIO_SLOT3,         PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
       /* Action */      PSIO_OUT_LOW,       PSIO_OUT_LOW,       PSIO_OUT_LOW,       PSIO_OUT_LOW,       PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION};   
-    const S_PSIO_CP_CONFIG sDataConfig 
+    const S_PSIO_CP_CONFIG sDataConfig
                      = {/* Check Point0     Check Point1        Check Point2        Check Point3        Check Point4        Check Point5        Check Point6        Check Point7 */
       /* Slot */        PSIO_SLOT0,         PSIO_SLOT1,         PSIO_SLOT2,         PSIO_SLOT3,         PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,  PSIO_SLOT_DISABLE,
       /* Action */      PSIO_OUT_HIGH,      PSIO_OUT_HIGH,      PSIO_OUT_HIGH,      PSIO_OUT_LOW,       PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION,     PSIO_NO_ACTION};
-                     
+
     /* Update status */
     PSIO_PS2_SET_STATUS(eHOST_WRITE);
 
@@ -89,14 +90,30 @@ static void PSIO_PS2_H2D_Send_Header(S_PSIO_PS2 *psConfig)
     PSIO_START_SC(PSIO, psConfig->u8DataSC);
 
     /* Wait for slot controller is busy */
-    while (!PSIO_GET_BUSY_FLAG(PSIO, psConfig->u8ClockSC));
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while (!PSIO_GET_BUSY_FLAG(PSIO, psConfig->u8ClockSC))
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for PSIO time-out!\n");
+            while(1);
+        }
+    }
 
     /* Waiting for slave signal, set the data pin interval keep last output */
     PSIO->GNCT[psConfig->u8DataPin].GENCTL = (PSIO->GNCT[psConfig->u8DataPin].GENCTL & ~PSIO_GNCT_GENCTL_INTERVAL_Msk)
                                             | (PSIO_LAST_OUTPUT << PSIO_GNCT_GENCTL_INTERVAL_Pos);
 
     /* Wait for slot controller is not busy */
-    while (PSIO_GET_BUSY_FLAG(PSIO, psConfig->u8ClockSC));
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while (PSIO_GET_BUSY_FLAG(PSIO, psConfig->u8ClockSC))
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for PSIO time-out!\n");
+            while(1);
+        }
+    }
 }
 
 

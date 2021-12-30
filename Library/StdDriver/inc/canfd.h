@@ -361,6 +361,10 @@ typedef struct
 } CANFD_TX_EVNT_ELEM_T;
 
 
+#define CANFD_TIMEOUT        SystemCoreClock    /* 1 second time-out */
+#define CANFD_TIMEOUT_ERR    (-1L)              /*!< CANFD operation abort due to timeout error \hideinitializer */
+extern int32_t g_CANFD_i32ErrCode;
+
 void CANFD_Open(CANFD_T *canfd, CANFD_FD_T *psCanfdStr);
 void CANFD_Close(CANFD_T *canfd);
 void CANFD_EnableInt(CANFD_T *canfd, uint32_t u32IntLine0, uint32_t u32IntLine1, uint32_t u32TXBTIE, uint32_t u32TXBCIE);

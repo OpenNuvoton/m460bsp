@@ -3,8 +3,8 @@
  * @version  V1.00
  * @brief    An example of using FMC driver to set up and erase XOM regions.
  *
- *
- * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
 
@@ -64,12 +64,6 @@ int main()
     SYS_Init();                        /* Init System, IP clock and multi-function I/O */
 
     UART0_Init();                      /* Initialize UART0 */
-
-#ifdef _PZ
-    /* For palladium */
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400);
-#endif
-
 
     /*
      *   This sample code is used to show how to use StdDriver API to enable/erase XOM.
@@ -137,5 +131,3 @@ int main()
     printf("Done.\n");
     while(1);
 }
-
-/*** (C) COPYRIGHT 2021 Nuvoton Technology Corp. ***/

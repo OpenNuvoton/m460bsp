@@ -109,6 +109,8 @@ void UART_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int main(void)
 {
+    uint32_t u32TimeOutCnt;
+
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -173,7 +175,9 @@ int main(void)
         SYS_UnlockReg();
         printf("\nSystem enter to power-down mode ...\n");
         /* To check if all the debug messages are finished */
-        while(!UART_IS_TX_EMPTY(DEBUG_PORT));
+        u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+        while(!UART_IS_TX_EMPTY(DEBUG_PORT))
+            if(--u32TimeOutCnt == 0) break;
         CLK_PowerDown();
 
         /* Check if WDT time-out interrupt and wake-up occurred or not */

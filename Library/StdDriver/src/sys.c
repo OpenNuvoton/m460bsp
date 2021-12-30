@@ -22,6 +22,8 @@ extern "C"
   @{
 */
 
+int32_t g_SYS_i32ErrCode = 0;       /*!< SYS global error code */
+
 /** @addtogroup SYS_EXPORTED_FUNCTIONS SYS Exported Functions
   @{
 */
@@ -266,12 +268,38 @@ void SYS_DisableBOD(void)
   * @return     None
   * @details    This function select power level.
   *             The register write-protection function should be disabled before using this function.
+  * @note       This function sets g_SYS_i32ErrCode to SYS_TIMEOUT_ERR if waiting SYS time-out.
   */
 void SYS_SetPowerLevel(uint32_t u32PowerLevel)
 {
+    uint32_t u32TimeOutCount = 0;
+
+    g_SYS_i32ErrCode = 0;
+
+    /* Wait for power level change busy flag is cleared */
+    u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
+    while(SYS->PLSTS & SYS_PLSTS_PLCBUSY_Msk)
+    {
+        if(--u32TimeOutCount == 0)
+        {
+            g_SYS_i32ErrCode = SYS_TIMEOUT_ERR; /* Time-out error */
+            break;
+        }
+    }
+
     /* Set power voltage level */
     SYS->PLCTL = (SYS->PLCTL & (~SYS_PLCTL_PLSEL_Msk)) | (u32PowerLevel);
-    while(SYS->PLSTS & SYS_PLSTS_PLCBUSY_Msk);
+
+    /* Wait for power level change busy flag is cleared */
+    u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
+    while(SYS->PLSTS & SYS_PLSTS_PLCBUSY_Msk)
+    {
+        if(--u32TimeOutCount == 0)
+        {
+            g_SYS_i32ErrCode = SYS_TIMEOUT_ERR; /* Time-out error */
+            break;
+        }
+    }
 }
 
 /**

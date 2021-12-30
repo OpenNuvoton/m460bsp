@@ -4,12 +4,12 @@
  * @brief    Show a Master how to access Slave.
  *           This sample code needs to work with USCI_I2C_Slave.
  *
- * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
 
-#define PLL_CLOCK       192000000
 
 #define INT_SRC_UI2C0   1                 //USCI_IRQ Interrupt source from USCI0
 /*---------------------------------------------------------------------------------------------------------*/
@@ -251,7 +251,7 @@ void UI2C0_Init(void)
 
 int32_t Read_Write_SLAVE(uint8_t slvaddr)
 {
-    uint32_t i;
+    uint32_t i, u32TimeOutCnt;
 
     g_u8DeviceAddr = slvaddr;
 
@@ -272,7 +272,15 @@ int32_t Read_Write_SLAVE(uint8_t slvaddr)
         UI2C_SET_CONTROL_REG(UI2C0, UI2C_CTL_STA);
 
         /* Wait USCI_I2C Tx Finish */
-        while (g_u8MstEndFlag == 0);
+        u32TimeOutCnt = UI2C_TIMEOUT;
+        while (g_u8MstEndFlag == 0)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for USCI_I2C time-out!\n");
+                while(1);
+            }
+        }
         g_u8MstEndFlag = 0;
 
         /* USCI_I2C function to read data from slave */
@@ -285,7 +293,15 @@ int32_t Read_Write_SLAVE(uint8_t slvaddr)
         UI2C_SET_CONTROL_REG(UI2C0, UI2C_CTL_STA);
 
         /* Wait USCI_I2C Rx Finish */
-        while(g_u8MstEndFlag == 0);
+        u32TimeOutCnt = UI2C_TIMEOUT;
+        while(g_u8MstEndFlag == 0)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for USCI_I2C time-out!\n");
+                while(1);
+            }
+        }
         g_u8MstEndFlag = 0;
 
         /* Compare data */
@@ -310,11 +326,6 @@ int main()
 
     /* Configure UART0: 115200, 8-bit word, no parity bit, 1 stop bit. */
     UART_Open(UART0, 115200);
-
-#ifdef _PZ
-    /* For palladium */
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400);
-#endif
 
     /*
         This sample code sets USCI_I2C bus clock to 100kHz. Then, Master accesses Slave with Byte Write
@@ -351,5 +362,3 @@ int main()
 
     while(1);
 }
-
-/*** (C) COPYRIGHT 2021 Nuvoton Technology Corp. ***/

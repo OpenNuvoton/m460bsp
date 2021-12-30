@@ -38,12 +38,21 @@ void CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch)
     uint16_t au16Count[4];
     uint32_t u32i;
     uint16_t u16RisingTime, u16FallingTime, u16HighPeriod, u16LowPeriod, u16TotalPeriod;
+    uint32_t u32TimeOutCnt;
 
     /* Clear Capture Falling Indicator (Time A) */
     EPWM_ClearCaptureIntFlag(EPWM, u32Ch, EPWM_CAPTURE_INT_FALLING_LATCH);
 
     /* Wait for Capture Falling Indicator  */
-    while((EPWM1->CAPIF & EPWM_CAPIF_CFLIF2_Msk) == 0);
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while((EPWM1->CAPIF & EPWM_CAPIF_CFLIF2_Msk) == 0)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for EPWM time-out!\n");
+            while(1);
+        }
+    }
 
     /* Clear Capture Falling Indicator (Time B)*/
     EPWM_ClearCaptureIntFlag(EPWM, u32Ch, EPWM_CAPTURE_INT_FALLING_LATCH);
@@ -53,7 +62,15 @@ void CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch)
     while(u32i < 4)
     {
         /* Wait for Capture Falling Indicator */
-        while(EPWM_GetCaptureIntFlag(EPWM, u32Ch) < 2);
+        u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+        while(EPWM_GetCaptureIntFlag(EPWM, u32Ch) < 2)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for EPWM time-out!\n");
+                while(1);
+            }
+        }
 
         /* Clear Capture Falling and Rising Indicator */
         EPWM_ClearCaptureIntFlag(EPWM, u32Ch, EPWM_CAPTURE_INT_FALLING_LATCH | EPWM_CAPTURE_INT_RISING_LATCH);
@@ -62,7 +79,15 @@ void CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch)
         au16Count[u32i++] = (uint16_t)EPWM_GET_CAPTURE_FALLING_DATA(EPWM, u32Ch);
 
         /* Wait for Capture Rising Indicator */
-        while(EPWM_GetCaptureIntFlag(EPWM, u32Ch) < 2);
+        u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+        while(EPWM_GetCaptureIntFlag(EPWM, u32Ch) < 2)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for EPWM time-out!\n");
+                while(1);
+            }
+        }
 
         /* Clear Capture Rising Indicator */
         EPWM_ClearCaptureIntFlag(EPWM, u32Ch, EPWM_CAPTURE_INT_RISING_LATCH);
@@ -161,6 +186,8 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
+    uint32_t u32TimeOutCnt = 0;
+
     /* Init System, IP clock and multi-function I/O
        In the end of SYS_Init() will issue SYS_LockReg()
        to lock protected register. If user want to write
@@ -250,7 +277,15 @@ int32_t main(void)
         EPWM1->CAPCTL |= EPWM_CAPCTL_FCRLDEN2_Msk;
 
         /* Wait until EPWM1 channel 2 Timer start to count */
-        while((EPWM1->CNT[2]) == 0);
+        u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+        while((EPWM1->CNT[2]) == 0)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for EPWM time-out!\n");
+                while(1);
+            }
+        }
 
         /* Capture the Input Waveform Data */
         CalPeriodTime(EPWM1, 2);
@@ -263,7 +298,15 @@ int32_t main(void)
         EPWM_Stop(EPWM1, EPWM_CH_0_MASK);
 
         /* Wait until EPWM1 channel 0 Timer Stop */
-        while((EPWM1->CNT[0] & EPWM_CNT0_CNT_Msk) != 0);
+        u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+        while((EPWM1->CNT[0] & EPWM_CNT0_CNT_Msk) != 0)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for EPWM time-out!\n");
+                while(1);
+            }
+        }
 
         /* Disable Timer for EPWM1 channel 0 */
         EPWM_ForceStop(EPWM1, EPWM_CH_0_MASK);
@@ -280,7 +323,15 @@ int32_t main(void)
         EPWM_Stop(EPWM1, EPWM_CH_2_MASK);
 
         /* Wait until EPWM1 channel 2 current counter reach to 0 */
-        while((EPWM1->CNT[2] & EPWM_CNT2_CNT_Msk) != 0);
+        u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+        while((EPWM1->CNT[2] & EPWM_CNT2_CNT_Msk) != 0)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for EPWM time-out!\n");
+                while(1);
+            }
+        }
 
         /* Disable Timer for EPWM1 channel 2 */
         EPWM_ForceStop(EPWM1, EPWM_CH_2_MASK);

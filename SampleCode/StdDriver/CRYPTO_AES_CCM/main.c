@@ -104,7 +104,7 @@ void SYS_Init(void)
     /* Select UART0 module clock source as HIRC and UART0 module clock divider as 1 */
     CLK_SetModuleClock(UART0_MODULE, CLK_CLKSEL1_UART0SEL_HIRC, CLK_CLKDIV0_UART0(1));
 
-    /* Enable ACMP01 peripheral clock */
+    /* Enable CRPT peripheral clock */
     CLK_EnableModuleClock(CRPT_MODULE);
 
     /* Update System Core Clock */
@@ -413,6 +413,8 @@ int32_t CCMPacker(uint8_t *iv, uint32_t ivlen, uint8_t *A, uint32_t alen, uint8_
 
 int32_t AES_CCM(int32_t enc, uint8_t *key, uint32_t klen, uint8_t *iv, uint32_t ivlen, uint8_t *A, uint32_t alen, uint8_t *P, uint32_t plen, uint8_t *buf, uint32_t *size, uint32_t *plen_aligned, uint32_t tlen)
 {
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     __ALIGNED(4) uint8_t au8TmpBuf[32] = { 0 };
 
     printf("\n");
@@ -480,8 +482,14 @@ int32_t AES_CCM(int32_t enc, uint8_t *key, uint32_t klen, uint8_t *iv, uint32_t 
     /* Start AES Eecrypt */
     AES_Start(CRPT, 0, CRYPTO_DMA_ONE_SHOT);
     /* Waiting for AES calculation */
-    while(!g_Crypto_Int_done);
-
+    while(!g_Crypto_Int_done)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for AES time-out!\n");
+            while(1);
+        }
+    }
 
     printf("Output blocks (%d):\n", *size);
     DumpBuffHex2(buf, *size);

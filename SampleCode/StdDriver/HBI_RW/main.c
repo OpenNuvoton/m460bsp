@@ -3,8 +3,8 @@
  * @version  V1.00
  * @brief    Show FMC read Flash IDs, erase, read, and write function
  *
- *
- * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
 
@@ -95,11 +95,20 @@ void UART0_Init(void)
 
 static void Clear4Bytes(uint32_t u32StartAddr)
 {
+    uint32_t u32TimeOutCnt = HBI_TIMEOUT;
+
     HBI->ADR = u32StartAddr;
     HBI->WDATA = 0;
     HBI->CMD = HBI_CMD_WRITE_HRAM_4_BYTE;
 
-    while(HBI->CMD != 0);
+    while(HBI->CMD != 0)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for HBI time-out!\n");
+            while(1);
+        }
+    }
 }
 
 static void ClearHyperRAM(uint32_t u32StartAddr, uint32_t u32EndAddr)
@@ -133,11 +142,6 @@ int main()
     SYS_Init();                        /* Init System, IP clock and multi-function I/O */
 
     UART0_Init();                      /* Initialize UART0 */
-
-#ifdef _PZ
-    /* For palladium */
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400);
-#endif
 
     printf("+------------------------------------------+\n");
     printf("|    M460 HyperBus Interface Sample Code   |\n");
@@ -261,5 +265,3 @@ int main()
 
     while (1);
 }
-
-/*** (C) COPYRIGHT 2021 Nuvoton Technology Corp. ***/

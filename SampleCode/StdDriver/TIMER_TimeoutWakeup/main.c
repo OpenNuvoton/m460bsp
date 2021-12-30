@@ -88,18 +88,21 @@ void UART_Init(void)
 int main(void)
 {
     int i = 0;
-    
+    uint32_t u32TimeOutCnt;
+
     /* Unlock protected registers */
     SYS_UnlockReg();
-    
+
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
 
     /* Init UART for printf */
     UART_Init();
-    
+
     printf("Timer power down/wake up sample code\n");
-    while(!UART_IS_TX_EMPTY(DEBUG_PORT));
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while(!UART_IS_TX_EMPTY(DEBUG_PORT))
+        if(--u32TimeOutCnt == 0) break;
 
     /* Initial Timer0 to periodic mode with 1Hz, since system is fast (200MHz)
        and timer is slow (32kHz), and following function calls all modified timer's
@@ -107,11 +110,11 @@ int main(void)
        setting take effect */
     TIMER_Open(TIMER0, TIMER_PERIODIC_MODE, 1);
     CLK_SysTickDelay(50);
-    
+
     /* Enable timer wake up system */
     TIMER_EnableWakeup(TIMER0);
     CLK_SysTickDelay(50);
-    
+
     /* Enable Timer0 interrupt */
     TIMER_EnableInt(TIMER0);
     CLK_SysTickDelay(50);
@@ -127,8 +130,10 @@ int main(void)
     while(1)
     {
         CLK_PowerDown();
-        
+
         printf("Wake %d\n", i++);
-        while(!UART_IS_TX_EMPTY(DEBUG_PORT));
+        u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+        while(!UART_IS_TX_EMPTY(DEBUG_PORT))
+            if(--u32TimeOutCnt == 0) break;
     }
 }

@@ -137,6 +137,8 @@ void BMC_Init(void)
 
 int main(void)
 {
+    uint32_t u32TimeOutCnt;
+
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -186,7 +188,15 @@ int main(void)
     BMC_ENABLE();
 
     /* Wait until one frame transfer done */
-    while(g_au32FrameTransmitDoneIntFlag == 0);
+    u32TimeOutCnt = SystemCoreClock;
+    while(g_au32FrameTransmitDoneIntFlag == 0)
+    {
+        if(--u32TimeOutCnt == 0) /* 1 second time-out */
+        {
+            printf("Wait for BMC interrupt time-out!\n");
+            while(1);
+        }
+    }
 
     printf("\n\nExit BMC driver sample code.\n");
 

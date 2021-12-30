@@ -3,9 +3,8 @@
  * @version  V3.00
  * @brief    Show Crypto IP SHA function
  *
- *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 
 #include <stdio.h>
@@ -58,6 +57,7 @@ int  do_compare(uint8_t *output, uint8_t *expect, int cmp_len)
 int32_t RunSHA(void)
 {
     uint32_t  au32OutputDigest[8];
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
 
     SHA_Open(CRPT, SHA_MODE_SHA1, SHA_IN_SWAP, 0);
 
@@ -70,7 +70,14 @@ int32_t RunSHA(void)
     SHA_Start(CRPT, CRYPTO_DMA_ONE_SHOT);
 
     /* Waiting for SHA calcuation done */
-    while(!g_SHA_done) ;
+    while(!g_SHA_done)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for SHA time-out!\n");
+            while(1);
+        }
+    }
 
     /* Read SHA calculation result */
     SHA_Read(CRPT, au32OutputDigest);
@@ -106,7 +113,7 @@ void SYS_Init(void)
     /* Enable UART0 module clock */
     CLK_EnableModuleClock(UART0_MODULE);
 
-    /* ENable CRYPTO module clock */
+    /* Enable CRYPTO module clock */
     CLK_EnableModuleClock(CRPT_MODULE);
 
     /* Select UART0 module clock source as HIRC and UART0 module clock divider as 1 */

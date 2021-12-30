@@ -256,6 +256,8 @@ void UART_FunctionTest(void)
 
 void LIN_Tx_FunctionTest(void)
 {
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     //The sample code will send a LIN header with ID is 0x30 and response field.
     //The response field with 8 data bytes and checksum without including ID.
 
@@ -283,7 +285,14 @@ void LIN_Tx_FunctionTest(void)
     /* LIN TX Send Header Enable */
     UART1->LINCTL |= UART_LINCTL_SENDH_Msk;
     /* Wait until break field, sync field and ID field transfer completed */
-    while((UART1->LINCTL & UART_LINCTL_SENDH_Msk) == UART_LINCTL_SENDH_Msk);
+    while((UART1->LINCTL & UART_LINCTL_SENDH_Msk) == UART_LINCTL_SENDH_Msk)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for UART time-out!\n");
+            while(1);
+        }
+    }
 
     /* Compute checksum without ID and fill checksum value to au8TestPattern[8] */
     au8TestPattern[8] = ComputeChksumValue(&au8TestPattern[0], 8);

@@ -111,11 +111,11 @@ void UART_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int main(void)
 {
-    uint32_t u32InitPeriod, u32UpdatedPeriod;
-    
+    uint32_t u32InitPeriod, u32UpdatedPeriod, u32TimeOutCnt;
+
     /* Unlock protected registers */
     SYS_UnlockReg();
-    
+
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
 
@@ -138,7 +138,7 @@ int main(void)
     /* Change Timer to PWM counter mode */
     TPWM_ENABLE_PWM_MODE(TIMER0);
 
-    /* Set Timer0 PWM mode as independent mode*/
+    /* Set Timer0 PWM mode as independent mode */
     TPWM_ENABLE_INDEPENDENT_MODE(TIMER0);
 
     /* Set Timer0 PWM output frequency is 18000 Hz, duty 50% in up count type */
@@ -191,13 +191,21 @@ int main(void)
     g_u32IsTestOver = 0;
 
     /* Wait for PDMA transfer done */
-    while (g_u32IsTestOver != 1) {}
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while (g_u32IsTestOver != 1)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for PDMA time-out!\n");
+            while(1);
+        }
+    }
 
     printf("Timer0 PWM period register is updated from %d to %d\n\n", u32InitPeriod, TPWM_GET_PERIOD(TIMER0));
-        
+
     printf("Press any key to stop Timer0 PWM.\n\n");
     getchar();
-        
+
     /* Disable PDMA function */
     PDMA_Close(PDMA0);
     NVIC_DisableIRQ(PDMA0_IRQn);
@@ -206,9 +214,17 @@ int main(void)
     TPWM_STOP_COUNTER(TIMER0);
 
     /* Wait until Timer0 PWM Stop */
-    while((TIMER0->PWMCNT & TIMER_PWMCNT_CNT_Msk) != 0) {}
-        
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while((TIMER0->PWMCNT & TIMER_PWMCNT_CNT_Msk) != 0)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for Timer time-out!\n");
+            while(1);
+        }
+    }
+
     printf("Timer0 PWM has STOP.\n");
-        
+
     while(1) {}
 }

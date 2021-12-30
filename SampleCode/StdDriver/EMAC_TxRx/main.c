@@ -44,12 +44,21 @@ void SysTick_Handler(void)
 {
 	gu32SysTickCnts++;                          // Increment Counter
 }
-    
+
 /* Delay execution for given amount of ticks */
 void plat_delay(uint32_t ticks)
 {
-	uint32_t tgtTicks = gu32SysTickCnts + ticks;    // target tick count to delay execution to
-	while (gu32SysTickCnts == tgtTicks) {}
+    uint32_t tgtTicks = gu32SysTickCnts + ticks;    // target tick count to delay execution to
+    uint32_t u32TimeOutCnt = SystemCoreClock;       /* Over 1 second time-out */
+
+    while (gu32SysTickCnts == tgtTicks)
+    {
+        if(u32TimeOutCnt-- == 0)
+        {
+            printf("Wait for systick time-out!\n");
+            while(1);
+        }
+    }
 }
 
 
@@ -59,7 +68,7 @@ void plat_delay(uint32_t ticks)
 void EMAC0_IRQHandler(void)
 {
     struct sk_buff *rskb = &rxbuf[0];
-    
+
     rskb->rdy = 0;
     
     synopGMAC0_intr_handler();

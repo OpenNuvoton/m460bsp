@@ -32,8 +32,13 @@ void SYS_Disable_AnalogPORCircuit(void)
 /*---------------------------------------------------------------------------------------------------------*/
 void PowerDownFunction(void)
 {
+    uint32_t u32TimeOutCnt = SystemCoreClock;
+
     /* Check if all the debug messages are finished */
-    UART_WAIT_TX_EMPTY(DEBUG_PORT);
+    UART_WAIT_TX_EMPTY(DEBUG_PORT)
+    {
+        if(--u32TimeOutCnt == 0) break; /* 1 second time-out */
+    }
 
     /* Select Power-down mode */
     CLK_SetPowerDownMode(CLK_PMUCTL_PDMSEL_PD);
@@ -146,7 +151,7 @@ int32_t main(void)
     printf("|  3. Disable LVR                                                  |\n");
     printf("|  4. Disable analog function, e.g. POR module                     |\n");
     printf("|  5. Disable unused clock, e.g. LIRC                              |\n");
-    printf("|  6. Disable SRAM retention for SPD mode                          |\n");   
+    printf("|  6. Disable SRAM retention for SPD mode                          |\n");
     printf("|  7. Enter to Power-Down                                          |\n");
     printf("|  8. Wait for PB.3 rising-edge interrupt event to wake-up the MCU |\n");
     printf("+------------------------------------------------------------------+\n\n");
@@ -208,7 +213,7 @@ int32_t main(void)
     GPIO_SetMode(PI, GPIO_P0_TO_P15, GPIO_MODE_QUASI);
     GPIO_SetMode(PJ, GPIO_P0_TO_P15, GPIO_MODE_QUASI);
 
-    /* Configure PB.3 as Input mode and enable interrupt by rising edge trigger */
+    /* Configure PB.3 as Quasi mode and enable interrupt by rising edge trigger */
     GPIO_SetMode(PB, BIT3, GPIO_MODE_QUASI);
     GPIO_EnableInt(PB, 3, GPIO_INT_RISING);
     NVIC_EnableIRQ(GPB_IRQn);

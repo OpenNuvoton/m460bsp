@@ -1,14 +1,14 @@
 /**************************************************************************//**
- * @file     system_M480.h
- * @version  V1.00
- * @brief    CMSIS Cortex-M4 Core Peripheral Access Layer Header File for M480
+ * @file     system_m460.h
+ * @version  V3.00
+ * @brief    CMSIS Cortex-M4 Core Peripheral Access Layer Header File for M460
  *
- * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2017-2020 Nuvoton Technology Corp. All rights reserved.
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
-#ifndef __SYSTEM_M480_H__
-#define __SYSTEM_M480_H__
+#ifndef __SYSTEM_M460_H__
+#define __SYSTEM_M460_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -76,6 +76,4 @@ extern void SystemCoreClockUpdate (void);
 }
 #endif
 
-#endif /* __SYSTEM_M480_H__ */
-
-/*** (C) COPYRIGHT 2016 Nuvoton Technology Corp. ***/
+#endif /* __SYSTEM_M460_H__ */

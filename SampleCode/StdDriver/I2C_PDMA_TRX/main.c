@@ -450,7 +450,7 @@ void PDMA_Init(void)
 
 void I2C_PDMA(void)
 {
-    uint32_t i;
+    uint32_t i, u32TimeOutCnt;
 
     // I2C0
     GPIO_SetMode(PA, BIT4, GPIO_MODE_OPEN_DRAIN);
@@ -494,7 +494,15 @@ void I2C_PDMA(void)
     /* Send START condition, start the PDMA data transmit */
     I2C_START(I2C0);
 
-    while (!PDMA_DONE);
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while (!PDMA_DONE)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for PDMA time-out!\n");
+            while(1);
+        }
+    }
 
     /* Disable I2C0 PDMA TX mode */
     I2C0->CTL1 &= ~I2C_CTL1_TXPDMAEN_Msk;
@@ -527,7 +535,15 @@ void I2C_PDMA(void)
     /* Send START condition */
     I2C_START(I2C0);
 
-    while (!PDMA_DONE);
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while (!PDMA_DONE)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for PDMA time-out!\n");
+            while(1);
+        }
+    }
 
     /* Disable I2C0 PDMA RX mode */
     I2C0->CTL1 &= ~I2C_CTL1_RXPDMAEN_Msk;
@@ -558,11 +574,6 @@ int32_t main (void)
 
     /* Init UART to 115200-8n1 for print message */
     UART_Open(UART0, 115200);
-
-#ifdef _PZ
-    /* For palladium */
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400);
-#endif
 
     /*
         This sample code sets I2C bus clock to 100kHz. Then, Master accesses Slave with Byte Write

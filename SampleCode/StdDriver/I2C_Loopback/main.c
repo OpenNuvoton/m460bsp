@@ -4,7 +4,9 @@
  * @brief
  *           Demonstrate how to set I2C Master mode and Slave mode.
  *           And show how a master access a slave on a chip.
- * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ *
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
@@ -331,7 +333,7 @@ void I2C1_Close(void)
 
 int32_t I2C0_Read_Write_SLAVE(uint8_t slvaddr)
 {
-    uint32_t i;
+    uint32_t i, u32TimeOutCnt;
 
     g_u8DeviceAddr = slvaddr;
 
@@ -351,7 +353,15 @@ int32_t I2C0_Read_Write_SLAVE(uint8_t slvaddr)
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STA);
 
         /* Wait I2C Tx Finish */
-        while(g_u8MstEndFlag == 0);
+        u32TimeOutCnt = I2C_TIMEOUT;
+        while(g_u8MstEndFlag == 0)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for I2C time-out!\n");
+                while(1);
+            }
+        }
         g_u8MstEndFlag = 0;
 
         /* I2C function to read data from slave */
@@ -363,7 +373,15 @@ int32_t I2C0_Read_Write_SLAVE(uint8_t slvaddr)
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STA);
 
         /* Wait I2C Rx Finish */
-        while(g_u8MstEndFlag == 0);
+        u32TimeOutCnt = I2C_TIMEOUT;
+        while(g_u8MstEndFlag == 0)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for I2C time-out!\n");
+                while(1);
+            }
+        }
 
         /* Compare data */
         if(g_u8MstRxData != g_au8MstTxData[2])
@@ -379,6 +397,7 @@ int32_t I2C0_Read_Write_SLAVE(uint8_t slvaddr)
 int32_t I2C0_Read_Write_Slave(uint8_t slvaddr)
 {
     uint32_t i;
+    uint32_t u32TimeOutCnt;
 
     g_u8DeviceAddr = slvaddr;
 
@@ -398,7 +417,15 @@ int32_t I2C0_Read_Write_Slave(uint8_t slvaddr)
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STA);
 
         /* Wait I2C0 Tx Finish */
-        while(g_u8MstEndFlag == 0);
+        u32TimeOutCnt = I2C_TIMEOUT;
+        while(g_u8MstEndFlag == 0)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for I2C time-out!\n");
+                while(1);
+            }
+        }
         g_u8MstEndFlag = 0;
 
         /* I2C0 function to read data from slave */
@@ -410,7 +437,15 @@ int32_t I2C0_Read_Write_Slave(uint8_t slvaddr)
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STA);
 
         /* Wait I2C0 Rx Finish */
-        while(g_u8MstEndFlag == 0);
+        u32TimeOutCnt = I2C_TIMEOUT;
+        while(g_u8MstEndFlag == 0)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for I2C time-out!\n");
+                while(1);
+            }
+        }
 
         /* Compare data */
         if(g_u8MstRxData != g_au8MstTxData[2])
@@ -436,11 +471,6 @@ int32_t main(void)
 
     /* Configure UART0: 115200, 8-bit word, no parity bit, 1 stop bit. */
     UART_Open(UART0, 115200);
-
-#ifdef _PZ
-    /* For palladium */
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400);
-#endif
 
     /*
         This sample code sets I2C bus clock to 100kHz. Then, Master accesses Slave with Byte Write
@@ -507,6 +537,3 @@ int32_t main(void)
     while(1);
 
 }
-/*** (C) COPYRIGHT 2016 Nuvoton Technology Corp. ***/
-
-

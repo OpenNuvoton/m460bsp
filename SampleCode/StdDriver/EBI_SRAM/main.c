@@ -58,6 +58,7 @@ void AccessEBIWithPDMA(void)
 {
     uint32_t i;
     uint32_t u32Result0 = 0x5A5A, u32Result1 = 0x5A5A;
+    uint32_t u32TimeOutCnt = 0;
 
     printf("[[ Access EBI with PDMA ]]\n");
 
@@ -89,7 +90,15 @@ void AccessEBIWithPDMA(void)
 
     g_u32IsTestOver = 0;
     PDMA_Trigger(PDMA0, 2);
-    while(g_u32IsTestOver == 0) {}
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while(g_u32IsTestOver == 0)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for PDMA time-out!\n");
+            while(1);
+        }
+    }
     /* Transfer internal SRAM to EBI SRAM done */
 
     /* Clear internal SRAM data */
@@ -105,7 +114,15 @@ void AccessEBIWithPDMA(void)
 
     g_u32IsTestOver = 0;
     PDMA_Trigger(PDMA0, 2);
-    while(g_u32IsTestOver == 0) {}
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while(g_u32IsTestOver == 0)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for PDMA time-out!\n");
+            while(1);
+        }
+    }
     /* Transfer EBI SRAM to internal SRAM done */
     for(i = 0; i < 64; i++)
     {

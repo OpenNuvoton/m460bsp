@@ -13,6 +13,8 @@
 
 #define PLL_CLOCK 200000000
 
+int32_t g_FMC_i32ErrCode = 0;
+
 void ProcessHardFault(void);
 void SH_Return(void);
 void SendChar_ToUART(void);
@@ -70,6 +72,8 @@ void TIMER3_Init(void)
 
 void SYS_Init(void)
 {
+    uint32_t u32TimeOutCount = 0;
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -78,7 +82,11 @@ void SYS_Init(void)
     CLK->PWRCTL |= CLK_PWRCTL_HIRCEN_Msk;
 
     /* Wait for HIRC clock ready */
-    while(!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk));
+    u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
+    while(!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk))
+    {
+        if(--u32TimeOutCount == 0) break;
+    }
 
     /* Set HCLK clock source as HIRC first */
     CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | CLK_CLKSEL0_HCLKSEL_HIRC;
@@ -90,7 +98,11 @@ void SYS_Init(void)
     CLK->PLLCTL = CLK_PLLCTL_200MHz_HIRC;
 
     /* Wait for PLL clock ready */
-    while(!(CLK->STATUS & CLK_STATUS_PLLSTB_Msk));
+    u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
+    while(!(CLK->STATUS & CLK_STATUS_PLLSTB_Msk))
+    {
+        if(--u32TimeOutCount == 0) break;
+    }
 
     /* Set power level by HCLK working frequency */
     SYS->PLCTL = (SYS->PLCTL & (~SYS_PLCTL_PLSEL_Msk)) | SYS_PLCTL_PLSEL_PL0;
@@ -136,6 +148,7 @@ void SYS_Init(void)
 int32_t main(void)
 {
     uint32_t cmd_buff[16];
+    uint32_t u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -159,7 +172,7 @@ int32_t main(void)
             goto _ISP;
         }
 
-        if(TIMER3->INTSTS & TIMER_INTSTS_TIF_Msk)
+        if( (TIMER3->INTSTS & TIMER_INTSTS_TIF_Msk) || (--u32TimeOutCount == 0) )
         {
             goto _APROM;
         }

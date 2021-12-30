@@ -4,7 +4,7 @@
  * @brief    Demonstrate how to encrypt/decrypt data by AES GCM.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #include <stdio.h>
 #include <string.h>
@@ -951,10 +951,19 @@ int32_t AES_GCMPacker(uint8_t *iv, uint32_t iv_len, uint8_t *A, uint32_t A_len, 
 
 void AES_Run(uint32_t u32Option)
 {
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     g_Crypto_Int_done = 0;
     CRPT->AES_CTL = u32Option | START;
     /* Waiting for AES calculation */
-    while(!g_Crypto_Int_done);
+    while(!g_Crypto_Int_done)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for AES time-out!\n");
+            while(1);
+        }
+    }
 }
 
 

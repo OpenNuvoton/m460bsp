@@ -145,6 +145,7 @@ int main(void)
     char S[]  = "0000000000000000000000000000000000000000000000000000000000000000";
     char hash[] = "0000000000000000000000000000000000000000000000000000000000000000";
     uint32_t au32Key[8] = {0};
+    uint32_t u32TimeOutCnt;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -284,7 +285,15 @@ int main(void)
     SHA_Start(CRPT, CRYPTO_DMA_ONE_SHOT);
 
     /* Waiting for SHA calcuation done */
-    while(!g_SHA_done) ;
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while(!g_SHA_done)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for SHA time-out!\n");
+            while(1);
+        }
+    }
 
     /* Read SHA calculation result */
     SHA_Read(CRPT, au32Key);
@@ -372,8 +381,3 @@ int main(void)
 
     while(1) {}
 }
-
-
-
-
-

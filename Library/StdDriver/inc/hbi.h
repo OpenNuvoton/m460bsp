@@ -3,8 +3,8 @@
  * @version V1.00
  * @brief   M460 series HBI driver header file
  *
- * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #ifndef __HBI_H__
 #define __HBI_H__
@@ -136,6 +136,10 @@ Register Space Range:
 #define HBI_CONFIG_CKDIV_HCLK_DIV2    (0x0 << HBI_CONFIG_CKDIV_Pos)
 #define HBI_CONFIG_CKDIV_HCLK_DIV4    (0x1 << HBI_CONFIG_CKDIV_Pos)
 /*---------------------------------------------------------------------------------------------------------*/
+
+#define HBI_TIMEOUT       SystemCoreClock   /*!< 1 second time-out \hideinitializer */
+#define HBI_TIMEOUT_ERR   (-2L)             /*!< HBI operation abort due to timeout error \hideinitializer */
+extern int32_t g_HBI_i32ErrCode;
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Define Macros and functions                                                                            */
@@ -289,5 +293,3 @@ void HBI_Write4Byte(uint32_t u32Addr, uint32_t u32Data);
 #endif
 
 #endif /* __HBI_H__ */
-
-/*** (C) COPYRIGHT 2021 Nuvoton Technology Corp. ***/

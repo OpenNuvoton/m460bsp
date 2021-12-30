@@ -82,11 +82,6 @@ int main()
 
     UART0_Init();                      /* Initialize UART0 */
 
-#ifdef _PZ
-    /* For palladium */
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400);
-#endif
-
     printf("\n\n");
     printf("+---------------------------------------------+\n");
     printf("|    M460 FMC_MultiWordProgram Sample Loader  |\n");

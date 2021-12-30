@@ -1,10 +1,10 @@
 /**************************************************************************//**
  * @file     fmc.h
- * @version  V1.00
- * @brief    M480 Series Flash Memory Controller Driver Header File
+ * @version  V3.00
+ * @brief    M460 Series Flash Memory Controller Driver Header File
  *
- * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #ifndef __FMC_H__
 #define __FMC_H__
@@ -98,6 +98,11 @@ extern "C"
 #define READ_ALLONE_NOT         0xA1100000UL    /*!< Check-all-one result is not all one. \hideinitializer */
 #define READ_ALLONE_CMD_FAIL    0xFFFFFFFFUL    /*!< Check-all-one command failed.        \hideinitializer */
 
+#define FMC_TIMEOUT_READ            (SystemCoreClock>>3) /*!< Read command time-out 125 ms        \hideinitializer */
+#define FMC_TIMEOUT_WRITE           (SystemCoreClock>>3) /*!< Write command time-out 125 ms       \hideinitializer */
+#define FMC_TIMEOUT_ERASE           (SystemCoreClock>>2) /*!< Erase command time-out 250 ms       \hideinitializer */
+#define FMC_TIMEOUT_CHKSUM          (SystemCoreClock<<1) /*!< Get checksum command time-out 2 s   \hideinitializer */
+#define FMC_TIMEOUT_CHKALLONE       (SystemCoreClock<<1) /*!< Check-all-one command time-out 2 s  \hideinitializer */
 
 /*@}*/ /* end of group FMC_EXPORTED_CONSTANTS */
 
@@ -126,6 +131,10 @@ extern "C"
 
 /*@}*/ /* end of group FMC_EXPORTED_MACROS */
 
+/*---------------------------------------------------------------------------------------------------------*/
+/*  Global variables                                                                                       */
+/*---------------------------------------------------------------------------------------------------------*/
+extern int32_t  g_FMC_i32ErrCode;
 
 /** @addtogroup FMC_EXPORTED_FUNCTIONS FMC Exported Functions
   @{
@@ -139,7 +148,7 @@ __STATIC_INLINE uint32_t FMC_ReadCID(void);
 __STATIC_INLINE uint32_t FMC_ReadPID(void);
 __STATIC_INLINE uint32_t FMC_ReadUID(uint8_t u8Index);
 __STATIC_INLINE uint32_t FMC_ReadUCID(uint32_t u32Index);
-__STATIC_INLINE void FMC_SetVectorPageAddr(uint32_t u32PageAddr);
+__STATIC_INLINE int32_t FMC_SetVectorPageAddr(uint32_t u32PageAddr);
 __STATIC_INLINE uint32_t FMC_GetVECMAP(void);
 
 /**
@@ -158,18 +167,32 @@ __STATIC_INLINE uint32_t FMC_GetVECMAP(void)
 /**
   * @brief    Read company ID
   * @param    None
-  * @return   The company ID (32-bit)
+  * @return   The company ID (32-bit). 0xFFFFFFFF means read failed.
   * @details  The company ID of Nuvoton is fixed to be 0xDA
+  *
+  * @note     Global error code g_FMC_i32ErrCode
+  *           -1  Read time-out
   */
 __STATIC_INLINE uint32_t FMC_ReadCID(void)
 {
+    int32_t i32TimeOutCnt = FMC_TIMEOUT_READ;
+
+    g_FMC_i32ErrCode = 0;
+
     FMC->ISPCMD = FMC_ISPCMD_READ_CID;           /* Set ISP Command Code */
     FMC->ISPADDR = 0x0u;                         /* Must keep 0x0 when read CID */
     FMC->ISPTRG = FMC_ISPTRG_ISPGO_Msk;          /* Trigger to start ISP procedure */
 #if ISBEN
     __ISB();
 #endif                                           /* To make sure ISP/CPU be Synchronized */
-    while(FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk) {} /* Waiting for ISP Done */
+    while(FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk)    /* Waiting for ISP Done */
+    {
+        if( i32TimeOutCnt-- <= 0)
+        {
+            g_FMC_i32ErrCode = -1;
+            return 0xFFFFFFFF;
+        }
+    }
 
     return FMC->ISPDAT;
 }
@@ -177,18 +200,32 @@ __STATIC_INLINE uint32_t FMC_ReadCID(void)
 /**
   * @brief    Read product ID
   * @param    None
-  * @return   The product ID (32-bit)
+  * @return   The product ID (32-bit). 0xFFFFFFFF means read failed.
   * @details  This function is used to read product ID.
+  *
+  * @note     Global error code g_FMC_i32ErrCode
+  *           -1  Read time-out
   */
 __STATIC_INLINE uint32_t FMC_ReadPID(void)
 {
+    int32_t i32TimeOutCnt = FMC_TIMEOUT_READ;
+
+    g_FMC_i32ErrCode = 0;
+
     FMC->ISPCMD = FMC_ISPCMD_READ_DID;          /* Set ISP Command Code */
     FMC->ISPADDR = 0x04u;                       /* Must keep 0x4 when read PID */
     FMC->ISPTRG = FMC_ISPTRG_ISPGO_Msk;         /* Trigger to start ISP procedure */
 #if ISBEN
     __ISB();
 #endif                                          /* To make sure ISP/CPU be Synchronized */
-    while(FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk) {} /* Waiting for ISP Done */
+    while(FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk)   /* Waiting for ISP Done */
+    {
+        if( i32TimeOutCnt-- <= 0)
+        {
+            g_FMC_i32ErrCode = -1;
+            return 0xFFFFFFFF;
+        }
+    }
 
     return FMC->ISPDAT;
 }
@@ -196,11 +233,18 @@ __STATIC_INLINE uint32_t FMC_ReadPID(void)
 /**
  * @brief       Read Unique ID
  * @param[in]   u8Index  UID index. 0 = UID[31:0], 1 = UID[63:32], 2 = UID[95:64]
- * @return      The 32-bit unique ID data of specified UID index.
+ * @return      The 32-bit unique ID data of specified UID index. 0xFFFFFFFF means read failed.
  * @details     To read out 96-bit Unique ID.
+ *
+ * @note        Global error code g_FMC_i32ErrCode
+ *              -1  Read time-out
  */
 __STATIC_INLINE uint32_t FMC_ReadUID(uint8_t u8Index)
 {
+    int32_t i32TimeOutCnt = FMC_TIMEOUT_READ;
+
+    g_FMC_i32ErrCode = 0;
+
     FMC->ISPCMD = FMC_ISPCMD_READ_UID;
     FMC->ISPADDR = ((uint32_t)u8Index << 2u);
     FMC->ISPDAT = 0u;
@@ -208,7 +252,14 @@ __STATIC_INLINE uint32_t FMC_ReadUID(uint8_t u8Index)
 #if ISBEN
     __ISB();
 #endif
-    while(FMC->ISPTRG) {}
+    while(FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk)   /* Waiting for ISP Done */
+    {
+        if( i32TimeOutCnt-- <= 0)
+        {
+            g_FMC_i32ErrCode = -1;
+            return 0xFFFFFFFF;
+        }
+    }
 
     return FMC->ISPDAT;
 }
@@ -217,17 +268,31 @@ __STATIC_INLINE uint32_t FMC_ReadUID(uint8_t u8Index)
   * @brief      To read UCID
   * @param[in]  u32Index    Index of the UCID to read. u32Index must be 0, 1, 2, or 3.
   * @return     The UCID of specified index
-  * @details    This function is used to read unique chip ID (UCID).
+  * @details    This function is used to read unique chip ID (UCID). 0xFFFFFFFF means read failed.
+  *
+  * @note       Global error code g_FMC_i32ErrCode
+  *             -1  Read time-out
   */
 __STATIC_INLINE uint32_t FMC_ReadUCID(uint32_t u32Index)
 {
+    int32_t i32TimeOutCnt = FMC_TIMEOUT_READ;
+
+    g_FMC_i32ErrCode = 0;
+
     FMC->ISPCMD = FMC_ISPCMD_READ_UID;            /* Set ISP Command Code */
     FMC->ISPADDR = (0x04u * u32Index) + 0x10u;    /* The UCID is at offset 0x10 with word alignment. */
     FMC->ISPTRG = FMC_ISPTRG_ISPGO_Msk;           /* Trigger to start ISP procedure */
 #if ISBEN
     __ISB();
 #endif                                            /* To make sure ISP/CPU be Synchronized */
-    while(FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk) {}  /* Waiting for ISP Done */
+    while(FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk)     /* Waiting for ISP Done */
+    {
+        if( i32TimeOutCnt-- <= 0)
+        {
+            g_FMC_i32ErrCode = -1;
+            return 0xFFFFFFFF;
+        }
+    }
 
     return FMC->ISPDAT;
 }
@@ -237,18 +302,36 @@ __STATIC_INLINE uint32_t FMC_ReadUCID(uint32_t u32Index)
  * @param[in]   u32PageAddr  The page address to remap to address 0x0. The address must be page alignment.
  * @return      To set VECMAP to remap specified page address to 0x0.
  * @details     This function is used to set VECMAP to map specified page to vector page (0x0).
+ * @retval      0   Success
+ * @retval      -1  Failed
  * @note
  *              VECMAP only valid when new IAP function is enabled. (CBS = 10'b or 00'b)
+ *
+ * @note        Global error code g_FMC_i32ErrCode
+ *              -1  Command time-out
  */
-__STATIC_INLINE void FMC_SetVectorPageAddr(uint32_t u32PageAddr)
+__STATIC_INLINE int32_t FMC_SetVectorPageAddr(uint32_t u32PageAddr)
 {
+    int32_t i32TimeOutCnt = FMC_TIMEOUT_WRITE;
+
+    g_FMC_i32ErrCode = 0;
+
     FMC->ISPCMD = FMC_ISPCMD_VECMAP;  /* Set ISP Command Code */
     FMC->ISPADDR = u32PageAddr;       /* The address of specified page which will be map to address 0x0. It must be page alignment. */
     FMC->ISPTRG = 0x1u;               /* Trigger to start ISP procedure */
 #if ISBEN
     __ISB();
 #endif                                /* To make sure ISP/CPU be Synchronized */
-    while(FMC->ISPTRG) {}             /* Waiting for ISP Done */
+    while(FMC->ISPTRG)                /* Waiting for ISP Done */
+    {
+        if( i32TimeOutCnt-- <= 0)
+        {
+            g_FMC_i32ErrCode = -1;
+            return -1;
+        }
+    }
+
+    return 0;
 }
 
 
@@ -268,7 +351,7 @@ extern uint32_t FMC_Read(uint32_t u32Addr);
 extern int32_t  FMC_Read_64(uint32_t u32addr, uint32_t * u32data0, uint32_t * u32data1);
 extern uint32_t FMC_ReadDataFlashBaseAddr(void);
 extern void     FMC_SetBootSource(int32_t i32BootSrc);
-extern void     FMC_Write(uint32_t u32Addr, uint32_t u32Data);
+extern int32_t  FMC_Write(uint32_t u32Addr, uint32_t u32Data);
 extern int32_t  FMC_Write8Bytes(uint32_t u32addr, uint32_t u32data0, uint32_t u32data1);
 extern int32_t  FMC_WriteMultiple(uint32_t u32Addr, uint32_t pu32Buf[], uint32_t u32Len);
 extern int32_t  FMC_WriteOTP(uint32_t otp_num, uint32_t low_word, uint32_t high_word);
@@ -293,5 +376,3 @@ extern int32_t  FMC_RemapBank(uint32_t u32Bank);
 #endif
 
 #endif   /* __FMC_H__ */
-
-/*** (C) COPYRIGHT 2021 Nuvoton Technology Corp. ***/

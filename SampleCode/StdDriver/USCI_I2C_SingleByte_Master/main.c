@@ -4,12 +4,12 @@
  * @brief    Show how to use USCI_I2C Single byte API Read and Write data to Slave.
  *           Needs to work with USCI_I2C_Slave sample code.
  *
- * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
 
-#define PLL_CLOCK       192000000
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
@@ -103,11 +103,6 @@ int main(void)
     /* Init UART0 for printf */
     UART0_Init();
 
-#ifdef _PZ
-    /* For palladium */
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400);
-#endif
-
     /* Init USCI_I2C0 */
     UI2C0_Init(100000);
 
@@ -163,5 +158,3 @@ int main(void)
 
     while (1);
 }
-
-/*** (C) COPYRIGHT 2021 Nuvoton Technology Corp. ***/

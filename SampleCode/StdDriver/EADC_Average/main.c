@@ -90,6 +90,8 @@ void EADC_FunctionTest()
     uint32_t u32IntNum,  u32ModuleNum, u32ChannelNum;
     uint32_t u32IntMask, u32ModuleMask;
 
+    uint32_t u32TimeOutCnt;
+
     u32IntNum = 0;      /* Use EADC Interrupt 0 */
     u32ModuleNum = 1;   /* Use Sample Module 1 */
 
@@ -144,7 +146,15 @@ void EADC_FunctionTest()
         EADC_START_CONV(EADC0, u32ModuleMask);
 
         /* Wait EADC interrupt (g_u32AdcIntFlag will be set at IRQ_Handler function) */
-        while(g_u32AdcIntFlag == 0);
+        u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+        while(g_u32AdcIntFlag == 0)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for EADC time-out!\n");
+                while(1);
+            }
+        }
 
         /* Get the conversion result of the sample module */
         i32ConversionData = EADC_GET_CONV_DATA(EADC0, u32ModuleNum);

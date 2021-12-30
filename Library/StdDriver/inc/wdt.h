@@ -52,8 +52,12 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 #define WDT_RESET_COUNTER_KEYWORD   (0x00005AA5UL)    /*!< Fill this value to WDT_RSTCNT register to free reset WDT counter \hideinitializer */
 
+#define WDT_TIMEOUT                 SystemCoreClock   /*!< 1 second time-out \hideinitializer */
+#define WDT_TIMEOUT_ERR             (-1L)             /*!< WDT operation abort due to timeout error \hideinitializer */
+
 /**@}*/ /* end of group WDT_EXPORTED_CONSTANTS */
 
+extern int32_t g_WDT_i32ErrCode;
 
 /** @addtogroup WDT_EXPORTED_FUNCTIONS WDT Exported Functions
   @{
@@ -166,11 +170,22 @@ __STATIC_INLINE void WDT_DisableInt(void);
   * @return     None
   *
   * @details    This function will stop WDT counting and disable WDT module.
+  *
+  * @note       This function sets g_WDT_i32ErrCode to WDT_TIMEOUT_ERR if waiting WDT time-out.
   */
 __STATIC_INLINE void WDT_Close(void)
 {
+    uint32_t u32TimeOutCount = WDT_TIMEOUT;
+
     WDT->CTL = 0UL;
-    while(WDT->CTL & WDT_CTL_SYNC_Msk) {} /* Wait disable WDTEN bit completed, it needs 2 * WDT_CLK. */
+    while(WDT->CTL & WDT_CTL_SYNC_Msk) /* Wait disable WDTEN bit completed, it needs 2 * WDT_CLK. */
+    {
+        if(--u32TimeOutCount == 0)
+        {
+            g_WDT_i32ErrCode = WDT_TIMEOUT_ERR; /* Time-out error */
+            break;
+        }
+    }
 }
 
 /**

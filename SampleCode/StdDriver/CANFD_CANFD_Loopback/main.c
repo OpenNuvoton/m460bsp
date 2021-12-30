@@ -27,14 +27,14 @@ void CANFD0_TEST_HANDLE(void);
 void CANFD00_IRQHandler(void);
 
 /*---------------------------------------------------------------------------------------------------------*/
-/* ISR to handle CAN FD0 Line0 interrupt event                                                           */
+/* ISR to handle CAN FD0 Line0 interrupt event                                                             */
 /*---------------------------------------------------------------------------------------------------------*/
 void CANFD00_IRQHandler(void)
 {
     CANFD0_TEST_HANDLE();
 }
 /*---------------------------------------------------------------------------------------------------------*/
-/* CAN FD0 Callback function                                                                                */
+/* CAN FD0 Callback function                                                                               */
 /*---------------------------------------------------------------------------------------------------------*/
 void CANFD0_TEST_HANDLE(void)
 {
@@ -88,11 +88,13 @@ void SYS_Init(void)
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
-/*                           CAN FD Tx Rx Function Test                                                     */
+/*                           CAN FD Tx Rx Function Test                                                    */
 /*---------------------------------------------------------------------------------------------------------*/
 void CANFD_CANFD_TxRx_Test(CANFD_FD_MSG_T *psTxMsg, E_CANFD_ID_TYPE eFrameIdType, uint32_t u32Id, uint8_t u8LenType)
 {
     uint8_t u8Cnt;
+    uint32_t u32TimeOutCnt = CANFD_TIMEOUT;
+
     /*Set the ID Number*/
     psTxMsg->u32Id = u32Id;
     /*Set the frame type*/
@@ -127,9 +129,14 @@ void CANFD_CANFD_TxRx_Test(CANFD_FD_MSG_T *psTxMsg, E_CANFD_ID_TYPE eFrameIdType
         printf("Failed to transmit message\n");
     }
 
-    /*Wait the Rx FIFO1 received message*/
+    /* Wait the Rx FIFO1 received message */
     while (!g_u8RxFIFO1CompleteFlag)
     {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for CANFD time-out!\n");
+            while(1);
+        }
     }
 
     printf("Rx FIFO1 : Received message 0x%08X\n", g_sRxMsgFrame.u32Id);
@@ -145,7 +152,7 @@ void CANFD_CANFD_TxRx_Test(CANFD_FD_MSG_T *psTxMsg, E_CANFD_ID_TYPE eFrameIdType
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
-/*  CAN FD Function Test                                                                                    */
+/*  CAN FD Function Test                                                                                   */
 /*---------------------------------------------------------------------------------------------------------*/
 void CANFD_CANFD_Loopback(void)
 {

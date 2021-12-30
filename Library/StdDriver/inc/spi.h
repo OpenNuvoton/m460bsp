@@ -105,7 +105,6 @@ extern "C"
 
 /*@}*/ /* end of group SPI_EXPORTED_CONSTANTS */
 
-
 /** @addtogroup SPI_EXPORTED_FUNCTIONS SPI Exported Functions
   @{
 */

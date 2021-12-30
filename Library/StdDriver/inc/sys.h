@@ -28,6 +28,7 @@ extern "C"
   @{
 */
 
+#define SYS_TIMEOUT_ERR    (-1L)          /*!< SYS operation abort due to timeout error \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Module Reset Control Resister constant definitions.                                                    */
@@ -5238,6 +5239,8 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 
 /*@}*/ /* end of group SYS_EXPORTED_CONSTANTS */
 
+extern int32_t g_SYS_i32ErrCode;
+
 /** @addtogroup SYS_EXPORTED_FUNCTIONS SYS Exported Functions
   @{
 */
@@ -7036,11 +7039,15 @@ __STATIC_INLINE void SYS_LockReg(void);
   */
 __STATIC_INLINE void SYS_UnlockReg(void)
 {
+    uint32_t u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
+
     do
     {
         SYS->REGLCTL = 0x59UL;
         SYS->REGLCTL = 0x16UL;
         SYS->REGLCTL = 0x88UL;
+
+        if(--u32TimeOutCount == 0) break;
     }
     while(SYS->REGLCTL == 0UL);
 }

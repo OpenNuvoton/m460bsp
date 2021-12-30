@@ -178,6 +178,8 @@ void RS485_9bitModeMaster()
 /*---------------------------------------------------------------------------------------------------------*/
 void RS485_9bitModeSlave(void)
 {
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     /* Set Data Format, only need parity enable whatever parity ODD/EVEN */
     UART_SetLineConfig(UART1, 0, UART_WORD_LEN_8, UART_PARITY_EVEN, UART_STOP_BIT_1);
 
@@ -232,6 +234,7 @@ void RS485_9bitModeSlave(void)
     while(UART_GET_RX_EMPTY(UART1) == 0)
     {
         UART_READ(UART1);
+        if(--u32TimeOutCnt == 0) break;
     }
 
     /* Disable RDA/RLS interrupt */

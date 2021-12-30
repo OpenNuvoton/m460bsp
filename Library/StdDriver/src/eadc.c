@@ -33,7 +33,7 @@ int32_t g_EADC_i32ErrCode = 0;   /*!< EADC global error code */
   * @details This function is used to set analog input mode and enable A/D Converter.
   *         Before starting A/D conversion function, ADCEN bit (EADC_CTL[0]) should be set to 1.
   * @note This API will reset and calibrate EADC if EADC never be calibrated after chip power on.
-  * @note This function sets g_EADC_i32ErrCode to ADC_TIMEOUT_ERR if CALIF(CALSR[16]) is not set to 1.
+  * @note This function sets g_EADC_i32ErrCode to EADC_TIMEOUT_ERR if CALIF(CALSR[16]) is not set to 1.
   */
 void EADC_Open(EADC_T *eadc, uint32_t u32InputMode)
 {

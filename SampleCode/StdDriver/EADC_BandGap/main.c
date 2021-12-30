@@ -85,11 +85,12 @@ void UART0_Init(void)
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
-/* EADC function test                                                                                       */
+/* EADC function test                                                                                      */
 /*---------------------------------------------------------------------------------------------------------*/
 void EADC_FunctionTest(void)
 {
     int32_t  i32ConversionData;
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
 
     printf("\n");
     printf("+----------------------------------------------------------------------+\n");
@@ -115,7 +116,14 @@ void EADC_FunctionTest(void)
     EADC_START_CONV(EADC0, BIT16);
 
     /* Wait EADC conversion done */
-    while(g_u32AdcIntFlag == 0);
+    while(g_u32AdcIntFlag == 0)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for EADC time-out!\n");
+            while(1);
+        }
+    }
 
     /* Disable the ADINT0 interrupt */
     EADC_DISABLE_INT(EADC0, BIT0);

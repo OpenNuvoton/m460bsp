@@ -1,11 +1,10 @@
 /******************************************************************************
- * @file     main.c
+ * @file     xom_add.c
  * @version  V3.00
- * $Revision: 3 $
- * $Date: 16/10/17 2:06p $
  * @brief    Show how to use XOM Lirbary
- * @note
- * Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ *
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"

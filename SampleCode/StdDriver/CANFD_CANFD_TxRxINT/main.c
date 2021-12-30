@@ -32,7 +32,7 @@ void CANFD_SendMessage(CANFD_FD_MSG_T *psTxMsg, E_CANFD_ID_TYPE eIdType, uint32_
 
 
 /*---------------------------------------------------------------------------------------------------------*/
-/*  ISR to handle CAN FD Line 0 interrupt event                                                          */
+/*  ISR to handle CAN FD Line 0 interrupt event                                                            */
 /*---------------------------------------------------------------------------------------------------------*/
 void CANFD00_IRQHandler(void)
 {
@@ -234,12 +234,20 @@ void CANFD_SendMessage(CANFD_FD_MSG_T *psTxMsg, E_CANFD_ID_TYPE eIdType, uint32_
 void CANFD_RxTest(void)
 {
     uint8_t u8Cnt = 0;
+    uint32_t u32TimeOutCnt = CANFD_TIMEOUT;
 
     printf("Start CAN FD bus reception :\n");
 
     do
     {
-        while (!g_u8RxFifo1CompleteFlag) {}
+        while (!g_u8RxFifo1CompleteFlag)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for CANFD time-out!\n");
+                while(1);
+            }
+        }
 
         CANFD_ShowRecvMessage();
         g_u8RxFifo1CompleteFlag = 0;
@@ -325,7 +333,7 @@ void CANFD_Init(void)
 
 
 /*---------------------------------------------------------------------------------------------------------*/
-/*                           CAN FD Tx Rx Interrupt Function Test                                           */
+/*                           CAN FD Tx Rx Interrupt Function Test                                          */
 /*---------------------------------------------------------------------------------------------------------*/
 void CANFD_TxRxINTTest(void)
 {

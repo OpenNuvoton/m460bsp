@@ -83,6 +83,8 @@ void BMC_Init(void)
 
 int main(void)
 {
+    uint32_t u32TimeOutCnt;
+
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -126,7 +128,15 @@ int main(void)
     BMC_ENABLE();
 
     /* Wait until one frame transfer done */
-    while(!BMC_GetIntFlag(BMC_FTXD_INT_MASK));
+    u32TimeOutCnt = SystemCoreClock;
+    while(!BMC_GetIntFlag(BMC_FTXD_INT_MASK))
+    {
+        if(--u32TimeOutCnt == 0) /* 1 second time-out */
+        {
+            printf("Wait for BMC interrupt tim-out!\n");
+            while(1);
+        }
+    }
 
     /* Disable PDMA function */
     BMC_DISABLE_DMA();

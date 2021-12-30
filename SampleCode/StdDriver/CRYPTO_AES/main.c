@@ -4,7 +4,7 @@
  * @brief    Show Crypto IP AES-128 ECB mode encrypt/decrypt function.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
 #include <string.h>
@@ -107,7 +107,7 @@ void SYS_Init(void)
     /* Enable UART0 module clock */
     CLK_EnableModuleClock(UART0_MODULE);
 
-    /* ENable CAN module clock */
+    /* Enable CRPT module clock */
     CLK_EnableModuleClock(CRPT_MODULE);
 
     /* Select UART0 module clock source as HIRC and UART0 module clock divider as 1 */
@@ -143,6 +143,8 @@ void DEBUG_PORT_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
+    uint32_t u32TimeOutCnt;
+
     SYS_UnlockReg();
 
     /* Init System, IP clock and multi-function I/O */
@@ -169,8 +171,17 @@ int32_t main(void)
     g_AES_done = 0;
     /* Start AES Eecrypt */
     AES_Start(CRPT, 0, CRYPTO_DMA_ONE_SHOT);
+
     /* Waiting for AES calculation */
-    while(!g_AES_done);
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while(!g_AES_done)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for AES time-out!\n");
+            while(1);
+        }
+    }
 
     printf("AES encrypt done.\n\n");
     DumpBuffHex(au8OutputData, sizeof(au8InputData));
@@ -186,14 +197,20 @@ int32_t main(void)
     g_AES_done = 0;
     /* Start AES decrypt */
     AES_Start(CRPT, 0, CRYPTO_DMA_ONE_SHOT);
+
     /* Waiting for AES calculation */
-    while(!g_AES_done);
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while(!g_AES_done)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for AES time-out!\n");
+            while(1);
+        }
+    }
 
     printf("AES decrypt done.\n\n");
     DumpBuffHex(au8InputData, sizeof(au8InputData));
 
     while(1);
 }
-
-
-

@@ -88,6 +88,8 @@ typedef enum KSMEM
 #define KS_META_SECURE    (1ul << KS_METADATA_SEC_Pos)    /*!< Secure key                                     */
 #define KS_META_NONSECURE (0ul << KS_METADATA_SEC_Pos)    /*!< Non-secure key                                 */
 
+#define KS_TIMEOUT      SystemCoreClock /*!< 1 second time-out \hideinitializer */
+#define KS_TIMEOUT_ERR  (-1L)           /*!< KS operation abort due to timeout error \hideinitializer */
 
 /**
   * @brief      Enable scramble function
@@ -101,6 +103,7 @@ typedef enum KSMEM
 
 /**@}*/ /* end of group KS_EXPORTED_CONSTANTS */
 
+extern int32_t g_KS_i32ErrCode;
 
 /** @addtogroup KS_EXPORTED_FUNCTIONS Key Store Exported Functions
   @{

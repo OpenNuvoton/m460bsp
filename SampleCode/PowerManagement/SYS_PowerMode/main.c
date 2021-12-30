@@ -11,8 +11,6 @@
 
 
 
-
-extern int IsDebugFifoEmpty(void);
 static volatile uint8_t g_u8IsINTEvent;
 
 void WDT_IRQHandler(void);
@@ -36,18 +34,6 @@ void WDT_IRQHandler(void)
 
     g_u8IsINTEvent = 1;
 
-}
-
-/*---------------------------------------------------------------------------------------------------------*/
-/*  Function for System Entry to Power Down Mode                                                           */
-/*---------------------------------------------------------------------------------------------------------*/
-void PowerDownFunction(void)
-{
-    /* To check if all the debug messages are finished */
-    while(IsDebugFifoEmpty() == 0);
-
-    /* Enter to Power-down mode */
-    CLK_PowerDown();
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -175,6 +161,8 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
+    uint32_t u32TimeOutCnt = 0;
+
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -215,8 +203,8 @@ int32_t main(void)
     /* Check system work */
     CheckSystemWork();
 
-    /* Enter to Power-down Mode and wake-up by WDT */
-    printf("Enter to Power-down Mode and wake-up ");
+    /* Enter to Idle mode and wake-up by WDT */
+    printf("Enter to Idle mode and wake-up ");
 
     /* Enable WDT NVIC */
     NVIC_EnableIRQ(WDT_IRQn);
@@ -227,14 +215,19 @@ int32_t main(void)
     /* Enable WDT interrupt function */
     WDT_EnableInt();
 
-    /* To check if all the debug messages are finished */
-    while(IsDebugFifoEmpty() == 0);
-
     /* Enter to Idle mode */
     CLK_Idle();
 
     /* Check if WDT time-out interrupt occurred or not */
-    while(g_u8IsINTEvent == 0);
+    u32TimeOutCnt = SystemCoreClock;
+    while(g_u8IsINTEvent == 0)
+    {
+        if(--u32TimeOutCnt == 0) /* 1 second time-out */
+        {
+            printf("Wait for WDT interrupt time-out!\n");
+            while(1);
+        }
+    }
 
     /* Check system work */
     CheckSystemWork();

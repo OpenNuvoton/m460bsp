@@ -3,8 +3,8 @@
  * @version  V2.00
  * @brief    Read/write EEPROM via I2C interface
  *
- * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
- *
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
@@ -193,6 +193,7 @@ void I2C0_Init(void)
 int32_t main (void)
 {
     uint32_t i;
+    uint32_t u32TimeOutCnt;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -202,11 +203,6 @@ int32_t main (void)
 
     /* Init UART to 115200-8n1 for print message */
     UART_Open(UART0, 115200);
-
-#ifdef _PZ
-    /* For palladium */
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400);
-#endif
 
     /*
         This sample code sets I2C bus clock to 100kHz. Then, accesses EEPROM 24LC64 with Byte Write
@@ -238,11 +234,27 @@ int32_t main (void)
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STA);
 
         /* Wait I2C Tx Finish */
-        while (g_u8EndFlag == 0);
+        u32TimeOutCnt = I2C_TIMEOUT;
+        while (g_u8EndFlag == 0)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for I2C time-out!\n");
+                while(1);
+            }
+        }
         g_u8EndFlag = 0;
 
         /* Make sure I2C0 STOP already */
-        while(I2C0->CTL0 & I2C_CTL0_STO_Msk);
+        u32TimeOutCnt = I2C_TIMEOUT;
+        while(I2C0->CTL0 & I2C_CTL0_STO_Msk)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for I2C time-out!\n");
+                while(1);
+            }
+        }
 
         /* Wait write operation complete */
         CLK_SysTickDelay(10000);
@@ -256,10 +268,26 @@ int32_t main (void)
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STA);
 
         /* Wait I2C Rx Finish */
-        while (g_u8EndFlag == 0);
+        u32TimeOutCnt = I2C_TIMEOUT;
+        while (g_u8EndFlag == 0)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for I2C time-out!\n");
+                while(1);
+            }
+        }
 
         /* Make sure I2C0 STOP already */
-        while(I2C0->CTL0 & I2C_CTL0_STO_Msk);
+        u32TimeOutCnt = I2C_TIMEOUT;
+        while(I2C0->CTL0 & I2C_CTL0_STO_Msk)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for I2C time-out!\n");
+                while(1);
+            }
+        }
 
         /* Compare data */
         if (g_u8RxData != g_au8TxData[2])

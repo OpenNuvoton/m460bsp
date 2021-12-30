@@ -215,6 +215,7 @@ void IrDA_FunctionTxTest(void)
 void IrDA_FunctionRxTest(void)
 {
     uint8_t u8InChar = 0xFF;
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
 
     printf("\n");
     printf("+-----------------------------------------------------------+\n");
@@ -230,7 +231,8 @@ void IrDA_FunctionRxTest(void)
 
     /* Reset Rx FIFO */
     UART1->FIFO |= UART_FIFO_RXRST_Msk;
-    while(UART1->FIFO & UART_FIFO_RXRST_Msk);
+    while(UART1->FIFO & UART_FIFO_RXRST_Msk)
+        if(--u32TimeOutCnt == 0) break;
 
     printf("Waiting...\n");
 

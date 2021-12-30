@@ -12,6 +12,7 @@
 int FMC_Proc(unsigned int u32Cmd, unsigned int addr_start, unsigned int addr_end, unsigned int *data)
 {
     unsigned int u32Addr, Reg;
+    uint32_t u32TimeOutCount = SystemCoreClock;
 
     for (u32Addr = addr_start; u32Addr < addr_end; data++)
     {
@@ -26,7 +27,11 @@ int FMC_Proc(unsigned int u32Cmd, unsigned int addr_start, unsigned int addr_end
         FMC->ISPTRG = 0x1;
         __ISB();
 
-        while (FMC->ISPTRG & 0x1) ;  /* Wait for ISP command done. */
+        while (FMC->ISPTRG & 0x1)   /* Wait for ISP command done. */
+        {
+            if(--u32TimeOutCount == 0) /* 1 second time-out */
+                return -1;
+        }
 
         Reg = FMC->ISPCTL;
 
@@ -127,6 +132,7 @@ void WriteData(unsigned int addr_start, unsigned int addr_end, unsigned int *dat
 int EraseAP(unsigned int addr_start, unsigned int size)
 {
     unsigned int u32Addr, u32Cmd, u32Size;
+    uint32_t u32TimeOutCount = FMC_TIMEOUT_ERASE;
     u32Addr = addr_start;
 
     while (size > 0)
@@ -152,7 +158,11 @@ int EraseAP(unsigned int addr_start, unsigned int size)
         FMC->ISPTRG = FMC_ISPTRG_ISPGO_Msk;
         __ISB();
 
-        while (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk) ;  /* Wait for ISP command done. */
+        while (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk)   /* Wait for ISP command done. */
+        {
+            if(--u32TimeOutCount == 0)
+                return -1;
+        }
 
         if (FMC->ISPCTL & FMC_ISPCTL_ISPFF_Msk)
         {

@@ -1,12 +1,10 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V1.10
- * $Revision: 10 $
- * $Date: 15/11/19 10:11a $
  * @brief    Show Crypto IP ECC CDH secret Z generation.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
 #include <string.h>
@@ -112,7 +110,7 @@ void SYS_Init(void)
     /* Enable UART0 module clock */
     CLK_EnableModuleClock(UART0_MODULE);
 
-    /* ENable CRYPTO module clock */
+    /* Enable CRYPTO module clock */
     CLK_EnableModuleClock(CRPT_MODULE);
 
     /* Select UART0 module clock source as HIRC and UART0 module clock divider as 1 */
@@ -189,6 +187,7 @@ void GenPrivateKey(char *d, uint32_t u32NBits)
             else
             {
                 /* Invalid key */
+                printf("Current private key is not valid. Need a new one.\n");
             }
         }
     }

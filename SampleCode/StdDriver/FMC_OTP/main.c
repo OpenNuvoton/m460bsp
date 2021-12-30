@@ -72,11 +72,6 @@ int main()
     /* Configure UART0: 115200, 8-bit word, no parity bit, 1 stop bit. */
     UART_Open(UART0, 115200);
 
-#ifdef _PZ
-    /* For palladium */
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400);
-#endif
-
     printf("+-----------------------------------+\n");
     printf("|   M460 FMC OTP Sample Demo        |\n");
     printf("+-----------------------------------+\n");

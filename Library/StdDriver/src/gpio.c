@@ -150,7 +150,7 @@ void GPIO_SetSlewCtl(GPIO_T *port, uint32_t u32PinMask, uint32_t u32Mode)
  *                          It could be BIT0 ~ BIT14 for PC and PD GPIO port. \n
  *                          It could be BIT0 ~ BIT11 for PF GPIO port. \n
  *                          It could be BIT6 ~ BIT15 for PI GPIO port. \n
- *                          It could be BIT0 ~ BIT13 for PJ GPIO port. 
+ *                          It could be BIT0 ~ BIT13 for PJ GPIO port.
  * @param[in]   u32Mode     The pin mode of specified GPIO pin. It could be
  *                          - \ref GPIO_PUSEL_DISABLE
  *                          - \ref GPIO_PUSEL_PULL_UP

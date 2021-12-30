@@ -90,6 +90,8 @@ extern "C"
 #define HSUSBD_BCDC_DETSTS_SD_CDP               ((uint32_t)0x00000000ul)      /*!<CDP  \hideinitializer */
 #define HSUSBD_BCDC_DETSTS_SD_DCP               ((uint32_t)0x00000010ul)      /*!<DCP  \hideinitializer */
 
+#define HSUSBD_TIMEOUT      SystemCoreClock     /*!< 1 second time-out \hideinitializer */
+#define HSUSBD_TIMEOUT_ERR  (-2L)               /*!< HSUSBD operation abort due to timeout error \hideinitializer */
 
 /*@}*/ /* end of group HSUSBD_EXPORTED_CONSTANTS */
 
@@ -140,7 +142,9 @@ extern uint32_t volatile g_hsusbd_DmaDone;
 extern uint32_t g_hsusbd_CtrlInSize;
 extern S_HSUSBD_INFO_T gsHSInfo;
 extern S_HSUSBD_CMD_T gUsbCmd;
+extern int32_t g_HBI_i32ErrCode;
 /** @endcond HIDDEN_SYMBOLS */
+
 
 /** @addtogroup HSUSBD_EXPORTED_FUNCTIONS HSUSBD Exported Functions
   @{

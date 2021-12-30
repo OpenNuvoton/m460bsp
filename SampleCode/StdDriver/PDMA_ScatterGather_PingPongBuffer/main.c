@@ -5,7 +5,7 @@
  *           Use PDMA0 to implement Ping-Pong buffer by scatter-gather mode(memory to memory).
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
@@ -49,7 +49,7 @@ void UART0_Init(void);
  *
  * @return      None
  *
- * @details     The DMA default IRQ, declared in startup_M2354.s.
+ * @details     The DMA default IRQ, declared in startup_m460.s.
  */
 void PDMA0_IRQHandler(void)
 {
@@ -130,6 +130,8 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int main(void)
 {
+    uint32_t u32TimeOutCnt;
+
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -274,6 +276,7 @@ int main(void)
     /* Start PDMA operatin */
     PDMA_Trigger(PDMA0, 4);
 
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     while(1)
     {
         if(g_u32IsTestOver == 1)
@@ -284,7 +287,11 @@ int main(void)
             /* Close PDMA channel */
             PDMA_Close(PDMA0);
         }
+
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for PDMA time-out!\n");
+            while(1);
+        }
     }
 }
-
-/*** (C) COPYRIGHT 2020 Nuvoton Technology Corp. ***/

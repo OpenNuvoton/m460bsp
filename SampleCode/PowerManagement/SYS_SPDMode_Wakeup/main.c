@@ -32,8 +32,13 @@ void UART0_Init(void);
 /*---------------------------------------------------------------------------------------------------------*/
 void PowerDownFunction(void)
 {
+    uint32_t u32TimeOutCnt = SystemCoreClock;
+
     /* Check if all the debug messages are finished */
-    UART_WAIT_TX_EMPTY(DEBUG_PORT);
+    UART_WAIT_TX_EMPTY(DEBUG_PORT)
+    {
+        if(--u32TimeOutCnt == 0) break; /* 1 second time-out */
+    }
 
     /* Enter to Power-down mode */
     CLK_PowerDown();
@@ -146,11 +151,10 @@ void WakeUpRTCTickFunction(uint32_t u32PDMode)
     CLK_SetModuleClock(RTC_MODULE, RTC_LXTCTL_RTCCKSEL_LXT, (uint32_t)NULL);
 
     /* Open RTC and start counting */
-    RTC->INIT = RTC_INIT_KEY;
-    if(RTC->INIT != RTC_INIT_ACTIVE_Msk)
+    if( RTC_Open(NULL) < 0 )
     {
-        RTC->INIT = RTC_INIT_KEY;
-        while(RTC->INIT != RTC_INIT_ACTIVE_Msk);
+        printf("Initialize RTC module and start counting failed\n");
+        while(1);
     }
 
     /* clear tick status */
@@ -190,14 +194,6 @@ void WakeUpRTCAlarmFunction(uint32_t u32PDMode)
     CLK_SetModuleClock(RTC_MODULE, RTC_LXTCTL_RTCCKSEL_LXT, (uint32_t)NULL);
 
     /* Open RTC and start counting */
-    RTC->INIT = RTC_INIT_KEY;
-    if(RTC->INIT != RTC_INIT_ACTIVE_Msk)
-    {
-        RTC->INIT = RTC_INIT_KEY;
-        while(RTC->INIT != RTC_INIT_ACTIVE_Msk);
-    }
-
-    /* Open RTC */
     sWriteRTC.u32Year       = 2021;
     sWriteRTC.u32Month      = 5;
     sWriteRTC.u32Day        = 11;
@@ -206,7 +202,11 @@ void WakeUpRTCAlarmFunction(uint32_t u32PDMode)
     sWriteRTC.u32Minute     = 4;
     sWriteRTC.u32Second     = 10;
     sWriteRTC.u32TimeScale  = 1;
-    RTC_Open(&sWriteRTC);
+    if( RTC_Open(&sWriteRTC) < 0 )
+    {
+        printf("Initialize RTC module and start counting failed\n");
+        while(1);
+    }
 
     /* Set RTC alarm date/time */
     sWriteRTC.u32Year       = 2021;
@@ -256,11 +256,10 @@ void WakeUpRTCTamperFunction(uint32_t u32PDMode)
     CLK_SetModuleClock(RTC_MODULE, RTC_LXTCTL_RTCCKSEL_LXT, (uint32_t)NULL);
 
     /* Open RTC and start counting */
-    RTC->INIT = RTC_INIT_KEY;
-    if(RTC->INIT != RTC_INIT_ACTIVE_Msk)
+    if( RTC_Open(NULL) < 0 )
     {
-        RTC->INIT = RTC_INIT_KEY;
-        while(RTC->INIT != RTC_INIT_ACTIVE_Msk);
+        printf("Initialize RTC module and start counting failed\n");
+        while(1);
     }
 
     /* Set RTC Tamper 0 as low level detect */

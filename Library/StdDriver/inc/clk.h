@@ -985,8 +985,11 @@ extern "C"
 #define CLK_SPDSRETSEL_128K         (0x4UL << CLK_PMUCTL_SRETSEL_Pos)     /*!< 128K SRAM retention when chip enter SPD mode \hideinitializer */
 #define CLK_SPDSRETSEL_256K         (0x5UL << CLK_PMUCTL_SRETSEL_Pos)     /*!< 256K SRAM retention when chip enter SPD mode \hideinitializer */
 
+#define CLK_TIMEOUT_ERR             (-1)     /*!< Clock timeout error value \hideinitializer */
 
 /*@}*/ /* end of group CLK_EXPORTED_CONSTANTS */
+
+extern int32_t g_CLK_i32ErrCode;
 
 /** @addtogroup CLK_EXPORTED_FUNCTIONS CLK Exported Functions
   @{
@@ -1138,44 +1141,59 @@ extern "C"
 /* static inline functions                                                                                 */
 /*---------------------------------------------------------------------------------------------------------*/
 /* Declare these inline functions here to avoid MISRA C 2004 rule 8.1 error */
-__STATIC_INLINE void CLK_SysTickDelay(uint32_t us);
-__STATIC_INLINE void CLK_SysTickLongDelay(uint32_t us);
+__STATIC_INLINE int32_t CLK_SysTickDelay(uint32_t us);
+__STATIC_INLINE int32_t CLK_SysTickLongDelay(uint32_t us);
 
 /**
   * @brief      This function execute delay function.
   * @param[in]  us  Delay time. The Max value is 2^24 / CPU Clock(MHz). Ex:
   *                             200MHz => 83886us, 180MHz => 93206us ...
-  * @return     None
+  * @retval     0 Delay success. Target delay time reached.
+  * @retval     CLK_TIMEOUT_ERR Delay function execute failed due to SysTick stop working.
   * @details    Use the SysTick to generate the delay time and the unit is in us.
   *             The SysTick clock source is from HCLK, i.e the same as system core clock.
   *             User can use SystemCoreClockUpdate() to calculate CyclesPerUs automatically before using this function.
   */
-__STATIC_INLINE void CLK_SysTickDelay(uint32_t us)
+__STATIC_INLINE int32_t CLK_SysTickDelay(uint32_t us)
 {
+    /* The u32TimeOutCnt value must be greater than the max delay time of 1398ms if HCLK=12MHz */
+    uint32_t u32TimeOutCnt = SystemCoreClock<<1;
+
     SysTick->LOAD = us * CyclesPerUs;
-    SysTick->VAL  = 0x0UL;
+    SysTick->VAL  = (0x00);
     SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
 
     /* Waiting for down-count to zero */
-    while((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) == 0UL)
+    while ((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) == 0)
     {
+        if(--u32TimeOutCnt == 0)
+        {
+            break;
+        }
     }
 
     /* Disable SysTick counter */
-    SysTick->CTRL = 0UL;
+    SysTick->CTRL = 0;
+
+    if(u32TimeOutCnt == 0)
+        return CLK_TIMEOUT_ERR;
+    else
+        return 0;
 }
 
 /**
   * @brief      This function execute long delay function.
   * @param[in]  us  Delay time.
-  * @return     None
+  * @retval     0 Delay success. Target delay time reached.
+  * @retval     CLK_TIMEOUT_ERR Delay function execute failed due to SysTick stop working.
   * @details    Use the SysTick to generate the long delay time and the UNIT is in us.
   *             The SysTick clock source is from HCLK, i.e the same as system core clock.
   *             User can use SystemCoreClockUpdate() to calculate CyclesPerUs automatically before using this function.
   */
-__STATIC_INLINE void CLK_SysTickLongDelay(uint32_t us)
+__STATIC_INLINE int32_t CLK_SysTickLongDelay(uint32_t us)
 {
     uint32_t u32Delay;
+    uint32_t u32TimeOutCnt = 0;
 
     /* It should <= 65536us for each delay loop */
     u32Delay = 65536UL;
@@ -1197,14 +1215,21 @@ __STATIC_INLINE void CLK_SysTickLongDelay(uint32_t us)
         SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
 
         /* Waiting for down-count to zero */
-        while((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) == 0UL);
+        u32TimeOutCnt = SystemCoreClock<<1;
+        while((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) == 0UL)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                return CLK_TIMEOUT_ERR;                
+            }
+        }        
 
         /* Disable SysTick counter */
-        SysTick->CTRL = 0UL;
-
+        SysTick->CTRL = 0UL;  
     }
     while(us > 0UL);
 
+    return 0;
 }
 
 

@@ -60,6 +60,7 @@ static void PSIO_WS2812B_ClearInternalMemory(S_PSIO_WS2812B_LED_CFG *psConfig)
 int PSIO_WS2812B_Send_Pattern(S_PSIO_WS2812B_LED_CFG *psConfig)
 {
     int iError = 0;
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
 
     /* Encode data */
     if ((iError = PSIO_EncodePattern(psConfig->pu32DataAddr, psConfig->pu32InternalMemory, psConfig->u32DataLength, psConfig->u8PinNumber)) < 0)
@@ -82,7 +83,8 @@ int PSIO_WS2812B_Send_Pattern(S_PSIO_WS2812B_LED_CFG *psConfig)
     PSIO_START_SC(PSIO, psConfig->u8SlotCtrl);
 
     /* Wait for slot controller is not busy */
-    while (PSIO_GET_BUSY_FLAG(PSIO, psConfig->u8SlotCtrl));
+    while (PSIO_GET_BUSY_FLAG(PSIO, psConfig->u8SlotCtrl))
+        if(--u32TimeOutCnt == 0) break;
 
     /* Clear Internal Memory */
     PSIO_WS2812B_ClearInternalMemory(psConfig);

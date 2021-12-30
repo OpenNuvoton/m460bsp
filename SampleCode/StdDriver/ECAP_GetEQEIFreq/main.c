@@ -3,14 +3,13 @@
  * @version  V3.00
  * @brief    Show how to use ECAP interface to get QEIA frequency
  *
- * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
- *
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
 
 
-#define PLL_CLOCK       192000000
 
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -186,11 +185,6 @@ int32_t main(void)
     /* Init UART0 for printf */
     UART0_Init();
 
-#ifdef _PZ
-    /* For palladium */
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400);
-#endif
-
     printf("\n");
     printf("+----------------------------------------------+\n");
     printf("|        M460 ECAP with EQEI Sample Code        |\n");
@@ -267,6 +261,3 @@ int32_t main(void)
 
     while(1);
 }
-
-
-

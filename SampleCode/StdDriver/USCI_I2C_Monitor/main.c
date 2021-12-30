@@ -3,12 +3,12 @@
  * @version  V1.00
  * @brief    Demo USCI_I2C Monitor Mode
  *
- * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
 
-#define PLL_CLOCK       192000000
 
 #if 0
 #define DbgPrintf  printf
@@ -410,7 +410,7 @@ void I2C_SlaveTRx_7bit_1(uint32_t u32Status)
         I2C_SET_CONTROL_REG(I2C1, I2C_CTL_SI_AA);
     }
     else if(u32Status == 0xA0)  /* A STOP or repeated START has been received while still
-                                   addressed as Slave/Receiver*/
+                                   addressed as Slave/Receiver */
     {
         g_u8SlvDataLen = 0;
         I2C_SET_CONTROL_REG(I2C1, I2C_CTL_SI_AA);
@@ -521,7 +521,7 @@ void I2C_MasterRx(uint32_t u32Status)
 
 int32_t Read_Write_SLAVE_Mon(uint8_t slvaddr)
 {
-    uint32_t i;
+    uint32_t i, u32TimeOutCnt;
 
     g_u8DeviceAddr = slvaddr;
 
@@ -542,7 +542,15 @@ int32_t Read_Write_SLAVE_Mon(uint8_t slvaddr)
     I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STA);
 
     /* Wait I2C Tx Finish */
-    while(g_u8EndFlagM == 0);
+    u32TimeOutCnt = UI2C_TIMEOUT;
+    while(g_u8EndFlagM == 0)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for USCI_I2C time-out!\n");
+            while(1);
+        }
+    }
     g_u8EndFlagM = 0;
 
     /* I2C function to read data from slave */
@@ -554,8 +562,15 @@ int32_t Read_Write_SLAVE_Mon(uint8_t slvaddr)
     I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STA);
 
     /* Wait I2C Rx Finish */
-    while(g_u8EndFlagM == 0);
-    while(g_u32ProtOn);
+    u32TimeOutCnt = UI2C_TIMEOUT;
+    while( (g_u8EndFlagM == 0) || (g_u32ProtOn) )
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for USCI_I2C time-out!\n");
+            while(1);
+        }
+    }
 
     return 0;
 }
@@ -634,11 +649,6 @@ int main()
     /* Init UART for print message */
     UART_Open(UART0, 115200);
 
-#ifdef _PZ
-    /* For palladium */
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400);
-#endif
-
     /*
         This sample code sets USCI_I2C bus clock to 100kHz. Then, Master accesses Slave with Byte Write
         and Byte Read operations, and check if the read data is equal to the programmed data.
@@ -668,5 +678,3 @@ int main()
     }
 
 }
-
-

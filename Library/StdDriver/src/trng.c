@@ -1,10 +1,10 @@
 /**************************************************************************//**
  * @file     trng.c
- * @version  V1.00
- * @brief    M480 series TRNG driver source file
+ * @version  V3.00
+ * @brief    M460 series TRNG driver source file
  *
- * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2016-2020 Nuvoton Technology Corp. All rights reserved.
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #include <stdio.h>
@@ -28,10 +28,14 @@
 
 /**
   * @brief Initialize TRNG hardware.
-  * @return None
+  * @return  TRNG hardware enable success or failed.
+  * @retval  0   Success
+  * @retval  -1  Time-out. TRNG hardware may not be enabled.
   */
-void TRNG_Open(void)
+int32_t TRNG_Open(void)
 {
+    uint32_t u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
+
     SYS->IPRST1 |= SYS_IPRST1_TRNGRST_Msk;
     SYS->IPRST1 ^= SYS_IPRST1_TRNGRST_Msk;
 
@@ -40,7 +44,12 @@ void TRNG_Open(void)
     TRNG->ACT |= TRNG_ACT_ACT_Msk;
 
     /* Waiting for ready */
-    while ((TRNG->CTL & TRNG_CTL_READY_Msk) == 0);
+    while ((TRNG->CTL & TRNG_CTL_READY_Msk) == 0)
+    {
+        if(--u32TimeOutCount == 0) return -1; /* Time-out error */
+    }
+
+    return 0;
 }
 
 
@@ -166,7 +175,3 @@ int32_t TRNG_GenBignumHex(char cBigNumHex[], int32_t i32Len)
 /*@}*/ /* end of group TRNG_Driver */
 
 /*@}*/ /* end of group Standard_Driver */
-
-/*** (C) COPYRIGHT 2019 Nuvoton Technology Corp. ***/
-
-

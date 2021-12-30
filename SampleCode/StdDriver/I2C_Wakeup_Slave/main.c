@@ -4,7 +4,9 @@
  * @brief
  *           Show how to wake up MCU from Power-down mode through I2C interface.
  *           This sample code needs to work with I2C_Master.
- * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ *
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
@@ -79,8 +81,11 @@ void PWRWU_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 void PowerDownFunction(void)
 {
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     /* Check if all the debug messages are finished */
-    UART_WAIT_TX_EMPTY(DEBUG_PORT);
+    UART_WAIT_TX_EMPTY(DEBUG_PORT)
+        if(--u32TimeOutCnt == 0) break;
 
     /* Enter to Power-down mode */
     CLK_PowerDown();
@@ -225,7 +230,7 @@ void I2C0_Close(void)
 
 int32_t main(void)
 {
-    uint32_t i;
+    uint32_t i, u32TimeOutCnt;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -235,11 +240,6 @@ int32_t main(void)
 
     /* Configure UART0: 115200, 8-bit word, no parity bit, 1 stop bit. */
     UART_Open(UART0, 115200);
-
-#ifdef _PZ
-    /* For palladium */
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400);
-#endif
 
     /*
         This sample code is I2C SLAVE mode and it simulates EEPROM function
@@ -291,8 +291,16 @@ int32_t main(void)
     /* Enter to Power-down mode */
     PowerDownFunction();
 
-    /* Waiting for syteem wake-up and I2C wake-up finish*/
-    while((g_u8SlvPWRDNWK & g_u8SlvI2CWK) == 0);
+    /* Waiting for system wake-up and I2C wake-up finish */
+    u32TimeOutCnt = I2C_TIMEOUT;
+    while((g_u8SlvPWRDNWK & g_u8SlvI2CWK) == 0)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for system and I2C time-out!\n");
+            while(1);
+        }
+    }
 
     /* Wake-up Interrupt Message */
     printf("Power-down Wake-up INT 0x%x\n", (unsigned int)((CLK->PWRCTL) & CLK_PWRCTL_PDWKIF_Msk));
@@ -313,6 +321,3 @@ int32_t main(void)
 
     while(1);
 }
-/*** (C) COPYRIGHT 2021 Nuvoton Technology Corp. ***/
-
-

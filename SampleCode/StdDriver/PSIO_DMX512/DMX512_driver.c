@@ -220,14 +220,17 @@ uint32_t PSIO_DMX512_Open(S_PSIO_DMX512_CFG *psConfig)
 
     /* Set Rx data order as LSB */
     PSIO_SET_ORDER(PSIO, psConfig->u8RxPin, PSIO_LSB);
-    
+
     return psConfig->u32SlotCnt;
 }
 
 int PSIO_DMX512_Tx(S_PSIO_DMX512_CFG *psConfig, uint32_t u32OutData, E_DMX512_FRAME_TYPE eFrameType)
 {
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
     /* Wait for slot controller is not busy */
-    while(PSIO_GET_BUSY_FLAG(PSIO, psConfig->u8TxSlotCounter));
+    while(PSIO_GET_BUSY_FLAG(PSIO, psConfig->u8TxSlotCounter))
+        if(--u32TimeOutCnt == 0) break;
 
     if(psConfig->eState != eFrameType)    /* Initial state is eDMX512_UNDEFINE */
     {
@@ -273,7 +276,11 @@ int PSIO_DMX512_Tx(S_PSIO_DMX512_CFG *psConfig, uint32_t u32OutData, E_DMX512_FR
 /* Wait specific channel and get the data */
 int PSIO_DMX512_getChannelData(S_PSIO_DMX512_CFG *psConfig, uint16_t u16TargetChannel, uint16_t *pu16data)
 {
-    while(PSIO_GET_BUSY_FLAG(PSIO, psConfig->u8RxSlotCounter));
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
+    /* Wait for slot controller is not busy */
+    while(PSIO_GET_BUSY_FLAG(PSIO, psConfig->u8RxSlotCounter))
+        if(--u32TimeOutCnt == 0) break;
 
     setPSIO_Rx_11BIT(psConfig);
 

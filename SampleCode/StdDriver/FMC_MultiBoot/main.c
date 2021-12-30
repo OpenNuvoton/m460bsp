@@ -60,10 +60,6 @@ int32_t main(void)
     /* Configure UART0: 115200, 8-bit word, no parity bit, 1 stop bit. */
     UART_Open(UART0, 115200);
 
-#ifdef _PZ
-    /* For palladium */
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400);
-#endif
     /*
         This sample code shows how to boot with different firmware images in APROM.
         In the code, VECMAP is used to implement multi-boot function. Software set VECMAP
@@ -131,6 +127,12 @@ int32_t main(void)
     default:
         FMC_SetVectorPageAddr(0x0);
         break;
+    }
+
+    if (g_FMC_i32ErrCode != 0)
+    {
+        printf("FMC_SetVectorPageAddr failed!\n");
+        while (1);
     }
 
     /* Reset CPU only to reset to new vector page */

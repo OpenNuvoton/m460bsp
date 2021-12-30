@@ -121,17 +121,13 @@ int main()
     uint32_t    u32Data;
 #endif
     FUNC_PTR    *func;                 /* function pointer */
+    uint32_t    u32TimeOutCnt;         /* time-out counter */
 
     SYS_UnlockReg();                   /* Unlock protected registers */
 
     SYS_Init();                        /* Init System, IP clock and multi-function I/O */
 
     UART_Open(UART0, 115200);          /* Init UART to 115200-8n1 for print message */
-
-#ifdef _PZ
-    /* For palladium */
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400);
-#endif
 
     PutString("\n\n");
     PutString("+-------------------------------------+\n");
@@ -145,12 +141,20 @@ int main()
     GetChar();                         /* block on waiting for any one character input from UART0 */
 
     PutString("\n\nChange VECMAP and branch to APROM...\n");
-    while (!(UART0->FIFOSTS & UART_FIFOSTS_TXEMPTY_Msk));       /* wait until UART3 TX FIFO is empty */
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while (!(UART0->FIFOSTS & UART_FIFOSTS_TXEMPTY_Msk))        /* wait until UART0 TX FIFO is empty */
+        if(--u32TimeOutCnt == 0) break;
 
     /*  NOTE!
      *     Before change VECMAP, user MUST disable all interrupts.
      */
     FMC_SetVectorPageAddr(FMC_APROM_BASE);        /* Vector remap APROM page 0 to address 0. */
+    if (g_FMC_i32ErrCode != 0)
+    {
+        printf("FMC_SetVectorPageAddr(FMC_APROM_BASE) failed!\n");
+        while (1);
+    }
+
     SYS_LockReg();                                /* Lock protected registers */
 
     /*

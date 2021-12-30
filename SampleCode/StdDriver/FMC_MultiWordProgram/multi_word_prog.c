@@ -56,7 +56,7 @@ void UART0_Init(void)
 
 int  multi_word_program(uint32_t start_addr)
 {
-    uint32_t    i;
+    uint32_t    i, u32TimeOutCnt;
 
     printf("    program address 0x%x\n", start_addr);
 
@@ -70,8 +70,15 @@ int  multi_word_program(uint32_t start_addr)
 
     for (i = 4; i < FMC_MULTI_WORD_PROG_LEN/4; )
     {
+        u32TimeOutCnt = FMC_TIMEOUT_WRITE;
         while (FMC->MPSTS & (FMC_MPSTS_D0_Msk | FMC_MPSTS_D1_Msk))
-            ;
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Time-out occurred on waiting D0/D1!\n");
+                return -1;
+            }
+        }
 
         if (!(FMC->MPSTS & FMC_MPSTS_MPBUSY_Msk))
         {
@@ -86,8 +93,15 @@ int  multi_word_program(uint32_t start_addr)
         if (i == FMC_MULTI_WORD_PROG_LEN/4)
             return 0;           // done
 
+        u32TimeOutCnt = FMC_TIMEOUT_WRITE;
         while (FMC->MPSTS & (FMC_MPSTS_D2_Msk | FMC_MPSTS_D3_Msk))
-            ;
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Time-out occurred on waiting D2/D3!\n");
+                return -1;
+            }
+        }
 
         if (!(FMC->MPSTS & FMC_MPSTS_MPBUSY_Msk))
         {
@@ -106,7 +120,15 @@ int  multi_word_program(uint32_t start_addr)
         return -1;
     }
 
-    while (FMC->MPSTS & FMC_MPSTS_MPBUSY_Msk) ;
+    u32TimeOutCnt = FMC_TIMEOUT_WRITE;
+    while (FMC->MPSTS & FMC_MPSTS_MPBUSY_Msk)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Time-out occurred on waiting MPBUSY cleared!\n");
+            return -1;
+        }
+    }
 
     return 0;
 }
@@ -120,11 +142,6 @@ int main()
     SYS_Init();                        /* Init System, IP clock and multi-function I/O */
 
     UART0_Init();                      /* Initialize UART0 */
-
-#ifdef _PZ
-    /* For palladium */
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400);
-#endif
 
     printf("\n\n");
     printf("+-------------------------------------+\n");
@@ -179,6 +196,11 @@ int main()
             if (FMC_Read(addr+i) != page_buff[i/4])
             {
                 printf("\n[FAILED] Data mismatch at address 0x%x, expect: 0x%x, read: 0x%x!\n", addr+i, page_buff[i/4], FMC_Read(addr+i));
+                goto err_out;
+            }
+            if (g_FMC_i32ErrCode != 0)
+            {
+                printf("FMC_Read address 0x%x failed!\n", addr+i);
                 goto err_out;
             }
         }

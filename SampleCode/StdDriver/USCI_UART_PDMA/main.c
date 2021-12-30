@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-#define ENABLE_PDMA_INTERRUPT 0
+//#define ENABLE_PDMA_INTERRUPT
 #define PDMA_TEST_LENGTH   128
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -129,8 +129,8 @@ void PDMA_Init(void)
     PDMA_SetBurstType(PDMA0,0, PDMA_REQ_SINGLE, 0);
     PDMA_SetBurstType(PDMA0,1, PDMA_REQ_SINGLE, 0);
     //Set timeout
-    //PDMA_SetTimeOut(0, 0, 0x5555);
-    //PDMA_SetTimeOut(1, 0, 0x5555);
+    //PDMA_SetTimeOut(PDMA0, 0, 0, 0x5555);
+    //PDMA_SetTimeOut(PDMA0, 1, 0, 0x5555);
 
 #ifdef ENABLE_PDMA_INTERRUPT
     PDMA_EnableInt(PDMA0, 0, PDMA_INT_TRANS_DONE);
@@ -181,7 +181,7 @@ int32_t main(void)
 /*---------------------------------------------------------------------------------------------------------*/
 void USCI_UART_PDMATest(void)
 {
-    uint32_t i;
+    uint32_t i, u32TimeOutCnt;
 
     printf("+-----------------------------------------------------------+\n");
     printf("|  USCI UART PDMA Test                                      |\n");
@@ -202,7 +202,9 @@ void USCI_UART_PDMATest(void)
 
     /* PDMA reset */
     UUART0->PDMACTL |= UUART_PDMACTL_PDMARST_Msk;
-    while( UUART0->PDMACTL & UUART_PDMACTL_PDMARST_Msk );
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while( UUART0->PDMACTL & UUART_PDMACTL_PDMARST_Msk )
+        if(--u32TimeOutCnt == 0) break;
 
     PDMA_Init();
 
@@ -210,7 +212,15 @@ void USCI_UART_PDMATest(void)
     UUART0->PDMACTL = UUART_PDMACTL_TXPDMAEN_Msk | UUART_PDMACTL_RXPDMAEN_Msk | UUART_PDMACTL_PDMAEN_Msk;
 
 #ifdef ENABLE_PDMA_INTERRUPT
-    while(u32IsTestOver == 0);
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while(u32IsTestOver == 0)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for PDMA time-out!\n");
+            while(1);
+        }
+    }
 
     if (u32IsTestOver == 1)
         printf("test done...\n");
@@ -219,7 +229,15 @@ void USCI_UART_PDMATest(void)
     else if (u32IsTestOver == 3)
         printf("timeout...\n");
 #else
-    while( (!(PDMA_GET_TD_STS(PDMA0) & (1 << 0))) || (!(PDMA_GET_TD_STS(PDMA0) & (1 << 1))) );
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while( (!(PDMA_GET_TD_STS(PDMA0)&PDMA_TDSTS_TDIF0_Msk) || (!(PDMA_GET_TD_STS(PDMA0)&PDMA_TDSTS_TDIF1_Msk))) )
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for PDMA time-out!\n");
+            while(1);
+        }
+    }
 
     PDMA_CLR_TD_FLAG(PDMA0,PDMA_TDSTS_TDIF0_Msk|PDMA_TDSTS_TDIF1_Msk);
 #endif

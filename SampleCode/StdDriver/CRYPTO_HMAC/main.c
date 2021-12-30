@@ -4,7 +4,7 @@
  * @brief    Show how to use CRYPT hardware to calculate HMAC.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
 #include <string.h>
@@ -131,7 +131,7 @@ void SYS_Init(void)
     /* Enable UART0 module clock */
     CLK_EnableModuleClock(UART0_MODULE);
 
-    /* ENable CAN module clock */
+    /* Enable CRPT module clock */
     CLK_EnableModuleClock(CRPT_MODULE);
 
     /* Select UART0 module clock source as HIRC and UART0 module clock divider as 1 */
@@ -184,6 +184,7 @@ int  main(void)
     uint32_t u32OpMode = HMAC_MODE_SHA512;
 #endif
 
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -219,8 +220,14 @@ int  main(void)
 
     g_HMAC_done = 0;
     CRPT->HMAC_CTL |= CRPT_HMAC_CTL_START_Msk | CRPT_HMAC_CTL_DMAEN_Msk | CRPT_HMAC_CTL_DMALAST_Msk;
-    while(!g_HMAC_done) {}
-
+    while(!g_HMAC_done)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for HMAC time-out!\n");
+            while(1);
+        }
+    }
 
     printf("\nHMAC Output:\n");
 

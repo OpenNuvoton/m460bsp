@@ -1,10 +1,10 @@
 /**************************************************************************//**
  * @file    spim.c
  * @version V1.00
- * @brief   M480 series SPIM driver
+ * @brief   M460 series SPIM driver
  *
- * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2016-2020 Nuvoton Technology Corp. All rights reserved.
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #include <stdio.h>
@@ -19,6 +19,8 @@
 /** @addtogroup SPIM_Driver SPIM Driver
   @{
 */
+
+int32_t g_SPIM_i32ErrCode = 0;       /*!< SPIM global error code */
 
 /** @addtogroup SPIM_EXPORTED_FUNCTIONS SPIM Exported Functions
   @{
@@ -124,10 +126,14 @@ static void SwitchNBitInput(uint32_t u32NBit)
   * @param      pu8TxBuf    Transmit buffer.
   * @param      u32NTx      Number of bytes to transmit.
   * @return     None.
+  * @note       This function sets g_SPIM_i32ErrCode to SPIM_TIMEOUT_ERR if waiting SPIM time-out.
   */
 static void spim_write(uint8_t pu8TxBuf[], uint32_t u32NTx)
 {
     uint32_t  buf_idx = 0UL;
+    uint32_t u32TimeOutCount = 0UL;
+
+    g_SPIM_i32ErrCode = 0;
 
     while (u32NTx)
     {
@@ -170,7 +176,15 @@ static void spim_write(uint8_t pu8TxBuf[], uint32_t u32NTx)
             SPIM_SET_DATA_WIDTH(32UL);
             SPIM_SET_DATA_NUM(dataNum);
             SPIM_SET_GO();
-            SPIM_WAIT_FREE();
+            u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
+            SPIM_WAIT_FREE()
+            {
+                if(--u32TimeOutCount == 0)
+                {
+                    g_SPIM_i32ErrCode = SPIM_TIMEOUT_ERR;
+                    break;
+                }
+            }
         }
 
         if (u32NTx && (u32NTx < 4UL))
@@ -187,7 +201,15 @@ static void spim_write(uint8_t pu8TxBuf[], uint32_t u32NTx)
             SPIM_SET_DATA_WIDTH(rnm * 8UL);
             SPIM_SET_DATA_NUM(1UL);
             SPIM_SET_GO();
-            SPIM_WAIT_FREE();
+            u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
+            SPIM_WAIT_FREE()
+            {
+                if(--u32TimeOutCount == 0)
+                {
+                    g_SPIM_i32ErrCode = SPIM_TIMEOUT_ERR;
+                    break;
+                }
+            }
         }
     }
 }
@@ -197,10 +219,14 @@ static void spim_write(uint8_t pu8TxBuf[], uint32_t u32NTx)
   * @param      pu8TxBuf    Receive buffer.
   * @param      u32NRx      Size of receive buffer in bytes.
   * @return     None.
+  * @note       This function sets g_SPIM_i32ErrCode to SPIM_TIMEOUT_ERR if waiting SPIM time-out.
   */
 static void spim_read(uint8_t pu8RxBuf[], uint32_t u32NRx)
 {
     uint32_t  buf_idx = 0UL;
+    uint32_t u32TimeOutCount = 0UL;
+
+    g_SPIM_i32ErrCode = 0;
 
     while (u32NRx)
     {
@@ -229,7 +255,15 @@ static void spim_read(uint8_t pu8RxBuf[], uint32_t u32NRx)
             SPIM_SET_DATA_WIDTH(32UL);
             SPIM_SET_DATA_NUM(dataNum);
             SPIM_SET_GO();
-            SPIM_WAIT_FREE();
+            u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
+            SPIM_WAIT_FREE()
+            {
+                if(--u32TimeOutCount == 0)
+                {
+                    g_SPIM_i32ErrCode = SPIM_TIMEOUT_ERR;
+                    break;
+                }
+            }
         }
 
         while (dataNum)
@@ -251,7 +285,15 @@ static void spim_read(uint8_t pu8RxBuf[], uint32_t u32NRx)
             SPIM_SET_DATA_WIDTH(u32NRx * 8UL);
             SPIM_SET_DATA_NUM(1UL);
             SPIM_SET_GO();
-            SPIM_WAIT_FREE();
+            u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
+            SPIM_WAIT_FREE()
+            {
+                if(--u32TimeOutCount == 0)
+                {
+                    g_SPIM_i32ErrCode = SPIM_TIMEOUT_ERR;
+                    break;
+                }
+            }
 
             tmp = SPIM->RX[0];
             memcpy(&pu8RxBuf[buf_idx], &tmp, u32NRx);
@@ -834,6 +876,7 @@ int SPIM_Enable_4Bytes_Mode(int isEn, uint32_t u32NBit)
     int  isSupt = 0L, ret = -1;
     uint8_t idBuf[3];
     uint8_t cmdBuf[1];                           /* 1-byte Enter/Exit 4-Byte Mode command. */
+    int32_t i32TimeOutCount = 0;
 
     SPIM_ReadJedecId(idBuf, sizeof (idBuf), u32NBit);
 
@@ -873,18 +916,26 @@ int SPIM_Enable_4Bytes_Mode(int isEn, uint32_t u32NBit)
          * FIXME: Per test, 4BYTE Indicator bit doesn't set after EN4B, which
          * doesn't match spec(MX25L25635E), so skip the check below.
          */
+        ret = 0;
         if (idBuf[0] != MFGID_MXIC)
         {
+            /*
+             *  About over 100 instrucsions executed, just want to give
+             *  a time-out about 1 seconds to avoid infinite loop
+             */
+            i32TimeOutCount = (SystemCoreClock)/100;
+
             if (isEn)
             {
-                while (! SPIM_Is4ByteModeEnable(u32NBit)) { }
+                while ((i32TimeOutCount-- > 0) && !SPIM_Is4ByteModeEnable(u32NBit)) { }
             }
             else
             {
-                while (SPIM_Is4ByteModeEnable(u32NBit)) { }
+                while ((i32TimeOutCount-- > 0) && SPIM_Is4ByteModeEnable(u32NBit)) { }
             }
+            if (i32TimeOutCount <= 0)
+                ret = -1;
         }
-        ret = 0;
     }
     return ret;
 }
@@ -1052,10 +1103,15 @@ static void SPIM_WriteInPageDataByIo(uint32_t u32Addr, int is4ByteAddr, uint32_t
   * @param      wrCmd       Write command.
   * @param      isSync      Block or not.
   * @return     None.
+  * @note       This function sets g_SPIM_i32ErrCode to SPIM_TIMEOUT_ERR if waiting SPIM time-out.
   */
 static void SPIM_WriteInPageDataByPageWrite(uint32_t u32Addr, int is4ByteAddr, uint32_t u32NTx,
         uint8_t pu8TxBuf[], uint32_t wrCmd, int isSync)
 {
+    uint32_t u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
+
+    g_SPIM_i32ErrCode = 0;
+
     if ((wrCmd == CMD_QUAD_PAGE_PROGRAM_WINBOND) ||
             (wrCmd == CMD_QUAD_PAGE_PROGRAM_MXIC))
     {
@@ -1074,11 +1130,18 @@ static void SPIM_WriteInPageDataByPageWrite(uint32_t u32Addr, int is4ByteAddr, u
     SPIM->SRAMADDR = (uint32_t) pu8TxBuf;        /* SRAM u32Address. */
     SPIM->DMACNT = u32NTx;                       /* Transfer length. */
     SPIM->FADDR = u32Addr;                       /* Flash u32Address.*/
-    SPIM_SET_GO();                              /* Go.              */
+    SPIM_SET_GO();                               /* Go.              */
 
     if (isSync)
     {
-        SPIM_WAIT_FREE();
+        SPIM_WAIT_FREE()
+        {
+            if(--u32TimeOutCount == 0)
+            {
+                g_SPIM_i32ErrCode = SPIM_TIMEOUT_ERR;
+                break;
+            }
+        }
     }
 
     if (wrCmd == CMD_QUAD_PAGE_PROGRAM_EON)
@@ -1255,10 +1318,15 @@ void SPIM_DMA_Write(uint32_t u32Addr, int is4ByteAddr, uint32_t u32NTx, uint8_t 
   * @param      u32RdCmd    Read command.
   * @param      isSync      Block or not.
   * @return     None.
+  * @note       This function sets g_SPIM_i32ErrCode to SPIM_TIMEOUT_ERR if waiting SPIM time-out.
   */
 void SPIM_DMA_Read(uint32_t u32Addr, int is4ByteAddr, uint32_t u32NRx, uint8_t pu8RxBuf[],
                    uint32_t u32RdCmd, int isSync)
 {
+    uint32_t u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
+
+    g_SPIM_i32ErrCode = 0;
+
     SPIM_SET_OPMODE(SPIM_CTL0_OPMODE_PAGEREAD); /* Switch to Page Read mode. */
     SPIM_SET_SPIM_MODE(u32RdCmd);               /* SPIM mode.       */
     SPIM_SET_4BYTE_ADDR_EN(is4ByteAddr);        /* Enable/disable 4-Byte Address. */
@@ -1270,7 +1338,14 @@ void SPIM_DMA_Read(uint32_t u32Addr, int is4ByteAddr, uint32_t u32NRx, uint8_t p
 
     if (isSync)
     {
-        SPIM_WAIT_FREE();                       /* Wait for DMA done.  */
+        SPIM_WAIT_FREE()                       /* Wait for DMA done.  */
+        {
+            if(--u32TimeOutCount == 0)
+            {
+                g_SPIM_i32ErrCode = SPIM_TIMEOUT_ERR;
+                break;
+            }
+        }
     }
 }
 
@@ -1304,5 +1379,3 @@ void SPIM_ExitDirectMapMode(void)
 /*@}*/ /* end of group SPIM_Driver */
 
 /*@}*/ /* end of group Standard_Driver */
-
-/*** (C) COPYRIGHT 2017 Nuvoton Technology Corp. ***/

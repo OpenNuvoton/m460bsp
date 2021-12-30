@@ -88,6 +88,7 @@ void UART0_Init(void)
 int32_t main(void)
 {
     S_PSIO_NEC_CFG sConfig;
+    uint32_t u32TimeOutCnt;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -118,13 +119,29 @@ int32_t main(void)
     PSIO_NEC_Send(&sConfig, 0x1, ~0x1, 0x2, ~0x2);
 
     /* Wait transfer done */
-    while (PSIO_NEC_TransferDone(&sConfig));
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while (PSIO_NEC_TransferDone(&sConfig))
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for PSIO time-out!\n");
+            while(1);
+        }
+    }
 
     /* Send  Repeat signal */
     PSIO_NEC_Repeat(&sConfig);
 
     /* Wait transfer done */
-    while (PSIO_NEC_TransferDone(&sConfig));
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while (PSIO_NEC_TransferDone(&sConfig))
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for PSIO time-out!\n");
+            while(1);
+        }
+    }
 
     /* Release PSIO setting */
     PSIO_NEC_Close(&sConfig);

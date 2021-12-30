@@ -153,17 +153,13 @@ int main()
     uint8_t     u8Item;                /* menu item */
     uint32_t    u32Data;               /* temporary data word */
     FUNC_PTR    *func;                 /* function pointer */
+    uint32_t    u32TimeOutCnt;         /* time-out counter */
 
     SYS_UnlockReg();                   /* Unlock register lock protect */
 
     SYS_Init();                        /* Init System, IP clock and multi-function I/O */
 
     UART0_Init();                      /* Initialize UART0 */
-
-#ifdef _PZ
-    /* For palladium */
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400);
-#endif
 
     printf("\n\n");
     printf("+----------------------------------------+\n");
@@ -239,7 +235,9 @@ int main()
             printf("\n\nChange VECMAP and branch to LDROM...\n");
             printf("LDROM code SP = 0x%x\n", *(uint32_t *)(FMC_LDROM_BASE));
             printf("LDROM code ResetHandler = 0x%x\n", *(uint32_t *)(FMC_LDROM_BASE+4));
-            while (!(UART0->FIFOSTS & UART_FIFOSTS_TXEMPTY_Msk));      /* Wait for UART3 TX FIFO cleared */
+            u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+            while (!(UART0->FIFOSTS & UART_FIFOSTS_TXEMPTY_Msk))       /* Wait for UART0 TX FIFO cleared */
+                if(--u32TimeOutCnt == 0) break;
             /*  NOTE!
              *     Before change VECMAP, user MUST disable all interrupts.
              *     The following code CANNOT locate in address 0x0 ~ 0x200.
@@ -249,7 +247,15 @@ int main()
             FMC->ISPCMD = FMC_ISPCMD_VECMAP;              /* ISP command */
             FMC->ISPADDR = FMC_LDROM_BASE;                /* Vector remap address */
             FMC->ISPTRG = FMC_ISPTRG_ISPGO_Msk;           /* Trigger ISP command */
-            while (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk) ;  /* Wait for ISP command done. */
+            u32TimeOutCnt = FMC_TIMEOUT_WRITE;            /* Setup time-out count */
+            while (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk)    /* Wait for ISP command done. */
+            {
+                if(--u32TimeOutCnt == 0)
+                {
+                    printf("FMC_ISPCMD_VECMAP time-out!\n");
+                    goto lexit;
+                }
+            }
 
             /*
              *  The reset handler address of an executable image is located at offset 0x4.

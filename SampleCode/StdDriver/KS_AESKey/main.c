@@ -204,6 +204,7 @@ int AES_Test(CRPT_T *crpt, KS_MEM_Type mem, int32_t keyIdx)
     int32_t len;
     // IV = 0xF8C44B6FBDF96B835547FF45DE1FFC92
     uint32_t au32IV[4] = {0xDE1FFC92, 0x5547FF45, 0xBDF96B83, 0xF8C44B6F };
+    uint32_t u32TimeOutCnt;
 
     (void)mem;
 
@@ -242,7 +243,15 @@ int AES_Test(CRPT_T *crpt, KS_MEM_Type mem, int32_t keyIdx)
 
     /* Start AES encode */
     AES_Start(crpt, 0, CRYPTO_DMA_ONE_SHOT);
-    while(!g_AES_done);
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while(!g_AES_done)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for AES time-out!\n");
+            return -1;
+        }
+    }
     if(g_AESERR_done)
     {
         printf("AES Encode Fail!\n");
@@ -271,7 +280,16 @@ int AES_Test(CRPT_T *crpt, KS_MEM_Type mem, int32_t keyIdx)
 
     /* Start AES decode */
     AES_Start(crpt, 0, CRYPTO_DMA_ONE_SHOT);
-    while(!g_AES_done);
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while(!g_AES_done)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for AES time-out!\n");
+            return -1;
+        }
+    }
+
     if(g_AESERR_done)
     {
         printf("AES Decode Fail!\n");
@@ -290,7 +308,3 @@ int AES_Test(CRPT_T *crpt, KS_MEM_Type mem, int32_t keyIdx)
 
     return 0;
 }
-
-
-
-

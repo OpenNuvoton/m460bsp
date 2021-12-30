@@ -26,6 +26,20 @@ void SpiFlash_NormalPageProgram(uint32_t u32StartAddress, uint8_t *u8DataBuffer)
 void SpiFlash_NormalRead(uint32_t u32StartAddress, uint8_t *u8DataBuffer);
 void SYS_Init(void);
 
+__STATIC_INLINE void wait_SPI_IS_BUSY(SPI_T *spi)
+{
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
+    while(SPI_IS_BUSY(spi))
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for SPI time-out!\n");
+            while(1);
+        }
+    }
+}
+
 uint16_t SpiFlash_ReadMidDid(void)
 {
     uint8_t u8RxData[6], u8IDCnt = 0;
@@ -46,7 +60,7 @@ uint16_t SpiFlash_ReadMidDid(void)
     SPI_WRITE_TX(SPI_FLASH_PORT, 0x00);
 
     // wait tx finish
-    while(SPI_IS_BUSY(SPI_FLASH_PORT));
+    wait_SPI_IS_BUSY(SPI_FLASH_PORT);
 
     // /CS: de-active
     SPI_SET_SS_HIGH(SPI_FLASH_PORT);
@@ -66,7 +80,7 @@ void SpiFlash_ChipErase(void)
     SPI_WRITE_TX(SPI_FLASH_PORT, 0x06);
 
     // wait tx finish
-    while(SPI_IS_BUSY(SPI_FLASH_PORT));
+    wait_SPI_IS_BUSY(SPI_FLASH_PORT);
 
     // /CS: de-active
     SPI_SET_SS_HIGH(SPI_FLASH_PORT);
@@ -80,7 +94,7 @@ void SpiFlash_ChipErase(void)
     SPI_WRITE_TX(SPI_FLASH_PORT, 0xC7);
 
     // wait tx finish
-    while(SPI_IS_BUSY(SPI_FLASH_PORT));
+    wait_SPI_IS_BUSY(SPI_FLASH_PORT);
 
     // /CS: de-active
     SPI_SET_SS_HIGH(SPI_FLASH_PORT);
@@ -100,7 +114,7 @@ uint8_t SpiFlash_ReadStatusReg(void)
     SPI_WRITE_TX(SPI_FLASH_PORT, 0x00);
 
     // wait tx finish
-    while(SPI_IS_BUSY(SPI_FLASH_PORT));
+    wait_SPI_IS_BUSY(SPI_FLASH_PORT);
 
     // /CS: de-active
     SPI_SET_SS_HIGH(SPI_FLASH_PORT);
@@ -120,7 +134,7 @@ void SpiFlash_WriteStatusReg(uint8_t u8Value)
     SPI_WRITE_TX(SPI_FLASH_PORT, 0x06);
 
     // wait tx finish
-    while(SPI_IS_BUSY(SPI_FLASH_PORT));
+    wait_SPI_IS_BUSY(SPI_FLASH_PORT);
 
     // /CS: de-active
     SPI_SET_SS_HIGH(SPI_FLASH_PORT);
@@ -137,7 +151,7 @@ void SpiFlash_WriteStatusReg(uint8_t u8Value)
     SPI_WRITE_TX(SPI_FLASH_PORT, u8Value);
 
     // wait tx finish
-    while(SPI_IS_BUSY(SPI_FLASH_PORT));
+    wait_SPI_IS_BUSY(SPI_FLASH_PORT);
 
     // /CS: de-active
     SPI_SET_SS_HIGH(SPI_FLASH_PORT);
@@ -146,9 +160,16 @@ void SpiFlash_WriteStatusReg(uint8_t u8Value)
 void SpiFlash_WaitReady(void)
 {
     uint8_t u8ReturnValue;
+    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
 
     do
     {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for QSPI time-out!\n");
+            while(1);
+        }
+
         u8ReturnValue = SpiFlash_ReadStatusReg();
         u8ReturnValue = u8ReturnValue & 1;
     }
@@ -166,7 +187,7 @@ void SpiFlash_NormalPageProgram(uint32_t u32StartAddress, uint8_t *u8DataBuffer)
     SPI_WRITE_TX(SPI_FLASH_PORT, 0x06);
 
     // wait tx finish
-    while(SPI_IS_BUSY(SPI_FLASH_PORT));
+    wait_SPI_IS_BUSY(SPI_FLASH_PORT);
 
     // /CS: de-active
     SPI_SET_SS_HIGH(SPI_FLASH_PORT);
@@ -194,7 +215,7 @@ void SpiFlash_NormalPageProgram(uint32_t u32StartAddress, uint8_t *u8DataBuffer)
     }
 
     // wait tx finish
-    while(SPI_IS_BUSY(SPI_FLASH_PORT));
+    wait_SPI_IS_BUSY(SPI_FLASH_PORT);
 
     // /CS: de-active
     SPI_SET_SS_HIGH(SPI_FLASH_PORT);
@@ -217,7 +238,7 @@ void SpiFlash_NormalRead(uint32_t u32StartAddress, uint8_t *u8DataBuffer)
     SPI_WRITE_TX(SPI_FLASH_PORT, (u32StartAddress >> 8)  & 0xFF);
     SPI_WRITE_TX(SPI_FLASH_PORT, u32StartAddress       & 0xFF);
 
-    while(SPI_IS_BUSY(SPI_FLASH_PORT));
+    wait_SPI_IS_BUSY(SPI_FLASH_PORT);
     // clear RX buffer
     SPI_ClearRxFIFO(SPI_FLASH_PORT);
 
@@ -225,12 +246,12 @@ void SpiFlash_NormalRead(uint32_t u32StartAddress, uint8_t *u8DataBuffer)
     for(u32Cnt = 0; u32Cnt < 256; u32Cnt++)
     {
         SPI_WRITE_TX(SPI_FLASH_PORT, 0x00);
-        while(SPI_IS_BUSY(SPI_FLASH_PORT));
+        wait_SPI_IS_BUSY(SPI_FLASH_PORT);
         u8DataBuffer[u32Cnt] = (uint8_t)SPI_READ_RX(SPI_FLASH_PORT);
     }
 
     // wait tx finish
-    while(SPI_IS_BUSY(SPI_FLASH_PORT));
+    wait_SPI_IS_BUSY(SPI_FLASH_PORT);
 
     // /CS: de-active
     SPI_SET_SS_HIGH(SPI_FLASH_PORT);

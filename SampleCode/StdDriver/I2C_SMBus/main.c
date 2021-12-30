@@ -1,14 +1,11 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V3.00
- * $Revision: 17 $
- * $Date: 15/09/02 10:04a $
  * @brief
  *           Show how to control SMBus interface and use SMBus protocol between Host and Slave.
  *
- * @note
- * Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
- *
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
@@ -633,7 +630,7 @@ void I2C1_Close(void)
 
 int32_t SMBusSendByteTest(uint8_t slvaddr)
 {
-    uint32_t i;
+    uint32_t i, u32TimeOutCnt;
 
     g_u8DeviceAddr = slvaddr;
 
@@ -655,7 +652,15 @@ int32_t SMBusSendByteTest(uint8_t slvaddr)
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STA);
 
         /* Wait I2C0 transmit finish */
-        while(g_u8EndFlag == 0);
+        u32TimeOutCnt = I2C_TIMEOUT;
+        while(g_u8EndFlag == 0)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for I2C time-out!\n");
+                while(1);
+            }
+        }
         g_u8EndFlag = 0;
 
         if(g_u8PECErr)
@@ -669,6 +674,8 @@ int32_t SMBusSendByteTest(uint8_t slvaddr)
 
 int32_t SMBusAlertTest(uint8_t slvaddr)
 {
+    uint32_t u32TimeOutCnt= I2C_TIMEOUT;
+
     g_u8DeviceAddr = slvaddr;
 
     /* I2C function to Send Alert Response Address to bus */
@@ -680,8 +687,15 @@ int32_t SMBusAlertTest(uint8_t slvaddr)
     /* Init receive data index */
     g_u8DataLen0 = 0;
 
-    /* Waiting for Get Alert Address*/
-    while(g_u8AlertAddrAck0 == 0);
+    /* Waiting for Get Alert Address */
+    while(g_u8AlertAddrAck0 == 0)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for I2C time-out!\n");
+            while(1);
+        }
+    }
     g_u8AlertAddrAck0 = 0;
 
     if(g_u8PECErr)
@@ -695,6 +709,8 @@ int32_t SMBusAlertTest(uint8_t slvaddr)
 
 int32_t SMBusDefaultAddressTest(uint8_t slvaddr)
 {
+    uint32_t u32TimeOutCnt= I2C_TIMEOUT;
+
     g_u8DeviceAddr = slvaddr;
 
     /* Set Transmission ARP command */
@@ -712,7 +728,14 @@ int32_t SMBusDefaultAddressTest(uint8_t slvaddr)
     I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STA);
 
     /* Wait I2C0 transmit finish */
-    while(g_u8EndFlag == 0);
+    while(g_u8EndFlag == 0)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for I2C time-out!\n");
+            while(1);
+        }
+    }
     g_u8EndFlag = 0;
 
     if(g_u8PECErr)
@@ -732,6 +755,7 @@ int32_t SMBusDefaultAddressTest(uint8_t slvaddr)
 int32_t main(void)
 {
     uint32_t i, ch = 0;
+    uint32_t u32TimeOutCnt;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -741,11 +765,6 @@ int32_t main(void)
 
     /* Init UART0 for printf */
     UART0_Init();
-
-#ifdef _PZ
-    /* For palladium */
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400);
-#endif
 
     while(ch != 0x30)
     {
@@ -870,7 +889,15 @@ int32_t main(void)
             printf("I2C1 has Alert Request and Alert Pin Pull Lo. \n");
 
             /* Wait I2C0 get Alert interrupt */
-            while(g_u8AlertInt0 == 0);
+            u32TimeOutCnt = I2C_TIMEOUT;
+            while(g_u8AlertInt0 == 0)
+            {
+                if(--u32TimeOutCnt == 0)
+                {
+                    printf("Wait for I2C time-out!\n");
+                    while(1);
+                }
+            }
 
             /* I2C0 Get Alert Request */
             g_u8AlertInt0 = 0;

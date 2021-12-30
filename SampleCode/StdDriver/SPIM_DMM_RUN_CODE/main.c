@@ -85,11 +85,6 @@ int main()
 
     UART0_Init();                      /* Initialize UART0                                */
 
-#ifdef _PZ
-    /* For palladium */
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400);
-#endif
-
     printf("+--------------------------------------------------+\n");
     printf("|    M460 SPIM DMM mode running program on flash   |\n");
     printf("+--------------------------------------------------+\n");
@@ -122,7 +117,11 @@ int main()
     else
         SPIM_DISABLE_CIPHER();
 
-    SPIM_Enable_4Bytes_Mode(USE_4_BYTES_MODE, 1);
+    if (SPIM_Enable_4Bytes_Mode(USE_4_BYTES_MODE, 1) != 0)
+    {
+        printf("SPIM_Enable_4Bytes_Mode failed!\n");
+        while (1);
+    }
 
     SPIM->CTL1 |= SPIM_CTL1_CDINVAL_Msk;        // invalid cache
 

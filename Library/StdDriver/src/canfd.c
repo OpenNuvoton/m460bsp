@@ -3,8 +3,8 @@
  * @version  V1.00
  * @brief    CAN FD driver source file
  *
- * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 
 #include "NuMicro.h"
@@ -162,7 +162,6 @@
 
 #define CANFD_RXFS_RFL CANFD_RXF0S_RF0L_Msk
 
-
 /** @addtogroup Standard_Driver Standard Driver
   @{
 */
@@ -170,6 +169,8 @@
 /** @addtogroup CANFD_Driver CAN_FD Driver
   @{
 */
+
+int32_t g_CANFD_i32ErrCode = 0;       /*!< CANFD global error code */
 
 /** @addtogroup CANFD_EXPORTED_FUNCTIONS CAN_FD Exported Functions
   @{
@@ -895,13 +896,23 @@ void CANFD_DisableInt(CANFD_T *psCanfd, uint32_t u32IntLine0, uint32_t u32IntLin
 uint32_t CANFD_TransmitTxMsg(CANFD_T *psCanfd, uint32_t u32TxBufIdx, CANFD_FD_MSG_T *psTxMsg)
 {
     uint32_t u32Success = 0;
+    uint32_t u32TimeOutCount = CANFD_TIMEOUT;
+
     /* write the message to the message buffer */
     u32Success = CANFD_TransmitDMsg(psCanfd, u32TxBufIdx, psTxMsg);
 
     if (u32Success == 1)
     {
         /* wait for completion */
-        while (!(psCanfd->TXBRP & (1UL << u32TxBufIdx)));
+        while (!(psCanfd->TXBRP & (1UL << u32TxBufIdx)))
+        {
+            if(u32TimeOutCount-- == 0)
+            {
+                u32Success = 0;
+                break;
+            }
+
+        }
     }
 
     return u32Success;
@@ -1781,22 +1792,42 @@ void CANFD_GetBusErrCount(CANFD_T *psCanfd, uint8_t *pu8TxErrBuf, uint8_t *pu8Rx
  *
  * @details     This function gets the CAN FD Bus Error Counter value for both Tx and Rx direction.
  *              These values may be needed in the upper layer error handling.
+ *
+ * @note       This function sets g_CANFD_i32ErrCode to CANFD_TIMEOUT_ERR if waiting CANFD time-out.
  */
 void CANFD_RunToNormal(CANFD_T *psCanfd, uint8_t u8Enable)
 {
+    uint32_t u32TimeOutCount = CANFD_TIMEOUT;
+
+    g_CANFD_i32ErrCode = 0;
+
     if (u8Enable)
     {
         /* start operation */
         psCanfd->CCCR &= ~(CANFD_CCCR_CCE_Msk | CANFD_CCCR_INIT_Msk);
 
-        while (psCanfd->CCCR & CANFD_CCCR_INIT_Msk);
+        while (psCanfd->CCCR & CANFD_CCCR_INIT_Msk)
+        {
+            if(u32TimeOutCount-- == 0)
+            {
+                g_CANFD_i32ErrCode = CANFD_TIMEOUT_ERR;
+                break;
+            }
+        }
     }
     else
     {
         /* init mode */
         psCanfd->CCCR |= CANFD_CCCR_INIT_Msk;
 
-        while (!(psCanfd->CCCR & CANFD_CCCR_INIT_Msk));
+        while (!(psCanfd->CCCR & CANFD_CCCR_INIT_Msk))
+        {
+            if(u32TimeOutCount-- == 0)
+            {
+                g_CANFD_i32ErrCode = CANFD_TIMEOUT_ERR;
+                break;
+            }
+        }
     }
 }
 

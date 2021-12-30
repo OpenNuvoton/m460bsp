@@ -104,6 +104,8 @@ void RTC_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 void PowerDownFunction(void)
 {
+    uint32_t u32TimeOutCnt = SystemCoreClock;
+
     /* Select Power-down mode */
     CLK_SetPowerDownMode(g_u32PowerDownMode);
 
@@ -111,7 +113,10 @@ void PowerDownFunction(void)
     fflush(stdout);
 
     /* To check if all the debug messages are finished */
-    while(IsDebugFifoEmpty() == 0);
+    while(IsDebugFifoEmpty() == 0)
+    {
+        if(--u32TimeOutCnt == 0) break; /* 1 second time-out */
+    }
 
     /* Enter to Power-down mode */
     CLK_PowerDown();
@@ -249,6 +254,7 @@ void UART0_Init(void)
 int32_t main(void)
 {
     S_RTC_TIME_DATA_T sReadRTC;
+    uint32_t u32TimeOutCnt = 0;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -316,7 +322,15 @@ int32_t main(void)
 
         /* Enter to Power-down mode */
         PowerDownFunction();
-        while(g_u32RTCTickINT == 0);
+        u32TimeOutCnt = SystemCoreClock;
+        while(g_u32RTCTickINT == 0)
+        {
+            if(--u32TimeOutCnt == 0) /* 1 second time-out */
+            {
+                printf("Wait for RTC interrupt time-out!");
+                while(1);
+            }
+        }
         printf("Wake-up!\n");
 
         /* Read current RTC date/time after wake-up */

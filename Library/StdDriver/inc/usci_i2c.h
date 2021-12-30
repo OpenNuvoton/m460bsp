@@ -1,10 +1,10 @@
 /**************************************************************************//**
  * @file     USCI_I2C.h
  * @version  V3.0
- * @brief    M480 series USCI I2C(UI2C) driver header file
+ * @brief    M460 series USCI I2C(UI2C) driver header file
  *
- * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2016-2020 Nuvoton Technology Corp. All rights reserved.
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #ifndef __USCI_I2C_H__
 #define __USCI_I2C_H__
@@ -88,8 +88,12 @@ enum UI2C_SLAVE_EVENT
 #define UI2C_ERR_INT_MASK          (0x020U)    /*!< Error interrupt mask \hideinitializer */
 #define UI2C_ACK_INT_MASK          (0x040U)    /*!< Acknowledge interrupt mask \hideinitializer */
 
+#define UI2C_TIMEOUT               SystemCoreClock /*!< 1 second time-out \hideinitializer */
+#define UI2C_TIMEOUT_ERR           (-1L)       /*!< UI2C operation abort due to timeout error \hideinitializer */
+
 /*@}*/ /* end of group USCI_I2C_EXPORTED_CONSTANTS */
 
+extern int32_t g_UI2C_i32ErrCode;
 
 /** @addtogroup USCI_I2C_EXPORTED_FUNCTIONS USCI_I2C Exported Functions
   @{
@@ -328,5 +332,3 @@ uint32_t UI2C_ReadMultiBytesTwoRegs(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint16_t 
 #endif
 
 #endif
-
-/*** (C) COPYRIGHT 2016 Nuvoton Technology Corp. ***/

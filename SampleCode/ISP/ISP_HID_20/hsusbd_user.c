@@ -61,12 +61,17 @@ uint32_t g_hsusbd_CtrlInSize = 0ul;
  */
 void HSUSBD_Open(S_HSUSBD_INFO_T *param, HSUSBD_CLASS_REQ pfnClassReq, HSUSBD_SET_INTERFACE_REQ pfnSetInterface)
 {
+    uint32_t u32TimeOutCount = HSUSBD_TIMEOUT;
+
     /* Initial USB engine */
     /* Enable PHY */
     HSUSBD_ENABLE_PHY();
 
     /* wait PHY clock ready */
-    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
+    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk))
+    {
+        if(--u32TimeOutCount == 0) break;
+    }
     HSUSBD->OPER &= ~HSUSBD_OPER_HISPDEN_Msk;   /* full-speed */
 }
 
@@ -597,6 +602,7 @@ void HSUSBD_CtrlIn(void)
 void HSUSBD_CtrlOut(uint8_t pu8Buf[], uint32_t u32Size)
 {
     uint32_t volatile i;
+    uint32_t u32TimeOutCount = HSUSBD_TIMEOUT;
 
     while(1)
     {
@@ -610,6 +616,8 @@ void HSUSBD_CtrlOut(uint8_t pu8Buf[], uint32_t u32Size)
             HSUSBD->CEPINTSTS = HSUSBD_CEPINTSTS_RXPKIF_Msk;
             break;
         }
+
+        if(--u32TimeOutCount == 0) break;
     }
 }
 

@@ -1,10 +1,10 @@
 /****************************************************************************//**
  * @file     i2c.h
  * @version  V1.00
- * @brief    M480 series I2C driver header file
+ * @brief    M460 series I2C driver header file
  *
- * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2016-2020 Nuvoton Technology Corp. All rights reserved.
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #ifndef __I2C_H__
 #define __I2C_H__
@@ -26,6 +26,9 @@ extern "C"
 /** @addtogroup I2C_EXPORTED_CONSTANTS I2C Exported Constants
   @{
 */
+
+#define I2C_TIMEOUT       SystemCoreClock /*!< 1 second time-out \hideinitializer */
+#define I2C_TIMEOUT_ERR   (-1L)           /*!< I2C operation abort due to timeout error \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  I2C_CTL constant definitions.                                                                            */
@@ -55,6 +58,8 @@ extern "C"
 #define I2C_PECTX_DISABLE           0    /*!< Disable SMBus Packet Error Check Transmit function                          \hideinitializer */
 
 /*@}*/ /* end of group I2C_EXPORTED_CONSTANTS */
+
+extern int32_t g_I2C_i32ErrCode;
 
 /** @addtogroup I2C_EXPORTED_FUNCTIONS I2C Exported Functions
   @{
@@ -439,10 +444,12 @@ __STATIC_INLINE void I2C_STOP(I2C_T *i2c);
  */
 __STATIC_INLINE void I2C_STOP(I2C_T *i2c)
 {
+    uint32_t u32TimeOutCount = I2C_TIMEOUT;
 
     (i2c)->CTL0 |= (I2C_CTL0_SI_Msk | I2C_CTL0_STO_Msk);
     while(i2c->CTL0 & I2C_CTL0_STO_Msk)
     {
+        if(--u32TimeOutCount == 0) break;
     }
 }
 

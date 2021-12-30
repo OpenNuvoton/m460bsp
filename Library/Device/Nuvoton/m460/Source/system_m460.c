@@ -1,10 +1,10 @@
 /**************************************************************************//**
- * @file     system_M460.c
+ * @file     system_m460.c
  * @version  V3.000
  * @brief    CMSIS Cortex-M4 Core Peripheral Access Layer Source File for M460
  *
- * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2017-2020 Nuvoton Technology Corp. All rights reserved.
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 
 #include "NuMicro.h"

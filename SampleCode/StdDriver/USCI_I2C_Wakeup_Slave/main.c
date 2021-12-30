@@ -3,12 +3,13 @@
  * @version  V1.00
  * @brief    Show how to wake-up USCI_I2C from deep sleep mode.
  *           This sample code needs to work with USCI_I2C_Master.
- * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ *
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
 
-#define PLL_CLOCK       192000000
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
@@ -308,7 +309,7 @@ void UI2C0_Init(uint32_t u32ClkSpeed)
 
 int main()
 {
-    uint32_t i;
+    uint32_t i, u32TimeOutCnt;
     uint8_t  ch;
 
     /* Unlock protected registers */
@@ -319,11 +320,6 @@ int main()
 
     /* Init UART for print message */
     UART_Open(UART0, 115200);
-
-#ifdef _PZ
-    /* For palladium */
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400);
-#endif
 
     printf("\n");
     printf("+---------------------------------------------------------------------+\n");
@@ -385,8 +381,10 @@ int main()
     /* System power down enable */
     printf("\nCHIP enter power down status.\n");
 
-    /* Waiting for UART printf finish*/
-    while( (UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk) == 0 );
+    /* Waiting for UART printf finish */
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while( (UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk) == 0 )
+        if(--u32TimeOutCnt == 0) break;
 
     /* Clear flag before enter power-down mode */
     if(UI2C0->PROTSTS !=0)
@@ -394,8 +392,15 @@ int main()
 
     CLK_PowerDown();
 
-    while(g_u8SlvPWRDNWK==0);
-    while(g_u8SlvI2CWK==0);
+    u32TimeOutCnt = UI2C_TIMEOUT;
+    while( (g_u8SlvPWRDNWK==0) || (g_u8SlvI2CWK==0) )
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for system and I2C time-out!\n");
+            while(1);
+        }
+    }
 
     if(g_u32WKfromAddr)
         printf("UI2C0 [A]ddress match Wake-up from Deep Sleep\n");
@@ -403,5 +408,3 @@ int main()
         printf("UI2C0 [T]oggle Wake-up from Deep Sleep\n");
     while(1);
 }
-
-/*** (C) COPYRIGHT 2021 Nuvoton Technology Corp. ***/

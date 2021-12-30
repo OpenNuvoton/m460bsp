@@ -194,6 +194,7 @@ void EADC_FunctionTest(void)
 {
     uint8_t  u8Option;
     uint8_t  u8Index = 0;
+    uint32_t u32TimeOutCnt = 0;
 
     printf("\n");
     printf("+----------------------------------------------------------------------+\n");
@@ -226,11 +227,15 @@ void EADC_FunctionTest(void)
             /* Enable EPWM0 channel 0 counter */
             EPWM_Start(EPWM0, BIT0); /* EPWM0 channel 0 counter start running. */
 
-            while(1)
+            /* Wait PDMA interrupt (g_u32IsTestOver will be set at IRQ_Handler function) */
+            u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+            while(g_u32IsTestOver == 0)
             {
-                /* Wait PDMA interrupt (g_u32IsTestOver will be set at IRQ_Handler function) */
-                while(g_u32IsTestOver == 0);
-                break;
+                if(--u32TimeOutCnt == 0)
+                {
+                    printf("Wait for EADC time-out!\n");
+                    while(1);
+                }
             }
             g_u32IsTestOver = 0;
 
@@ -254,11 +259,15 @@ void EADC_FunctionTest(void)
             /* Enable EPWM0 channel 0 counter */
             EPWM_Start(EPWM0, BIT0); /* EPWM0 channel 0 counter start running. */
 
-            while(1)
+            /* Wait PDMA interrupt (g_u32IsTestOver will be set at IRQ_Handler function) */
+            u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+            while(g_u32IsTestOver == 0)
             {
-                /* Wait PDMA interrupt (g_u32IsTestOver will be set at IRQ_Handler function) */
-                while(g_u32IsTestOver == 0);
-                break;
+                if(--u32TimeOutCnt == 0)
+                {
+                    printf("Wait for EADC time-out!\n");
+                    while(1);
+                }
             }
             g_u32IsTestOver = 0;
 

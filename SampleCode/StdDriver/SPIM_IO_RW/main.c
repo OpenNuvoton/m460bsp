@@ -94,11 +94,6 @@ int main()
 
     UART0_Init();                      /* Initialize UART0 */
 
-#ifdef _PZ
-    /* For palladium */
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400);
-#endif
-
     printf("+-------------------------------------------+\n");
     printf("|    M460 SPIM I/O mode read/write sample   |\n");
     printf("+-------------------------------------------+\n");
@@ -123,7 +118,11 @@ int main()
 
     SPIM_WinbondUnlock(1);
 
-    SPIM_Enable_4Bytes_Mode(USE_4_BYTES_MODE, 1);
+    if (SPIM_Enable_4Bytes_Mode(USE_4_BYTES_MODE, 1) != 0)
+    {
+        printf("SPIM_Enable_4Bytes_Mode failed!\n");
+        goto lexit;
+    }
 
     /*
      *  Erase flash page

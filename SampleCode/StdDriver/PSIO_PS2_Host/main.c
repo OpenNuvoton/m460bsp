@@ -29,6 +29,7 @@ void PSIO_IRQHandler(void)
 {
     static uint8_t u8BitNumber = 0;
     uint8_t u8INT0Flag;
+    uint32_t u32TimeOutCnt;
 
     /* Get INT0 interrupt flag */
     u8INT0Flag = PSIO_GET_INT_FLAG(PSIO, PSIO_INTSTS_CON0IF_Msk);
@@ -51,7 +52,15 @@ void PSIO_IRQHandler(void)
         PSIO_START_SC(PSIO, g_sConfig.u8DataSC);
 
         /* Wait input buffer full */
-        while (!PSIO_GET_TRANSFER_STATUS(PSIO, PSIO_TRANSTS_INFULL0_Msk << (g_sConfig.u8DataPin * 4)));
+        u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+        while (!PSIO_GET_TRANSFER_STATUS(PSIO, PSIO_TRANSTS_INFULL0_Msk << (g_sConfig.u8DataPin * 4)))
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for PSIO time-out!\n");
+                while(1);
+            }
+        }
 
         /* Receive 11 bit */
         u32RxBuffer |= (PSIO_GET_INPUT_DATA(PSIO, g_sConfig.u8DataPin) << u8BitNumber);
@@ -77,7 +86,15 @@ void PSIO_IRQHandler(void)
             PSIO_START_SC(PSIO, g_sConfig.u8DataSC);
 
             /* Wait slot controller is not busy */
-            while (PSIO_GET_BUSY_FLAG(PSIO, g_sConfig.u8DataSC));
+            u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+            while (PSIO_GET_BUSY_FLAG(PSIO, g_sConfig.u8DataSC))
+            {
+                if(--u32TimeOutCnt == 0)
+                {
+                    printf("Wait for PSIO time-out!\n");
+                    while(1);
+                }
+            }
 
             /* Read data from buffer */
             g_u32RxACK = PSIO_GET_INPUT_DATA(PSIO, g_sConfig.u8DataPin);
@@ -97,7 +114,15 @@ void PSIO_IRQHandler(void)
             PSIO_START_SC(PSIO, g_sConfig.u8DataSC);
 
             /* Wait slot controller is not busy */
-            while (PSIO_GET_BUSY_FLAG(PSIO, g_sConfig.u8DataSC));
+            u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+            while (PSIO_GET_BUSY_FLAG(PSIO, g_sConfig.u8DataSC))
+            {
+                if(--u32TimeOutCnt == 0)
+                {
+                    printf("Wait for PSIO time-out!\n");
+                    while(1);
+                }
+            }
 
             /* Set check point action */
             /* For more efficient, accessing register directly */

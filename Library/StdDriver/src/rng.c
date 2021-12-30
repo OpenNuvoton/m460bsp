@@ -48,13 +48,19 @@ typedef enum _RNG_KEY_SIZE
  */
 static void RNG_BasicConfig()
 {
+    int32_t i;
+    int32_t timeout = 0x1000000;
+
     /* Enable TRNG & PRNG */
     CLK->AHBCLK0 |= CLK_AHBCLK0_CRPTCKEN_Msk;
     CLK->APBCLK1 |= CLK_APBCLK1_TRNGCKEN_Msk;
 
     /* Use LIRC as TRNG engine clock */
     CLK->PWRCTL |= CLK_PWRCTL_LIRCEN_Msk;
-    while((CLK->STATUS & CLK_STATUS_LIRCSTB_Msk) == 0);
+    while((CLK->STATUS & CLK_STATUS_LIRCSTB_Msk) == 0)
+    {
+        if(i++ > timeout) break; /* Wait LIRC time-out */
+    }
     CLK->CLKSEL2 = (CLK->CLKSEL2 & (~CLK_CLKSEL2_TRNGSEL_Msk)) | CLK_CLKSEL2_TRNGSEL_LIRC;
 
 }
@@ -138,7 +144,11 @@ int32_t RNG_Random(uint32_t *pu32Buf, int32_t nWords)
     int32_t timeout = 0x10000;
 
     /* Waiting for Busy */
-    while(CRPT->PRNG_CTL & CRPT_PRNG_CTL_BUSY_Msk) {}
+    while(CRPT->PRNG_CTL & CRPT_PRNG_CTL_BUSY_Msk)
+    {
+        if(timeout-- < 0)
+            return 0;
+    }
 
     if(nWords > 8)
         nWords = 8;
@@ -146,6 +156,7 @@ int32_t RNG_Random(uint32_t *pu32Buf, int32_t nWords)
     /* Trig to generate seed 256 bits random number */
     CRPT->PRNG_CTL = (6 << CRPT_PRNG_CTL_KEYSZ_Pos) | CRPT_PRNG_CTL_START_Msk;
 
+    timeout = 0x10000;
     while(CRPT->PRNG_CTL & CRPT_PRNG_CTL_BUSY_Msk)
     {
         if(timeout-- < 0)

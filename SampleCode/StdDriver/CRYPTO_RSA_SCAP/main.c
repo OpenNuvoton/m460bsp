@@ -115,7 +115,8 @@ void DEBUG_PORT_Init(void)
 int32_t main(void)
 {
     char    OutputResult[RSA_KBUF_HLEN];
-	uint32_t u32RndNum;
+    uint32_t u32RndNum;
+    uint32_t u32TimeOutCnt;
 
     SYS_UnlockReg();
 
@@ -167,7 +168,15 @@ int32_t main(void)
     RSA_Start(CRPT);
 
     /* Waiting for RSA operation done */
-    while(!g_RSA_done);
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while(!g_RSA_done)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for RSA time-out!\n");
+            while(1);
+        }
+    }
 
     /* Check error flag */
     if(g_RSA_error)
@@ -198,7 +207,15 @@ int32_t main(void)
     RSA_Start(CRPT);
 
     /* Waiting for RSA operation done */
-    while(!g_RSA_done);
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while(!g_RSA_done)
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for RSA time-out!\n");
+            while(1);
+        }
+    }
 
     /* Check error flag */
     if(g_RSA_error)
@@ -222,5 +239,3 @@ int32_t main(void)
     printf("\nDone.\n");
     while(1);
 }
-
-/*** (C) COPYRIGHT 2021 Nuvoton Technology Corp. ***/

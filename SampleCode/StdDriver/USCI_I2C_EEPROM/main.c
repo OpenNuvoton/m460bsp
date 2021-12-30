@@ -3,12 +3,12 @@
  * @version  V1.00
  * @brief    Show how to use USCI_I2C interface to access EEPROM.
  *
- * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
 
-#define PLL_CLOCK       192000000
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
@@ -233,7 +233,7 @@ void UI2C0_Init(void)
 
 int main()
 {
-    uint32_t i;
+    uint32_t i, u32TimeOutCnt;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -243,11 +243,6 @@ int main()
 
     /* Configure UART0: 115200, 8-bit word, no parity bit, 1 stop bit. */
     UART_Open(UART0, 115200);
-
-#ifdef _PZ
-    /* For palladium */
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400);
-#endif
 
     /*
         This sample code sets I2C bus clock to 100kHz. Then, accesses EEPROM 24LC64 with Byte Write
@@ -280,7 +275,15 @@ int main()
         UI2C_SET_CONTROL_REG(UI2C0, UI2C_CTL_STA);
 
         /* Wait USCI_I2C Tx Finish */
-        while (g_u8EndFlagM == 0);
+        u32TimeOutCnt = UI2C_TIMEOUT;
+        while (g_u8EndFlagM == 0)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for USCI_I2C time-out!\n");
+                while(1);
+            }
+        }
         g_u8EndFlagM = 0;
 
         /* USCI_I2C function to read data from slave */
@@ -293,7 +296,16 @@ int main()
         UI2C_SET_CONTROL_REG(UI2C0, UI2C_CTL_STA);
 
         /* Wait USCI_I2C Rx Finish */
-        while (g_u8EndFlagM == 0);
+        u32TimeOutCnt = UI2C_TIMEOUT;
+        while (g_u8EndFlagM == 0)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for USCI_I2C time-out!\n");
+                while(1);
+            }
+        }
+
         g_u8EndFlagM = 0;
 
         /* Compare data */
@@ -307,5 +319,3 @@ int main()
 
     while(1);
 }
-
-/*** (C) COPYRIGHT 2021 Nuvoton Technology Corp. ***/

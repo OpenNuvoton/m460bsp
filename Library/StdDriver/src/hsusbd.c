@@ -17,7 +17,6 @@
   @{
 */
 
-
 /** @addtogroup HSUSBD_EXPORTED_FUNCTIONS HSUSBD Exported Functions
   @{
 */
@@ -47,6 +46,8 @@ uint8_t g_hsusbd_UsbAddr = 0ul;
 uint8_t g_hsusbd_ShortPacket = 0ul;
 uint32_t volatile g_hsusbd_DmaDone = 0ul;
 uint32_t g_hsusbd_CtrlInSize = 0ul;
+
+int32_t g_HSUSBD_i32ErrCode = 0;       /*!< HSUSBD global error code */
 /** @endcond HIDDEN_SYMBOLS */
 
 /**
@@ -59,9 +60,15 @@ uint32_t g_hsusbd_CtrlInSize = 0ul;
  * @return      None
  *
  * @details     This function is used to initial HSUSBD.
+ *
+ * @note        This function sets g_HSUSBD_i32ErrCode to HSUSBD_TIMEOUT_ERR if waiting HSUSBD time-out.
  */
 void HSUSBD_Open(S_HSUSBD_INFO_T *param, HSUSBD_CLASS_REQ pfnClassReq, HSUSBD_SET_INTERFACE_REQ pfnSetInterface)
 {
+    int32_t i32TimeOutCnt = HSUSBD_TIMEOUT;
+
+    g_HSUSBD_i32ErrCode = 0;
+
     g_hsusbd_sInfo = param;
     g_hsusbd_pfnClassRequest = pfnClassReq;
     g_hsusbd_pfnSetInterface = pfnSetInterface;
@@ -73,7 +80,14 @@ void HSUSBD_Open(S_HSUSBD_INFO_T *param, HSUSBD_CLASS_REQ pfnClassReq, HSUSBD_SE
     HSUSBD_ENABLE_PHY();
 
     /* wait PHY clock ready */
-    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk));
+    while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk))
+    {
+        if( i32TimeOutCnt-- < 0)
+        {
+            g_HSUSBD_i32ErrCode = HSUSBD_TIMEOUT_ERR;
+            break;
+        }
+    }
     HSUSBD->OPER &= ~HSUSBD_OPER_HISPDEN_Msk;   /* full-speed */
 }
 
@@ -654,10 +668,16 @@ void HSUSBD_CtrlIn(void)
  * @return      None
  *
  * @details     This function is used to start Control OUT transfer
+ *
+ * @note        This function sets g_HSUSBD_i32ErrCode to HSUSBD_TIMEOUT_ERR if waiting HSUSBD time-out.
  */
 void HSUSBD_CtrlOut(uint8_t pu8Buf[], uint32_t u32Size)
 {
     uint32_t volatile i;
+    int32_t i32TimeOutCnt = HSUSBD_TIMEOUT;
+
+    g_HSUSBD_i32ErrCode = 0;
+    
     while(1)
     {
         if((HSUSBD->CEPINTSTS & HSUSBD_CEPINTSTS_RXPKIF_Msk) == HSUSBD_CEPINTSTS_RXPKIF_Msk)
@@ -667,6 +687,12 @@ void HSUSBD_CtrlOut(uint8_t pu8Buf[], uint32_t u32Size)
                 pu8Buf[i] = inpb(&HSUSBD->CEPDAT);
             }
             HSUSBD->CEPINTSTS = HSUSBD_CEPINTSTS_RXPKIF_Msk;
+            break;
+        }
+
+        if( i32TimeOutCnt-- < 0)
+        {
+            g_HSUSBD_i32ErrCode = HSUSBD_TIMEOUT_ERR;
             break;
         }
     }
