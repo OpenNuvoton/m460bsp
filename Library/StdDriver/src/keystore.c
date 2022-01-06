@@ -29,7 +29,7 @@
 void KS_Open(void)
 {
     CLK->AHBCLK0 |= CLK_AHBCLK0_KSCKEN_Msk;
-    
+
     if((KS->STS & KS_STS_INITDONE_Msk) == 0)
     {
         /* Waiting for busy */
@@ -190,7 +190,8 @@ int32_t KS_Write(KS_MEM_Type eType, uint32_t u32Meta, uint32_t au32Key[])
 {
     int32_t i32Cnt;
     uint32_t u32Cont;
-    int32_t offset, i, cnt;
+    int32_t i, cnt;
+    volatile int32_t offset;
 
 
     /* Just return when key store is in busy */

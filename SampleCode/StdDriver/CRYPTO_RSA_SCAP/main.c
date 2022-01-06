@@ -57,11 +57,11 @@ void SYS_Init(void)
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
-    /* Enable HIRC clock */
-    CLK_EnableXtalRC(CLK_PWRCTL_HIRCEN_Msk);
+    /* Enable HIRC and LIRC clock */
+    CLK_EnableXtalRC(CLK_PWRCTL_HIRCEN_Msk|CLK_PWRCTL_LIRCEN_Msk);
 
-    /* Wait for HIRC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
+    /* Wait for HIRC and LIRC clock ready */
+    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk|CLK_STATUS_LIRCSTB_Msk);
 
     /* Set PCLK0 and PCLK1 to HCLK/2 */
     CLK->PCLKDIV = (CLK_PCLKDIV_APB0DIV_DIV2 | CLK_PCLKDIV_APB1DIV_DIV2);
@@ -82,6 +82,12 @@ void SYS_Init(void)
 
     /* Enable CRPT module clock */
     CLK_EnableModuleClock(CRPT_MODULE);
+
+    /* Enable TRNG module clock */
+    CLK_EnableModuleClock(TRNG_MODULE);
+
+    /* Select TRNG module clock source as LIRC */
+    CLK_SetModuleClock(TRNG_MODULE, CLK_CLKSEL2_TRNGSEL_LIRC, 0);
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -109,6 +115,7 @@ void DEBUG_PORT_Init(void)
 int32_t main(void)
 {
     char    OutputResult[RSA_KBUF_HLEN];
+	uint32_t u32RndNum;
 
     SYS_UnlockReg();
 
@@ -121,6 +128,16 @@ int32_t main(void)
     printf("\n\n+---------------------------------------------+\n");
     printf("|   Crypto RSA SCAP mode sample               |\n");
     printf("+---------------------------------------------+\n");
+
+    /* Open TRNG */
+    TRNG_Open();
+
+    /* Generate a random number */
+    if (TRNG_GenWord(&u32RndNum) == -1)
+    {
+        printf("\nTRNG has error!!\n");
+        while(1);
+    }
 
     NVIC_EnableIRQ(CRPT_IRQn);
 

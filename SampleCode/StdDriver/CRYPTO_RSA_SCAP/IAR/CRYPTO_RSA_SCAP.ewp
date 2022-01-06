@@ -1062,6 +1062,9 @@
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\sys.c</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\trng.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\uart.c</name>
         </file>
     </group>

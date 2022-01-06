@@ -432,6 +432,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\crypto.c</FilePath>
             </File>
+            <File>
+              <FileName>trng.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\trng.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
