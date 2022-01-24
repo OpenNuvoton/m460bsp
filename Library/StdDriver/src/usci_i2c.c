@@ -275,7 +275,7 @@ uint32_t UI2C_GetBusClockFreq(UI2C_T *ui2c)
     uint32_t u32Divider;
     uint32_t u32Pclk;
 
-    u32Pclk = CLK_GetPCLK1Freq();
+    u32Pclk = CLK_GetPCLK0Freq();
     u32Divider = (ui2c->BRGEN & UI2C_BRGEN_CLKDIV_Msk) >> UI2C_BRGEN_CLKDIV_Pos;
 
     return ( u32Pclk / ((u32Divider+1U)<<1U) );

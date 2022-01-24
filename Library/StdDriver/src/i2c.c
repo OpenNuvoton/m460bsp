@@ -40,7 +40,7 @@ uint32_t I2C_Open(I2C_T *i2c, uint32_t u32BusClock)
     uint32_t u32Div;
     uint32_t u32Pclk;
 
-    if(i2c == I2C4)
+    if( (i2c == I2C1) || (i2c == I2C3) )
     {
         u32Pclk = CLK_GetPCLK1Freq();
     }
@@ -96,7 +96,7 @@ void I2C_Close(I2C_T *i2c)
     {
         SYS->IPRST1 |= SYS_IPRST2_I2C4RST_Msk;
         SYS->IPRST1 &= ~SYS_IPRST2_I2C4RST_Msk;
-    }		
+    }
     /* Disable I2C */
     i2c->CTL0 &= ~I2C_CTL0_I2CEN_Msk;
 }
