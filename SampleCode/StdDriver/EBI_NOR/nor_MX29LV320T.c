@@ -180,7 +180,7 @@ void NOR_MX29LV320T_GET_ID(uint32_t u32Bank, uint16_t *pu16IDTable)
   */
 int32_t NOR_MX29LV320T_EraseChip(uint32_t u32Bank, uint32_t u32IsCheckBlank)
 {
-    int32_t i32Status = 0;;
+    int32_t i32Status = 0;
 
     NOR_MX29LV320T_RESET(u32Bank);
 

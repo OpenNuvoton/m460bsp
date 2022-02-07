@@ -114,8 +114,6 @@ void SYS_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-    uint32_t u32TimeOutCount = 0;
-
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -139,7 +137,6 @@ int32_t main(void)
     SysTick->CTRL = SysTick->CTRL | SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;   /* Use CPU clock */
 
     /* Wait for CMD_CONNECT command until Systick time-out */
-    u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
     while(1)
     {
         /* Wait for CMD_CONNECT command */
@@ -160,7 +157,7 @@ int32_t main(void)
         }
 
         /* Systick time-out, then go to APROM */
-        if( (SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) || (--u32TimeOutCount == 0) )
+        if(SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk)
         {
             goto _APROM;
         }
@@ -180,11 +177,7 @@ _ISP:
             PutString();                        /* Send response to master */
 
             /* Wait for data transmission is finished */
-            u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
-            while((UART1->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk) == 0)
-            {
-                if(--u32TimeOutCount == 0) break;
-            }
+            while((UART1->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk) == 0);
 
             nRTSPin = REVEIVE_MODE;             /* Control RTS in reveive mode */
             NVIC_EnableIRQ(UART1_IRQn);         /* Enable NVIC */

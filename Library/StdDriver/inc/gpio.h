@@ -537,7 +537,7 @@ extern "C"
  *
  * @return      None
  *
- * @details     This function is used to enable specified GPIO pin interrupt.
+ * @details     This function is used to disable specified GPIO pin interrupt.
  * \hideinitializer
  */
 #define GPIO_DisableEINT    GPIO_DisableInt

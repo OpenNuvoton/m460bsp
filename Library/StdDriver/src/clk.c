@@ -84,12 +84,12 @@ void CLK_PowerDown(void)
     /* Set system Power-down enabled */
     CLK->PWRCTL |= (CLK_PWRCTL_PDEN_Msk);
 
-    /* Store Systick interrupt and HIRC auto trim setting */
+    /* Store SysTick interrupt and HIRC auto trim setting */
     u32SysTickTICKINT = SysTick->CTRL & SysTick_CTRL_TICKINT_Msk;
     u32HIRCTCTL = SYS->HIRCTCTL;
     u32IRCTCTL = SYS->IRCTCTL;
 
-    /* Disable Systick interrupt and HIRC auto trim */
+    /* Disable SysTick interrupt and HIRC auto trim */
     SysTick->CTRL &= ~SysTick_CTRL_TICKINT_Msk;
     SYS->HIRCTCTL &= (~SYS_HIRCTCTL_FREQSEL_Msk);
     SYS->IRCTCTL &= (~SYS_IRCTCTL_FREQSEL_Msk);
@@ -97,7 +97,7 @@ void CLK_PowerDown(void)
     /* Chip enter Power-down mode after CPU run WFI instruction */
     __WFI();
 
-    /* Restore Systick interrupt and HIRC auto trim setting */
+    /* Restore SysTick interrupt and HIRC auto trim setting */
     if(u32SysTickTICKINT) SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
     SYS->HIRCTCTL = u32HIRCTCTL;
     SYS->IRCTCTL = u32IRCTCTL;
@@ -277,7 +277,7 @@ uint32_t CLK_GetCPUFreq(void)
   * @brief      Set HCLK frequency
   * @param[in]  u32Hclk is HCLK frequency. The range of u32Hclk is 50MHz ~ 200MHz.
   * @return     HCLK frequency
-  * @details    This function is used to set HCLK frequency. The frequency unit is Hz. \n
+  * @details    This function is used to set HCLK frequency by using PLL. The frequency unit is Hz. \n
   *             Power level and flash access cycle are also set according to HCLK frequency. \n
   *             The register write-protection function should be disabled before using this function.
   */
@@ -320,7 +320,7 @@ uint32_t CLK_SetCoreClock(uint32_t u32Hclk)
 
     /* Select HCLK clock source to PLL,
        select HCLK clock source divider as 1,
-       and update system core clock
+       adjust power level, flash access cycle and update system core clock
     */
     CLK_SetHCLK(CLK_CLKSEL0_HCLKSEL_PLL, CLK_CLKDIV0_HCLK(1UL));
 
@@ -351,8 +351,7 @@ uint32_t CLK_SetCoreClock(uint32_t u32Hclk)
   */
 void CLK_SetHCLK(uint32_t u32ClkSrc, uint32_t u32ClkDiv)
 {
-    uint32_t u32HIRCSTB;
-    uint32_t u32TimeOutCount = 0;
+    uint32_t u32HIRCSTB, u32TimeOutCount;
 
     /* Read HIRC clock source stable flag */
     u32HIRCSTB = CLK->STATUS & CLK_STATUS_HIRCSTB_Msk;
@@ -1188,7 +1187,7 @@ void CLK_DisablePLL(void)
   */
 uint32_t CLK_WaitClockReady(uint32_t u32ClkMask)
 {
-    uint32_t u32TimeOutCnt = SystemCoreClock>>1;
+    uint32_t u32TimeOutCnt = SystemCoreClock>>1; /* 500ms time-out */
     uint32_t u32Ret = 1U;
 
     g_CLK_i32ErrCode = 0;
@@ -1230,7 +1229,7 @@ void CLK_EnableSysTick(uint32_t u32ClkSrc, uint32_t u32Count)
         /* Disable System Tick clock source from external reference clock */
         CLK->AHBCLK0 &= ~CLK_AHBCLK0_STCKEN_Msk;
 
-        /* Select System Tick clock source from core */
+        /* Select System Tick clock source from core clock */
         SysTick->CTRL |= SysTick_CTRL_CLKSOURCE_Msk;
     }
     else
@@ -1404,7 +1403,7 @@ uint32_t CLK_GetPLLClockFreq(void)
 
     u32PllReg = CLK->PLLCTL;
 
-    if(u32PllReg & CLK_PLLCTL_PD_Msk)
+    if(u32PllReg & (CLK_PLLCTL_PD_Msk | CLK_PLLCTL_OE_Msk))
     {
         u32PllFreq = 0UL;       /* PLL is in power down mode or fix low */
     }
@@ -1754,7 +1753,7 @@ uint32_t CLK_GetPLLFNClockFreq(void)
     u32PllReg0 = CLK->PLLFNCTL0;
     u32PllReg1 = CLK->PLLFNCTL1;
 
-    if(u32PllReg1 & CLK_PLLFNCTL1_PD_Msk)
+    if(u32PllReg1 & (CLK_PLLFNCTL1_PD_Msk|CLK_PLLFNCTL1_OE_Msk) )
     {
         u32PllFreq = 0UL;       /* PLLFN is in power down mode or fix low */
     }

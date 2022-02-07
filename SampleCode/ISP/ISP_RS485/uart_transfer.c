@@ -55,16 +55,12 @@ extern __attribute__((aligned(4))) uint8_t g_au8ResponseBuff[64];
 void PutString(void)
 {
     uint32_t i;
-    uint32_t u32TimeOutCount = SystemCoreClock;
 
     /* UART send response to master */
     for(i = 0; i < MAX_PKT_SIZE; i++)
     {
         /* Wait for TX not full */
-        while((UART1->FIFOSTS & UART_FIFOSTS_TXFULL_Msk))
-        {
-            if(--u32TimeOutCount == 0) break; /* 1 second time-out */
-        }
+        while((UART1->FIFOSTS & UART_FIFOSTS_TXFULL_Msk));
 
         /* UART send data */
         UART1->DAT = g_au8ResponseBuff[i];

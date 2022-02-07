@@ -27,9 +27,6 @@ extern "C"
   @{
 */
 
-#define I2C_TIMEOUT       SystemCoreClock /*!< 1 second time-out \hideinitializer */
-#define I2C_TIMEOUT_ERR   (-1L)           /*!< I2C operation abort due to timeout error \hideinitializer */
-
 /*---------------------------------------------------------------------------------------------------------*/
 /*  I2C_CTL constant definitions.                                                                            */
 /*---------------------------------------------------------------------------------------------------------*/
@@ -56,6 +53,12 @@ extern "C"
 #define I2C_SMBD_ENABLE             0    /*!< Enable  SMBus Device Mode enable                                            \hideinitializer */
 #define I2C_PECTX_ENABLE            1    /*!< Enable  SMBus Packet Error Check Transmit function                          \hideinitializer */
 #define I2C_PECTX_DISABLE           0    /*!< Disable SMBus Packet Error Check Transmit function                          \hideinitializer */
+
+/*---------------------------------------------------------------------------------------------------------*/
+/* I2C Time-out Handler Constant Definitions                                                               */
+/*---------------------------------------------------------------------------------------------------------*/
+#define I2C_TIMEOUT                 SystemCoreClock /*!< 1 second time-out \hideinitializer */
+#define I2C_TIMEOUT_ERR             (-1L)           /*!< I2C operation abort due to timeout error \hideinitializer */
 
 /*@}*/ /* end of group I2C_EXPORTED_CONSTANTS */
 

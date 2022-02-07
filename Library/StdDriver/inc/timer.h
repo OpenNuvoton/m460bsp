@@ -520,9 +520,9 @@ void TIMER_EnableFreqCounter(TIMER_T *timer,
 void TIMER_DisableFreqCounter(TIMER_T *timer);
 void TIMER_SetTriggerSource(TIMER_T *timer, uint32_t u32Src);
 void TIMER_SetTriggerTarget(TIMER_T *timer, uint32_t u32Mask);
+int32_t TIMER_ResetCounter(TIMER_T *timer);
 void TIMER_EnableCaptureInputNoiseFilter(TIMER_T *timer, uint32_t u32FilterCount, uint32_t u32ClkSrcSel);
 void TIMER_DisableCaptureInputNoiseFilter(TIMER_T *timer);
-int32_t TIMER_ResetCounter(TIMER_T *timer);
 
 /*@}*/ /* end of group TIMER_EXPORTED_FUNCTIONS */
 

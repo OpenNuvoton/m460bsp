@@ -94,7 +94,7 @@ void UART0_Init(void)
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
-/* EADC function test                                                                                       */
+/* EADC function test                                                                                      */
 /*---------------------------------------------------------------------------------------------------------*/
 void EADC_FunctionTest(void)
 {
@@ -141,7 +141,7 @@ void EADC_FunctionTest(void)
             {
                 if(--u32TimeOutCnt == 0)
                 {
-                    printf("Wait for EADC time-out!\n");
+                    printf("Wait for EADC interrupt time-out!\n");
                     while(1);
                 }
             }
@@ -180,7 +180,7 @@ void EADC_FunctionTest(void)
             {
                 if(--u32TimeOutCnt == 0)
                 {
-                    printf("Wait for EADC time-out!\n");
+                    printf("Wait for EADC interrupt time-out!\n");
                     while(1);
                 }
             }

@@ -4,6 +4,8 @@
  * @brief
  *           Show how to use I2C Signle byte API Read and Write data to Slave
  *           Needs to work with I2C_Slave sample code.
+ *
+ * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #include <stdio.h>
@@ -127,7 +129,7 @@ int32_t main(void)
             if(--u32TimeOutCnt == 0)
             {
                 err = 1;
-                printf("Wait for I2C time-out!\n");
+                printf("Wait for I2C Tx time-out!\n");
                 break;
             }
         }

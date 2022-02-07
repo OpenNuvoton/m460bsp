@@ -209,7 +209,7 @@ int32_t main(void)
     {
         if(--u32TimeOutCnt == 0)
         {
-            printf("Wait for PDMA time-out!\n");
+            printf("Wait for PDMA transfer done time-out!\n");
             while(1);
         }
     }
@@ -228,7 +228,7 @@ int32_t main(void)
     {
         if(--u32TimeOutCnt == 0)
         {
-            printf("Wait for EPWM time-out!\n");
+            printf("Wait for EPWM stop time-out!\n");
             while(1);
         }
     }

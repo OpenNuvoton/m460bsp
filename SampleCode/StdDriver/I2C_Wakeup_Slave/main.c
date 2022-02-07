@@ -297,7 +297,7 @@ int32_t main(void)
     {
         if(--u32TimeOutCnt == 0)
         {
-            printf("Wait for system and I2C time-out!\n");
+            printf("Wait for system or I2C interrupt time-out!\n");
             while(1);
         }
     }

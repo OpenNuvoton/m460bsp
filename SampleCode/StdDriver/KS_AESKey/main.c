@@ -248,7 +248,7 @@ int AES_Test(CRPT_T *crpt, KS_MEM_Type mem, int32_t keyIdx)
     {
         if(--u32TimeOutCnt == 0)
         {
-            printf("Wait for AES time-out!\n");
+            printf("Wait for AES encode time-out!\n");
             return -1;
         }
     }
@@ -285,7 +285,7 @@ int AES_Test(CRPT_T *crpt, KS_MEM_Type mem, int32_t keyIdx)
     {
         if(--u32TimeOutCnt == 0)
         {
-            printf("Wait for AES time-out!\n");
+            printf("Wait for AES decode time-out!\n");
             return -1;
         }
     }

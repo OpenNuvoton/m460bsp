@@ -57,7 +57,7 @@ extern "C"
 
 #define FMC_APROM_SIZE          FMC_APROM_END   /*!< APROM Size                  \hideinitializer */
 #define FMC_BANK_SIZE           (FMC_APROM_SIZE/2UL) /*!< APROM Bank Size        \hideinitializer */
-#define FMC_LDROM_SIZE          0x2000UL        /*!< LDROM Size (4 Kbytes)       \hideinitializer */
+#define FMC_LDROM_SIZE          0x2000UL        /*!< LDROM Size (8 Kbytes)       \hideinitializer */
 #define FMC_OTP_ENTRY_CNT       256UL           /*!< OTP entry number            \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -100,6 +100,9 @@ extern "C"
 #define READ_ALLONE_NOT         0xA1100000UL    /*!< Check-all-one result is not all one. \hideinitializer */
 #define READ_ALLONE_CMD_FAIL    0xFFFFFFFFUL    /*!< Check-all-one command failed.        \hideinitializer */
 
+/*---------------------------------------------------------------------------------------------------------*/
+/* FMC Time-out Handler Constant Definitions                                                               */
+/*---------------------------------------------------------------------------------------------------------*/
 #define FMC_TIMEOUT_READ            (SystemCoreClock>>3) /*!< Read command time-out 125 ms        \hideinitializer */
 #define FMC_TIMEOUT_WRITE           (SystemCoreClock>>3) /*!< Write command time-out 125 ms       \hideinitializer */
 #define FMC_TIMEOUT_ERASE           (SystemCoreClock>>2) /*!< Erase command time-out 250 ms       \hideinitializer */

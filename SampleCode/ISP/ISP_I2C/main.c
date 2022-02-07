@@ -111,7 +111,6 @@ void SYS_Init(void)
 int main(void)
 {
     uint32_t cmd_buff[16];
-    uint32_t u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -133,7 +132,7 @@ int main(void)
             goto _ISP;
         }
 
-        if ((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) || (--u32TimeOutCount == 0))
+        if (SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk)
         {
             goto _APROM;
         }

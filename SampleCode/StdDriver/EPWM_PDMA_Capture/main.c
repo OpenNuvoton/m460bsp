@@ -71,18 +71,19 @@ void PDMA0_IRQHandler(void)
 void CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch)
 {
     uint16_t u16RisingTime, u16FallingTime, u16HighPeriod, u16LowPeriod, u16TotalPeriod;
-    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    uint32_t u32TimeOutCnt;
 
     (void)EPWM;
     (void)u32Ch;
 
     g_u32IsTestOver = 0;
     /* Wait PDMA interrupt (g_u32IsTestOver will be set at IRQ_Handler function) */
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     while(g_u32IsTestOver == 0)
     {
         if(--u32TimeOutCnt == 0)
         {
-            printf("Wait for EPWM time-out!\n");
+            printf("Wait for PDMA interrupt time-out!\n");
             while(1);
         }
     }
@@ -301,7 +302,7 @@ int32_t main(void)
         {
             if(--u32TimeOutCnt == 0)
             {
-                printf("Wait for EPWM time-out!\n");
+                printf("Wait for EPWM1 channel 2 Timer start time-out!\n");
                 while(1);
             }
         }
@@ -322,7 +323,7 @@ int32_t main(void)
         {
             if(--u32TimeOutCnt == 0)
             {
-                printf("Wait for EPWM time-out!\n");
+                printf("Wait for EPWM1 channel 0 Timer stop time-out!\n");
                 while(1);
             }
         }
@@ -347,7 +348,7 @@ int32_t main(void)
         {
             if(--u32TimeOutCnt == 0)
             {
-                printf("Wait for EPWM time-out!\n");
+                printf("Wait for EPWM2 current counter reach to 0 time-out!\n");
                 while(1);
             }
         }
@@ -355,7 +356,7 @@ int32_t main(void)
         /* Disable Timer for EPWM1 channel 2 */
         EPWM_ForceStop(EPWM1, EPWM_CH_2_MASK);
 
-        /* Disable Capture Function and Capture Input path for  EPWM1 channel 2*/
+        /* Disable Capture Function and Capture Input path for  EPWM1 channel 2 */
         EPWM_DisableCapture(EPWM1, EPWM_CH_2_MASK);
 
         /* Clear Capture Interrupt flag for EPWM1 channel 2 */

@@ -3,7 +3,7 @@
  * @version  V1.00
  * @brief    Demonstrate how to program, read, and lock OTP.
  *
- *
+ * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>

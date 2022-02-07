@@ -144,7 +144,7 @@ int32_t main(void)
     {
         if(--u32TimeOutCnt == 0)
         {
-            printf("Wait for PDNA time-out!\n");
+            printf("Wait for PDMA time-out!\n");
             while(1);
         }
     }

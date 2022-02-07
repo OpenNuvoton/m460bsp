@@ -123,6 +123,9 @@ extern "C"
 #define RTC_IO_PULL_UP_ENABLE           0x1UL   /*!< I/O pull-up is enabled */
 #define RTC_IO_PULL_DOWN_ENABLE         0x2UL   /*!< I/O pull-down is enabled */
 
+/*---------------------------------------------------------------------------------------------------------*/
+/* RTC Time-out Handler Constant Definitions                                                               */
+/*---------------------------------------------------------------------------------------------------------*/
 #define RTC_TIMEOUT_ERR    (-1L)        /*!< RTC operation abort due to timeout error \hideinitializer */
 
 /**@}*/ /* end of group RTC_EXPORTED_CONSTANTS */

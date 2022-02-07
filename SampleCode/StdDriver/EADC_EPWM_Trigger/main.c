@@ -108,7 +108,7 @@ void UART0_Init(void)
 void EPWM0_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
-    /* Init EPWM0                                                                                               */
+    /* Init EPWM0                                                                                              */
     /*---------------------------------------------------------------------------------------------------------*/
 
     /* Set EPWM0 timer clock prescaler */
@@ -190,7 +190,7 @@ void EADC_FunctionTest(void)
                 {
                     if(--u32TimeOutCnt == 0)
                     {
-                        printf("Wait for EADC time-out!\n");
+                        printf("Wait for EADC interrupt time-out!\n");
                         while(1);
                     }
                 }

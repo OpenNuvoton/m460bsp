@@ -148,7 +148,6 @@ void SYS_Init(void)
 int32_t main(void)
 {
     uint32_t cmd_buff[16];
-    uint32_t u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -172,7 +171,7 @@ int32_t main(void)
             goto _ISP;
         }
 
-        if( (TIMER3->INTSTS & TIMER_INTSTS_TIF_Msk) || (--u32TimeOutCount == 0) )
+        if(TIMER3->INTSTS & TIMER_INTSTS_TIF_Msk)
         {
             goto _APROM;
         }

@@ -289,7 +289,7 @@ void LIN_Tx_FunctionTest(void)
     {
         if(--u32TimeOutCnt == 0)
         {
-            printf("Wait for UART time-out!\n");
+            printf("Wait for UART LIN header transfer completed time-out!\n");
             while(1);
         }
     }

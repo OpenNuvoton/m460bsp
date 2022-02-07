@@ -263,8 +263,8 @@ void SYS_DisableBOD(void)
 /**
   * @brief      Set Power Level
   * @param[in]  u32PowerLevel is power level setting. Including :
-  *             - \ref SYS_PLCTL_PLSEL_PL0
-  *             - \ref SYS_PLCTL_PLSEL_PL1
+  *             - \ref SYS_PLCTL_PLSEL_PL0  : Supports system clock up to 200MHz.
+  *             - \ref SYS_PLCTL_PLSEL_PL1  : Supports system clock up to 180MHz.
   * @return     None
   * @details    This function select power level.
   *             The register write-protection function should be disabled before using this function.

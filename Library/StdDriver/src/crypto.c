@@ -1163,7 +1163,10 @@ int32_t  ECC_GeneratePublicKey(CRPT_T *crpt, E_ECC_CURVE ecc_curve, char *privat
                 break;
             }
         }
+    }
 
+    if(ret == 0)
+    {
         Reg2Hex(pCurve->Echar, crpt->ECC_X1, public_k1);
         Reg2Hex(pCurve->Echar, crpt->ECC_Y1, public_k2);
     }
@@ -1183,7 +1186,6 @@ int32_t  ECC_GeneratePublicKey(CRPT_T *crpt, E_ECC_CURVE ecc_curve, char *privat
   * @param[out] public_k1   The output publick key 1.
   * @param[out] public_k2   The output publick key 2.
   * @param[in]  u32ExtraOp  Extra options for ECC_KSCTL register.
-  * @return  0    Success.
   * @return  0    Success.
   * @return  -1   Hardware error or time-out.
   * @return  -2   "ecc_curve" value is invalid.
@@ -1229,7 +1231,10 @@ int32_t  ECC_GeneratePublicKey_KS(CRPT_T *crpt, E_ECC_CURVE ecc_curve, KS_MEM_Ty
                 break;
             }
         }
+    }
 
+    if(ret == 0)
+    {
         Reg2Hex(pCurve->Echar, crpt->ECC_X1, public_k1);
         Reg2Hex(pCurve->Echar, crpt->ECC_Y1, public_k2);
     }
@@ -1310,10 +1315,12 @@ int32_t  ECC_Mutiply(CRPT_T *crpt, E_ECC_CURVE ecc_curve, char x1[], char y1[], 
                 break;
             }
         }
+    }
 
+    if(ret == 0)
+    {
         Reg2Hex(pCurve->Echar, crpt->ECC_X1, x2);
         Reg2Hex(pCurve->Echar, crpt->ECC_Y1, y2);
-
     }
 
     return ret;
@@ -1390,7 +1397,10 @@ int32_t  ECC_GenerateSecretZ(CRPT_T *crpt, E_ECC_CURVE ecc_curve, char *private_
                 break;
             }
         }
+    }
 
+    if(ret == 0)
+    {
         Reg2Hex(pCurve->Echar, crpt->ECC_X1, secret_z);
     }
 

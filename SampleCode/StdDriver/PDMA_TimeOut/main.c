@@ -202,11 +202,11 @@ void PDMA0_IRQHandler(void)
 
 
 /*---------------------------------------------------------------------------------------------------------*/
-/*  UART PDMA Test                                                                                     */
+/*  UART PDMA Test                                                                                         */
 /*---------------------------------------------------------------------------------------------------------*/
 void UART_PDMATest(void)
 {
-    uint32_t i;
+    uint32_t i, u32TimeOutCnt;
 
     printf("+-----------------------------------------------------------+\n");
     printf("|  PDMA timeout Test                                        |\n");
@@ -238,7 +238,15 @@ void UART_PDMATest(void)
 
         UART_PDMA_ENABLE(UART1, UART_INTEN_TXPDMAEN_Msk | UART_INTEN_RXPDMAEN_Msk);
 
-        while(u32IsTxTestOver == 0);
+        u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+        while(u32IsTxTestOver == 0)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for PDMA Tx Test time-out!\n");
+                while(1);
+            }
+        }
 
         if(u32IsTxTestOver == 1)
             printf("UART1 TX transfer done...\n");
@@ -247,7 +255,15 @@ void UART_PDMATest(void)
         else if(u32IsTxTestOver == 3)
             printf("UART1 TX timeout...\n");
 
-        while(u32IsRxTestOver == 0);
+        u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+        while(u32IsRxTestOver == 0)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for PDMA Rx Test time-out!\n");
+                while(1);
+            }
+        }
 
         if(u32IsRxTestOver == 1)
             printf("UART1 RX transfer done...\n");

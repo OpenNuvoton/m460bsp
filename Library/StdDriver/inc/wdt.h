@@ -52,6 +52,9 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 #define WDT_RESET_COUNTER_KEYWORD   (0x00005AA5UL)    /*!< Fill this value to WDT_RSTCNT register to free reset WDT counter \hideinitializer */
 
+/*---------------------------------------------------------------------------------------------------------*/
+/* WDT Time-out Handler Constant Definitions                                                               */
+/*---------------------------------------------------------------------------------------------------------*/
 #define WDT_TIMEOUT                 SystemCoreClock   /*!< 1 second time-out \hideinitializer */
 #define WDT_TIMEOUT_ERR             (-1L)             /*!< WDT operation abort due to timeout error \hideinitializer */
 

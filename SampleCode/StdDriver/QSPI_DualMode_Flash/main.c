@@ -239,7 +239,7 @@ void SpiFlash_DualFastRead(uint32_t u32StartAddress, uint8_t *u8DataBuffer)
     QSPI_WRITE_TX(SPI_FLASH_PORT, u32StartAddress       & 0xFF);
 
     // dummy byte
-    wait_QSPI_IS_BUSY(SPI_FLASH_PORT);
+    QSPI_WRITE_TX(SPI_FLASH_PORT, 0x00);
 
     wait_QSPI_IS_BUSY(SPI_FLASH_PORT);
 
@@ -258,7 +258,7 @@ void SpiFlash_DualFastRead(uint32_t u32StartAddress, uint8_t *u8DataBuffer)
     }
 
     // wait tx finish
-    while(QSPI_IS_BUSY(SPI_FLASH_PORT));
+    wait_QSPI_IS_BUSY(SPI_FLASH_PORT);
 
     // /CS: de-active
     QSPI_SET_SS_HIGH(SPI_FLASH_PORT);

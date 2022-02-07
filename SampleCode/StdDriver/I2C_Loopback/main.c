@@ -358,7 +358,7 @@ int32_t I2C0_Read_Write_SLAVE(uint8_t slvaddr)
         {
             if(--u32TimeOutCnt == 0)
             {
-                printf("Wait for I2C time-out!\n");
+                printf("Wait for I2C Tx finish time-out!\n");
                 while(1);
             }
         }
@@ -378,7 +378,7 @@ int32_t I2C0_Read_Write_SLAVE(uint8_t slvaddr)
         {
             if(--u32TimeOutCnt == 0)
             {
-                printf("Wait for I2C time-out!\n");
+                printf("Wait for I2C Rx finish time-out!\n");
                 while(1);
             }
         }
@@ -422,7 +422,7 @@ int32_t I2C0_Read_Write_Slave(uint8_t slvaddr)
         {
             if(--u32TimeOutCnt == 0)
             {
-                printf("Wait for I2C time-out!\n");
+                printf("Wait for I2C Tx finish time-out!\n");
                 while(1);
             }
         }
@@ -442,7 +442,7 @@ int32_t I2C0_Read_Write_Slave(uint8_t slvaddr)
         {
             if(--u32TimeOutCnt == 0)
             {
-                printf("Wait for I2C time-out!\n");
+                printf("Wait for I2C Rx finish time-out!\n");
                 while(1);
             }
         }

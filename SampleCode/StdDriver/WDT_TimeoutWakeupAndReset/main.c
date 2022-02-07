@@ -181,7 +181,15 @@ int main(void)
         CLK_PowerDown();
 
         /* Check if WDT time-out interrupt and wake-up occurred or not */
-        while(g_u8IsINTEvent == 0) {}
+        u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+        while(g_u8IsINTEvent == 0)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for WDT interrupt time-out!\n");
+                while(1);
+            }
+        }
         PA2 ^= 1;
 
         g_u8IsINTEvent = 0;

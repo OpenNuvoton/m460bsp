@@ -370,7 +370,7 @@ void UART_FunctionTest()
                 {
                     if(--u32TimeOutCnt == 0)
                     {
-                        printf("Wait for UART time-out!\n");
+                        printf("Wait for UART Rx idle time-out!\n");
                         while(1);
                     }
                 }
@@ -380,7 +380,7 @@ void UART_FunctionTest()
                 {
                     if(--u32TimeOutCnt == 0)
                     {
-                        printf("Wait for UART time-out!\n");
+                        printf("Wait for UART Rx data time-out!\n");
                         while(1);
                     }
                 }
@@ -404,7 +404,7 @@ void UART_FunctionTest()
                 {
                     if(--u32TimeOutCnt == 0)
                     {
-                        printf("Wait for UART time-out!\n");
+                        printf("Wait for UART Rx idle time-out!\n");
                         while(1);
                     }
                 }
@@ -414,7 +414,7 @@ void UART_FunctionTest()
                 {
                     if(--u32TimeOutCnt == 0)
                     {
-                        printf("Wait for UART time-out!\n");
+                        printf("Wait for UART Rx data time-out!\n");
                         while(1);
                     }
                 }

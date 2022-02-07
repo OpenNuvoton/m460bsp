@@ -312,7 +312,7 @@ int32_t Read_Write_SLAVE(uint16_t slvaddr)
         {
             if(--u32TimeOutCnt == 0)
             {
-                printf("Wait for USCI_I2C time-out!\n");
+                printf("Wait for USCI_I2C Tx finish time-out!\n");
                 while(1);
             }
         }
@@ -332,7 +332,7 @@ int32_t Read_Write_SLAVE(uint16_t slvaddr)
         {
             if(--u32TimeOutCnt == 0)
             {
-                printf("Wait for USCI_I2C time-out!\n");
+                printf("Wait for USCI_I2C Rx time-out!\n");
                 while(1);
             }
         }

@@ -985,6 +985,9 @@ extern "C"
 #define CLK_SPDSRETSEL_128K         (0x4UL << CLK_PMUCTL_SRETSEL_Pos)     /*!< 128K SRAM retention when chip enter SPD mode \hideinitializer */
 #define CLK_SPDSRETSEL_256K         (0x5UL << CLK_PMUCTL_SRETSEL_Pos)     /*!< 256K SRAM retention when chip enter SPD mode \hideinitializer */
 
+/*---------------------------------------------------------------------------------------------------------*/
+/* CLK Time-out Handler Constant Definitions                                                               */
+/*---------------------------------------------------------------------------------------------------------*/
 #define CLK_TIMEOUT_ERR             (-1)     /*!< Clock timeout error value \hideinitializer */
 
 /*@}*/ /* end of group CLK_EXPORTED_CONSTANTS */
@@ -1157,7 +1160,7 @@ __STATIC_INLINE int32_t CLK_SysTickLongDelay(uint32_t us);
 __STATIC_INLINE int32_t CLK_SysTickDelay(uint32_t us)
 {
     /* The u32TimeOutCnt value must be greater than the max delay time of 1398ms if HCLK=12MHz */
-    uint32_t u32TimeOutCnt = SystemCoreClock<<1;
+    uint32_t u32TimeOutCnt = SystemCoreClock<<1; /* 2 second time-out */
 
     SysTick->LOAD = us * CyclesPerUs;
     SysTick->VAL  = (0x00);
@@ -1192,8 +1195,8 @@ __STATIC_INLINE int32_t CLK_SysTickDelay(uint32_t us)
   */
 __STATIC_INLINE int32_t CLK_SysTickLongDelay(uint32_t us)
 {
-    uint32_t u32Delay;
-    uint32_t u32TimeOutCnt = 0;
+    /* The u32TimeOutCnt value must be greater than the max delay time of 1398ms if HCLK=12MHz */
+    uint32_t u32Delay, u32TimeOutCnt; 
 
     /* It should <= 65536us for each delay loop */
     u32Delay = 65536UL;
@@ -1215,21 +1218,19 @@ __STATIC_INLINE int32_t CLK_SysTickLongDelay(uint32_t us)
         SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
 
         /* Waiting for down-count to zero */
-        u32TimeOutCnt = SystemCoreClock<<1;
+        u32TimeOutCnt = SystemCoreClock<<1; /* 2 second time-out */
         while((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) == 0UL)
-        {
-            if(--u32TimeOutCnt == 0)
-            {
-                return CLK_TIMEOUT_ERR;                
-            }
-        }        
+            if(--u32TimeOutCnt == 0) break;
 
         /* Disable SysTick counter */
         SysTick->CTRL = 0UL;  
     }
-    while(us > 0UL);
+    while( (us > 0UL) && (u32TimeOutCnt != 0) );
 
-    return 0;
+    if(u32TimeOutCnt == 0)
+        return CLK_TIMEOUT_ERR;
+    else
+        return 0;
 }
 
 

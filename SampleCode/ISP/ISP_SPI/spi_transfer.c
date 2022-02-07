@@ -50,7 +50,6 @@ void SPI_Init(void)
 void SPI1_IRQHandler(void)
 {
     uint32_t *_response_buff;
-    uint32_t u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
 
     _response_buff = (uint32_t *)g_au8ResponseBuff; // in isp_user.c
 
@@ -83,7 +82,7 @@ void SPI1_IRQHandler(void)
                 spi_rcvbuf[s_u32RxDataCount++] = SPI_READ_RX(SPI1);    /* Read RX FIFO */
             }
 
-            if( (SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) || (--u32TimeOutCount == 0) )
+            if(SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk)
             {
                 /* Disable SysTick counter */
                 SysTick->CTRL = 0UL;
