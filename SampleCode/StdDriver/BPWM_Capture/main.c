@@ -41,10 +41,10 @@ void CalPeriodTime(BPWM_T *BPWM, uint32_t u32Ch)
     BPWM_ClearCaptureIntFlag(BPWM, u32Ch, BPWM_CAPTURE_INT_FALLING_LATCH | BPWM_CAPTURE_INT_RISING_LATCH);
 
     /* Wait for Capture Falling Indicator */
-    u32TimeOutCnt = SystemCoreClock;
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     while(BPWM_GetCaptureIntFlag(BPWM, u32Ch) < 2)
     {
-        if(--u32TimeOutCnt == 0) /* 1 second time-out */
+        if(--u32TimeOutCnt == 0)
         {
             printf("Wait for BPWM time-out!\n");
             while(1);
@@ -59,10 +59,10 @@ void CalPeriodTime(BPWM_T *BPWM, uint32_t u32Ch)
     while(u32i < 4)
     {
         /* Wait for Capture Falling Indicator */
-        u32TimeOutCnt = SystemCoreClock;
+        u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
         while(BPWM_GetCaptureIntFlag(BPWM, u32Ch) < 2)
         {
-            if(--u32TimeOutCnt == 0) /* 1 second time-out */
+            if(--u32TimeOutCnt == 0)
             {
                 printf("Wait for BPWM time-out!\n");
                 while(1);
@@ -76,10 +76,10 @@ void CalPeriodTime(BPWM_T *BPWM, uint32_t u32Ch)
         au32Count[u32i++] = (uint16_t)BPWM_GET_CAPTURE_FALLING_DATA(BPWM, u32Ch);
 
         /* Wait for Capture Rising Indicator */
-        u32TimeOutCnt = SystemCoreClock;
+        u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
         while(BPWM_GetCaptureIntFlag(BPWM, u32Ch) < 1)
         {
-            if(--u32TimeOutCnt == 0) /* 1 second time-out */
+            if(--u32TimeOutCnt == 0)
             {
                 printf("Wait for BPWM time-out!\n");
                 while(1);

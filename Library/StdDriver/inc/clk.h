@@ -1196,7 +1196,7 @@ __STATIC_INLINE int32_t CLK_SysTickDelay(uint32_t us)
 __STATIC_INLINE int32_t CLK_SysTickLongDelay(uint32_t us)
 {
     /* The u32TimeOutCnt value must be greater than the max delay time of 1398ms if HCLK=12MHz */
-    uint32_t u32Delay, u32TimeOutCnt; 
+    uint32_t u32Delay, u32TimeOutCnt;
 
     /* It should <= 65536us for each delay loop */
     u32Delay = 65536UL;
@@ -1223,7 +1223,7 @@ __STATIC_INLINE int32_t CLK_SysTickLongDelay(uint32_t us)
             if(--u32TimeOutCnt == 0) break;
 
         /* Disable SysTick counter */
-        SysTick->CTRL = 0UL;  
+        SysTick->CTRL = 0UL;
     }
     while( (us > 0UL) && (u32TimeOutCnt != 0) );
 

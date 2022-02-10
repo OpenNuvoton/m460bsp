@@ -169,7 +169,7 @@ int32_t main(void)
     AES_SetDMATransfer(CRPT, 0, (uint32_t)au8InputData, (uint32_t)au8OutputData, sizeof(au8InputData));
 
     g_AES_done = 0;
-    /* Start AES Eecrypt */
+    /* Start AES Encrypt */
     AES_Start(CRPT, 0, CRYPTO_DMA_ONE_SHOT);
 
     /* Waiting for AES calculation */
@@ -178,7 +178,7 @@ int32_t main(void)
     {
         if(--u32TimeOutCnt == 0)
         {
-            printf("Wait for AES time-out!\n");
+            printf("Wait for AES encrypt done time-out!\n");
             while(1);
         }
     }
@@ -204,7 +204,7 @@ int32_t main(void)
     {
         if(--u32TimeOutCnt == 0)
         {
-            printf("Wait for AES time-out!\n");
+            printf("Wait for AES decrypt done time-out!\n");
             while(1);
         }
     }

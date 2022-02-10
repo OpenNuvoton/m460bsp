@@ -1150,6 +1150,7 @@ uint32_t  FMC_CheckAllOne(uint32_t u32addr, uint32_t u32count)
                 if( i32TimeOutCnt0-- <= 0)
                 {
                     g_FMC_i32ErrCode = -1;
+                    break;
                 }
             }
 

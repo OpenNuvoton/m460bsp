@@ -388,7 +388,7 @@ void GpioPinSetting(void)
     PI->DOUT = 0x0000FFFF;
     PJ->DOUT = 0x0000FFFF;
 
-    /* Set PF.4~PF.11 as Quasi mode output high */
+    /* Set PF.4~PF.11 as Quasi mode output high by RTC control */
     CLK->APBCLK0 |= CLK_APBCLK0_RTCCKEN_Msk;
     RTC->GPIOCTL1 = RTC_GPIOCTL1_DOUT7_Msk | (RTC_IO_MODE_QUASI<<RTC_GPIOCTL1_OPMODE7_Pos) |
                     RTC_GPIOCTL1_DOUT6_Msk | (RTC_IO_MODE_QUASI<<RTC_GPIOCTL1_OPMODE6_Pos) |
