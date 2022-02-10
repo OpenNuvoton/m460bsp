@@ -120,11 +120,11 @@ int InitHM01B0_4BIT_YUV422(void)
     uint8_t HM01B0_Addr0 = 0x24;
     uint8_t u8DeviceID=(HM01B0_Addr0<<1);
     uint8_t u8ID[2]= {0};
-    SYS->GPD_MFP2 &= ~SYS_GPD_MFP2_PD9MFP_Msk;        /* PD9 for GPIO to act as SCL */
-    SYS->GPD_MFP2 &= ~SYS_GPD_MFP2_PD8MFP_Msk;        /* PD8 for GPIO to act as SDA */
+    SYS->GPH_MFP0 &= ~SYS_GPH_MFP0_PH2MFP_Msk;        /* PH2 for GPIO to act as SCL */
+    SYS->GPH_MFP0 &= ~SYS_GPH_MFP0_PH3MFP_Msk;        /* PH3 for GPIO to act as SDA */
 
     /* switch I2C pin function */
-    SWI2C_Open(eDRVGPIO_GPIOD,eDRVGPIO_PIN9,eDRVGPIO_GPIOD,eDRVGPIO_PIN8,Delay);
+    SWI2C_Open(eDRVGPIO_GPIOH,eDRVGPIO_PIN2,eDRVGPIO_GPIOH,eDRVGPIO_PIN3,Delay);
     printf("HM01B0_RegNum=%d\n",sizeof(g_HM01B0_RegValue)/sizeof(struct NT_RegValue));
     for(i=0; i<sizeof(g_HM01B0_RegValue)/sizeof(struct NT_RegValue); i++)
     {
