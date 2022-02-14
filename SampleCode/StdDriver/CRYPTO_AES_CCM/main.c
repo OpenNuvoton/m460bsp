@@ -413,7 +413,7 @@ int32_t CCMPacker(uint8_t *iv, uint32_t ivlen, uint8_t *A, uint32_t alen, uint8_
 
 int32_t AES_CCM(int32_t enc, uint8_t *key, uint32_t klen, uint8_t *iv, uint32_t ivlen, uint8_t *A, uint32_t alen, uint8_t *P, uint32_t plen, uint8_t *buf, uint32_t *size, uint32_t *plen_aligned, uint32_t tlen)
 {
-    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    uint32_t u32TimeOutCnt;
 
     __ALIGNED(4) uint8_t au8TmpBuf[32] = { 0 };
 
@@ -479,15 +479,16 @@ int32_t AES_CCM(int32_t enc, uint8_t *key, uint32_t klen, uint8_t *iv, uint32_t 
     AES_SetDMATransfer(CRPT, 0, (uint32_t)g_au8Buf, (uint32_t)buf, *size);
 
     g_Crypto_Int_done = 0;
-    /* Start AES Eecrypt */
+    /* Start AES Encrypt */
     AES_Start(CRPT, 0, CRYPTO_DMA_ONE_SHOT);
     /* Waiting for AES calculation */
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     while(!g_Crypto_Int_done)
     {
         if(--u32TimeOutCnt == 0)
         {
-            printf("Wait for AES time-out!\n");
-            while(1);
+            printf("Wait for AES calculation done time-out!\n");
+            return -1;
         }
     }
 
@@ -535,7 +536,8 @@ int main(void)
     str2bin(pt_str, g_P, plen);
     str2bin(c_str, g_C, clen);
 
-    AES_CCM(1, g_key, klen, g_iv, ivlen, g_A, alen, g_P, plen, g_au8Out, &size, &plen_aligned, tlen);
+    if( AES_CCM(1, g_key, klen, g_iv, ivlen, g_A, alen, g_P, plen, g_au8Out, &size, &plen_aligned, tlen) < 0 )
+        return -1;
 
 #ifndef _SWAP
     ToLittleEndian(g_au8Out, size);
@@ -553,21 +555,22 @@ int main(void)
         DumpBuffHex(g_C, plen);
         printf("g_au8Out:\n");
         DumpBuffHex(g_au8Out, plen);
-        while(1) {}
+        return -1;
     }
 
     if(memcmp(&g_C[plen], &g_au8Out[plen_aligned], tlen))
     {
         printf("ERR: Encrypted data fail!\n");
-        while(1) {}
+        return -1;
     }
 
-    AES_CCM(0, g_key, klen, g_iv, ivlen, g_A, alen, g_C, plen, g_au8Out2, &size, &plen_aligned, tlen);
+    if( AES_CCM(0, g_key, klen, g_iv, ivlen, g_A, alen, g_C, plen, g_au8Out2, &size, &plen_aligned, tlen) < 0 )
+        return -1;
 
     if(memcmp(g_P, g_au8Out2, plen))
     {
         printf("ERR: Encrypted data fail!\n");
-        while(1) {}
+        return -1;
     }
 
     printf("Test PASS!\n");

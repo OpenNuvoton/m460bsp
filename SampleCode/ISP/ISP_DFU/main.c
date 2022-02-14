@@ -24,7 +24,7 @@ int32_t g_FMC_i32ErrCode = 0;
 void ProcessHardFault(void);
 void SH_Return(void);
 uint32_t GetApromSize(void);
-void SYS_Init(void);
+int32_t SYS_Init(void);
 
 void ProcessHardFault(void) {}
 void SH_Return(void) {}
@@ -57,9 +57,9 @@ uint32_t CLK_GetPLLClockFreq(void)
     return PLL_CLOCK;
 }
 
-void SYS_Init(void)
+int32_t SYS_Init(void)
 {
-    uint32_t u32TimeOutCount = 0;
+    uint32_t u32TimeOutCnt;
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
@@ -69,20 +69,22 @@ void SYS_Init(void)
     CLK->PWRCTL |= CLK_PWRCTL_HIRCEN_Msk;
 
     /* Wait for HIRC clock ready */
-    u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     while(!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk))
     {
-        if(--u32TimeOutCount == 0) break;
+        if( --u32TimeOutCnt == 0)
+            return -1;
     }
 
     /* Enable HIRC48M clock */
     CLK->PWRCTL |= CLK_PWRCTL_HIRC48MEN_Msk;
 
     /* Wait for HIRC48M clock ready */
-    u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     while(!(CLK->STATUS & CLK_STATUS_HIRC48MSTB_Msk))
     {
-        if(--u32TimeOutCount == 0) break;
+        if( --u32TimeOutCnt == 0)
+            return -1;
     }
 
     /* Set HCLK clock source as HIRC first */
@@ -95,10 +97,11 @@ void SYS_Init(void)
     CLK->PLLCTL = CLK_PLLCTL_200MHz_HIRC;
 
     /* Wait for PLL clock ready */
-    u32TimeOutCount = SystemCoreClock;
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     while(!(CLK->STATUS & CLK_STATUS_PLLSTB_Msk))
     {
-        if(--u32TimeOutCount == 0) break;
+        if( --u32TimeOutCnt == 0)
+            return -1;
     }
 
     /* Set power level by HCLK working frequency */
@@ -141,6 +144,8 @@ void SYS_Init(void)
     SET_USB_D_N_PA13();
     SET_USB_D_P_PA14();
     SET_USB_OTG_ID_PA15();
+
+    return 0;
 }
 
 void USBD_IRQHandler(void);
@@ -155,7 +160,8 @@ int32_t main(void)
     SYS_UnlockReg();
 
     /* Init System, peripheral clock and multi-function I/O */
-    SYS_Init();
+    if( SYS_Init() < 0 )
+        goto _APROM;
 
     /* Enable ISP */
     CLK->AHBCLK0 |= CLK_AHBCLK0_ISPCKEN_Msk;
@@ -214,6 +220,8 @@ int32_t main(void)
 
         USBD_IRQHandler();
     }
+
+_APROM:
 
     /* Reset system and boot from APROM */
     FMC_SetVectorPageAddr(FMC_APROM_BASE);

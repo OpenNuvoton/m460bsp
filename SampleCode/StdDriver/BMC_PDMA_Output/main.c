@@ -128,13 +128,13 @@ int main(void)
     BMC_ENABLE();
 
     /* Wait until one frame transfer done */
-    u32TimeOutCnt = SystemCoreClock;
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     while(!BMC_GetIntFlag(BMC_FTXD_INT_MASK))
     {
-        if(--u32TimeOutCnt == 0) /* 1 second time-out */
+        if(--u32TimeOutCnt == 0)
         {
-            printf("Wait for BMC interrupt tim-out!\n");
-            while(1);
+            printf("Wait for BMC interrupt flag time-out!\n");
+            break;
         }
     }
 

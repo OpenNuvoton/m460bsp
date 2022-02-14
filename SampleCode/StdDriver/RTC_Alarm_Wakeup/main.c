@@ -141,7 +141,7 @@ int main(void)
     {
         printf("\n RTC initial fail!!");
         printf("\n Please check h/w setting!!");
-        while(1);
+        return -1;
     }
 
     /* Set RTC alarm date/time */

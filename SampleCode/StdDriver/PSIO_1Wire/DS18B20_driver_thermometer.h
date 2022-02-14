@@ -30,8 +30,8 @@ typedef struct
 } S_PSIO_DS18B20_CFG;
 
 void PSIO_DS18B20_Open(S_PSIO_DS18B20_CFG *psConfig);
-void PSIO_DS18B20_Read_Data(S_PSIO_DS18B20_CFG *psConfig, uint8_t *pu8InData);
-void PSIO_DS18B20_Reset(S_PSIO_DS18B20_CFG *psConfig);
-void PSIO_DS18B20_Write_Command(S_PSIO_DS18B20_CFG *psConfig, uint8_t u8CMD);
+int32_t PSIO_DS18B20_Read_Data(S_PSIO_DS18B20_CFG *psConfig, uint8_t *pu8InData);
+int32_t PSIO_DS18B20_Reset(S_PSIO_DS18B20_CFG *psConfig);
+int32_t PSIO_DS18B20_Write_Command(S_PSIO_DS18B20_CFG *psConfig, uint8_t u8CMD);
 
 #endif  //__DS18B20_DRIVER_THERMOMETER_H__

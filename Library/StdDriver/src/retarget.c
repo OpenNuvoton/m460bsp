@@ -307,7 +307,8 @@ uint32_t ProcessHardFault(uint32_t lr, uint32_t msp, uint32_t psp)
 #endif
 
     /* Get the instruction caused the hardfault */
-    inst = M16(sp[6]);
+    if( sp != NULL )
+        inst = M16(sp[6]);
 
 
     if(inst == 0xBEAB)
@@ -393,8 +394,11 @@ uint32_t ProcessHardFault(uint32_t lr, uint32_t msp, uint32_t psp)
 
     printf("HardFault @ 0x%x\n", sp[6]);
     /* Get the instruction caused the hardfault */
-    addr = sp[6];
-    inst = M16(addr);
+    if( sp != NULL )
+    {
+        addr = sp[6];
+        inst = M16(addr);
+    }
 
     printf("HardFault Analysis:\n");
 

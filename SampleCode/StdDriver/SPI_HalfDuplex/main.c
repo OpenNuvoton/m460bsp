@@ -145,7 +145,7 @@ int main(void)
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for SPI time-out!\n");
-            while(1);
+            return -1;
         }
     }
     /* Set slave SPI1 data direction to output */
@@ -166,7 +166,7 @@ int main(void)
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for SPI time-out!\n");
-            while(1);
+            return -1;
         }
     }
     /* Set master SPI0 data direction to input */

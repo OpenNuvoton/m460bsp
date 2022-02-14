@@ -123,7 +123,7 @@ int32_t main(void)
 
     printf("\n\nCPU @ %dHz(PLL@ %dHz)\n", SystemCoreClock, PllClock);
     printf("+------------------------------------------------------------------------+\n");
-    printf("|                          EPWM Driver Sample Code                        |\n");
+    printf("|                          EPWM Driver Sample Code                       |\n");
     printf("|                                                                        |\n");
     printf("+------------------------------------------------------------------------+\n");
     printf("  This sample code demonstrate EPWM1 channel 0 accumulator stop mode.\n");
@@ -134,7 +134,7 @@ int32_t main(void)
     getchar();
 
     /*--------------------------------------------------------------------------------------*/
-    /* Set the EPWM1 Channel 0 as EPWM output function.                                       */
+    /* Set the EPWM1 Channel 0 as EPWM output function.                                     */
     /*--------------------------------------------------------------------------------------*/
 
     /* Set EPWM1 channel 0 output configuration */

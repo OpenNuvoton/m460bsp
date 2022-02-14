@@ -37,7 +37,7 @@ extern PS2_HOST_STATUS g_Status;
 #define PSIO_PS2_SET_STATUS(status) ((PS2_HOST_STATUS)(g_Status=(status)))
 
 uint32_t PSIO_Encode_TxData(uint32_t *u32TxData);
-void PSIO_PS2_HostSend(S_PSIO_PS2 *psConfig);
+int32_t PSIO_PS2_HostSend(S_PSIO_PS2 *psConfig);
 void PSIO_PS2_HostRead(S_PSIO_PS2 *psConfig);
 void PSIO_PS2_Open(S_PSIO_PS2 *psConfig);
 void PSIO_PS2_Close(S_PSIO_PS2 *psConfig);

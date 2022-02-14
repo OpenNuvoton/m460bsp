@@ -105,19 +105,19 @@ void SysTick_Handler(void)
 
     default:
         printf("Unknown db_state state!\n");
-        while (1);
+        break;
     }
 }
 
 void enable_sys_tick(int ticks_per_second)
 {
     g_tick_cnt = 0;
-    SystemCoreClock = 192000000UL;         /* HCLK is 160 MHz */
+    //SystemCoreClock = 200000000UL;         /* HCLK is 200 MHz */
     if (SysTick_Config(SystemCoreClock / ticks_per_second))
     {
         /* Setup SysTick Timer for 1 second interrupts  */
         printf("Set system tick error!!\n");
-        while (1);
+        //while (1);
     }
 }
 
@@ -263,10 +263,10 @@ int main()
 
     UART0_Init();                      /* Initialize UART0                               */
 
-    if ((SYS->CSERVER & SYS_CSERVER_VERSION_Msk) == 0x1)
+    if ((SYS->CSERVER & SYS_CSERVER_VERSION_Msk) == 0x3)
     {
         printf("M460LD does not support dual bank!\n");
-        while (1);
+        return -1;
     }
 
     printf("+------------------------------------------+\n");
@@ -318,7 +318,7 @@ int main()
         if (inpw(addr) != addr)
         {
             printf("Flash address 0x%x verify failed! expect: 0x%x, read: 0x%x.\n", addr, addr, inpw(addr));
-            while (1);
+            return -1;
         }
     }
     printf("Verify OK.\n");

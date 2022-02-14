@@ -24,7 +24,6 @@ void HBI_IRQHandler(void)
     {
         HBI->INTSTS |= HBI_INTSTS_OPDONE_Msk;
         printf("clear done flag fail ! \n");
-        while(1);
     }
 
 }
@@ -93,7 +92,7 @@ void UART0_Init(void)
 
 
 
-static void Clear4Bytes(uint32_t u32StartAddr)
+static int32_t Clear4Bytes(uint32_t u32StartAddr)
 {
     uint32_t u32TimeOutCnt = HBI_TIMEOUT;
 
@@ -106,25 +105,32 @@ static void Clear4Bytes(uint32_t u32StartAddr)
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for HBI time-out!\n");
-            while(1);
+            return -1;
         }
     }
+
+    return 0;
 }
 
-static void ClearHyperRAM(uint32_t u32StartAddr, uint32_t u32EndAddr)
+static int32_t ClearHyperRAM(uint32_t u32StartAddr, uint32_t u32EndAddr)
 {
     uint32_t u32Data, i;
 
     for(i = u32StartAddr; i < u32EndAddr; i+=4)
     {
-        Clear4Bytes(i);
+        if( Clear4Bytes(i) < 0 )
+        {
+            return -1;
+        }
         u32Data = HBI_Read2Word(i);
         if(u32Data != 0)
         {
             printf("ClearHyperRAM fail!! Read address:0x%08x  data::0x%08x  expect: 0\n",  i, u32Data);
-            while(1);
+            return -1;
         }
     }
+
+    return 0;
 }
 
 int main()
@@ -165,7 +171,8 @@ int main()
         printf("              8 bits: 0x%08x\n", u8BitPattern);
 
         /* Clear HyperRAM */
-        ClearHyperRAM(u32StartAddr, u32EndAddr);
+        if( ClearHyperRAM(u32StartAddr, u32EndAddr) < 0 )
+            return -1;
 
         /* Fill 4 Byte pattern to HyperRAM */
         printf("4 Byte Write test .....\n");
@@ -187,7 +194,8 @@ int main()
         printf("4 Byte Write test Done!!\n");
 
         /* Clear HyperRAM */
-        ClearHyperRAM(u32StartAddr, u32EndAddr);
+        if( ClearHyperRAM(u32StartAddr, u32EndAddr) < 0 )
+            return -1;
 
         /* Fill 3 Byte pattern to HyperRAM */
         printf("3 Byte Write test .....\n");
@@ -210,7 +218,8 @@ int main()
         printf("3 Byte Write test Done!!\n");
 
         /* Clear HyperRAM */
-        ClearHyperRAM(u32StartAddr, u32EndAddr);
+        if( ClearHyperRAM(u32StartAddr, u32EndAddr) < 0 )
+            return -1;
 
         /* Fill 2 Byte pattern to HyperRAM */
         printf("2 Byte Write test .....\n");
@@ -233,7 +242,8 @@ int main()
         printf("2 Byte Write test Done!!\n");
 
         /* Clear HyperRAM */
-        ClearHyperRAM(u32StartAddr, u32EndAddr);
+        if( ClearHyperRAM(u32StartAddr, u32EndAddr) < 0 )
+            return -1;
 
         /* Fill 1 Byte pattern to HyperRAM */
         printf("1 Byte Write test .....\n");
@@ -255,7 +265,8 @@ int main()
         printf("1 Byte Write test Done!!\n");
 
         /* Clear HyperRAM */
-        ClearHyperRAM(u32StartAddr, u32EndAddr);
+        if( ClearHyperRAM(u32StartAddr, u32EndAddr) < 0 )
+            return -1;
 
         printf("======= Pattern Round[%d] Test Pass! ======= \n", u32PatCnt);
 

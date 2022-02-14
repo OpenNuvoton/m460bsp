@@ -58,7 +58,7 @@ void PSIO_IRQHandler(void)
             if(--u32TimeOutCnt == 0)
             {
                 printf("Wait for PSIO time-out!\n");
-                while(1);
+                return;
             }
         }
 
@@ -92,7 +92,7 @@ void PSIO_IRQHandler(void)
                 if(--u32TimeOutCnt == 0)
                 {
                     printf("Wait for PSIO time-out!\n");
-                    while(1);
+                    return;
                 }
             }
 
@@ -120,7 +120,7 @@ void PSIO_IRQHandler(void)
                 if(--u32TimeOutCnt == 0)
                 {
                     printf("Wait for PSIO time-out!\n");
-                    while(1);
+                    return;
                 }
             }
 
@@ -263,7 +263,8 @@ int32_t main(void)
             u32Data = UART0->DAT;
             g_u32TxData = PSIO_Encode_TxData(&u32Data);
             printf("[Host send to device]0x%x, 0x%x\n", u32Data, g_u32TxData);
-            PSIO_PS2_HostSend(&g_sConfig);
+            if( PSIO_PS2_HostSend(&g_sConfig) < 0 )
+                return -1;
 
             while (PSIO_PS2_GET_STATUS() == eHOST_WRITE);
         }

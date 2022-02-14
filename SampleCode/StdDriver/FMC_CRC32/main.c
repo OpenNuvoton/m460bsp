@@ -133,7 +133,7 @@ int main()
     /*
      *  Request FMC hardware to run CRC32 calculation on APROM bank 1. (M460HD only)
      */
-    if ((SYS->CSERVER & SYS_CSERVER_VERSION_Msk) == 0x0)
+    if ((SYS->CSERVER & SYS_CSERVER_VERSION_Msk) == 0x2)
     {
         printf("\nAPROM bank1 (0x80000 ~ 0x100000) CRC32 checksum =>  ");
         u32ChkSum = FMC_GetChkSum(FMC_APROM_BASE+0x80000, 0x80000);

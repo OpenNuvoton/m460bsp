@@ -20,9 +20,9 @@ static volatile uint32_t s_u32RTCTickINT;
 
 
 void RTC_IRQHandler(void);
-void RTC_Init(void);
+int32_t RTC_Init(void);
 void PowerDownFunction(void);
-void CheckPowerSource(void);
+int32_t CheckPowerSource(void);
 void SYS_Init(void);
 void UART0_Init(void);
 
@@ -50,7 +50,7 @@ void RTC_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Function for RTC wake-up source setting                                                                */
 /*---------------------------------------------------------------------------------------------------------*/
-void RTC_Init(void)
+int32_t RTC_Init(void)
 {
     S_RTC_TIME_DATA_T sWriteRTC;
 
@@ -74,7 +74,7 @@ void RTC_Init(void)
         if( RTC_Open(&sWriteRTC) < 0 )
         {
             printf("Initialize RTC module and start counting failed\n");
-            while(1);
+            return -1;
         }
         printf("# Set RTC current date/time: 2021/03/16 00:00:00.\n");
 
@@ -101,6 +101,7 @@ void RTC_Init(void)
     /* Lock protected registers */
     SYS_LockReg();
 
+    return 0;
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -128,7 +129,7 @@ void PowerDownFunction(void)
 /*-----------------------------------------------------------------------------------------------------------*/
 /*  Function for Check Power Manager Status                                                                  */
 /*-----------------------------------------------------------------------------------------------------------*/
-void CheckPowerSource(void)
+int32_t CheckPowerSource(void)
 {
     S_RTC_TIME_DATA_T sReadRTC;
 
@@ -181,12 +182,13 @@ void CheckPowerSource(void)
                 /* End of sample code and clear Power-down Mode flag */
                 printf("\nSample code end. Press Reset Button and continue.\n");
                 M32(PDMD_FLAG_ADDR) = 0;
-                while(1);
+                return 1;
 
         }
 
     }
 
+    return 0;
 }
 
 void SYS_Init(void)
@@ -278,10 +280,12 @@ int32_t main(void)
     CLK_EnableCKO(CLK_CLKSEL1_CLKOSEL_HCLK, 3, 0);
 
     /* Get power manager wake up source */
-    CheckPowerSource();
+    if( CheckPowerSource() != 0)
+        goto lexit;
 
     /* RTC wake-up source setting */
-    RTC_Init();
+    if( RTC_Init() < 0 )
+        goto lexit;
 
     /*
         This sample code will enter to different Power-down mode and wake-up by RTC:
@@ -316,7 +320,7 @@ int32_t main(void)
             default:
                 printf("\nInit sample code. Press Reset Button and continue.\n");
                 M32(PDMD_FLAG_ADDR) = 0;
-                while(1);
+                goto lexit;
                 //break;
         }
 
@@ -331,7 +335,7 @@ int32_t main(void)
             if(--u32TimeOutCnt == 0)
             {
                 printf("Wait for RTC interrupt time-out!");
-                while(1);
+                break;
             }
         }
         printf("Wake-up!\n");
@@ -354,12 +358,14 @@ int32_t main(void)
                 M32(PDMD_FLAG_ADDR) = CLK_PMUCTL_PDMSEL_SPD;
                 break;
             default:
-                printf("\nPress Reset Button and continue.\n");
+                printf("\nInit sample code. Press Reset Button and continue.\n");
                 M32(PDMD_FLAG_ADDR) = 0;
-                while(1);
-//                break;
+                goto lexit;
+                //break;
         }
-
     }
 
+lexit:   
+    
+    while(1);
 }

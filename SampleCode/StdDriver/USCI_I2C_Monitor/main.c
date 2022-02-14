@@ -320,7 +320,7 @@ void UI2C_SLV_7bit_Monitor(uint32_t u32Status)
                 {
                     //Check Receive Address not match
                     printf("Error...Enter Wrong mode...");
-                    while(1);
+                    return;
                 }
             }
             s_Event=SLAVE_GET_DATA;
@@ -548,7 +548,7 @@ int32_t Read_Write_SLAVE_Mon(uint8_t slvaddr)
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for USCI_I2C time-out!\n");
-            while(1);
+            return -1;
         }
     }
     g_u8EndFlagM = 0;
@@ -568,7 +568,7 @@ int32_t Read_Write_SLAVE_Mon(uint8_t slvaddr)
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for USCI_I2C time-out!\n");
-            while(1);
+            return -1;
         }
     }
 

@@ -51,7 +51,7 @@ int32_t main(void)
     /* Init System, IP clock and multi-function I/O. */
     SYS_Init();
 
-    /* Configure UART5: 115200, 8-bit word, no parity bit, 1 stop bit. */
+    /* Configure UART0: 115200, 8-bit word, no parity bit, 1 stop bit. */
     UART_Open(UART0, 115200);
 
     printf("\n\n");

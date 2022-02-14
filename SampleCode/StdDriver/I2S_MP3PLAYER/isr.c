@@ -38,6 +38,6 @@ void PDMA0_IRQHandler(void)
     else
     {
         printf("0x%x\n", u32Status);
-        while(1);
+        //while(1);
     }
 }

@@ -278,7 +278,7 @@ int32_t Read_Write_SLAVE(uint8_t slvaddr)
             if(--u32TimeOutCnt == 0)
             {
                 printf("Wait for USCI_I2C Tx finish time-out!\n");
-                while(1);
+                return -1;
             }
         }
         g_u8MstEndFlag = 0;
@@ -299,7 +299,7 @@ int32_t Read_Write_SLAVE(uint8_t slvaddr)
             if(--u32TimeOutCnt == 0)
             {
                 printf("Wait for USCI_I2C Rx finish time-out!\n");
-                while(1);
+                return -1;
             }
         }
         g_u8MstEndFlag = 0;
@@ -351,13 +351,15 @@ int main()
     /* Access Slave with no address mask */
     printf("\n");
     printf(" == No Mask Address ==\n");
-    Read_Write_SLAVE(0x15);
+    if( Read_Write_SLAVE(0x15) < 0)
+        return -1;
     printf("SLAVE Address test OK.\n");
 
     /* Access Slave with address mask */
     printf("\n");
     printf(" == Mask Address ==\n");
-    Read_Write_SLAVE(0x15 & ~0x01);
+    if( Read_Write_SLAVE(0x15 & ~0x01) < 0 )
+        return -1;
     printf("SLAVE Address Mask test OK.\n");
 
     while(1);

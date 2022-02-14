@@ -223,14 +223,14 @@ int32_t main(void)
     printf("|   Crypto RSA SCAP mode access key from key store sample   |\n");
     printf("+-----------------------------------------------------------+\n");
 
-	/* Open TRNG */
+    /* Open TRNG */
     TRNG_Open();
 
     /* Generate a random number */
     if (TRNG_GenWord(&u32RndNum) == -1)
     {
         printf("\nTRNG has error!!\n");
-        while(1);
+        return -1;
     }
 
     /* Open key store */
@@ -240,11 +240,7 @@ int32_t main(void)
     if(PrepareKeys() == -1)
     {
         printf("\nCreate keys is failed!!\n");
-
-        /* Erase all keys in SRAM Flash of key store */
-        EraseAllSramKey();
-
-        while(1);
+        goto lexit;
     }
 
     NVIC_EnableIRQ(CRPT_IRQn);
@@ -268,7 +264,7 @@ int32_t main(void)
     if(RSA_Open(CRPT, RSA_MODE_SCAP, RSA_KEY_SIZE_2048, &s_sRSABuf, sizeof(s_sRSABuf), 1) != 0)
     {
         printf("\nRSA buffer size is incorrect!!\n");
-        while(1);
+        goto lexit;
     }
     /* Set RSA private key is read from SRAM of key store */
     RSA_SetKey_KS(CRPT, (uint32_t)g_i32PrivateKeyNum, KS_SRAM, (uint32_t)g_i32BlindKeyNum);
@@ -281,8 +277,8 @@ int32_t main(void)
     {
         if(--u32TimeOutCnt == 0)
         {
-            printf("Wait for RSA time-out!\n");
-            while(1);
+            printf("Wait for RSA RSA operation done time-out!\n");
+            goto lexit;
         }
     }
 
@@ -290,7 +286,7 @@ int32_t main(void)
     if(g_RSA_error)
     {
         printf("\nRSA has error!!\n");
-        while(1);
+        goto lexit;
     }
 
     /* Get RSA output result */
@@ -307,7 +303,7 @@ int32_t main(void)
     if(RSA_Open(CRPT, RSA_MODE_SCAP, RSA_KEY_SIZE_2048, &s_sRSABuf, sizeof(s_sRSABuf), 1) != 0)
     {
         printf("\nRSA buffer size is incorrect!!\n");
-        while(1);
+        goto lexit;
     }
     /* Set RSA public key */
     RSA_SetKey_KS(CRPT, (uint32_t)g_i32PublicKeyNum, KS_SRAM, (uint32_t)g_i32BlindKeyNum);
@@ -320,8 +316,8 @@ int32_t main(void)
     {
         if(--u32TimeOutCnt == 0)
         {
-            printf("Wait for RSA time-out!\n");
-            while(1);
+            printf("Wait for RSA RSA operation done time-out!\n");
+            goto lexit;
         }
     }
 
@@ -342,9 +338,11 @@ int32_t main(void)
     else
     {
         printf("\nRSA signature verify failed!!\n");
-        while(1);
+        goto lexit;
     }
     printf("\nDone.\n");
+
+lexit:
 
     /* Erase all keys in SRAM of key store */
     EraseAllSramKey();

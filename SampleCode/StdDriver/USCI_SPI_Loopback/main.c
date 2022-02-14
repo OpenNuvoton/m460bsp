@@ -90,15 +90,23 @@ int main()
                 if(--u32TimeOutCnt == 0)
                 {
                     printf("Wait for USCI_SPI time-out!\n");
-                    while(1);
+                    u32Err = 1;
+                    break;
                 }
             }
+
+            if(u32Err)
+                break;
+
             /* Read received data */
             s_au32DestinationData[u32DataCount] = USPI_READ_RX(USPI0);
             u32DataCount++;
             if(u32DataCount == TEST_COUNT)
                 break;
         }
+
+        if(u32Err)
+            break;
 
         /*  Check the received data */
         for(u32DataCount = 0; u32DataCount < TEST_COUNT; u32DataCount++)

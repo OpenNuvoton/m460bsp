@@ -137,7 +137,7 @@ int main(void)
     {
         printf("\n RTC initial fail!!");
         printf("\n Please check h/w setting!!");
-        while(1);
+        return -1;
     }
 
     /* Enable RTC tick interrupt, one RTC tick is 1 second */
@@ -168,7 +168,7 @@ int main(void)
             if(u32Sec == sReadRTC.u32Second)
             {
                 printf("\nRTC time is incorrect.\n");
-                while(1) {}
+                return -1;
             }
 
             u32Sec = sReadRTC.u32Second;

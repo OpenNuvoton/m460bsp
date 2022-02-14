@@ -1969,7 +1969,7 @@ typedef struct
      * |        |          |08 = SC1_DAT
      * |        |          |14 = ACMP1_O
      * |        |          |15 = EADC1_ST
-     * |        |          |16 = HBI_nRESET
+     * |        |          |16 = HBI_D7
      * |        |          |17 = PSIO0_CH6
      * |[20:16] |PD6MFP    |PD.6 Multi-function Pin Selection
      * |        |          |00 = GPIO
@@ -1981,7 +1981,7 @@ typedef struct
      * |        |          |08 = SC1_RST
      * |        |          |14 = ACMP0_O
      * |        |          |15 = EADC0_ST
-     * |        |          |16 = HBI_D0
+     * |        |          |16 = HBI_D6
      * |        |          |17 = PSIO0_CH5
      * |[28:24] |PD7MFP    |PD.7 Multi-function Pin Selection
      * |        |          |00 = GPIO
@@ -1992,7 +1992,7 @@ typedef struct
      * |        |          |06 = QSPI1_MISO0
      * |        |          |07 = CCAP_HSYNC
      * |        |          |08 = SC1_PWR
-     * |        |          |16 = HBI_D1
+     * |        |          |16 = HBI_D5
      * |        |          |17 = PSIO0_CH4
      * @var SYS_T::GPD_MFP2
      * Offset: 0x538  GPIOD Multiple Function Control Register 2
@@ -2776,19 +2776,19 @@ typedef struct
      * |        |          |06 = QSPI1_MOSI1
      * |        |          |07 = CCAP_SCLK
      * |        |          |10 = CAN3_RXD
-     * |        |          |16 = HBI_nCS
+     * |        |          |16 = HBI_CK
      * |[20:16] |PH14MFP   |PH.14 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = EBI_AD2
      * |        |          |06 = QSPI1_SS
      * |        |          |07 = CCAP_SFIELD
-     * |        |          |16 = HBI_D3
+     * |        |          |16 = HBI_RWDS
      * |[28:24] |PH15MFP   |PH.15 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = EBI_AD3
      * |        |          |06 = QSPI1_CLK
      * |        |          |07 = CCAP_VSYNC
-     * |        |          |16 = HBI_D2
+     * |        |          |16 = HBI_D4
      * @var SYS_T::GPI_MFP0
      * Offset: 0x580  GPIOI Multiple Function Control Register 0
      * ---------------------------------------------------------------------------------------------------
@@ -2922,7 +2922,7 @@ typedef struct
      * |        |          |06 = QSPI1_SS
      * |        |          |07 = CCAP_DATA5
      * |        |          |10 = CAN0_TXD
-     * |        |          |16 = HBI_RWDS
+     * |        |          |16 = HBI_nRESET
      * |[28:24] |PJ3MFP    |PJ.3 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = EBI_AD4
@@ -2943,7 +2943,7 @@ typedef struct
      * |        |          |06 = QSPI1_MISO0
      * |        |          |07 = CCAP_DATA3
      * |        |          |10 = CAN1_TXD
-     * |        |          |16 = HBI_D6
+     * |        |          |16 = HBI_D2
      * |[12:8]  |PJ5MFP    |PJ.5 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = EBI_AD2
@@ -2951,21 +2951,21 @@ typedef struct
      * |        |          |06 = QSPI1_MOSI0
      * |        |          |07 = CCAP_DATA2
      * |        |          |10 = CAN1_RXD
-     * |        |          |16 = HBI_D5
+     * |        |          |16 = HBI_D1
      * |[20:16] |PJ6MFP    |PJ.6 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = EBI_AD1
      * |        |          |03 = UART9_nCTS
      * |        |          |07 = CCAP_DATA1
      * |        |          |10 = CAN2_TXD
-     * |        |          |16 = HBI_D4
+     * |        |          |16 = HBI_D0
      * |[28:24] |PJ7MFP    |PJ.7 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = EBI_AD0
      * |        |          |03 = UART9_nRTS
      * |        |          |07 = CCAP_DATA0
      * |        |          |10 = CAN2_RXD
-     * |        |          |16 = HBI_CK
+     * |        |          |16 = HBI_nCS
      * @var SYS_T::GPJ_MFP2
      * Offset: 0x598  GPIOJ Multiple Function Control Register 2
      * ---------------------------------------------------------------------------------------------------

@@ -21,7 +21,7 @@ int32_t g_FMC_i32ErrCode = 0;
 void ProcessHardFault(void);
 void SH_Return(void);
 void SendChar_ToUART(void);
-void SYS_Init(void);
+int32_t SYS_Init(void);
 
 void ProcessHardFault(void) {}
 void SH_Return(void) {}
@@ -33,9 +33,9 @@ uint32_t CLK_GetPLLClockFreq(void)
     return PLL_CLOCK;
 }
 
-void SYS_Init(void)
+int32_t SYS_Init(void)
 {
-    uint32_t u32TimeOutCount = 0;
+    uint32_t u32TimeOutCnt;
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
@@ -45,10 +45,11 @@ void SYS_Init(void)
     CLK->PWRCTL |= CLK_PWRCTL_HIRCEN_Msk;
 
     /* Wait for HIRC clock ready */
-    u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     while(!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk))
     {
-        if(--u32TimeOutCount == 0) break;
+        if(--u32TimeOutCnt == 0)
+            return -1;
     }
 
     /* Set HCLK clock source as HIRC first */
@@ -61,10 +62,11 @@ void SYS_Init(void)
     CLK->PLLCTL = CLK_PLLCTL_200MHz_HIRC;
 
     /* Wait for PLL clock ready */
-    u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     while(!(CLK->STATUS & CLK_STATUS_PLLSTB_Msk))
     {
-        if(--u32TimeOutCount == 0) break;
+        if(--u32TimeOutCnt == 0)
+            return -1;
     }
 
     /* Set power level by HCLK working frequency */
@@ -98,6 +100,8 @@ void SYS_Init(void)
     /* Set multi-function pins for UART0 RXD and TXD */
     SET_UART0_RXD_PB12();
     SET_UART0_TXD_PB13();
+
+    return 0;
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -109,7 +113,8 @@ int32_t main(void)
     SYS_UnlockReg();
 
     /* Init System, peripheral clock and multi-function I/O */
-    SYS_Init();
+    if( SYS_Init() < 0 )
+        goto _APROM;
 
     /* Init UART */
     UART_Init();

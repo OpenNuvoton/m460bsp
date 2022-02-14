@@ -182,7 +182,7 @@ int main(void)
         printf("Fail to write key to Key Store!\n");
         printf("KS SRAM remaind size = %d\n", KS_GetRemainSize(KS_SRAM));
 
-        while(1) {}
+        return -1;
     }
 
     printf("KS SRAM remind size: %d\n", KS_GetRemainSize(KS_SRAM));

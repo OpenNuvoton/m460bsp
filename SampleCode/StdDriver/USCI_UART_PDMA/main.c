@@ -218,7 +218,7 @@ void USCI_UART_PDMATest(void)
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for PDMA time-out!\n");
-            while(1);
+            return;
         }
     }
 
@@ -235,7 +235,7 @@ void USCI_UART_PDMATest(void)
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for PDMA time-out!\n");
-            while(1);
+            return;
         }
     }
 
@@ -247,7 +247,7 @@ void USCI_UART_PDMATest(void)
         if(g_u8Rx_Buffer[i] != i)
         {
             printf("\n Receive Data Compare Error !!");
-            while(1);
+            return;
         }
 
     }

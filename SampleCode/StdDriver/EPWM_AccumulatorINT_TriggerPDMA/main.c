@@ -148,7 +148,7 @@ int32_t main(void)
 
     printf("\n\nCPU @ %dHz(PLL@ %dHz)\n", SystemCoreClock, PllClock);
     printf("+------------------------------------------------------------------------+\n");
-    printf("|                          EPWM Driver Sample Code                        |\n");
+    printf("|                         EPWM Driver Sample Code                        |\n");
     printf("|                                                                        |\n");
     printf("+------------------------------------------------------------------------+\n");
     printf("  This sample code demonstrate EPWM1 channel 0 accumulator interrupt trigger PDMA.\n");
@@ -159,7 +159,7 @@ int32_t main(void)
     getchar();
 
     /*--------------------------------------------------------------------------------------*/
-    /* Set the EPWM1 Channel 0 as EPWM output function.                                       */
+    /* Set the EPWM1 Channel 0 as EPWM output function.                                     */
     /*--------------------------------------------------------------------------------------*/
 
     /* Set EPWM1 channel 0 output configuration */
@@ -181,7 +181,7 @@ int32_t main(void)
     EPWM_Start(EPWM1, EPWM_CH_0_MASK);
 
     /*--------------------------------------------------------------------------------------*/
-    /* Configure PDMA peripheral mode form memory to EPWM                                    */
+    /* Configure PDMA peripheral mode form memory to EPWM                                   */
     /*--------------------------------------------------------------------------------------*/
     /* Open Channel 0 */
     PDMA_Open(PDMA0, BIT0);
@@ -210,7 +210,7 @@ int32_t main(void)
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for PDMA transfer done time-out!\n");
-            while(1);
+            goto lexit;
         }
     }
 
@@ -229,9 +229,11 @@ int32_t main(void)
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for EPWM stop time-out!\n");
-            while(1);
+            break;
         }
     }
+
+lexit:
 
     /* Disable Timer for EPWM1 channel 0 */
     EPWM_ForceStop(EPWM1, EPWM_CH_0_MASK);
