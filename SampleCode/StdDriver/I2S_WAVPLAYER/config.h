@@ -11,6 +11,8 @@
 
 #include "ff.h"
 
+#define NAU8822     1
+
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
@@ -34,6 +36,7 @@ extern volatile uint8_t g_u8PCMBufferFull[2];
 extern volatile uint8_t g_u8PCMBufferPlaying;
 
 void WAVPlayer(void);
+void NAU8822_ConfigSampleRate(uint32_t u32SampleRate);
 void NAU88L25_ConfigSampleRate(uint32_t u32SampleRate);
 
 #endif

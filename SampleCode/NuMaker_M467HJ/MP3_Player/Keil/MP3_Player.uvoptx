@@ -22,7 +22,7 @@
   </DaveTm>
 
   <Target>
-    <TargetName>I2S_MP3PLAYER</TargetName>
+    <TargetName>MP3_Player</TargetName>
     <ToolsetNumber>0x4</ToolsetNumber>
     <ToolsetName>ARM-ADS</ToolsetName>
     <TargetOption>

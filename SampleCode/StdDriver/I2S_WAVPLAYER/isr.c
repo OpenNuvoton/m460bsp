@@ -21,7 +21,7 @@ void PDMA0_IRQHandler(void)
     {
         if(PDMA_GET_TD_STS(PDMA0) & 0x4)
         {
-            g_u8PCMBufferFull[g_u8PCMBufferPlaying] = 0;       //set empty flag
+            g_u8PCMBufferFull[g_u8PCMBufferPlaying] = 0;       /* Set empty flag */
             g_u8PCMBufferPlaying ^= 1;
         }
         PDMA_CLR_TD_FLAG(PDMA0, PDMA_TDSTS_TDIF2_Msk);
@@ -30,5 +30,4 @@ void PDMA0_IRQHandler(void)
     {
         PDMA_CLR_TMOUT_FLAG(PDMA0, PDMA_TDSTS_TDIF2_Msk);
     }
-
 }

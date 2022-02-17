@@ -24,10 +24,15 @@ void SysTick_Handler(void);
 void enable_sys_tick(int ticks_per_second);
 uint32_t get_ticks(void);
 void delay_us(int usec);
+#if NAU8822
+void I2C_WriteNAU8822(uint8_t u8Addr, uint16_t u16Data);
+void NAU8822_Setup(void);
+#else
 uint8_t I2C_WriteMultiByteforNAU88L25(uint8_t u8ChipAddr, uint16_t u16SubAddr, const uint8_t *p, uint32_t u32Len);
 uint8_t I2C_WriteNAU88L25(uint16_t u16Addr, uint16_t u16Dat);
 void NAU88L25_Reset(void);
 void NAU88L25_Setup(void);
+#endif
 void SDH0_IRQHandler(void);
 void SD_Inits(void);
 void SYS_Init(void);
@@ -94,6 +99,108 @@ void delay_us(int usec)
     while(!TIMER0->INTSTS);
 }
 
+#if NAU8822
+
+/*---------------------------------------------------------------------------------------------------------*/
+/*  Write 9-bit data to 7-bit address register of NAU8822 with I2C2                                        */
+/*---------------------------------------------------------------------------------------------------------*/
+void I2C_WriteNAU8822(uint8_t u8Addr, uint16_t u16Data)
+{
+    I2C_START(I2C2);
+    I2C_WAIT_READY(I2C2);
+
+    I2C_SET_DATA(I2C2, 0x1A << 1);
+    I2C_SET_CONTROL_REG(I2C2, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C2);
+
+    I2C_SET_DATA(I2C2, (uint8_t)((u8Addr << 1) | (u16Data >> 8)));
+    I2C_SET_CONTROL_REG(I2C2, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C2);
+
+    I2C_SET_DATA(I2C2, (uint8_t)(u16Data & 0x00FF));
+    I2C_SET_CONTROL_REG(I2C2, I2C_CTL_SI);
+    I2C_WAIT_READY(I2C2);
+
+    I2C_STOP(I2C2);
+}
+
+/* Config play sampling rate */
+void NAU8822_ConfigSampleRate(uint32_t u32SampleRate)
+{
+    printf("[NAU8822] Configure Sampling Rate to %d\n", u32SampleRate);
+
+    if((u32SampleRate % 8) == 0)
+    {
+        I2C_WriteNAU8822(36, 0x008);    //12.288Mhz
+        I2C_WriteNAU8822(37, 0x00C);
+        I2C_WriteNAU8822(38, 0x093);
+        I2C_WriteNAU8822(39, 0x0E9);
+    }
+    else
+    {
+        I2C_WriteNAU8822(36, 0x007);    //11.2896Mhz
+        I2C_WriteNAU8822(37, 0x021);
+        I2C_WriteNAU8822(38, 0x161);
+        I2C_WriteNAU8822(39, 0x026);
+    }
+
+    switch(u32SampleRate)
+    {
+        case 16000:
+            I2C_WriteNAU8822(6, 0x1AD);    /* Divide by 6, 16K */
+            I2C_WriteNAU8822(7, 0x006);    /* 16K for internal filter coefficients */
+            break;
+
+        case 44100:
+            I2C_WriteNAU8822(6, 0x14D);    /* Divide by 2, 48K */
+            I2C_WriteNAU8822(7, 0x000);    /* 48K for internal filter coefficients */
+            break;
+
+        case 48000:
+            I2C_WriteNAU8822(6, 0x14D);    /* Divide by 2, 48K */
+            I2C_WriteNAU8822(7, 0x000);    /* 48K for internal filter coefficients */
+            break;
+
+        case 96000:
+            I2C_WriteNAU8822(6, 0x109);    /* Divide by 1, 96K */
+            I2C_WriteNAU8822(72, 0x013);
+            break;
+    }
+}
+
+/*---------------------------------------------------------------------------------------------------------*/
+/*  NAU8822 Settings with I2C interface                                                                    */
+/*---------------------------------------------------------------------------------------------------------*/
+void NAU8822_Setup(void)
+{
+    printf("\nConfigure NAU8822 ...");
+
+    I2C_WriteNAU8822(0,  0x000);   /* Reset all registers */
+    CLK_SysTickDelay(10000);
+
+    I2C_WriteNAU8822(1,  0x02F);
+    I2C_WriteNAU8822(2,  0x1B3);   /* Enable L/R Headphone, ADC Mix/Boost, ADC */
+    I2C_WriteNAU8822(3,  0x07F);   /* Enable L/R main mixer, DAC */
+    I2C_WriteNAU8822(4,  0x010);   /* 16-bit word length, I2S format, Stereo */
+    I2C_WriteNAU8822(5,  0x000);   /* Companding control and loop back mode (all disable) */
+    I2C_WriteNAU8822(6,  0x14D);   /* Divide by 2, 48K */
+    I2C_WriteNAU8822(7,  0x000);   /* 48K for internal filter coefficients */
+    I2C_WriteNAU8822(10, 0x008);   /* DAC soft mute is disabled, DAC oversampling rate is 128x */
+    I2C_WriteNAU8822(14, 0x108);   /* ADC HP filter is disabled, ADC oversampling rate is 128x */
+    I2C_WriteNAU8822(15, 0x1EF);   /* ADC left digital volume control */
+    I2C_WriteNAU8822(16, 0x1EF);   /* ADC right digital volume control */
+
+    I2C_WriteNAU8822(44, 0x000);   /* LLIN/RLIN is not connected to PGA */
+    I2C_WriteNAU8822(47, 0x050);   /* LLIN connected, and its Gain value */
+    I2C_WriteNAU8822(48, 0x050);   /* RLIN connected, and its Gain value */
+    I2C_WriteNAU8822(50, 0x001);   /* Left DAC connected to LMIX */
+    I2C_WriteNAU8822(51, 0x001);   /* Right DAC connected to RMIX */
+
+    printf("[OK]\n");
+}
+
+#else   // NAU88L25
+
 uint8_t I2C_WriteMultiByteforNAU88L25(uint8_t u8ChipAddr, uint16_t u16SubAddr, const uint8_t *p, uint32_t u32Len)
 {
     (void)u32Len;
@@ -143,7 +250,7 @@ uint8_t I2C_WriteNAU88L25(uint16_t u16Addr, uint16_t u16Dat)
     return (I2C_WriteMultiByteforNAU88L25(0x1A << 1, u16Addr, &u8TxData0[0], 2));
 }
 
-/* config play sampling rate */
+/* Config play sampling rate */
 void NAU88L25_ConfigSampleRate(uint32_t u32SampleRate)
 {
     printf("[NAU88L25] Configure Sampling Rate to %d\n", u32SampleRate);
@@ -162,38 +269,36 @@ void NAU88L25_ConfigSampleRate(uint32_t u32SampleRate)
     switch(u32SampleRate)
     {
         case 16000:
-            I2C_WriteNAU88L25(0x0003,  0x801B); //MCLK = SYSCLK_SRC/12
+            I2C_WriteNAU88L25(0x0003,  0x801B); /* MCLK = SYSCLK_SRC/12 */
             I2C_WriteNAU88L25(0x0004,  0x0001);
-            I2C_WriteNAU88L25(0x0005,  0x3126); //MCLK = 4.096MHz
+            I2C_WriteNAU88L25(0x0005,  0x3126); /* MCLK = 4.096MHz */
             I2C_WriteNAU88L25(0x0006,  0x0008);
-            I2C_WriteNAU88L25(0x001D,  0x301A); //301A:Master, BCLK_DIV=MCLK/8=512K, LRC_DIV=512K/32=16K
+            I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=MCLK/8=512K, LRC_DIV=512K/32=16K */
             I2C_WriteNAU88L25(0x002B,  0x0002);
             I2C_WriteNAU88L25(0x002C,  0x0082);
             break;
 
         case 44100:
-            I2C_WriteNAU88L25(0x001D,  0x301A); //301A:Master, BCLK_DIV=11.2896M/8=1.4112M, LRC_DIV=1.4112M/32=44.1K
+            I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=11.2896M/8=1.4112M, LRC_DIV=1.4112M/32=44.1K */
             I2C_WriteNAU88L25(0x002B,  0x0012);
             I2C_WriteNAU88L25(0x002C,  0x0082);
             break;
 
         case 48000:
-            I2C_WriteNAU88L25(0x001D,  0x301A); //301A:Master, BCLK_DIV=12.288M/8=1.536M, LRC_DIV=1.536M/32=48K
+            I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=12.288M/8=1.536M, LRC_DIV=1.536M/32=48K */
             I2C_WriteNAU88L25(0x002B,  0x0012);
             I2C_WriteNAU88L25(0x002C,  0x0082);
             break;
 
         case 96000:
-            I2C_WriteNAU88L25(0x0003,  0x80A2); //MCLK = SYSCLK_SRC/2
+            I2C_WriteNAU88L25(0x0003,  0x80A2); /* MCLK = SYSCLK_SRC/2 */
             I2C_WriteNAU88L25(0x0004,  0x1801);
-            I2C_WriteNAU88L25(0x0005,  0x3126); //MCLK = 24.576MHz
+            I2C_WriteNAU88L25(0x0005,  0x3126); /* MCLK = 24.576MHz */
             I2C_WriteNAU88L25(0x0006,  0xF008);
-            I2C_WriteNAU88L25(0x001D,  0x301A); //301A:Master, BCLK_DIV=MCLK/8=3.072M, LRC_DIV=3.072M/32=96K
+            I2C_WriteNAU88L25(0x001D,  0x301A); /* 301A:Master, BCLK_DIV=MCLK/8=3.072M, LRC_DIV=3.072M/32=96K */
             I2C_WriteNAU88L25(0x002B,  0x0001);
             I2C_WriteNAU88L25(0x002C,  0x0080);
             break;
-        default:
-            printf("do not support %d sampling rate\n", u32SampleRate);
     }
 }
 
@@ -201,7 +306,7 @@ void NAU88L25_ConfigSampleRate(uint32_t u32SampleRate)
 void NAU88L25_Reset(void)
 {
     I2C_WriteNAU88L25(0,  0x1);
-    I2C_WriteNAU88L25(0,  0);   // Reset all registers
+    I2C_WriteNAU88L25(0,  0);   /* Reset all registers */
     CLK_SysTickDelay(10000);
 
     printf("NAU88L25 Software Reset.\n");
@@ -234,7 +339,7 @@ void NAU88L25_Setup(void)
     I2C_WriteNAU88L25(0x001A,  0x0000);
     I2C_WriteNAU88L25(0x001B,  0x0000);
     I2C_WriteNAU88L25(0x001C,  0x0002);
-    I2C_WriteNAU88L25(0x001D,  0x301A);   //301A:Master, BCLK_DIV=12.288M/8=1.536M, LRC_DIV=1.536M/32=48K
+    I2C_WriteNAU88L25(0x001D,  0x301A);   /* 301A:Master, BCLK_DIV=12.288M/8=1.536M, LRC_DIV=1.536M/32=48K */
     I2C_WriteNAU88L25(0x001E,  0x0000);
     I2C_WriteNAU88L25(0x001F,  0x0000);
     I2C_WriteNAU88L25(0x0020,  0x0000);
@@ -291,6 +396,7 @@ void NAU88L25_Setup(void)
     printf("NAU88L25 Configured done.\n");
 }
 
+#endif
 
 void SDH0_IRQHandler(void)
 {
@@ -380,7 +486,7 @@ void SD_Inits(void)
     SET_SD0_DAT3_PE5();
     SET_SD0_CLK_PE6();
     SET_SD0_CMD_PE7();
-    SET_SD0_nCD_PB12();
+    SET_SD0_nCD_PD13();
 
     /* Select IP clock source */
     CLK_SetModuleClock(SDH0_MODULE, CLK_CLKSEL0_SDH0SEL_PLL_DIV2, CLK_CLKDIV0_SDH0(5));
@@ -394,19 +500,15 @@ void SYS_Init(void)
     SET_XT1_OUT_PF2();
     SET_XT1_IN_PF3();
 
-    /* Set PF multi-function pins for X32_OUT(PF.4) and X32_IN(PF.5) */
-    SET_X32_OUT_PF4();
-    SET_X32_IN_PF5();
-
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
-    /* Enable HIRC, HXT and LXT clock */
-    CLK_EnableXtalRC(CLK_PWRCTL_HIRCEN_Msk | CLK_PWRCTL_HXTEN_Msk | CLK_PWRCTL_LXTEN_Msk);
+    /* Enable HIRC and HXT clock */
+    CLK_EnableXtalRC(CLK_PWRCTL_HIRCEN_Msk | CLK_PWRCTL_HXTEN_Msk);
 
-    /* Wait for HIRC, HXT and LXT clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk | CLK_STATUS_HXTSTB_Msk | CLK_STATUS_LXTSTB_Msk);
+    /* Wait for HIRC and HXT clock ready */
+    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk | CLK_STATUS_HXTSTB_Msk);
 
     /* Set PCLK0 and PCLK1 to HCLK/2 */
     CLK->PCLKDIV = (CLK_PCLKDIV_APB0DIV_DIV2 | CLK_PCLKDIV_APB1DIV_DIV2);
@@ -443,21 +545,21 @@ void SYS_Init(void)
     SET_UART0_TXD_PB13();
 
     /* Set multi-function pins for I2S0 */
-    SET_I2S0_LRCK_PF6();
-    SET_I2S0_DO_PF7();
-    SET_I2S0_DI_PF8();
-    SET_I2S0_MCLK_PF9();
-    SET_I2S0_BCLK_PF10();
+    SET_I2S0_BCLK_PI6();
+    SET_I2S0_MCLK_PI7();
+    SET_I2S0_DI_PI8();
+    SET_I2S0_DO_PI9();
+    SET_I2S0_LRCK_PI10();
 
-    /* Enable I2S0 clock pin (PF10) schmitt trigger */
-    PF->SMTEN |= GPIO_SMTEN_SMTEN10_Msk;
+    /* Enable I2S0 clock pin (PI6) schmitt trigger */
+    PI->SMTEN |= GPIO_SMTEN_SMTEN6_Msk;
 
     /* Set I2C2 multi-function pins */
-    SET_I2C2_SDA_PD8();
-    SET_I2C2_SCL_PD9();
+    SET_I2C2_SDA_PD0();
+    SET_I2C2_SCL_PD1();
 
-    /* Enable I2C2 clock pin (PD9) schmitt trigger */
-    PD->SMTEN |= GPIO_SMTEN_SMTEN9_Msk;
+    /* Enable I2C2 clock pin (PD1) schmitt trigger */
+    PD->SMTEN |= GPIO_SMTEN_SMTEN1_Msk;
 }
 
 void I2C2_Init(void)
@@ -507,30 +609,42 @@ int32_t main(void)
     /* Init UART to 115200-8n1 for print message */
     UART_Open(UART0, 115200);
 
-    printf("+------------------------------------------------------------------------+\n");
-    printf("|                   I2S Driver Sample Code with NAU88L25                 |\n");
-    printf("+------------------------------------------------------------------------+\n");
-    printf("  NOTE: This sample code needs to work with NAU88L25.\n");
+    printf("+-----------------------------------------------------------------------+\n");
+    printf("|                I2S Driver Sample Code with audio codec                |\n");
+    printf("+-----------------------------------------------------------------------+\n");
+    printf("  NOTE: This sample code needs to work with audio codec.\n");
 
     /* Configure FATFS */
     SDH_Open_Disk(SDH0, CardDetect_From_GPIO);
     f_chdrive(sd_path);          /* set default path */
 
-    /* Init I2C2 to access NAU88L25 */
+    /* Init I2C2 to access codec */
     I2C2_Init();
 
     /* Select source from HXT(12MHz) */
     CLK_SetModuleClock(I2S0_MODULE, CLK_CLKSEL3_I2S0SEL_HXT, 0);
 
+#if (!NAU8822)
     /* Reset NAU88L25 codec */
     NAU88L25_Reset();
+#endif
 
     /* Configure as I2S slave */
     I2S_Open(I2S0, I2S_MODE_SLAVE, 16000, I2S_DATABIT_16, I2S_STEREO, I2S_FORMAT_I2S);
 
+    /* Set PD3 low to enable phone jack on NuMaker board. */
+    SYS->GPD_MFP0 &= ~(SYS_GPD_MFP0_PD3MFP_Msk);
+    GPIO_SetMode(PD, BIT3, GPIO_MODE_OUTPUT);
+    PD3 = 0;
+
+#if NAU8822
+    /* Initialize NAU8822 codec */
+    NAU8822_Setup();
+#else
     /* Initialize NAU88L25 codec */
     CLK_SysTickDelay(20000);
     NAU88L25_Setup();
+#endif
 
     /* Configure PDMA and use Scatter-Gather mode */
     PDMA_Init();

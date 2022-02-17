@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V3.00
- * @brief    This is an I2S demo with PDMA function connected with codec.
+ * @brief    This is an I2S demo with PDMA function connected with audio codec.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
@@ -11,7 +11,7 @@
 #include "NuMicro.h"
 #include "config.h"
 
-#define NAU8822     0
+#define NAU8822     1
 
 static uint32_t s_au32PcmRxBuff[2][BUFF_LEN] = {{0}};
 static uint32_t s_au32PcmTxBuff[2][BUFF_LEN] = {{0}};
@@ -94,6 +94,7 @@ void NAU8822_Setup(void)
     I2C_WriteNAU8822(0,  0x000);   /* Reset all registers */
     CLK_SysTickDelay(10000);
 
+#ifdef INPUT_IS_LIN   /* Input source is LIN */
     I2C_WriteNAU8822(1,  0x02F);
     I2C_WriteNAU8822(2,  0x1B3);   /* Enable L/R Headphone, ADC Mix/Boost, ADC */
     I2C_WriteNAU8822(3,  0x07F);   /* Enable L/R main mixer, DAC */
@@ -111,6 +112,23 @@ void NAU8822_Setup(void)
     I2C_WriteNAU8822(48, 0x050);   /* RLIN connected, and its Gain value */
     I2C_WriteNAU8822(50, 0x001);   /* Left DAC connected to LMIX */
     I2C_WriteNAU8822(51, 0x001);   /* Right DAC connected to RMIX */
+#else   /* Input source is MIC */
+    I2C_WriteNAU8822(1,  0x03F);
+    I2C_WriteNAU8822(2,  0x1BF);   /* Enable L/R Headphone, ADC Mix/Boost, ADC */
+    I2C_WriteNAU8822(3,  0x07F);   /* Enable L/R main mixer, DAC */
+    I2C_WriteNAU8822(4,  0x010);   /* 16-bit word length, I2S format, Stereo */
+    I2C_WriteNAU8822(5,  0x000);   /* Companding control and loop back mode (all disable) */
+    I2C_WriteNAU8822(6,  0x14D);   /* Divide by 2, 48K */
+    I2C_WriteNAU8822(7,  0x000);   /* 48K for internal filter coefficients */
+    I2C_WriteNAU8822(10, 0x008);   /* DAC soft mute is disabled, DAC oversampling rate is 128x */
+    I2C_WriteNAU8822(14, 0x108);   /* ADC HP filter is disabled, ADC oversampling rate is 128x */
+    I2C_WriteNAU8822(15, 0x1EF);   /* ADC left digital volume control */
+    I2C_WriteNAU8822(16, 0x1EF);   /* ADC right digital volume control */
+
+    I2C_WriteNAU8822(44, 0x033);   /* LMICN/LMICP is connected to PGA */
+    I2C_WriteNAU8822(50, 0x001);   /* Left DAC connected to LMIX */
+    I2C_WriteNAU8822(51, 0x001);   /* Right DAC connected to RMIX */
+#endif
 
     printf("[OK]\n");
 }
@@ -169,12 +187,11 @@ uint8_t I2C_WriteNAU88L25(uint16_t u16Addr, uint16_t u16Dat)
 void NAU88L25_Reset(void)
 {
     I2C_WriteNAU88L25(0,  0x1);
-    I2C_WriteNAU88L25(0,  0);   // Reset all registers
+    I2C_WriteNAU88L25(0,  0);   /* Reset all registers */
     CLK_SysTickDelay(10000);
 
     printf("NAU88L25 Software Reset.\n");
 }
-
 
 void NAU88L25_Setup(void)
 {
@@ -202,7 +219,7 @@ void NAU88L25_Setup(void)
     I2C_WriteNAU88L25(0x001A,  0x0000);
     I2C_WriteNAU88L25(0x001B,  0x0000);
     I2C_WriteNAU88L25(0x001C,  0x0002);
-    I2C_WriteNAU88L25(0x001D,  0x301A);   //301A:Master, BCLK_DIV=12.288M/8=1.536M, LRC_DIV=1.536M/32=48K
+    I2C_WriteNAU88L25(0x001D,  0x301A);   /* 301A:Master, BCLK_DIV=12.288M/8=1.536M, LRC_DIV=1.536M/32=48K */
     I2C_WriteNAU88L25(0x001E,  0x0000);
     I2C_WriteNAU88L25(0x001F,  0x0000);
     I2C_WriteNAU88L25(0x0020,  0x0000);
@@ -258,6 +275,7 @@ void NAU88L25_Setup(void)
 
     printf("NAU88L25 Configured done.\n");
 }
+
 #endif
 
 void SYS_Init(void)
@@ -266,19 +284,15 @@ void SYS_Init(void)
     SET_XT1_OUT_PF2();
     SET_XT1_IN_PF3();
 
-    /* Set PF multi-function pins for X32_OUT(PF.4) and X32_IN(PF.5) */
-    SET_X32_OUT_PF4();
-    SET_X32_IN_PF5();
-
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
-    /* Enable HIRC, HXT and LXT clock */
-    CLK_EnableXtalRC(CLK_PWRCTL_HIRCEN_Msk | CLK_PWRCTL_HXTEN_Msk | CLK_PWRCTL_LXTEN_Msk);
+    /* Enable HIRC and HXT clock */
+    CLK_EnableXtalRC(CLK_PWRCTL_HIRCEN_Msk | CLK_PWRCTL_HXTEN_Msk);
 
-    /* Wait for HIRC, HXT and LXT clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk | CLK_STATUS_HXTSTB_Msk | CLK_STATUS_LXTSTB_Msk);
+    /* Wait for HIRC and HXT clock ready */
+    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk | CLK_STATUS_HXTSTB_Msk);
 
     /* Set PCLK0 and PCLK1 to HCLK/2 */
     CLK->PCLKDIV = (CLK_PCLKDIV_APB0DIV_DIV2 | CLK_PCLKDIV_APB1DIV_DIV2);
@@ -315,24 +329,24 @@ void SYS_Init(void)
     SET_UART0_TXD_PB13();
 
     /* Set multi-function pins for I2S0 */
-    SET_I2S0_LRCK_PF6();
-    SET_I2S0_DO_PF7();
-    SET_I2S0_DI_PF8();
-    SET_I2S0_MCLK_PF9();
-    SET_I2S0_BCLK_PF10();
+    SET_I2S0_BCLK_PI6();
+    SET_I2S0_MCLK_PI7();
+    SET_I2S0_DI_PI8();
+    SET_I2S0_DO_PI9();
+    SET_I2S0_LRCK_PI10();
 
-    /* Enable I2S0 clock pin (PF10) schmitt trigger */
-    PF->SMTEN |= GPIO_SMTEN_SMTEN10_Msk;
+    /* Enable I2S0 clock pin (PI6) schmitt trigger */
+    PI->SMTEN |= GPIO_SMTEN_SMTEN6_Msk;
 
     /* Set I2C2 multi-function pins */
-    SET_I2C2_SDA_PD8();
-    SET_I2C2_SCL_PD9();
+    SET_I2C2_SDA_PD0();
+    SET_I2C2_SCL_PD1();
 
-    /* Enable I2C2 clock pin (PD9) schmitt trigger */
-    PD->SMTEN |= GPIO_SMTEN_SMTEN9_Msk;
+    /* Enable I2C2 clock pin (PD1) schmitt trigger */
+    PD->SMTEN |= GPIO_SMTEN_SMTEN1_Msk;
 }
 
-// Configure PDMA to Scatter Gather mode */
+/* Configure PDMA to Scatter Gather mode */
 void PDMA_Init(void)
 {
     /* Tx description */
@@ -344,7 +358,7 @@ void PDMA_Init(void)
     DMA_TXDESC[1].ctl = ((BUFF_LEN - 1) << PDMA_DSCT_CTL_TXCNT_Pos) | PDMA_WIDTH_32 | PDMA_SAR_INC | PDMA_DAR_FIX | PDMA_REQ_SINGLE | PDMA_OP_SCATTER;
     DMA_TXDESC[1].src = (uint32_t)&s_au32PcmTxBuff[1];
     DMA_TXDESC[1].dest = (uint32_t)&I2S0->TXFIFO;
-    DMA_TXDESC[1].offset = (uint32_t)&DMA_TXDESC[0] - (PDMA0->SCATBA);   //link to first description
+    DMA_TXDESC[1].offset = (uint32_t)&DMA_TXDESC[0] - (PDMA0->SCATBA);   /* Link to first description */
 
     /* Rx description */
     DMA_RXDESC[0].ctl = ((BUFF_LEN - 1) << PDMA_DSCT_CTL_TXCNT_Pos) | PDMA_WIDTH_32 | PDMA_SAR_FIX | PDMA_DAR_INC | PDMA_REQ_SINGLE | PDMA_OP_SCATTER;
@@ -355,7 +369,7 @@ void PDMA_Init(void)
     DMA_RXDESC[1].ctl = ((BUFF_LEN - 1) << PDMA_DSCT_CTL_TXCNT_Pos) | PDMA_WIDTH_32 | PDMA_SAR_FIX | PDMA_DAR_INC | PDMA_REQ_SINGLE | PDMA_OP_SCATTER;
     DMA_RXDESC[1].src = (uint32_t)&I2S0->RXFIFO;
     DMA_RXDESC[1].dest = (uint32_t)&s_au32PcmRxBuff[1];
-    DMA_RXDESC[1].offset = (uint32_t)&DMA_RXDESC[0] - (PDMA0->SCATBA);   //link to first description
+    DMA_RXDESC[1].offset = (uint32_t)&DMA_RXDESC[0] - (PDMA0->SCATBA);   /* Link to first description */
 
     /* Open PDMA channel 1 for I2S TX and channel 2 for I2S RX */
     PDMA_Open(PDMA0, 0x3 << 1);
@@ -400,7 +414,7 @@ int32_t main(void)
     printf("+-----------------------------------------------------------------------+\n");
     printf("  NOTE: This sample code needs to work with audio codec.\n");
 
-    /* Init I2C2 to access NAU8822 */
+    /* Init I2C2 to access codec */
     I2C2_Init();
 
 #if (!NAU8822)
@@ -408,14 +422,29 @@ int32_t main(void)
     NAU88L25_Reset();
 #endif
 
+#ifdef INPUT_IS_LIN
     /* Open I2S0 interface and set to slave mode, stereo channel, I2S format */
     I2S_Open(I2S0, I2S_MODE_SLAVE, 48000, I2S_DATABIT_16, I2S_STEREO, I2S_FORMAT_I2S);
+#else
+    /* Open I2S0 interface and set to slave mode, mono channel, I2S format */
+    I2S_Open(I2S0, I2S_MODE_SLAVE, 48000, I2S_DATABIT_16, I2S_MONO, I2S_FORMAT_I2S);
+#endif
+
+    /* Set PD3 low to enable phone jack on NuMaker board. */
+    SYS->GPD_MFP0 &= ~(SYS_GPD_MFP0_PD3MFP_Msk);
+    GPIO_SetMode(PD, BIT3, GPIO_MODE_OUTPUT);
+    PD3 = 0;
 
     /* Select source from HXT(12MHz) */
     CLK_SetModuleClock(I2S0_MODULE, CLK_CLKSEL3_I2S0SEL_HXT, 0);
 
     /* Set MCLK and enable MCLK */
     I2S_EnableMCLK(I2S0, 12000000);
+
+#ifndef INPUT_IS_LIN
+    /* NAU8822 will store data in left channel */
+    I2S_SET_MONO_RX_CHANNEL(I2S0, I2S_MONO_LEFT);
+#endif
 
 #if NAU8822
     /* Initialize NAU8822 codec */

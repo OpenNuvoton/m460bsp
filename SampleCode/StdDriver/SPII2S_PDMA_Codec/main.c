@@ -12,6 +12,9 @@
 
 #define NAU8822     1
 
+/* Use LIN as source, undefine it if MIC is used */
+//#define INPUT_IS_LIN
+
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
@@ -80,6 +83,7 @@ void NAU8822_Setup(void)
     I2C_WriteNAU8822(0,  0x000);   /* Reset all registers */
     CLK_SysTickDelay(10000);
 
+#ifdef INPUT_IS_LIN   /* Input source is LIN */
     I2C_WriteNAU8822(1,  0x02F);
     I2C_WriteNAU8822(2,  0x1B3);   /* Enable L/R Headphone, ADC Mix/Boost, ADC */
     I2C_WriteNAU8822(3,  0x07F);   /* Enable L/R main mixer, DAC */
@@ -97,6 +101,23 @@ void NAU8822_Setup(void)
     I2C_WriteNAU8822(48, 0x050);   /* RLIN connected, and its Gain value */
     I2C_WriteNAU8822(50, 0x001);   /* Left DAC connected to LMIX */
     I2C_WriteNAU8822(51, 0x001);   /* Right DAC connected to RMIX */
+#else   /* Input source is MIC */
+    I2C_WriteNAU8822(1,  0x03F);
+    I2C_WriteNAU8822(2,  0x1BF);   /* Enable L/R Headphone, ADC Mix/Boost, ADC */
+    I2C_WriteNAU8822(3,  0x07F);   /* Enable L/R main mixer, DAC */
+    I2C_WriteNAU8822(4,  0x010);   /* 16-bit word length, I2S format, Stereo */
+    I2C_WriteNAU8822(5,  0x000);   /* Companding control and loop back mode (all disable) */
+    I2C_WriteNAU8822(6,  0x14D);   /* Divide by 2, 48K */
+    I2C_WriteNAU8822(7,  0x000);   /* 48K for internal filter coefficients */
+    I2C_WriteNAU8822(10, 0x008);   /* DAC soft mute is disabled, DAC oversampling rate is 128x */
+    I2C_WriteNAU8822(14, 0x108);   /* ADC HP filter is disabled, ADC oversampling rate is 128x */
+    I2C_WriteNAU8822(15, 0x1EF);   /* ADC left digital volume control */
+    I2C_WriteNAU8822(16, 0x1EF);   /* ADC right digital volume control */
+
+    I2C_WriteNAU8822(44, 0x033);   /* LMICN/LMICP is connected to PGA */
+    I2C_WriteNAU8822(50, 0x001);   /* Left DAC connected to LMIX */
+    I2C_WriteNAU8822(51, 0x001);   /* Right DAC connected to RMIX */
+#endif
 
     printf("[OK]\n");
 }
@@ -155,7 +176,7 @@ uint8_t I2C_WriteNAU88L25(uint16_t u16Addr, uint16_t u16Dat)
 void NAU88L25_Reset(void)
 {
     I2C_WriteNAU88L25(0,  0x1);
-    I2C_WriteNAU88L25(0,  0);   // Reset all registers
+    I2C_WriteNAU88L25(0,  0);   /* Reset all registers */
     CLK_SysTickDelay(10000);
 
     printf("NAU88L25 Software Reset.\n");
@@ -187,7 +208,7 @@ void NAU88L25_Setup(void)
     I2C_WriteNAU88L25(0x001A,  0x0000);
     I2C_WriteNAU88L25(0x001B,  0x0000);
     I2C_WriteNAU88L25(0x001C,  0x0002);
-    I2C_WriteNAU88L25(0x001D,  0x301A);   //301A:Master, BCLK_DIV=12.288M/8=1.536M, LRC_DIV=1.536M/32=48K
+    I2C_WriteNAU88L25(0x001D,  0x301A);   /* 301A:Master, BCLK_DIV=12.288M/8=1.536M, LRC_DIV=1.536M/32=48K */
     I2C_WriteNAU88L25(0x001E,  0x0000);
     I2C_WriteNAU88L25(0x001F,  0x0000);
     I2C_WriteNAU88L25(0x0020,  0x0000);
@@ -243,6 +264,7 @@ void NAU88L25_Setup(void)
 
     printf("NAU88L25 Configured done.\n");
 }
+
 #endif
 
 void SYS_Init(void)
@@ -251,19 +273,15 @@ void SYS_Init(void)
     SET_XT1_OUT_PF2();
     SET_XT1_IN_PF3();
 
-    /* Set PF multi-function pins for X32_OUT(PF.4) and X32_IN(PF.5) */
-    SET_X32_OUT_PF4();
-    SET_X32_IN_PF5();
-
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
 
-    /* Enable HIRC, HXT and LXT clock */
-    CLK_EnableXtalRC(CLK_PWRCTL_HIRCEN_Msk | CLK_PWRCTL_HXTEN_Msk | CLK_PWRCTL_LXTEN_Msk);
+    /* Enable HIRC and HXT clock */
+    CLK_EnableXtalRC(CLK_PWRCTL_HIRCEN_Msk | CLK_PWRCTL_HXTEN_Msk);
 
-    /* Wait for HIRC, HXT and LXT clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk | CLK_STATUS_HXTSTB_Msk | CLK_STATUS_LXTSTB_Msk);
+    /* Wait for HIRC and HXT clock ready */
+    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk | CLK_STATUS_HXTSTB_Msk);
 
     /* Set PCLK0 and PCLK1 to HCLK/2 */
     CLK->PCLKDIV = (CLK_PCLKDIV_APB0DIV_DIV2 | CLK_PCLKDIV_APB1DIV_DIV2);
@@ -314,14 +332,14 @@ void SYS_Init(void)
     PA->SMTEN |= GPIO_SMTEN_SMTEN2_Msk;
 
     /* Set I2C2 multi-function pins */
-    SET_I2C2_SDA_PD8();
-    SET_I2C2_SCL_PD9();
+    SET_I2C2_SDA_PD0();
+    SET_I2C2_SCL_PD1();
 
-    /* Enable I2C2 clock pin (PD9) schmitt trigger */
-    PD->SMTEN |= GPIO_SMTEN_SMTEN9_Msk;
+    /* Enable I2C2 clock pin (PD1) schmitt trigger */
+    PD->SMTEN |= GPIO_SMTEN_SMTEN1_Msk;
 }
 
-// Configure PDMA to Scatter Gather mode */
+/* Configure PDMA to Scatter Gather mode */
 void PDMA_Init(void)
 {
     /* Tx description */
@@ -333,7 +351,7 @@ void PDMA_Init(void)
     s_asDescTable_TX[1].CTL = ((BUFF_LEN - 1) << PDMA_DSCT_CTL_TXCNT_Pos) | PDMA_WIDTH_32 | PDMA_SAR_INC | PDMA_DAR_FIX | PDMA_REQ_SINGLE | PDMA_OP_SCATTER;
     s_asDescTable_TX[1].SA = (uint32_t)&s_au32PcmTxBuff[1];
     s_asDescTable_TX[1].DA = (uint32_t)&SPI0->TX;
-    s_asDescTable_TX[1].FIRST = (uint32_t)&s_asDescTable_TX[0] - (PDMA0->SCATBA);   //link to first description
+    s_asDescTable_TX[1].FIRST = (uint32_t)&s_asDescTable_TX[0] - (PDMA0->SCATBA);   /* Link to first description */
 
     /* Rx description */
     s_asDescTable_RX[0].CTL = ((BUFF_LEN - 1) << PDMA_DSCT_CTL_TXCNT_Pos) | PDMA_WIDTH_32 | PDMA_SAR_FIX | PDMA_DAR_INC | PDMA_REQ_SINGLE | PDMA_OP_SCATTER;
@@ -344,7 +362,7 @@ void PDMA_Init(void)
     s_asDescTable_RX[1].CTL = ((BUFF_LEN - 1) << PDMA_DSCT_CTL_TXCNT_Pos) | PDMA_WIDTH_32 | PDMA_SAR_FIX | PDMA_DAR_INC | PDMA_REQ_SINGLE | PDMA_OP_SCATTER;
     s_asDescTable_RX[1].SA = (uint32_t)&SPI0->RX;
     s_asDescTable_RX[1].DA = (uint32_t)&s_au32PcmRxBuff[1];
-    s_asDescTable_RX[1].FIRST = (uint32_t)&s_asDescTable_RX[0] - (PDMA0->SCATBA);   //link to first description
+    s_asDescTable_RX[1].FIRST = (uint32_t)&s_asDescTable_RX[0] - (PDMA0->SCATBA);   /* Link to first description */
 
     /* Open PDMA channel 1 for SPI TX and channel 2 for SPI RX */
     PDMA_Open(PDMA0, 0x3 << 1);
@@ -392,7 +410,7 @@ int32_t main(void)
     printf("+------------------------------------------------------------------------+\n");
     printf("  NOTE: This sample code needs to work with audio codec.\n");
 
-    /* Init I2C2 to access Codec */
+    /* Init I2C2 to access codec */
     I2C2_Init();
 
 #if (!NAU8822)
@@ -400,7 +418,16 @@ int32_t main(void)
     NAU88L25_Reset();
 #endif
 
+#ifdef INPUT_IS_LIN
     SPII2S_Open(SPI0, SPII2S_MODE_SLAVE, 48000, SPII2S_DATABIT_16, SPII2S_STEREO, SPII2S_FORMAT_I2S);
+#else
+    SPII2S_Open(SPI0, SPII2S_MODE_SLAVE, 48000, SPII2S_DATABIT_16, SPII2S_MONO, SPII2S_FORMAT_I2S);
+#endif
+
+    /* Set PD3 low to enable phone jack on NuMaker board. */
+    SYS->GPD_MFP0 &= ~(SYS_GPD_MFP0_PD3MFP_Msk);
+    GPIO_SetMode(PD, BIT3, GPIO_MODE_OUTPUT);
+    PD3 = 0;
 
     /* Select source from HXT(12MHz) */
     CLK_SetModuleClock(SPI0_MODULE, CLK_CLKSEL2_SPI0SEL_HXT, 0);
@@ -417,6 +444,11 @@ int32_t main(void)
 
     /* Set MCLK and enable MCLK */
     SPII2S_EnableMCLK(SPI0, 12000000);
+
+#ifndef INPUT_IS_LIN
+    /* NAU8822 will store data in left channel */
+    SPII2S_SET_MONO_RX_CHANNEL(SPI0, SPII2S_MONO_LEFT);
+#endif
 
     PDMA_Init();
 

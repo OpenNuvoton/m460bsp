@@ -371,8 +371,8 @@ void HID_UpdateKbData(void)
     {
         pu8Buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP3));
 
-        /* If PF.11 = 0, just report it is key 'a' */
-        u32Key = (PF->PIN & (1 << 11)) ? 0 : 1;
+        /* If PH.0 = 0, just report it is key 'a' */
+        u32Key = (PH->PIN & (1 << 0)) ? 0 : 1;
 
         if(u32Key == 0)
         {

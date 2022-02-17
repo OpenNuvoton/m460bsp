@@ -13,4 +13,7 @@
 #define BUFF_LEN        32
 #define BUFF_HALF_LEN   (BUFF_LEN/2)
 
+/* Use LIN as source, undefine it if MIC is used */
+//#define INPUT_IS_LIN
+
 extern uint32_t volatile g_u32BuffPos;

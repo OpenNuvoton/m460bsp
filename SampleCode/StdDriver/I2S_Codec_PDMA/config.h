@@ -15,6 +15,9 @@
 #define BUFF_LEN        512
 #define BUFF_HALF_LEN   (BUFF_LEN/2)
 
+/* Use LIN as source, undefine it if MIC is used */
+//#define INPUT_IS_LIN
+
 typedef struct dma_desc_t
 {
     uint32_t ctl;

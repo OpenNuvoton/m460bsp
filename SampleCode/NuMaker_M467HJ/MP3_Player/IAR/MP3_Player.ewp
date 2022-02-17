@@ -654,7 +654,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>I2S_MP3PLAYER.bin</state>
+                    <state>MP3_Player.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -709,7 +709,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>I2S_MP3PLAYER.out</state>
+                    <state>MP3_Player.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -773,7 +773,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$\I2S_MP3PLAYER.icf</state>
+                    <state>$PROJ_DIR$\MP3_Player.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>

@@ -336,7 +336,7 @@ int32_t main(void)
     printf("+--------------------------------------------------------------+\n");
     printf("|     NuMicro USB Virtual COM and HID Keyboard Sample Code     |\n");
     printf("+--------------------------------------------------------------+\n");
-    printf("If PF.11 = 0 or press SW2 button, just report it is key 'a'.\n");
+    printf("If PH.0 = 0 or press SW2 button, just report it is key 'a'.\n");
 
     USBD_Open(&gsInfo, HID_ClassRequest, NULL);
 

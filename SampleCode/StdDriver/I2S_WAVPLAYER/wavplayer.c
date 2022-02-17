@@ -53,8 +53,13 @@ void WAVPlayer(void)
     f_read(&wavFileObject, s_au32WavHeader, 44, &ReturnSize);
     u32WavSamplingRate = s_au32WavHeader[6];
 
+#if NAU8822
+    /* Configure NAU8822 to specific sample rate */
+    NAU8822_ConfigSampleRate(u32WavSamplingRate);
+#else
     /* Configure NAU88L25 to specific sample rate */
     NAU88L25_ConfigSampleRate(u32WavSamplingRate);
+#endif
     printf("wav: sampling rate=%d\n", u32WavSamplingRate);
 
     /* Set MCLK and enable MCLK */

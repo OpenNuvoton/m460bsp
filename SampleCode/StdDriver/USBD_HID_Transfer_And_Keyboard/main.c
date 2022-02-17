@@ -154,7 +154,7 @@ int32_t main(void)
     printf("|        NuMicro USB Composite Device Sample Code        |\n");
     printf("|             (USB HID Transfer + Keyboard)              |\n");
     printf("+--------------------------------------------------------+\n");
-    printf("If PF.11 = 0 or press SW2 button, just report it is key 'a'.\n");
+    printf("If PH.0 = 0 or press SW2 button, just report it is key 'a'.\n");
 
     USBD_Open(&gsInfo, HID_ClassRequest, NULL);
 
