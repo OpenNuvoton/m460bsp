@@ -1,0 +1,6 @@
+
+[WORKSPACE]
+  MPW_NAME="WorkSpace"
+  Project=".\App\KEIL\App.uvprojx"
+  Project=".\Loader\KEIL\Loader.uvprojx",A
+
