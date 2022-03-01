@@ -10,7 +10,7 @@
 #include "NuMicro.h"
 #include "DS18B20_driver_thermometer.h"
 
-void PSIO_DS18B20_Write_Command(S_PSIO_DS18B20_CFG *psConfig, uint8_t u8CMD)
+int32_t PSIO_DS18B20_Write_Command(S_PSIO_DS18B20_CFG *psConfig, uint8_t u8CMD)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
 
@@ -48,16 +48,18 @@ void PSIO_DS18B20_Write_Command(S_PSIO_DS18B20_CFG *psConfig, uint8_t u8CMD)
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for PSIO time-out!\n");
-            while(1);
+            return -1;
         }
     }
 
     /* Disable repeat slot0 ~ slot2 */
-    PSIO_SET_SCCTL(PSIO, psConfig->u8SlotCtrl, PSIO_SLOT_DISABLE, PSIO_SLOT_DISABLE, 0, PSIO_REPEAT_DISABLE);    
+    PSIO_SET_SCCTL(PSIO, psConfig->u8SlotCtrl, PSIO_SLOT_DISABLE, PSIO_SLOT_DISABLE, 0, PSIO_REPEAT_DISABLE);
+
+    return 0;
 }
 
 
-void PSIO_DS18B20_Reset(S_PSIO_DS18B20_CFG *psConfig)
+int32_t PSIO_DS18B20_Reset(S_PSIO_DS18B20_CFG *psConfig)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
 
@@ -86,16 +88,18 @@ void PSIO_DS18B20_Reset(S_PSIO_DS18B20_CFG *psConfig)
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for PSIO time-out!\n");
-            while(1);
+            return -1;
         }
     }
 
     /* Disable repeat slot0 setting */
     PSIO_SET_SCCTL(PSIO, psConfig->u8SlotCtrl, PSIO_SLOT0, PSIO_SLOT0, 0, PSIO_REPEAT_DISABLE);
+
+    return 0;
 }
 
 
-void PSIO_DS18B20_Read_Data(S_PSIO_DS18B20_CFG *psConfig, uint8_t *pu8InData)
+int32_t PSIO_DS18B20_Read_Data(S_PSIO_DS18B20_CFG *psConfig, uint8_t *pu8InData)
 {
     uint32_t u32TimeOutCnt;
     uint8_t u8Cnt = 0;
@@ -127,7 +131,7 @@ void PSIO_DS18B20_Read_Data(S_PSIO_DS18B20_CFG *psConfig, uint8_t *pu8InData)
             if(--u32TimeOutCnt == 0)
             {
                 printf("Wait for PSIO time-out!\n");
-                while(1);
+                return -1;
             }
         }
 
@@ -141,7 +145,7 @@ void PSIO_DS18B20_Read_Data(S_PSIO_DS18B20_CFG *psConfig, uint8_t *pu8InData)
             if(--u32TimeOutCnt == 0)
             {
                 printf("Wait for PSIO time-out!\n");
-                while(1);
+                return -1;
             }
         }
 
@@ -149,6 +153,8 @@ void PSIO_DS18B20_Read_Data(S_PSIO_DS18B20_CFG *psConfig, uint8_t *pu8InData)
         pu8InData[u8Cnt >> 3] |= (PSIO_GET_INPUT_DATA(PSIO, psConfig->u8DataPin) << (u8Cnt % 8));
 
     }
+
+    return 0;
 }
 
 

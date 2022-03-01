@@ -57,7 +57,7 @@ int  do_compare(uint8_t *output, uint8_t *expect, int cmp_len)
 int32_t RunSHA(void)
 {
     uint32_t  au32OutputDigest[8];
-    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    uint32_t u32TimeOutCnt;
 
     SHA_Open(CRPT, SHA_MODE_SHA1, SHA_IN_SWAP, 0);
 
@@ -70,12 +70,13 @@ int32_t RunSHA(void)
     SHA_Start(CRPT, CRYPTO_DMA_ONE_SHOT);
 
     /* Waiting for SHA calcuation done */
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     while(!g_SHA_done)
     {
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for SHA calcuation done time-out!\n");
-            while(1);
+            return (-1);
         }
     }
 
@@ -86,7 +87,7 @@ int32_t RunSHA(void)
     if(do_compare((uint8_t *)&au32OutputDigest[0], &g_au8ShaDigest[0], g_i32DigestLength) < 0)
     {
         printf("Compare error!\n");
-        while(1);
+        return (-1);
     }
     return 0;
 }
@@ -173,7 +174,8 @@ int main(void)
         if(GetNextPattern() < 0)
             break;
 
-        RunSHA();
+        if(RunSHA() < 0)
+            break;
     }
 
     printf("SHA test done.\n");

@@ -62,10 +62,17 @@ void ECC_Complete(CRPT_T *crpt);
   * @brief  Open PRNG function
   * @param[in]  crpt         The pointer of CRYPTO module
   * @param[in]  u32KeySize   it is PRNG key size, including:
-  *         - \ref PRNG_KEY_SIZE_64
   *         - \ref PRNG_KEY_SIZE_128
   *         - \ref PRNG_KEY_SIZE_192
+  *         - \ref PRNG_KEY_SIZE_224
+  *         - \ref PRNG_KEY_SIZE_255
   *         - \ref PRNG_KEY_SIZE_256
+  *         - \ref PRNG_KEY_SIZE_283
+  *         - \ref PRNG_KEY_SIZE_384
+  *         - \ref PRNG_KEY_SIZE_409
+  *         - \ref PRNG_KEY_SIZE_512
+  *         - \ref PRNG_KEY_SIZE_521
+  *         - \ref PRNG_KEY_SIZE_571
   * @param[in]  u32SeedReload is PRNG seed reload or not, including:
   *         - \ref PRNG_SEED_CONT
   *         - \ref PRNG_SEED_RELOAD
@@ -116,8 +123,11 @@ int32_t PRNG_Start(CRPT_T *crpt)
 void PRNG_Read(CRPT_T *crpt, uint32_t u32RandKey[])
 {
     uint32_t  i, wcnt;
+    uint32_t au32WcntTbl[7] = {4, 6, 6, 7, 8, 8, 8};
 
-    wcnt = (((crpt->PRNG_CTL & CRPT_PRNG_CTL_KEYSZ_Msk) >> CRPT_PRNG_CTL_KEYSZ_Pos) + 1U) * 2U;
+    wcnt = ((crpt->PRNG_CTL & CRPT_PRNG_CTL_KEYSZ_Msk) >> CRPT_PRNG_CTL_KEYSZ_Pos);
+    if( wcnt > 6 ) return;
+    else wcnt = au32WcntTbl[wcnt];
 
     for(i = 0U; i < wcnt; i++)
     {

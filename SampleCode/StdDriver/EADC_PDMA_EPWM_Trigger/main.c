@@ -234,7 +234,7 @@ void EADC_FunctionTest(void)
                 if(--u32TimeOutCnt == 0)
                 {
                     printf("Wait for PDMA interrupt time-out!\n");
-                    while(1);
+                    return;
                 }
             }
             g_u32IsTestOver = 0;
@@ -266,7 +266,7 @@ void EADC_FunctionTest(void)
                 if(--u32TimeOutCnt == 0)
                 {
                     printf("Wait for PDMA interrupt time-out!\n");
-                    while(1);
+                    return;
                 }
             }
             g_u32IsTestOver = 0;

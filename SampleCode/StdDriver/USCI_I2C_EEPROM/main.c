@@ -281,7 +281,7 @@ int main()
             if(--u32TimeOutCnt == 0)
             {
                 printf("Wait for USCI_I2C Tx finish time-out!\n");
-                while(1);
+                return -1;
             }
         }
         g_u8EndFlagM = 0;
@@ -302,7 +302,7 @@ int main()
             if(--u32TimeOutCnt == 0)
             {
                 printf("Wait for USCI_I2C Rx finish time-out!\n");
-                while(1);
+                return -1;
             }
         }
 

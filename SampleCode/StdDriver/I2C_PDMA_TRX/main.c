@@ -143,12 +143,12 @@ void I2C_PDMA_SlaveRx(uint32_t u32Status)
     {
         /* TO DO */
         printf("Status 0x%x is NOT processed\n", u32Status);
-        while(1);
+        //while(1);
     }
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
-/*  I2C1 PDMA Slave Tx Callback Function                                                                       */
+/*  I2C1 PDMA Slave Tx Callback Function                                                                   */
 /*---------------------------------------------------------------------------------------------------------*/
 void I2C_PDMA_SlaveTx(uint32_t u32Status)
 {
@@ -216,8 +216,6 @@ void I2C_PDMA_SlaveTx(uint32_t u32Status)
     {
         /* TO DO */
         printf("Status 0x%x is NOT processed\n", u32Status);
-
-        while (1);
     }
 }
 
@@ -447,7 +445,6 @@ void PDMA_Init(void)
     PDMA_EnableInt(PDMA0, I2C1_PDMA_TX_CH, 0);
     NVIC_EnableIRQ(PDMA0_IRQn);
 }
-
 void I2C_PDMA(void)
 {
     uint32_t i, u32TimeOutCnt;
@@ -500,7 +497,7 @@ void I2C_PDMA(void)
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for PDMA time-out!\n");
-            while(1);
+            return;
         }
     }
 
@@ -514,7 +511,7 @@ void I2C_PDMA(void)
         if(g_u8SlaveRx_Buffer[i] != g_u8MasterTx_Buffer[i])
         {
             printf("\n Receive Data Compare Error !!");
-            while(1);
+            return;
         }
         else
         {
@@ -541,7 +538,7 @@ void I2C_PDMA(void)
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for PDMA time-out!\n");
-            while(1);
+            return;
         }
     }
 
@@ -555,8 +552,7 @@ void I2C_PDMA(void)
         if (g_u8MasterRx_Buffer[i] != g_u8MasterTx_Buffer[i+3])
         {
             printf("\n Slave Receive Data Compare Error !!");
-
-            while (1);
+            return;
         }
     }
 

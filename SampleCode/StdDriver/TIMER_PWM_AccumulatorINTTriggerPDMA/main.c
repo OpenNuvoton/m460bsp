@@ -196,8 +196,8 @@ int main(void)
     {
         if(--u32TimeOutCnt == 0)
         {
-            printf("Wait for PDMA time-out!\n");
-            while(1);
+            printf("Wait for PDMA transfer done time-out!\n");
+            return -1;
         }
     }
 
@@ -209,7 +209,7 @@ int main(void)
     /* Disable PDMA function */
     PDMA_Close(PDMA0);
     NVIC_DisableIRQ(PDMA0_IRQn);
-        
+
     /* Stop Timer0 PWM */
     TPWM_STOP_COUNTER(TIMER0);
 
@@ -219,8 +219,8 @@ int main(void)
     {
         if(--u32TimeOutCnt == 0)
         {
-            printf("Wait for Timer time-out!\n");
-            while(1);
+            printf("Wait for Timer PWM stop time-out!\n");
+            return -1;
         }
     }
 

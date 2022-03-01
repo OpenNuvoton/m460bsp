@@ -20,7 +20,7 @@ uint32_t Pclk1;
 void ProcessHardFault(void);
 void SH_Return(void);
 void SendChar_ToUART(void);
-void SYS_Init(void);
+int32_t SYS_Init(void);
 
 void ProcessHardFault(void) {}
 void SH_Return(void) {}
@@ -31,9 +31,9 @@ __weak uint32_t CLK_GetPLLClockFreq(void)
     return FREQ_192MHZ;
 }
 
-void SYS_Init(void)
+int32_t SYS_Init(void)
 {
-    uint32_t u32TimeOutCount = 0;
+    uint32_t u32TimeOutCnt;
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
@@ -43,10 +43,11 @@ void SYS_Init(void)
     CLK->PWRCTL |= CLK_PWRCTL_HIRCEN_Msk;
 
     /* Wait for HIRC clock ready */
-    u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     while(!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk))
     {
-        if(--u32TimeOutCount == 0) break;
+        if(--u32TimeOutCnt == 0)
+            return -1;
     }
 
     /* Set HCLK clock source as HIRC first */
@@ -59,10 +60,11 @@ void SYS_Init(void)
     CLK->PLLCTL = CLK_PLLCTL_200MHz_HIRC;
 
     /* Wait for PLL clock ready */
-    u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     while(!(CLK->STATUS & CLK_STATUS_PLLSTB_Msk))
     {
-        if(--u32TimeOutCount == 0) break;
+        if(--u32TimeOutCnt == 0)
+            return -1;
     }
 
     /* Set power level by HCLK working frequency */
@@ -106,6 +108,8 @@ void SYS_Init(void)
 
     /* I2C pin enable schmitt trigger */
     PA->SMTEN |= GPIO_SMTEN_SMTEN2_Msk | GPIO_SMTEN_SMTEN3_Msk;
+
+    return 0;
 }
 
 int main(void)
@@ -114,8 +118,11 @@ int main(void)
 
     /* Unlock protected registers */
     SYS_UnlockReg();
+
     /* Init System, peripheral clock and multi-function I/O */
-    SYS_Init();
+    if( SYS_Init() < 0 )
+        goto _APROM;
+
     CLK->AHBCLK0 |= CLK_AHBCLK0_ISPCKEN_Msk;
     FMC->ISPCTL |= (FMC_ISPCTL_ISPEN_Msk | FMC_ISPCTL_APUEN_Msk);
     g_apromSize = GetApromSize();

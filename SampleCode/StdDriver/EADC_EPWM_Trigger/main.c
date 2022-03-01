@@ -147,7 +147,7 @@ void EADC_FunctionTest(void)
 
     printf("\n");
     printf("+----------------------------------------------------------------------+\n");
-    printf("|                       EPWM trigger mode test                          |\n");
+    printf("|                       EPWM trigger mode test                         |\n");
     printf("+----------------------------------------------------------------------+\n");
 
     printf("\nIn this test, software will get 6 conversion result from the specified channel.\n");
@@ -191,7 +191,7 @@ void EADC_FunctionTest(void)
                     if(--u32TimeOutCnt == 0)
                     {
                         printf("Wait for EADC interrupt time-out!\n");
-                        while(1);
+                        return;
                     }
                 }
 
@@ -249,8 +249,8 @@ void EADC_FunctionTest(void)
                 {
                     if(--u32TimeOutCnt == 0)
                     {
-                        printf("Wait for EADC time-out!\n");
-                        while(1);
+                        printf("Wait for EADC interrupt time-out!\n");
+                        return;
                     }
                 }
 

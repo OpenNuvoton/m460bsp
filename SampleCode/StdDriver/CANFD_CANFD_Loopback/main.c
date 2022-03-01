@@ -134,8 +134,8 @@ void CANFD_CANFD_TxRx_Test(CANFD_FD_MSG_T *psTxMsg, E_CANFD_ID_TYPE eFrameIdType
     {
         if(--u32TimeOutCnt == 0)
         {
-            printf("Wait for CANFD time-out!\n");
-            while(1);
+            printf("Wait for CANFD Rx FIFO1 received message time-out!\n");
+            return;
         }
     }
 

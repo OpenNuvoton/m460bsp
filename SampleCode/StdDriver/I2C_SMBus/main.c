@@ -657,8 +657,8 @@ int32_t SMBusSendByteTest(uint8_t slvaddr)
         {
             if(--u32TimeOutCnt == 0)
             {
-                printf("Wait for I2C time-out!\n");
-                while(1);
+                printf("Wait for I2C transmit finish time-out!\n");
+                return -1;
             }
         }
         g_u8EndFlag = 0;
@@ -666,7 +666,7 @@ int32_t SMBusSendByteTest(uint8_t slvaddr)
         if(g_u8PECErr)
         {
             printf("PEC Check Error !\n");
-            while(1);
+            return -1;
         }
     }
     return 0;
@@ -692,8 +692,8 @@ int32_t SMBusAlertTest(uint8_t slvaddr)
     {
         if(--u32TimeOutCnt == 0)
         {
-            printf("Wait for I2C time-out!\n");
-            while(1);
+            printf("Wait for I2C transmit finish time-out!\n");
+            return -1;
         }
     }
     g_u8AlertAddrAck0 = 0;
@@ -701,7 +701,7 @@ int32_t SMBusAlertTest(uint8_t slvaddr)
     if(g_u8PECErr)
     {
         printf("PEC Check Error !\n");
-        while(1);
+        return -1;
     }
 
     return 0;
@@ -732,8 +732,8 @@ int32_t SMBusDefaultAddressTest(uint8_t slvaddr)
     {
         if(--u32TimeOutCnt == 0)
         {
-            printf("Wait for I2C time-out!\n");
-            while(1);
+            printf("Wait for I2C transmit finish time-out!\n");
+            return -1;
         }
     }
     g_u8EndFlag = 0;
@@ -741,7 +741,7 @@ int32_t SMBusDefaultAddressTest(uint8_t slvaddr)
     if(g_u8PECErr)
     {
         printf("PEC Check Error !\n");
-        while(1);
+        return -1;
     }
 
     printf("\n");
@@ -834,7 +834,8 @@ int32_t main(void)
             printf(" == SMBus Send Bytes Protocol test ==\n");
 
             /* SMBus send byte protocol test*/
-            SMBusSendByteTest(g_u8SlaveAddr[0]);
+            if( SMBusSendByteTest(g_u8SlaveAddr[0]) < 0 )
+                goto lexit;
 
             printf("\n");
             printf("SMBus transmit data done.\n");
@@ -894,8 +895,8 @@ int32_t main(void)
             {
                 if(--u32TimeOutCnt == 0)
                 {
-                    printf("Wait for I2C time-out!\n");
-                    while(1);
+                    printf("Wait for I2C alert interrupt time-out!\n");
+                    goto lexit;
                 }
             }
 
@@ -904,7 +905,8 @@ int32_t main(void)
             printf("I2C0 Get Alert Interrupt Request\n");
 
             /* I2C0 Send Alert Response Address(ARA) to I2C bus */
-            SMBusAlertTest(SMBUS_ALERT_RESPONSE_ADDRESS);
+            if( SMBusAlertTest(SMBUS_ALERT_RESPONSE_ADDRESS) < 0 )
+                goto lexit;
 
             /* Printf the Alert Slave address */
             printf("\n");
@@ -957,7 +959,8 @@ int32_t main(void)
             printf("== Simple ARP and Acknowledge by Manual Test ==\n");
 
             /* I2C0 sends Default Address and ARP Command (0x01) to Slave */
-            SMBusDefaultAddressTest(SMBUS_DEFAULT_ADDRESS);
+            if( SMBusDefaultAddressTest(SMBUS_DEFAULT_ADDRESS) < 0 )
+                goto lexit;
 
             /* Show I2C1 get ARP command from  I2C0 */
             printf("\n");
@@ -975,6 +978,8 @@ int32_t main(void)
             }
         }
     }
+
+lexit:
 
     s_I2C0HandlerFn = NULL;
     s_I2C1HandlerFn = NULL;

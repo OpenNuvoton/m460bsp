@@ -110,7 +110,7 @@ int main(void)
     {
         printf("\n RTC initial fail!!");
         printf("\n Please check h/w setting!!");
-        while(1);
+        return -1;
     }
 
     printf("# RTC Spare Register Read/Write Test:\n\n");
@@ -132,7 +132,7 @@ int main(void)
         {
             printf(" SPARE_REGISTER[%d] = 0x%x.\n", i, u32SPRData);
             printf(" Get spare register Fail!! \n");
-            while(1) {}
+            return -1;
         }
         else
         {

@@ -17,12 +17,12 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-void CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch);
+int32_t CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch);
 void SYS_Init(void);
 void UART0_Init(void);
 /*--------------------------------------------------------------------------------------*/
 /* Capture function to calculate the input waveform information                         */
-/* au32Count[4] : Keep the internal counter value when input signal rising / falling     */
+/* au32Count[4] : Keep the internal counter value when input signal rising / falling    */
 /*               happens                                                                */
 /*                                                                                      */
 /* time    A    B     C     D                                                           */
@@ -33,7 +33,7 @@ void UART0_Init(void);
 /* The capture internal counter down count from 0x10000, and reload to 0x10000 after    */
 /* input signal falling happens (Time B/C/D)                                            */
 /*--------------------------------------------------------------------------------------*/
-void CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch)
+int32_t CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch)
 {
     uint16_t au16Count[4];
     uint32_t u32i;
@@ -50,7 +50,7 @@ void CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch)
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for EPWM time-out!\n");
-            while(1);
+            return (-1);
         }
     }
 
@@ -68,7 +68,7 @@ void CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch)
             if(--u32TimeOutCnt == 0)
             {
                 printf("Wait for EPWM time-out!\n");
-                while(1);
+                return (-1);
             }
         }
 
@@ -85,7 +85,7 @@ void CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch)
             if(--u32TimeOutCnt == 0)
             {
                 printf("Wait for EPWM time-out!\n");
-                while(1);
+                return (-1);
             }
         }
 
@@ -110,9 +110,15 @@ void CalPeriodTime(EPWM_T *EPWM, uint32_t u32Ch)
     printf("\nCapture Result: Rising Time = %d, Falling Time = %d \nHigh Period = %d, Low Period = %d, Total Period = %d.\n\n",
            u16RisingTime, u16FallingTime, u16HighPeriod, u16LowPeriod, u16TotalPeriod);
     if((u16HighPeriod < 17141) || (u16HighPeriod > 17143) || (u16LowPeriod < 39999) || (u16LowPeriod > 40001) || (u16TotalPeriod < 57141) || (u16TotalPeriod > 57143))
+    {
         printf("Capture Test Fail!!\n");
+        return (-1);
+    }
     else
+    {
         printf("Capture Test Pass!!\n");
+        return 0;
+    }
 }
 
 void SYS_Init(void)
@@ -282,13 +288,14 @@ int32_t main(void)
         {
             if(--u32TimeOutCnt == 0)
             {
-                printf("Wait for EPWM time-out!\n");
-                while(1);
+                printf("Wait for EPWM timer start to count time-out!\n");
+                return -1;
             }
         }
 
         /* Capture the Input Waveform Data */
-        CalPeriodTime(EPWM1, 2);
+        if( CalPeriodTime(EPWM1, 2) < 0 )
+            return -1;
         /*------------------------------------------------------------------------------------------------------------*/
         /* Stop EPWM1 channel 0 (Recommended procedure method 1)                                                      */
         /* Set EPWM Timer loaded value(Period) as 0. When EPWM internal counter(CNT) reaches to 0, disable EPWM Timer */
@@ -303,8 +310,8 @@ int32_t main(void)
         {
             if(--u32TimeOutCnt == 0)
             {
-                printf("Wait for EPWM time-out!\n");
-                while(1);
+                printf("Wait for EPWM timer stop time-out!\n");
+                return -1;
             }
         }
 
@@ -328,15 +335,15 @@ int32_t main(void)
         {
             if(--u32TimeOutCnt == 0)
             {
-                printf("Wait for EPWM time-out!\n");
-                while(1);
+                printf("Wait for EPWM current counter reach to 0 time-out!\n");
+                return -1;
             }
         }
 
         /* Disable Timer for EPWM1 channel 2 */
         EPWM_ForceStop(EPWM1, EPWM_CH_2_MASK);
 
-        /* Disable Capture Function and Capture Input path for  EPWM1 channel 2*/
+        /* Disable Capture Function and Capture Input path for EPWM1 channel 2 */
         EPWM_DisableCapture(EPWM1, EPWM_CH_2_MASK);
 
         /* Clear Capture Interrupt flag for EPWM1 channel 2 */

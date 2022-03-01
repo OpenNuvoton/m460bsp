@@ -236,7 +236,7 @@ int32_t main(void)
         {
             /* Invalid key */
             printf("Current k is not valid\n");
-            while(1);
+            return -1;
 
         }
 
@@ -244,7 +244,7 @@ int32_t main(void)
         if(ECC_GenerateSignature(CRPT, CURVE_P_SIZE, msg, d, k, R, S) < 0)
         {
             printf("ECC signature generation failed!!\n");
-            while(1);
+            return -1;
         }
         time = 0xffffff - SysTick->VAL;
 
@@ -259,7 +259,7 @@ int32_t main(void)
         if(err < 0)
         {
             printf("ECC signature verification failed!!\n");
-            while(1);
+            return -1;
         }
         else
         {

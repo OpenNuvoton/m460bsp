@@ -13,14 +13,14 @@
 
 
 void PowerDownFunction(void);
-void WakeUpPinFunction(uint32_t u32PDMode)__attribute__((noreturn));
-void WakeUpTimerFunction(uint32_t u32PDMode, uint32_t u32Interval)__attribute__((noreturn));
-void WakeUpACMP0Function(uint32_t u32PDMode)__attribute__((noreturn));
-void WakeUpRTCTickFunction(uint32_t u32PDMode)__attribute__((noreturn));
-void WakeUpRTCAlarmFunction(uint32_t u32PDMode)__attribute__((noreturn));
-void WakeUpRTCTamperFunction(uint32_t u32PDMode)__attribute__((noreturn));
-void WakeUpLVRFunction(uint32_t u32PDMode)__attribute__((noreturn));
-void WakeUpBODFunction(uint32_t u32PDMode)__attribute__((noreturn));
+void WakeUpPinFunction(uint32_t u32PDMode);
+void WakeUpTimerFunction(uint32_t u32PDMode, uint32_t u32Interval);
+void WakeUpACMP0Function(uint32_t u32PDMode);
+void WakeUpRTCTickFunction(uint32_t u32PDMode);
+void WakeUpRTCAlarmFunction(uint32_t u32PDMode);
+void WakeUpRTCTamperFunction(uint32_t u32PDMode);
+void WakeUpLVRFunction(uint32_t u32PDMode);
+void WakeUpBODFunction(uint32_t u32PDMode);
 void CheckPowerSource(void);
 void GpioPinSetting(void);
 void SYS_Init(void);
@@ -59,11 +59,8 @@ void WakeUpPinFunction(uint32_t u32PDMode)
     /* GPIO SPD Power-down Wake-up Pin Select */
     CLK_EnableSPDWKPin(2, 0, CLK_SPDWKPIN_RISING, CLK_SPDWKPIN_DEBOUNCEDIS);
 
-    /* Enter to Power-down mode */
+    /* Enter to Power-down mode and wait for wake-up reset happen */
     PowerDownFunction();
-
-    /* Wait for Power-down mode wake-up reset happen */
-    while(1);
 }
 
 /*-----------------------------------------------------------------------------------------------------------*/
@@ -71,7 +68,6 @@ void WakeUpPinFunction(uint32_t u32PDMode)
 /*-----------------------------------------------------------------------------------------------------------*/
 void WakeUpTimerFunction(uint32_t u32PDMode, uint32_t u32Interval)
 {
-
     printf("Enter to SPD Power-down mode......\n");
 
     /* Select Power-down mode */
@@ -83,11 +79,8 @@ void WakeUpTimerFunction(uint32_t u32PDMode, uint32_t u32Interval)
     /* Enable Wake-up Timer */
     CLK_ENABLE_WKTMR();
 
-    /* Enter to Power-down mode */
+    /* Enter to Power-down mode and wait for wake-up reset happen */
     PowerDownFunction();
-
-    /* Wait for Power-down mode wake-up reset happen */
-    while(1);
 }
 
 
@@ -110,7 +103,6 @@ void WakeUpACMP0Function(uint32_t u32PDMode)
 
     printf("\nUsing ACMP0_P0(PA.11) as ACMP0 positive input.\n");
     printf("Using internal band-gap voltage as the negative input.\n\n");
-
     printf("Enter to SPD Power-down mode......\n");
 
     /* Configure ACMP0. Enable ACMP0 and select band-gap voltage as the source of ACMP negative input. */
@@ -129,11 +121,8 @@ void WakeUpACMP0Function(uint32_t u32PDMode)
     /* Enable Wake-up ACMP */
     CLK_ENABLE_SPDACMP();
 
-    /* Enter to Power-down mode */
+    /* Enter to Power-down mode and wait for wake-up reset happen */
     PowerDownFunction();
-
-    /* Wait for Power-down mode wake-up reset happen */
-    while(1);
 }
 
 /*-----------------------------------------------------------------------------------------------------------*/
@@ -141,8 +130,6 @@ void WakeUpACMP0Function(uint32_t u32PDMode)
 /*-----------------------------------------------------------------------------------------------------------*/
 void WakeUpRTCTickFunction(uint32_t u32PDMode)
 {
-    printf("Enter to SPD Power-down mode......\n");
-
     /* Enable RTC peripheral clock */
     CLK->APBCLK0 |= CLK_APBCLK0_RTCCKEN_Msk;
 
@@ -153,7 +140,7 @@ void WakeUpRTCTickFunction(uint32_t u32PDMode)
     if( RTC_Open(NULL) < 0 )
     {
         printf("Initialize RTC module and start counting failed\n");
-        while(1);
+        return;
     }
 
     /* clear tick status */
@@ -171,11 +158,9 @@ void WakeUpRTCTickFunction(uint32_t u32PDMode)
     /* Enable RTC wake-up */
     CLK_ENABLE_RTCWK();
 
-    /* Enter to Power-down mode */
+    /* Enter to Power-down mode and wait for wake-up reset happen */
+    printf("Enter to SPD Power-down mode......\n");
     PowerDownFunction();
-
-    /* Wait for Power-down mode wake-up reset happen */
-    while(1);
 }
 
 
@@ -204,7 +189,7 @@ void WakeUpRTCAlarmFunction(uint32_t u32PDMode)
     if( RTC_Open(&sWriteRTC) < 0 )
     {
         printf("Initialize RTC module and start counting failed\n");
-        while(1);
+        return;
     }
 
     /* Set RTC alarm date/time */
@@ -219,7 +204,6 @@ void WakeUpRTCAlarmFunction(uint32_t u32PDMode)
 
     printf("# Set RTC current date/time: 2021/05/11 15:04:10.\n");
     printf("# Set RTC alarm date/time:   2021/05/11 15:04:%d.\n", sWriteRTC.u32Second);
-
     printf("Enter to SPD Power-down mode......\n");
 
     /* Clear alarm status */
@@ -234,11 +218,8 @@ void WakeUpRTCAlarmFunction(uint32_t u32PDMode)
     /* Enable RTC wake-up */
     CLK_ENABLE_RTCWK();
 
-    /* Enter to Power-down mode */
+    /* Enter to Power-down mode and wait for wake-up reset happen */
     PowerDownFunction();
-
-    /* Wait for Power-down mode wake-up reset happen */
-    while(1);
 }
 
 /*-----------------------------------------------------------------------------------------------------------*/
@@ -246,8 +227,6 @@ void WakeUpRTCAlarmFunction(uint32_t u32PDMode)
 /*-----------------------------------------------------------------------------------------------------------*/
 void WakeUpRTCTamperFunction(uint32_t u32PDMode)
 {
-    printf("Enter to SPD Power-down mode......\n");
-
     /* Enable RTC peripheral clock */
     CLK->APBCLK0 |= CLK_APBCLK0_RTCCKEN_Msk;
 
@@ -258,7 +237,7 @@ void WakeUpRTCTamperFunction(uint32_t u32PDMode)
     if( RTC_Open(NULL) < 0 )
     {
         printf("Initialize RTC module and start counting failed\n");
-        while(1);
+        return;
     }
 
     /* Set RTC Tamper 0 as low level detect */
@@ -279,11 +258,9 @@ void WakeUpRTCTamperFunction(uint32_t u32PDMode)
     /* Enable RTC wake-up */
     CLK_ENABLE_RTCWK();
 
-    /* Enter to Power-down mode */
+    /* Enter to Power-down mode and wait for wake-up reset happen */
+    printf("Enter to SPD Power-down mode......\n");
     PowerDownFunction();
-
-    /* Wait for Power-down mode wake-up reset happen */
-    while(1);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -296,11 +273,8 @@ void WakeUpLVRFunction(uint32_t u32PDMode)
     /* Select Power-down mode */
     CLK_SetPowerDownMode(u32PDMode);
 
-    /* Enter to Power-down mode */
+    /* Enter to Power-down mode and wait for wake-up reset happen */
     PowerDownFunction();
-
-    /* Wait for Power-down mode wake-up reset happen */
-    while(1);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -322,11 +296,8 @@ void WakeUpBODFunction(uint32_t u32PDMode)
     /* Enable Brown-out detector reset function */
     SYS_ENABLE_BOD_RST();
 
-    /* Enter to Power-down mode */
+    /* Enter to Power-down mode and wait for wake-up reset happen */
     PowerDownFunction();
-
-    /* Wait for Power-down mode wake-up reset happen */
-    while(1);
 }
 
 /*-----------------------------------------------------------------------------------------------------------*/
@@ -516,28 +487,28 @@ int32_t main(void)
     {
         case '1':
             WakeUpPinFunction(CLK_PMUCTL_PDMSEL_SPD);
-        //break;
+            break;
         case '2':
             WakeUpTimerFunction(CLK_PMUCTL_PDMSEL_SPD, CLK_PMUCTL_WKTMRIS_16384);
-        //break;
+            break;
         case '3':
             WakeUpACMP0Function(CLK_PMUCTL_PDMSEL_SPD);
-        //break;
+            break;
         case '4':
             WakeUpRTCTickFunction(CLK_PMUCTL_PDMSEL_SPD);
-        //break;
+            break;
         case '5':
             WakeUpRTCAlarmFunction(CLK_PMUCTL_PDMSEL_SPD);
-        //break;
+            break;
         case '6':
             WakeUpRTCTamperFunction(CLK_PMUCTL_PDMSEL_SPD);
-        //break;
+            break;
         case '7':
             WakeUpBODFunction(CLK_PMUCTL_PDMSEL_SPD);
-        //break;
+            break;
         case '8':
             WakeUpLVRFunction(CLK_PMUCTL_PDMSEL_SPD);
-        //break;
+            break;
         default:
             break;
     }

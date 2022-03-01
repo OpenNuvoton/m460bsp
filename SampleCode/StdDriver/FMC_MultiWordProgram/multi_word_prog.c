@@ -135,7 +135,7 @@ int  multi_word_program(uint32_t start_addr)
 
 int main()
 {
-    uint32_t  i, addr, maddr;          /* temporary variables */
+    uint32_t  i, addr, maddr, done = 0; /* temporary variables */
 
     SYS_UnlockReg();                   /* Unlock protected registers */
 
@@ -208,10 +208,18 @@ int main()
     }
 
     printf("\n\nMulti-word program demo done.\n");
-    while (1);
+    done = 1;
 
 err_out:
-    printf("\n\nERROR!\n");
+
+    if(done)
+    {
+        printf("\n\nMulti-word program demo done.\n");
+    }
+    else
+    {
+        printf("\n\nERROR!\n");
+    }
     while (1);
 }
 

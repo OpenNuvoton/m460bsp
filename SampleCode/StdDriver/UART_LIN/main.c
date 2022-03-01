@@ -27,7 +27,7 @@ static uint8_t g_u8ReceiveData[9];
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
 void UART_FunctionTest(void);
-void LIN_Tx_FunctionTest(void);
+int32_t LIN_Tx_FunctionTest(void);
 void LIN_Rx_FunctionTest(void);
 void UART1_IRQHandler(void);
 void SYS_Init(void);
@@ -237,7 +237,8 @@ void UART_FunctionTest(void)
         switch(u32Item)
         {
             case '1':
-                LIN_Tx_FunctionTest();
+                if( LIN_Tx_FunctionTest() <0 )
+                    u32Item = 27;
                 break;
 
             case '2':
@@ -254,9 +255,9 @@ void UART_FunctionTest(void)
 
 }
 
-void LIN_Tx_FunctionTest(void)
+int32_t LIN_Tx_FunctionTest(void)
 {
-    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    uint32_t u32TimeOutCnt;
 
     //The sample code will send a LIN header with ID is 0x30 and response field.
     //The response field with 8 data bytes and checksum without including ID.
@@ -285,12 +286,13 @@ void LIN_Tx_FunctionTest(void)
     /* LIN TX Send Header Enable */
     UART1->LINCTL |= UART_LINCTL_SENDH_Msk;
     /* Wait until break field, sync field and ID field transfer completed */
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     while((UART1->LINCTL & UART_LINCTL_SENDH_Msk) == UART_LINCTL_SENDH_Msk)
     {
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for UART LIN header transfer completed time-out!\n");
-            while(1);
+            return -1;
         }
     }
 
@@ -299,6 +301,8 @@ void LIN_Tx_FunctionTest(void)
     UART_Write(UART1, &au8TestPattern[0], 9);
 
     printf("\n UART LIN Tx Function Demo End !!\n\n");
+
+    return 0;
 }
 
 void LIN_Rx_FunctionTest(void)

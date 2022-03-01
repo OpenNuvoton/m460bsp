@@ -245,7 +245,7 @@ void CANFD_RxTest(void)
             if(--u32TimeOutCnt == 0)
             {
                 printf("Wait for CANFD time-out!\n");
-                while(1);
+                return;
             }
         }
 

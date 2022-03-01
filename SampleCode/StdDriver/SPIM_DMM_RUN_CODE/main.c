@@ -101,7 +101,7 @@ int main()
     if (SPIM_InitFlash(1) != 0)        /* Initialized SPI flash */
     {
         printf("SPIM flash initialize failed!\n");
-        while (1);
+        return -1;
     }
 
     SPIM_ReadJedecId(idBuf, sizeof (idBuf), 1);
@@ -120,7 +120,7 @@ int main()
     if (SPIM_Enable_4Bytes_Mode(USE_4_BYTES_MODE, 1) != 0)
     {
         printf("SPIM_Enable_4Bytes_Mode failed!\n");
-        while (1);
+        return -1;
     }
 
     SPIM->CTL1 |= SPIM_CTL1_CDINVAL_Msk;        // invalid cache

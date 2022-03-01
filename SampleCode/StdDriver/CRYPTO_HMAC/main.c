@@ -184,7 +184,7 @@ int  main(void)
     uint32_t u32OpMode = HMAC_MODE_SHA512;
 #endif
 
-    uint32_t u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    uint32_t u32TimeOutCnt;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -220,12 +220,13 @@ int  main(void)
 
     g_HMAC_done = 0;
     CRPT->HMAC_CTL |= CRPT_HMAC_CTL_START_Msk | CRPT_HMAC_CTL_DMAEN_Msk | CRPT_HMAC_CTL_DMALAST_Msk;
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     while(!g_HMAC_done)
     {
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for HMAC time-out!\n");
-            while(1);
+            return -1;
         }
     }
 
@@ -242,9 +243,7 @@ int  main(void)
     if(memcmp((const void *)CRPT->HMAC_DGST, (const void *)gau8HMAC, u32MacLen) != 0)
     {
         printf("\n  !!Output is wrong!!\n");
-        while(1) {}
     }
-
 
     printf("\nHMAC Demo Done\n");
     while(1) {}

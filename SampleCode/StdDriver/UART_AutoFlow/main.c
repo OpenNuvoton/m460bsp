@@ -201,7 +201,7 @@ void AutoFlow_FunctionTxTest(void)
 /*---------------------------------------------------------------------------------------------------------*/
 void AutoFlow_FunctionRxTest(void)
 {
-    uint32_t u32Idx;
+    uint32_t u32Idx, u32Err = 0;
 
     /* Enable RTS and CTS autoflow control */
     UART_EnableFlowCtrl(UART1);
@@ -229,11 +229,15 @@ void AutoFlow_FunctionRxTest(void)
     {
         if(g_u8RecData[u32Idx] != (u32Idx & 0xFF))
         {
-            printf("Compare Data Failed\n");
-            while(1);
+            u32Err = 1;
+            break;
         }
     }
-    printf("\n Receive OK & Check OK\n");
+
+    if( u32Err )
+        printf("Compare Data Failed\n");
+    else
+        printf("\n Receive OK & Check OK\n");
 
     /* Disable RDA and RTO Interrupt */
     NVIC_DisableIRQ(UART1_IRQn);

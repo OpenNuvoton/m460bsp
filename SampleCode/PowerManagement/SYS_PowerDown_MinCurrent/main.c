@@ -32,13 +32,12 @@ void SYS_Disable_AnalogPORCircuit(void)
 /*---------------------------------------------------------------------------------------------------------*/
 void PowerDownFunction(void)
 {
-    uint32_t u32TimeOutCnt = SystemCoreClock;
+    uint32_t u32TimeOutCnt;
 
     /* Check if all the debug messages are finished */
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     UART_WAIT_TX_EMPTY(DEBUG_PORT)
-    {
-        if(--u32TimeOutCnt == 0) break; /* 1 second time-out */
-    }
+        if(--u32TimeOutCnt == 0) break;
 
     /* Select Power-down mode */
     CLK_SetPowerDownMode(CLK_PMUCTL_PDMSEL_PD);

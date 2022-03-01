@@ -54,7 +54,7 @@ void PSIO_IRQHandler(void)
             if(--u32TimeOutCnt == 0)
             {
                 printf("Wait for PSIO time-out!\n");
-                while(1);
+                return;
             }
         }
 
@@ -72,7 +72,7 @@ void PSIO_IRQHandler(void)
             if(--u32TimeOutCnt == 0)
             {
                 printf("Wait for PSIO time-out!\n");
-                while(1);
+                return;
             }
         }
 
@@ -91,7 +91,7 @@ void PSIO_IRQHandler(void)
                 if(--u32TimeOutCnt == 0)
                 {
                     printf("Wait for PSIO time-out!\n");
-                    while(1);
+                    return;
                 }
             }
 

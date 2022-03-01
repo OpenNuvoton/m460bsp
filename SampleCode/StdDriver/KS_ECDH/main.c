@@ -166,7 +166,7 @@ int main(void)
     if(err)
     {
         printf("PRNG ECDH Inital failed\n");
-        while(1) {}
+        return -1;
     }
 
 
@@ -181,7 +181,7 @@ int main(void)
     {
         printf("[FAILED]\n");
         printf("Fail to write k to KS SRAM\n");
-        while(1) {}
+        return -1;
     }
 
     /*-----------------------------------------------------------------------------------------------*/
@@ -190,7 +190,7 @@ int main(void)
     if((i32ShareKeyIdx = ECC_GenerateSecretZ_KS(CRPT, CURVE_P_256, KS_SRAM, i32KeyIdx_d, Qx, Qy)) < 0)
     {
         printf("ECC ECDH share key calculation fail\n");
-        while(1);
+        return -1;
     }
     printf("Share Key Idx for A Side = %d, remain size = %d\n", i32ShareKeyIdx, KS_GetRemainSize(KS_SRAM));
 
@@ -202,8 +202,3 @@ int main(void)
 
     while(1) {}
 }
-
-
-
-
-

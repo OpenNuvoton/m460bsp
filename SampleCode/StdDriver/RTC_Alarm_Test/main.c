@@ -146,7 +146,7 @@ int main(void)
     {
         printf("\n RTC initial fail!!");
         printf("\n Please check h/w setting!!");
-        while(1);
+        return -1;
     }
 
     printf("\nRTC Alarm Test (Alarm after 10 seconds)\n\n");

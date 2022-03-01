@@ -188,13 +188,13 @@ int main(void)
     BMC_ENABLE();
 
     /* Wait until one frame transfer done */
-    u32TimeOutCnt = SystemCoreClock;
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     while(g_au32FrameTransmitDoneIntFlag == 0)
     {
-        if(--u32TimeOutCnt == 0) /* 1 second time-out */
+        if(--u32TimeOutCnt == 0)
         {
             printf("Wait for BMC interrupt time-out!\n");
-            while(1);
+            break;
         }
     }
 

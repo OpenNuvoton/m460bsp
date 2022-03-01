@@ -185,8 +185,8 @@ void EADC_FunctionTest()
         {
             if(--u32TimeOutCnt == 0)
             {
-                printf("Wait for EADC time-out!\n");
-                while(1);
+                printf("Wait for EADC interrupt time-out!\n");
+                return;
             }
         }
 

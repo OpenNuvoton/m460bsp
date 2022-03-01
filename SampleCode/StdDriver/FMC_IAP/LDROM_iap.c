@@ -152,7 +152,7 @@ int main()
     if (g_FMC_i32ErrCode != 0)
     {
         printf("FMC_SetVectorPageAddr(FMC_APROM_BASE) failed!\n");
-        while (1);
+        return -1;
     }
 
     SYS_LockReg();                                /* Lock protected registers */

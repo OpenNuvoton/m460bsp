@@ -277,21 +277,23 @@ int main(void)
     PDMA_Trigger(PDMA0, 4);
 
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while(1)
+    while(g_u32IsTestOver == 0)
     {
-        if(g_u32IsTestOver == 1)
-        {
-            g_u32IsTestOver = 0;
-            printf("test done...\n");
-
-            /* Close PDMA channel */
-            PDMA_Close(PDMA0);
-        }
-
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for PDMA time-out!\n");
-            while(1);
+            break;
         }
     }
+
+    if(g_u32IsTestOver == 1)
+    {
+        g_u32IsTestOver = 0;
+        printf("test done...\n");
+    }
+
+    /* Close PDMA channel */
+    PDMA_Close(PDMA0);
+
+    while(1);
 }

@@ -398,7 +398,7 @@ int main()
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for system or USCI_I2C interrupt time-out!\n");
-            while(1);
+            return -1;
         }
     }
 

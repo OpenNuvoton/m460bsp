@@ -123,7 +123,7 @@ int32_t main(void)
     UART0_Init();
     printf("\n\nCPU @ %dHz(PLL@ %dHz)\n", SystemCoreClock, PllClock);
     printf("+------------------------------------------------------------------------+\n");
-    printf("|                          BPWM Driver Sample Code                        |\n");
+    printf("|                          BPWM Driver Sample Code                       |\n");
     printf("|                                                                        |\n");
     printf("+------------------------------------------------------------------------+\n");
     printf("  This sample code will use BPWM0 channel 0 to output waveform\n");

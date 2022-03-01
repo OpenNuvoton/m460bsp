@@ -47,7 +47,7 @@ static void PSIO_PS2_H2D_ReadConfig(S_PSIO_PS2 *psConfig)
 }
 
 
-static void PSIO_PS2_H2D_Send_Header(S_PSIO_PS2 *psConfig)
+static int32_t PSIO_PS2_H2D_Send_Header(S_PSIO_PS2 *psConfig)
 {
     uint32_t u32TimeOutCnt;
     const S_PSIO_CP_CONFIG sClockConfig
@@ -96,7 +96,7 @@ static void PSIO_PS2_H2D_Send_Header(S_PSIO_PS2 *psConfig)
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for PSIO time-out!\n");
-            while(1);
+            return -1;
         }
     }
 
@@ -111,9 +111,11 @@ static void PSIO_PS2_H2D_Send_Header(S_PSIO_PS2 *psConfig)
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for PSIO time-out!\n");
-            while(1);
+            return -1;
         }
     }
+
+    return 0;
 }
 
 
@@ -167,11 +169,14 @@ void PSIO_PS2_H2D_Send_Data(S_PSIO_PS2 *psConfig)
 }
 
 
-void  PSIO_PS2_HostSend(S_PSIO_PS2 *psConfig)
+int32_t PSIO_PS2_HostSend(S_PSIO_PS2 *psConfig)
 {
-    PSIO_PS2_H2D_Send_Header(psConfig);
+    if( PSIO_PS2_H2D_Send_Header(psConfig) < 0 )
+        return -1;
 
     PSIO_PS2_H2D_Send_Data(psConfig);
+
+    return 0;
 }
 
 
