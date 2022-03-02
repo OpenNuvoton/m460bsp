@@ -10,6 +10,10 @@
 
 #include "NuMicro.h"
 
+/* HBI Multi Function Pin selection (total 2 sets) */
+/*         1 : MFP set 1 (default)                 */
+/*         0 : MFP set 2                           */
+#define HBI_MFP_SELECT  1
 
 
 void HBI_IRQHandler(void)
@@ -63,6 +67,8 @@ void SYS_Init(void)
     SET_UART0_TXD_PB13();
 
     /* Set multi-function pins for HBI */
+#if HBI_MFP_SELECT
+
     SET_HBI_D0_PG11();
     SET_HBI_D1_PG12();
     SET_HBI_D2_PC0();
@@ -77,6 +83,25 @@ void SYS_Init(void)
     SET_HBI_nCS_PC3();
     SET_HBI_CK_PC4();
     SET_HBI_nCK_PC5();
+
+#else
+
+    SET_HBI_D0_PJ6();
+    SET_HBI_D1_PJ5();
+    SET_HBI_D2_PJ4();
+    SET_HBI_D3_PJ3();
+    SET_HBI_D4_PH15();
+    SET_HBI_D5_PD7();
+    SET_HBI_D6_PD6();
+    SET_HBI_D7_PD5();
+
+    SET_HBI_RWDS_PH14();
+    SET_HBI_nRESET_PJ2();
+    SET_HBI_nCS_PJ7();
+    SET_HBI_CK_PH13();
+    SET_HBI_nCK_PH12();
+
+#endif
 
     /* Enable HBI interrupt */
     HBI_ENABLE_INT;
