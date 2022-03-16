@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V1.00
- * @brief    Show FMC read Flash IDs, erase, read, and write function
+ * @brief    Show HyperRAM read/write control via HyperBus Interface
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
@@ -12,9 +12,6 @@
 
 /* HBI Multi Function Pin selection */
 #define HBI_MFP_SELECT  0    /* default MFP setting */
-
-/* HyperRAM memory mapping address*/
-#define HYPER_RAM_MEM_MAP 0x0A000000
 
 
 void HBI_IRQHandler(void)
@@ -43,7 +40,7 @@ void SYS_Init(void)
     CLK->PCLKDIV = (CLK_PCLKDIV_APB0DIV_DIV2 | CLK_PCLKDIV_APB1DIV_DIV2);
 
     /* Set core clock to 200MHz */
-    CLK_SetCoreClock(200000000);
+    CLK_SetCoreClock(180000000);
 
     /* Enable all GPIO clock */
     CLK->AHBCLK0 |= CLK_AHBCLK0_GPACKEN_Msk | CLK_AHBCLK0_GPBCKEN_Msk | CLK_AHBCLK0_GPCCKEN_Msk | CLK_AHBCLK0_GPDCKEN_Msk |

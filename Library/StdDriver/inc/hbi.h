@@ -33,6 +33,9 @@ extern "C"
 */
 
 /*---------------------------------------------------------------------------------------------------------*/
+/* HyperRAM memory mapping address*/
+#define HYPER_RAM_MEM_MAP 0x0A000000
+/*---------------------------------------------------------------------------------------------------------*/
 /* HyperRAM Register Space constant definitions
 Register Space Range:
    0x0000_0000 = Identification Register 0
