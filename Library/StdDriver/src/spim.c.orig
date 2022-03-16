@@ -885,7 +885,7 @@ int SPIM_Enable_4Bytes_Mode(int isEn, uint32_t u32NBit)
     {
     case MFGID_WINBOND:
         isSupt = (idBuf[2] < 0x16U) ? 0L : 1L;
-        break;
+        break;			
     case MFGID_MXIC:
     case MFGID_EON:
         isSupt = (idBuf[2] < 0x19U) ? 0L : 1L;

@@ -46,9 +46,6 @@ void SYS_Init(void)
     /* Enable ACMP01 peripheral clock */
     CLK_EnableModuleClock(ACMP01_MODULE);
 
-    /* Enable ACMP01 peripheral clock */
-    CLK_EnableModuleClock(DAC_MODULE);
-
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock and CyclesPerUs automatically. */
     SystemCoreClockUpdate();
@@ -94,7 +91,7 @@ int32_t main(void)
     printf("\n");
 
     /* Configure ACMP1. Enable ACMP1 and select DAC0 output as the source of ACMP negative input. */
-    ACMP_Open(ACMP01, 1, ACMP_CTL_NEGSEL_DAC, ACMP_CTL_HYSTERESIS_DISABLE);
+    ACMP_Open(ACMP01, 1, ACMP_CTL_NEGSEL_VBG, ACMP_CTL_HYSTERESIS_DISABLE);
     /* Select P1 as ACMP positive input channel */
     ACMP_SELECT_P(ACMP01, 1, ACMP_CTL_POSSEL_P1);
     /* Enable interrupt */
