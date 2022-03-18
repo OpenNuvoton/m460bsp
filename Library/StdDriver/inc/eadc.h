@@ -104,6 +104,8 @@ extern "C"
 
 /*@}*/ /* end of group EADC_EXPORTED_CONSTANTS */
 
+extern int32_t g_EADC_i32ErrCode;
+
 /** @addtogroup EADC_EXPORTED_FUNCTIONS EADC Exported Functions
   @{
 */

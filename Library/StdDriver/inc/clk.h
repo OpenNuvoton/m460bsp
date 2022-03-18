@@ -457,7 +457,7 @@ extern "C"
 #define CLK_PLLCTL_180MHz_HIRC  (CLK_PLLCTL_PLLSRC_HIRC | CLK_PLLCTL_NR(3UL) | CLK_PLLCTL_NF( 45UL) | CLK_PLLCTL_NO_2) /*!< Predefined PLLCTL setting for 180MHz PLL output with HIRC(12MHz IRC) \hideinitializer */
 #define CLK_PLLCTL_192MHz_HIRC  (CLK_PLLCTL_PLLSRC_HIRC | CLK_PLLCTL_NR(2UL) | CLK_PLLCTL_NF( 32UL) | CLK_PLLCTL_NO_2) /*!< Predefined PLLCTL setting for 192MHz PLL output with HIRC(12MHz IRC) \hideinitializer */
 #define CLK_PLLCTL_200MHz_HIRC  (CLK_PLLCTL_PLLSRC_HIRC | CLK_PLLCTL_NR(3UL) | CLK_PLLCTL_NF( 25UL) | CLK_PLLCTL_NO_1) /*!< Predefined PLLCTL setting for 200MHz PLL output with HIRC(12MHz IRC) \hideinitializer */
-#define CLK_PLLCTL_384MHz_HIRC  (CLK_PLLCTL_PLLSRC_HIRC | CLK_PLLCTL_NR(1UL) | CLK_PLLCTL_NF( 32UL) | CLK_PLLCTL_NO_2) /*!< Predefined PLLCTL setting for 384MHz PLL output with HIRC(12MHz IRC) \hideinitializer */
+#define CLK_PLLCTL_384MHz_HIRC  (CLK_PLLCTL_PLLSRC_HIRC | CLK_PLLCTL_NR(2UL) | CLK_PLLCTL_NF( 48UL) | CLK_PLLCTL_NO_1) /*!< Predefined PLLCTL setting for 384MHz PLL output with HIRC(12MHz IRC) \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  PLLFNCTL constant definitions.                                                                         */
