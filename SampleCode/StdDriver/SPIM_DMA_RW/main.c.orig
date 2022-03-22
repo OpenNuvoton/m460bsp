@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V1.00
- * @brief    This sample demonstrates how to issue SPI flash erase, program, and read commands under SPIM I/O mode.
+ * @brief    Show SPIM DMA mode read/write function.
  *
  * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
@@ -10,8 +10,8 @@
 
 #include "NuMicro.h"
 
-#define USE_4_BYTES_MODE            0     /* W25Q20 does not support 4-bytes address mode. */
-#define MFP_SELECT                  0     /* Multi-function pin select                     */
+// #define HCLK_192MHZ
+#define MFP_SELECT                  0            /* Multi-function pin select */
 
 #define FLASH_BLOCK_SIZE            (64*1024)    /* Flash block size. Depend on the physical flash. */
 #define TEST_BLOCK_ADDR             0x10000      /* Test block address on SPI flash. */
@@ -55,10 +55,11 @@ void SYS_Init(void)
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
 
+
     /* Set multi-function pins for UART0 RXD and TXD */
     SET_UART0_RXD_PB12();
     SET_UART0_TXD_PB13();
-
+		
 #if MFP_SELECT
     /* Init SPIM multi-function pins, MOSI(PE.2), MISO(PE.3), CLK(PE.4), SS(PE.5), D3(PE.6), and D2(PE.7) */
     SET_SPIM_MOSI_PE2();
@@ -103,64 +104,38 @@ void UART0_Init(void)
     UART_Open(UART0, 115200);
 }
 
-
-int main()
+int  dma_read_write(int is4ByteAddr, uint32_t u32RdCmd, uint32_t WrCmd, int dc_num)
 {
     uint32_t    i, offset;             /* variables */
     uint32_t    *pData;
-    uint8_t     idBuf[3];
 
-    SYS_UnlockReg();                   /* Unlock register lock protect */
-
-    SYS_Init();                        /* Init System, IP clock and multi-function I/O */
-
-    UART0_Init();                      /* Initialize UART0 */
-
-    printf("+-------------------------------------------+\n");
-    printf("|    M460 SPIM I/O mode read/write sample   |\n");
-    printf("+-------------------------------------------+\n");
-
-    SYS_UnlockReg();                   /* Unlock register lock protect */
-
-    SPIM_SET_CLOCK_DIVIDER(1);        /* Set SPIM clock as HCLK divided by 2 */
-
-    SPIM_SET_RXCLKDLY_RDDLYSEL(0);    /* Insert 0 delay cycle. Adjust the sampling clock of received data to latch the correct data. */
-    SPIM_SET_RXCLKDLY_RDEDGE();       /* Use SPI input clock rising edge to sample received data. */
-
-    SPIM_SET_DCNUM(8);                /* Set 8 dummy cycle. */
-
-    if (SPIM_InitFlash(1) != 0)        /* Initialized SPI flash */
-    {
-        printf("SPIM flash initialize failed!\n");
-        goto lexit;
-    }
-
-    SPIM_ReadJedecId(idBuf, sizeof (idBuf), 1);
-    printf("SPIM get JEDEC ID=0x%02X, 0x%02X, 0x%02X\n", idBuf[0], idBuf[1], idBuf[2]);
-
-    SPIM_WinbondUnlock(1);
-
-    if (SPIM_Enable_4Bytes_Mode(USE_4_BYTES_MODE, 1) != 0)
+    if (SPIM_Enable_4Bytes_Mode(is4ByteAddr, 1) != 0)
     {
         printf("SPIM_Enable_4Bytes_Mode failed!\n");
-        goto lexit;
+        return -1;
     }
+
+    SPIM_SET_DCNUM(dc_num);
 
     /*
      *  Erase flash page
      */
     printf("Erase SPI flash block 0x%x...", TEST_BLOCK_ADDR);
-    SPIM_EraseBlock(TEST_BLOCK_ADDR, USE_4_BYTES_MODE, OPCODE_BE_64K, 1, 1);
+    SPIM_EraseBlock(TEST_BLOCK_ADDR, is4ByteAddr, OPCODE_BE_64K, 1, 1);
     printf("done.\n");
 
     /*
      *  Verify flash page be erased
      */
+    if ((u32RdCmd == CMD_DMA_NORMAL_QUAD_READ) || (u32RdCmd == CMD_DMA_FAST_QUAD_READ) ||
+            (u32RdCmd == CMD_DMA_FAST_READ_QUAD_OUTPUT))
+        SPIM_SetQuadEnable(1, 1);
+
     printf("Verify SPI flash block 0x%x be erased...", TEST_BLOCK_ADDR);
     for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
     {
         memset(g_buff, 0, BUFFER_SIZE);
-        SPIM_IO_Read(TEST_BLOCK_ADDR+offset, USE_4_BYTES_MODE, BUFFER_SIZE, g_buff, OPCODE_FAST_READ, 1, 1, 1, 1);
+        SPIM_DMA_Read(TEST_BLOCK_ADDR+offset, is4ByteAddr, BUFFER_SIZE, g_buff, u32RdCmd, 1);
 
         pData = (uint32_t *)g_buff;
         for (i = 0; i < BUFFER_SIZE; i += 4, pData++)
@@ -169,11 +144,14 @@ int main()
             {
                 printf("FAILED!\n");
                 printf("Flash address 0x%x, read 0x%x!\n", TEST_BLOCK_ADDR+i, *pData);
-                goto lexit;
+                return -1;
             }
         }
     }
+
     printf("done.\n");
+
+    SPIM_SetQuadEnable(0, 1);
 
     /*
      *  Program data to flash block
@@ -185,18 +163,22 @@ int main()
         for (i = 0; i < BUFFER_SIZE; i += 4, pData++)
             *pData = (i << 16) | (TEST_BLOCK_ADDR + offset + i);
 
-        SPIM_IO_Write(TEST_BLOCK_ADDR+offset, USE_4_BYTES_MODE, BUFFER_SIZE, g_buff, OPCODE_PP, 1, 1, 1);
+        SPIM_DMA_Write(TEST_BLOCK_ADDR+offset, is4ByteAddr, BUFFER_SIZE, g_buff, WrCmd);
     }
     printf("done.\n");
 
     /*
-     *  Read and compare flash data
+     *  Verify flash block data
      */
-    printf("Verify SPI flash block 0x%x data with Fast Read command...", TEST_BLOCK_ADDR);
+    if ((u32RdCmd == CMD_DMA_NORMAL_QUAD_READ) || (u32RdCmd == CMD_DMA_FAST_QUAD_READ) ||
+            (u32RdCmd == CMD_DMA_FAST_READ_QUAD_OUTPUT))
+        SPIM_SetQuadEnable(1, 1);
+
+    printf("Verify SPI flash block 0x%x data...", TEST_BLOCK_ADDR);
     for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
     {
         memset(g_buff, 0, BUFFER_SIZE);
-        SPIM_IO_Read(TEST_BLOCK_ADDR+offset, USE_4_BYTES_MODE, BUFFER_SIZE, g_buff, OPCODE_FAST_READ, 1, 1, 1, 1);
+        SPIM_DMA_Read(TEST_BLOCK_ADDR+offset, is4ByteAddr, BUFFER_SIZE, g_buff, u32RdCmd, 1);
 
         pData = (uint32_t *)g_buff;
         for (i = 0; i < BUFFER_SIZE; i += 4, pData++)
@@ -205,38 +187,102 @@ int main()
             {
                 printf("FAILED!\n");
                 printf("Flash address 0x%x, read 0x%x, expect 0x%x!\n", TEST_BLOCK_ADDR+i, *pData, (i << 16) | (TEST_BLOCK_ADDR + offset + i));
-                goto lexit;
+                return -1;
             }
         }
 
     }
+    SPIM_SetQuadEnable(0, 1);
     printf("done.\n");
+    return 0;
+}
 
+int main()
+{
+    uint8_t     idBuf[3];
 
-    /*
-     *  Read and compare flash data
-     */
-    printf("Verify SPI flash block 0x%x data with Fast Read Dual Output command...", TEST_BLOCK_ADDR);
-    for (offset = 0; offset < FLASH_BLOCK_SIZE; offset += BUFFER_SIZE)
+    /* Unlock protected registers */
+    SYS_UnlockReg();
+
+    SYS_Init();                        /* Init System, IP clock and multi-function I/O */
+
+    UART0_Init();                      /* Initialize UART0 */
+
+    /*---------------------------------------------------------------------------------------------------------*/
+    /* SAMPLE CODE                                                                                             */
+    /*---------------------------------------------------------------------------------------------------------*/
+
+    printf("+-------------------------------------------+\n");
+    printf("|    M460 SPIM DMA mode read/write sample   |\n");
+    printf("+-------------------------------------------+\n");
+
+    SYS_UnlockReg();                   /* Unlock register lock protect */
+
+#ifdef HCLK_192MHZ
+    SPIM_SET_CLOCK_DIVIDER(2);        /* Set SPIM clock as HCLK divided by 4 */
+
+    SPIM_SET_RXCLKDLY_RDDLYSEL(0);    /* Insert 0 delay cycle. Adjust the sampling clock of received data to latch the correct data. */
+    SPIM_SET_RXCLKDLY_RDEDGE();       /* Use SPI input clock rising edge to sample received data. */
+#else
+    SPIM_SET_CLOCK_DIVIDER(1);        /* Set SPIM clock as HCLK divided by 2 */
+
+    SPIM_SET_RXCLKDLY_RDDLYSEL(0);    /* Insert 0 delay cycle. Adjust the sampling clock of received data to latch the correct data. */
+    SPIM_SET_RXCLKDLY_RDEDGE();       /* Use SPI input clock rising edge to sample received data. */
+#endif
+    SPIM_SET_DCNUM(8);                /* Set 8 dummy cycle. */
+
+    if (SPIM_InitFlash(1) != 0)        /* Initialized SPI flash */
     {
-        memset(g_buff, 0, BUFFER_SIZE);
-        SPIM_IO_Read(TEST_BLOCK_ADDR+offset, USE_4_BYTES_MODE, BUFFER_SIZE, g_buff, OPCODE_FAST_DUAL_READ, 1, 1, 2, 1);
-
-        pData = (uint32_t *)g_buff;
-        for (i = 0; i < BUFFER_SIZE; i += 4, pData++)
-        {
-            if (*pData != ((i << 16) | (TEST_BLOCK_ADDR + offset + i)))
-            {
-                printf("FAILED!\n");
-                printf("Flash address 0x%x, read 0x%x, expect 0x%x!\n", TEST_BLOCK_ADDR+i, *pData, (i << 16) | (TEST_BLOCK_ADDR + offset + i));
-                goto lexit;
-            }
-        }
-
+        printf("SPIM flash initialize failed!\n");
+        goto lexit;
     }
-    printf("done.\n");
 
-    printf("\nSPIM I/O read/write demo done.\n");
+    SPIM_ReadJedecId(idBuf, sizeof (idBuf), 1);
+    printf("SPIM get JEDEC ID=0x%02X, 0x%02X, 0x%02X\n", idBuf[0], idBuf[1], idBuf[2]);
+
+    printf("\n[Fast Read] 3-bytes address mode, Fast Read command...");
+    if (dma_read_write(0, CMD_DMA_FAST_READ, CMD_NORMAL_PAGE_PROGRAM, 8) < 0)
+    {
+        printf("  FAILED!!\n");
+        goto lexit;
+    }
+    printf("[OK].\n");
+
+    printf("\n[Fast Read Dual Output] 3-bytes address mode, Fast Read Dual command...");
+    if (dma_read_write(0, CMD_DMA_FAST_READ_DUAL_OUTPUT, CMD_NORMAL_PAGE_PROGRAM, 8) < 0)
+    {
+        printf("  FAILED!!\n");
+        goto lexit;
+    }
+    printf("[OK].\n");
+
+    printf("\n[Fast Read Quad Output] 3-bytes address mode, Fast Read Quad command...");
+    if (dma_read_write(0, CMD_DMA_FAST_QUAD_READ, CMD_NORMAL_PAGE_PROGRAM, 4) < 0)
+    {
+        printf("  FAILED!!\n");
+        goto lexit;
+    }
+    printf("[OK].\n");
+
+#if 0  /* W25Q20 does not support 4-bytes address mode. */
+    printf("\n[Fast Read Dual I/O] 4-bytes address mode, dual read...");
+    if (dma_read_write(1, CMD_DMA_FAST_DUAL_READ, CMD_NORMAL_PAGE_PROGRAM, 8) < 0)
+    {
+        printf("  FAILED!!\n");
+        goto lexit;
+    }
+    printf("[OK].\n");
+
+    printf("\n[Fast Read Quad I/O] 4-bytes address mode, quad read...");
+    if (dma_read_write(1, CMD_DMA_FAST_QUAD_READ, CMD_NORMAL_PAGE_PROGRAM, 4) < 0)
+    {
+        printf("  FAILED!!\n");
+        goto lexit;
+    }
+    printf("[OK].\n");
+#endif
+
+    printf("\nSPIM DMA read/write demo done.\n");
 
 lexit:
 

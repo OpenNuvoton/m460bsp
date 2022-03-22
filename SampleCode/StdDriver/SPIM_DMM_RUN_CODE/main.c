@@ -11,7 +11,7 @@
 #include "NuMicro.h"
 
 #define USE_4_BYTES_MODE            0            /* W25Q20 does not support 4-bytes address mode. */
-
+#define MFP_SELECT                  0            /* Multi-function pin select                     */
 #define SPIM_CIPHER_ON              0
 
 
@@ -52,6 +52,7 @@ void SYS_Init(void)
     SET_UART0_RXD_PB12();
     SET_UART0_TXD_PB13();
 
+#if MFP_SELECT
     /* Init SPIM multi-function pins, MOSI(PE.2), MISO(PE.3), CLK(PE.4), SS(PE.5), D3(PE.6), and D2(PE.7) */
     SET_SPIM_MOSI_PE2();
     SET_SPIM_MISO_PE3();
@@ -67,6 +68,26 @@ void SYS_Init(void)
                   (0x1<<GPIO_SLEWCTL_HSREN2_Pos) | (0x1<<GPIO_SLEWCTL_HSREN3_Pos) |
                   (0x1<<GPIO_SLEWCTL_HSREN4_Pos) | (0x1<<GPIO_SLEWCTL_HSREN5_Pos) |
                   (0x1<<GPIO_SLEWCTL_HSREN6_Pos) | (0x1<<GPIO_SLEWCTL_HSREN7_Pos);
+#else
+    /* Init SPIM multi-function pins, MOSI(PJ.1), MISO(PI.13), CLK(PJ.0), SS(PI.12), D3(PI.15), and D2(PI.14) */
+    SET_SPIM_MOSI_PJ1();
+    SET_SPIM_MISO_PI13();
+    SET_SPIM_CLK_PJ0();
+    SET_SPIM_SS_PI12();
+    SET_SPIM_D3_PI15();
+    SET_SPIM_D2_PI14();
+
+    PJ->SMTEN |= GPIO_SMTEN_SMTEN0_Msk;
+
+    /* Set SPIM I/O pins as high slew rate up to 80 MHz. */
+    PI->SLEWCTL = (PE->SLEWCTL & 0x0CFFFFFF) |
+                  (0x1<<GPIO_SLEWCTL_HSREN12_Pos) | (0x1<<GPIO_SLEWCTL_HSREN14_Pos) |
+                  (0x1<<GPIO_SLEWCTL_HSREN15_Pos) ;
+    PJ->SLEWCTL = (PE->SLEWCTL & 0xF3FFFFF0) |
+                  (0x1<<GPIO_SLEWCTL_HSREN0_Pos) | (0x1<<GPIO_SLEWCTL_HSREN1_Pos) |
+                  (0x1<<GPIO_SLEWCTL_HSREN13_Pos) ;
+#endif
+
 }
 
 void UART0_Init(void)
