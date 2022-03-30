@@ -46,7 +46,7 @@ int32_t CalPeriodTime(BPWM_T *BPWM, uint32_t u32Ch)
     {
         if(--u32TimeOutCnt == 0)
         {
-            printf("Wait for BPWM time-out!\n");
+            printf("Wait for BPWM Capture Falling Indicator time-out!\n");
             return -1;
         }
     }
@@ -64,7 +64,7 @@ int32_t CalPeriodTime(BPWM_T *BPWM, uint32_t u32Ch)
         {
             if(--u32TimeOutCnt == 0)
             {
-                printf("Wait for BPWM time-out!\n");
+                printf("Wait for BPWM Capture Falling Indicator time-out!\n");
                 return -1;
             }
         }
@@ -81,7 +81,7 @@ int32_t CalPeriodTime(BPWM_T *BPWM, uint32_t u32Ch)
         {
             if(--u32TimeOutCnt == 0)
             {
-                printf("Wait for BPWM time-out!\n");
+                printf("Wait for BPWM Capture Rising Indicator time-out!\n");
                 return -1;
             }
         }

@@ -180,6 +180,7 @@ __STATIC_INLINE void WDT_Close(void)
 {
     uint32_t u32TimeOutCount = WDT_TIMEOUT;
 
+    g_WDT_i32ErrCode = 0;
     WDT->CTL = 0UL;
     while(WDT->CTL & WDT_CTL_SYNC_Msk) /* Wait disable WDTEN bit completed, it needs 2 * WDT_CLK. */
     {

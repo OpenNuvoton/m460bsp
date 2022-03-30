@@ -143,7 +143,7 @@ void UART_DisableInt(UART_T*  uart, uint32_t u32InterruptFlag)
  *
  *    @return       None
  *
- *    @details      The function is used to Enable UART auto flow control.
+ *    @details      The function is used to enable UART auto flow control.
  */
 void UART_EnableFlowCtrl(UART_T* uart)
 {

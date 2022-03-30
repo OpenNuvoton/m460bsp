@@ -99,7 +99,7 @@ void I2C1_IRQHandler(void)
 
     if (I2C_GET_TIMEOUT_FLAG(I2C1))
     {
-        /* Clear I2C0 Timeout Flag */
+        /* Clear I2C1 Timeout Flag */
         I2C_ClearTimeoutFlag(I2C1);
     }
     else
@@ -537,7 +537,7 @@ void I2C_PDMA(void)
     {
         if(--u32TimeOutCnt == 0)
         {
-            printf("Wait for PDMA time-out!\n");
+            printf("Wait for PDMA transfer done time-out!\n");
             return;
         }
     }

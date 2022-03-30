@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V3.00
- * @brief    Show how to wake up system form DPD Power-down mode by Wake-up pin(PC.0),
+ * @brief    Show how to wake up system from DPD Power-down mode by Wake-up pin(PC.0),
  *           Wake-up Timer, RTC Tick, RTC Alarm or RTC Tamper 0.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
