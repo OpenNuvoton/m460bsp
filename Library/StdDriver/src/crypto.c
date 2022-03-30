@@ -1446,7 +1446,7 @@ int32_t ECC_GenerateSecretZ_KS(CRPT_T *crpt, E_ECC_CURVE ecc_curve, KS_MEM_Type 
         crpt->ECC_Y1[i] = 0UL;
     }
 
-    crpt->ECC_KSCTL = CRPT_ECC_KSCTL_ECDH_Msk | CRPT_ECC_KSCTL_RSRCK_Msk |
+    crpt->ECC_KSCTL = CRPT_ECC_KSCTL_ECDH_Msk | CRPT_ECC_KSCTL_RSRCK_Msk | CRPT_ECC_KSCTL_WDST_Msk |
                       (uint32_t)(mem << CRPT_ECC_KSCTL_RSSRCK_Pos)/* KS Memory Type */ |
                       (uint32_t)i32KeyIdx;
 
