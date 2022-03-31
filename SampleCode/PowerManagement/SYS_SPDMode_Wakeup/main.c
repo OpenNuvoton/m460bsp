@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V3.00
- * @brief    Show how to wake up system form SPD Power-down mode by Wake-up pin(PC.0),
+ * @brief    Show how to wake up system from SPD Power-down mode by Wake-up pin(PC.0),
  *           Wake-up Timer, Wake-up ACMP, RTC Tick, RTC Alarm, RTC Tamper 0, LVR or BOD.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0

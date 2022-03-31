@@ -19,7 +19,7 @@ static volatile uint32_t g_u32IsTestOver = 0;
 /*---------------------------------------------------------------------------------------------------------*/
 /* Functions declaration                                                                                   */
 /*---------------------------------------------------------------------------------------------------------*/
-extern void SRAM_BS616LV4017(uint32_t u32MaxSize);
+extern int32_t SRAM_BS616LV4017(uint32_t u32MaxSize);
 
 int32_t AccessEBIWithPDMA(void);
 void PDMA0_IRQHandler(void);
@@ -288,13 +288,14 @@ int main(void)
     EBI_Open(EBI_BANK0, EBI_BUSWIDTH_16BIT, EBI_TIMING_NORMAL, 0, EBI_CS_ACTIVE_LOW);
 
     /* Start to test EBI SRAM */
-    SRAM_BS616LV4017(512 * 1024);
+    if( SRAM_BS616LV4017(512 * 1024) < 0 ) goto lexit;
 
     /* EBI SRAM with PDMA test */
-    if( AccessEBIWithPDMA() == 0 )
-    {
-        printf("*** SRAM Test OK ***\n");
-    }
+    if( AccessEBIWithPDMA() < 0 ) goto lexit;
+
+    printf("*** SRAM Test OK ***\n");
+
+lexit:
 
     /* Disable EBI function */
     EBI_Close(EBI_BANK0);

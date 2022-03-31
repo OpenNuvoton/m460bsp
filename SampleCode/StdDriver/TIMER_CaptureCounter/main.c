@@ -69,7 +69,7 @@ void SYS_Init(void)
     /* Enable HXT */
     CLK_EnableXtalRC(CLK_PWRCTL_HXTEN_Msk);
     CLK_WaitClockReady( CLK_STATUS_HXTSTB_Msk);
-    
+
     /* Enable TIMER module clock */
     CLK_EnableModuleClock(TMR0_MODULE);
     CLK_EnableModuleClock(TMR2_MODULE);
@@ -77,14 +77,14 @@ void SYS_Init(void)
 
     /* Select TIMER clock source */
     CLK_SetModuleClock(TMR0_MODULE, CLK_CLKSEL1_TMR0SEL_HXT, 0);
-    CLK_SetModuleClock(TMR2_MODULE, CLK_CLKSEL1_TMR0SEL_HIRC, 0);
-    CLK_SetModuleClock(TMR3_MODULE, CLK_CLKSEL1_TMR0SEL_HXT, 0);
-    
+    CLK_SetModuleClock(TMR2_MODULE, CLK_CLKSEL1_TMR2SEL_HIRC, 0);
+    CLK_SetModuleClock(TMR3_MODULE, CLK_CLKSEL1_TMR3SEL_HXT, 0);
+
     /* Set multi-function pins for Timer0/Timer3 toggle-output pin and Timer2 event counter pin */
     SET_TM0_PG2();
     SET_TM2_PG4();
     SET_TM3_PF11();
-    
+
     /* Set multi-function pin for Timer2 external capture pin */
     SET_TM2_EXT_PH2();
 }

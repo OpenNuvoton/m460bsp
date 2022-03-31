@@ -58,6 +58,8 @@ void WDT_Open(uint32_t u32TimeoutInterval,
 {
     uint32_t u32TimeOutCount = WDT_TIMEOUT;
 
+    g_WDT_i32ErrCode = 0;
+
     WDT->ALTCTL = u32ResetDelay;
 
     WDT->CTL = u32TimeoutInterval | WDT_CTL_WDTEN_Msk |

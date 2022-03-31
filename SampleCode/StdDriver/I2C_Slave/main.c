@@ -196,11 +196,6 @@ int32_t main (void)
     /* Init UART to 115200-8n1 for print message */
     UART_Open(UART0, 115200);
 
-#ifdef _PZ
-    /* For palladium */
-    UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(153600, 38400);
-#endif
-
     /*
         This sample code sets I2C bus clock to 100kHz. Then, Master accesses Slave with Byte Write
         and Byte Read operations, and check if the read data is equal to the programmed data.
