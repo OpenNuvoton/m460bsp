@@ -45,7 +45,17 @@
   */
 void ACMP_Open(ACMP_T *acmp, uint32_t u32ChNum, uint32_t u32NegSrc, uint32_t u32HysSel)
 {
-    acmp->CTL[u32ChNum] = (acmp->CTL[u32ChNum] & (~(ACMP_CTL_NEGSEL_Msk | ACMP_CTL_HYSSEL_Msk))) | (u32NegSrc | u32HysSel | ACMP_CTL_ACMPEN_Msk);
+    volatile int32_t delay;
+
+    acmp->CTL[u32ChNum] = (acmp->CTL[u32ChNum] & (~(ACMP_CTL_NEGSEL_Msk | ACMP_CTL_HYSSEL_Msk | ACMP_CTL_MODESEL_Msk))) | (2 << ACMP_CTL_MODESEL_Pos) | (u32NegSrc | u32HysSel | ACMP_CTL_ACMPEN_Msk);
+    
+    /*
+        ACMP stable time is 1us for MODESEL = 2'b10 or 2'b11.
+        ACMP stable time is 20us for MODESEL = 2'b00 or 2'b01.
+
+        By default, it is set MODESEL = 2'b10 here
+    */
+    for(delay = 25; delay > 0; delay--) {} // Delay about 1.2us @ CPU = 192MHz
 }
 
 /**
