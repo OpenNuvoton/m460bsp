@@ -147,6 +147,11 @@ int main(void)
     uint32_t au32Key[8] = {0};
     uint32_t u32TimeOutCnt;
 
+#ifndef USE_KS_KEY
+    uint32_t u32Seed;
+    char k[128];
+#endif
+
     /* Unlock protected registers */
     SYS_UnlockReg();
 
