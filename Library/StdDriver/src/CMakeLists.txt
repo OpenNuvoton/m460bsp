@@ -46,10 +46,3 @@ set(DRV_SRC
 
 
 add_library(m460_driver ${DRV_SRC})
-target_include_directories(m460_driver 
-    PUBLIC
-    ${BSP_DIR}/Library/CMSIS/Include
-    ${BSP_DIR}/Library/Device/Nuvoton/m460/Include
-    ${BSP_DIR}/Library/StdDriver/inc
-)
-

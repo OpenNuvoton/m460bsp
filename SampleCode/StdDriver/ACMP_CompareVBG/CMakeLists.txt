@@ -1,9 +1,10 @@
 
-set(PRJ timer_periodic)
+
+set(PRJ acmp_compare_vbg)
 add_executable(${PRJ} main.c)
 target_link_libraries(${PRJ} m460_startup m460_driver)
 
-target_link_options(timer_periodic 
+target_link_options(${PRJ} 
    PUBLIC 
     --cpu=Cortex-M4.fp.sp
     --library_type=microlib 
@@ -25,9 +26,7 @@ target_link_options(timer_periodic
     --symbols
 )
 
-
 # Convert to binary and copy to target device
-
 if(${DOWNLOAD_BOARD})
 
     add_custom_command(TARGET ${PRJ} POST_BUILD

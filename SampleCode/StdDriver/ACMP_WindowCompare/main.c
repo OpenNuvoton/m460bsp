@@ -91,7 +91,7 @@ int32_t main(void)
     printf("\nThis sample code demonstrates ACMP window compare function\n");
     printf("Connect the specific analog voltage source to the positive inputs\n");
     printf("of both comparators, PA11 and PB4. This sample code will monitor if the\n");
-    printf("input is between the range of VDDA * 9 / 24 and bandgap.\n");
+    printf("input is between the range of CRV0 and bandgap.\n");
     printf("Press any key to continue ...");
     getchar();
     printf("\n");
@@ -99,8 +99,12 @@ int32_t main(void)
     /* Select VDDA as CRV source */
     ACMP_SELECT_CRV_SRC(ACMP01, ACMP_VREF_CRV0SSEL_VDDA);
     
-    /* Select CRV level: VDDA * 9 / 24 */
-    ACMP_CRV_SEL(ACMP01, 5);
+    /* Select CRV level: VDDA * 9 / 63 */
+    ACMP_CRV_SEL(ACMP01, 9);
+
+    /* Enable CRV0 */
+    ACMP_ENABLE_CRV0(ACMP01);
+
     /* Configure ACMP0. Enable ACMP0 and select CRV as the source of ACMP negative input. */
     ACMP_Open(ACMP01, 0, ACMP_CTL_NEGSEL_CRV, ACMP_CTL_HYSTERESIS_DISABLE);
     /* Configure ACMP1. Enable ACMP1 and select CRV as the source of ACMP negative input. */
@@ -114,9 +118,6 @@ int32_t main(void)
     /* Clear ACMP 0 and 1 interrupt flag */
     ACMP_CLR_INT_FLAG(ACMP01, 0);
     ACMP_CLR_INT_FLAG(ACMP01, 1);
-
-    // Give ACMP some time to settle
-    for(i = 0; i < 1000; i++);
 
     if(ACMP01->STATUS & ACMP_STATUS_ACMPWO_Msk)
     {

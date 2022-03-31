@@ -4,7 +4,7 @@
  * @brief    Demonstrate how ACMP compare DAC output with ACMP1_P1 value.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
@@ -66,10 +66,11 @@ void SYS_Init(void)
     SET_UART0_TXD_PB13();
 
     /* Set PB4 multi-function pin for ACMP1 positive input pin and PB6 multi-function pin for ACMP1 output pin*/
+    SET_ACMP1_P1_PB4();
     SET_ACMP1_O_PB6();
 
-    /* Disable digital input path of analog pin ACMP0_P0 to prevent leakage */
-    GPIO_DISABLE_DIGITAL_PATH(PB, (1ul << 7));
+    /* Disable digital input path of analog pin ACMP to prevent leakage */
+    GPIO_DISABLE_DIGITAL_PATH(PB, BIT4);
 }
 
 
@@ -122,7 +123,5 @@ int32_t main(void)
     while(1);
 
 }
-
-/*** (C) COPYRIGHT 2020 Nuvoton Technology Corp. ***/
 
 
