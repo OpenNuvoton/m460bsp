@@ -286,7 +286,6 @@ int32_t FMC_EraseXOM(uint32_t u32XomNum)
                 /* Should not be here */
                 err = -2;
                 goto lexit;
-                break;
             }
             FMC->ISPCMD = FMC_ISPCMD_PAGE_ERASE;
             FMC->ISPADDR = u32Addr;
