@@ -86,7 +86,7 @@ void PRNG_Open(CRPT_T *crpt, uint32_t u32KeySize, uint32_t u32SeedReload, uint32
         crpt->PRNG_SEED = u32Seed;
     }
 
-    crpt->PRNG_CTL = (u32KeySize << CRPT_PRNG_CTL_KEYSZ_Pos) |
+    crpt->PRNG_CTL = (u32KeySize << CRPT_PRNG_CTL_KEYSZ_Pos) | PRNG_CTL_SEEDSRC_SEEDREG |
                      (u32SeedReload << CRPT_PRNG_CTL_SEEDRLD_Pos);
 }
 
