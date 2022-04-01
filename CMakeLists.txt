@@ -56,6 +56,8 @@ set(DOWNLOAD_BOARD FALSE)
 #add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/ACMP_CompareVBG)
 #add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/ACMP_Wakeup)
 #add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/ACMP_WindowCompare)
+add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/KS_ECDH)
+add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/KS_ECDSA)
 
 
 
