@@ -88,8 +88,8 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
 
     /* Set multi-function pins for UART0 RXD and TXD */
-    SET_UART0_RXD_PA6();
-    SET_UART0_TXD_PA7();
+    //SET_UART0_RXD_PB12();//conflict with DAC0_OUT pin
+    SET_UART0_TXD_PB13();
 
     /* Set multi-function pin for DAC voltage output */
     SET_DAC0_OUT_PB12();
@@ -112,8 +112,8 @@ int32_t main(void)
     printf("+------------------------------------------------------------------------+\n");
     printf("|                          DAC Driver Sample Code                        |\n");
     printf("+------------------------------------------------------------------------+\n");
-    printf("\nHit any key to start trigger DAC by Timer 0!\n");
-    getchar();
+    printf("\nStart to trigger DAC by Timer 0!\n");
+
     /* Set the timer 0 trigger,enable DAC even trigger mode and enable D/A converter */
     DAC_Open(DAC0, 0, DAC_TIMER0_TRIGGER);
 

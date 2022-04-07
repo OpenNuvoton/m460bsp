@@ -71,8 +71,8 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
 
     /* Set multi-function pins for UART0 RXD and TXD */
-    SET_UART0_RXD_PA6();
-    SET_UART0_TXD_PA7();
+    //SET_UART0_RXD_PB12();//conflict with DAC0_OUT pin
+    SET_UART0_TXD_PB13();
 
     /* Set multi-function pin for DAC voltage output */
     SET_DAC0_OUT_PB12();

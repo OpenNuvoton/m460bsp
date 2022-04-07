@@ -88,8 +88,8 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
 
     /* Set multi-function pins for UART0 RXD and TXD */
-    SET_UART0_RXD_PA6();
-    SET_UART0_TXD_PA7();
+    //SET_UART0_RXD_PB12();//conflict with DAC0_OUT pin
+    SET_UART0_TXD_PB13();
 
     /* Set multi-function pin for DAC voltage output */
     SET_DAC0_OUT_PB12();
@@ -162,8 +162,8 @@ int32_t main(void)
     DAC_ENABLE_INT(DAC0, 0);
     NVIC_EnableIRQ(DAC_IRQn);
 
-    printf("\nHit any key to start!\n");
-    getchar();
+    printf("\nStart!\n");
+
     /* Start D/A conversion */
     EPWM_Start(EPWM0, 0x1); //EPWM0 channel 0 counter start running.
 

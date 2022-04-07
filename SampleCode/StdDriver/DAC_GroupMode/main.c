@@ -95,15 +95,8 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
 
     /* Set multi-function pins for UART0 RXD and TXD */
-    SET_UART0_RXD_PA6();
-    SET_UART0_TXD_PA7();
-
-    /* Set multi-function pin for DAC voltage output */
-    SET_DAC0_OUT_PB12();
-    SET_DAC1_OUT_PB13();
-
-    /* Disable digital input path of analog pin DAC0_OUT and DAC1_OUT to prevent leakage */
-    GPIO_DISABLE_DIGITAL_PATH(PB, (1ul << 12) | (1ul << 13));
+    //SET_UART0_RXD_PB12();//conflict with DAC0_OUT pin
+    SET_UART0_TXD_PB13();//conflict with DAC1_OUT pin
 
 }
 
@@ -121,6 +114,14 @@ int32_t main(void)
     printf("|                          DAC Driver Sample Code                        |\n");
     printf("+------------------------------------------------------------------------+\n");
     printf("DAC0 and DAC1 is configured in group mode and update simultaneously\n");
+
+    /* Set multi-function pin for DAC voltage output */
+    SET_DAC0_OUT_PB12();//conflict with UART0_RXD pin
+    SET_DAC1_OUT_PB13();//conflict with UART0_TXD pin
+
+    /* Disable digital input path of analog pin DAC0_OUT and DAC1_OUT to prevent leakage */
+    GPIO_DISABLE_DIGITAL_PATH(PB, (1ul << 12) | (1ul << 13));
+
     /* Single Mode test */
     /* Set the software trigger, enable DAC even trigger mode and enable D/A converter */
     DAC_Open(DAC0, 0, DAC_SOFTWARE_TRIGGER);
