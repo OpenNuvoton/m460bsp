@@ -69,23 +69,25 @@ void EADC_Open(EADC_T *eadc, uint32_t u32InputMode)
         /* Unlock protected registers */
         SYS_UnlockReg();
 
-        /* Set PCLK and EADC clock to the same frequency. */
+        /* Set EADC clock is less than 2*PCLK to do calibration correctly. */
         if (eadc == EADC0)
         {
             u32EadcDivBackup = CLK->CLKDIV0;
-            CLK->CLKDIV0 = (CLK->CLKDIV0 & ~CLK_CLKDIV0_EADC0DIV_Msk);
+            CLK->CLKDIV0 = (CLK->CLKDIV0 & ~CLK_CLKDIV0_EADC0DIV_Msk) | (2 << CLK_CLKDIV0_EADC0DIV_Pos);
             CLK->CLKSEL0 = (CLK->CLKSEL0 & ~CLK_CLKSEL0_EADC0SEL_Msk) | CLK_CLKSEL0_EADC0SEL_HCLK;
         }
         else if (eadc == EADC1)
         {
             u32EadcDivBackup = CLK->CLKDIV2;
             CLK->CLKDIV2 = (CLK->CLKDIV2 & ~CLK_CLKDIV2_EADC1DIV_Msk);
+            CLK->CLKDIV2 = (CLK->CLKDIV2 & ~CLK_CLKDIV2_EADC1DIV_Msk) | (2 << CLK_CLKDIV2_EADC1DIV_Pos);
             CLK->CLKSEL0 = (CLK->CLKSEL0 & ~CLK_CLKSEL0_EADC1SEL_Msk) | CLK_CLKSEL0_EADC1SEL_HCLK;
         }
         else if (eadc == EADC2)
         {
             u32EadcDivBackup = CLK->CLKDIV5;
             CLK->CLKDIV5 = (CLK->CLKDIV5 & ~CLK_CLKDIV5_EADC2DIV_Msk);
+            CLK->CLKDIV5 = (CLK->CLKDIV5 & ~CLK_CLKDIV5_EADC2DIV_Msk) | (2 << CLK_CLKDIV5_EADC2DIV_Pos);
             CLK->CLKSEL0 = (CLK->CLKSEL0 & ~CLK_CLKSEL0_EADC2SEL_Msk) | CLK_CLKSEL0_EADC2SEL_HCLK;
         }
         CLK->PCLKDIV = (CLK->PCLKDIV & ~CLK_PCLKDIV_APB1DIV_Msk);
@@ -99,7 +101,7 @@ void EADC_Open(EADC_T *eadc, uint32_t u32InputMode)
         {
             if (--u32Delay == 0)
             {
-                g_EADC_i32ErrCode = EADC_TIMEOUT_ERR;
+                g_EADC_i32ErrCode = EADC_CAL_ERR;
 
                 break;
             }
@@ -126,6 +128,32 @@ void EADC_Open(EADC_T *eadc, uint32_t u32InputMode)
         {
             /* Lock protected registers */
             SYS_LockReg();
+        }
+    }
+
+    /* Check EADC clock frequency must not faster than PCLK */
+    if (eadc == EADC0)
+    {
+        if (((CLK->PCLKDIV & CLK_PCLKDIV_APB1DIV_Msk) >> CLK_PCLKDIV_APB1DIV_Pos) >
+            ((CLK->CLKDIV0 & CLK_CLKDIV0_EADC0DIV_Msk) >> CLK_CLKDIV0_EADC0DIV_Pos))
+        {
+            g_EADC_i32ErrCode = EADC_CLKDIV_ERR;
+        }
+    }
+    else if (eadc == EADC1)
+    {
+        if (((CLK->PCLKDIV & CLK_PCLKDIV_APB1DIV_Msk) >> CLK_PCLKDIV_APB1DIV_Pos) >
+            ((CLK->CLKDIV2 & CLK_CLKDIV2_EADC1DIV_Msk) >> CLK_CLKDIV2_EADC1DIV_Pos))
+        {
+            g_EADC_i32ErrCode = EADC_CLKDIV_ERR;
+        }
+    }
+    else if (eadc == EADC2)
+    {
+        if (((CLK->PCLKDIV & CLK_PCLKDIV_APB1DIV_Msk) >> CLK_PCLKDIV_APB1DIV_Pos) >
+            ((CLK->CLKDIV5 & CLK_CLKDIV5_EADC2DIV_Msk) >> CLK_CLKDIV5_EADC2DIV_Pos))
+        {
+            g_EADC_i32ErrCode = EADC_CLKDIV_ERR;
         }
     }
 }

@@ -164,6 +164,26 @@ void EADC_FunctionTest(void)
             /* Set input mode as single-end and enable the A/D converter */
             EADC_Open(EADC0, EADC_CTL_DIFFEN_SINGLE_END);
 
+            /* Check EADC global error code. */
+            if (g_EADC_i32ErrCode != 0)
+            {
+                if (g_EADC_i32ErrCode == EADC_CAL_ERR)
+                {
+                    printf("EADC has calibration error.\n");
+                    return;
+                }
+                else if (g_EADC_i32ErrCode == EADC_CLKDIV_ERR)
+                {
+                    printf("EADC clock frequency is configured error.\n");
+                    return;
+                }
+                else
+                {
+                    printf("EADC has operation error.\n");
+                    return;
+                }
+            }
+
             /* Configure the sample module 0 for analog input channel 2 and enable EPWM0 trigger source */
             EADC_ConfigSampleModule(EADC0, 0, EADC_EPWM0TG0_TRIGGER, 2);
 
@@ -221,6 +241,27 @@ void EADC_FunctionTest(void)
 
             /* Set input mode as differential and enable the A/D converter */
             EADC_Open(EADC0, EADC_CTL_DIFFEN_DIFFERENTIAL);
+
+            /* Check EADC global error code. */
+            if (g_EADC_i32ErrCode != 0)
+            {
+                if (g_EADC_i32ErrCode == EADC_CAL_ERR)
+                {
+                    printf("EADC has calibration error.\n");
+                    return;
+                }
+                else if (g_EADC_i32ErrCode == EADC_CLKDIV_ERR)
+                {
+                    printf("EADC clock frequency is configured error.\n");
+                    return;
+                }
+                else
+                {
+                    printf("EADC has operation error.\n");
+                    return;
+                }
+            }
+
             /* Configure the sample module 0 for analog input channel 2 and software trigger source.*/
             EADC_ConfigSampleModule(EADC0, 0, EADC_EPWM0TG0_TRIGGER, 2);
 
