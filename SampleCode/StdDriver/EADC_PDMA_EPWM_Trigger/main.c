@@ -195,6 +195,7 @@ void EADC_FunctionTest(void)
     uint8_t  u8Option;
     uint8_t  u8Index = 0;
     uint32_t u32TimeOutCnt = 0;
+    int32_t  i32Err;
 
     printf("\n");
     printf("+----------------------------------------------------------------------+\n");
@@ -216,17 +217,17 @@ void EADC_FunctionTest(void)
         if(u8Option == '1')
         {
             /* Set input mode as single-end and enable the A/D converter */
-            EADC_Open(EADC0, EADC_CTL_DIFFEN_SINGLE_END);
+            i32Err = EADC_Open(EADC0, EADC_CTL_DIFFEN_SINGLE_END);
 
             /* Check EADC global error code. */
-            if (g_EADC_i32ErrCode != 0)
+            if (i32Err != 0)
             {
-                if (g_EADC_i32ErrCode == EADC_CAL_ERR)
+                if (i32Err == EADC_CAL_ERR)
                 {
                     printf("EADC has calibration error.\n");
                     return;
                 }
-                else if (g_EADC_i32ErrCode == EADC_CLKDIV_ERR)
+                else if (i32Err == EADC_CLKDIV_ERR)
                 {
                     printf("EADC clock frequency is configured error.\n");
                     return;
@@ -269,17 +270,17 @@ void EADC_FunctionTest(void)
         else if(u8Option == '2')
         {
             /* Set input mode as differential and enable the A/D converter */
-            EADC_Open(EADC0, EADC_CTL_DIFFEN_DIFFERENTIAL);
+            i32Err = EADC_Open(EADC0, EADC_CTL_DIFFEN_DIFFERENTIAL);
 
             /* Check EADC global error code. */
-            if (g_EADC_i32ErrCode != 0)
+            if (i32Err != 0)
             {
-                if (g_EADC_i32ErrCode == EADC_CAL_ERR)
+                if (i32Err == EADC_CAL_ERR)
                 {
                     printf("EADC has calibration error.\n");
                     return;
                 }
-                else if (g_EADC_i32ErrCode == EADC_CLKDIV_ERR)
+                else if (i32Err == EADC_CLKDIV_ERR)
                 {
                     printf("EADC clock frequency is configured error.\n");
                     return;

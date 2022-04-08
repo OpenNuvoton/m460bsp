@@ -106,8 +106,6 @@ extern "C"
 
 /*@}*/ /* end of group EADC_EXPORTED_CONSTANTS */
 
-extern int32_t g_EADC_i32ErrCode;
-
 /** @addtogroup EADC_EXPORTED_FUNCTIONS EADC Exported Functions
   @{
 */
@@ -711,7 +709,7 @@ extern int32_t g_EADC_i32ErrCode;
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define EADC functions prototype                                                                         */
 /*---------------------------------------------------------------------------------------------------------*/
-void EADC_Open(EADC_T *eadc, uint32_t u32InputMode);
+int32_t EADC_Open(EADC_T *eadc, uint32_t u32InputMode);
 void EADC_Close(EADC_T *eadc);
 void EADC_ConfigSampleModule(EADC_T *eadc, uint32_t u32ModuleNum, uint32_t u32TriggerSrc, uint32_t u32Channel);
 void EADC_SetTriggerDelayTime(EADC_T *eadc, uint32_t u32ModuleNum, uint32_t u32TriggerDelayTime, uint32_t u32DelayClockDivider);

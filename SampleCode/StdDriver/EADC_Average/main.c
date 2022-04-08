@@ -91,6 +91,7 @@ void EADC_FunctionTest()
     uint32_t u32IntMask, u32ModuleMask;
 
     uint32_t u32TimeOutCnt;
+    int32_t  i32Err;
 
     u32IntNum = 0;      /* Use EADC Interrupt 0 */
     u32ModuleNum = 1;   /* Use Sample Module 1 */
@@ -104,17 +105,17 @@ void EADC_FunctionTest()
     printf("+---------------------------------------------------+\n");
 
     /* Set input mode as single-end and enable the A/D converter */
-    EADC_Open(EADC0, EADC_CTL_DIFFEN_SINGLE_END);
+    i32Err = EADC_Open(EADC0, EADC_CTL_DIFFEN_SINGLE_END);
 
     /* Check EADC global error code. */
-    if (g_EADC_i32ErrCode != 0)
+    if (i32Err != 0)
     {
-        if (g_EADC_i32ErrCode == EADC_CAL_ERR)
+        if (i32Err == EADC_CAL_ERR)
         {
             printf("EADC has calibration error.\n");
             return;
         }
-        else if (g_EADC_i32ErrCode == EADC_CLKDIV_ERR)
+        else if (i32Err == EADC_CLKDIV_ERR)
         {
             printf("EADC clock frequency is configured error.\n");
             return;

@@ -20,9 +20,6 @@
   @{
 */
 
-int32_t g_EADC_i32ErrCode = 0;   /*!< EADC global error code */
-
-
 /**
   * @brief This function make EADC_module be ready to convert.
   * @param[in] eadc The pointer of the specified EADC module.
@@ -33,14 +30,12 @@ int32_t g_EADC_i32ErrCode = 0;   /*!< EADC global error code */
   * @details This function is used to set analog input mode and enable A/D Converter.
   *         Before starting A/D conversion function, ADCEN bit (EADC_CTL[0]) should be set to 1.
   * @note This API will reset and calibrate EADC if EADC never be calibrated after chip power on.
-  * @note This function sets g_EADC_i32ErrCode to EADC_TIMEOUT_ERR if CALIF(CALSR[16]) is not set to 1.
+  * @note This function retrun EADC_TIMEOUT_ERR if CALIF(CALSR[16]) is not set to 1.
   */
-void EADC_Open(EADC_T *eadc, uint32_t u32InputMode)
+int32_t EADC_Open(EADC_T *eadc, uint32_t u32InputMode)
 {
     uint32_t u32Delay = SystemCoreClock >> 4;
     uint32_t u32ClkSel0Backup, u32EadcDivBackup, u32PclkDivBackup, u32RegLockBackup = 0;
-
-    g_EADC_i32ErrCode = 0;
 
     eadc->CTL &= (~EADC_CTL_DIFFEN_Msk);
 
@@ -55,7 +50,7 @@ void EADC_Open(EADC_T *eadc, uint32_t u32InputMode)
         {
             if (--u32Delay == 0)
             {
-                g_EADC_i32ErrCode = EADC_TIMEOUT_ERR;
+                return EADC_TIMEOUT_ERR;
                 break;
             }
         }
@@ -101,9 +96,7 @@ void EADC_Open(EADC_T *eadc, uint32_t u32InputMode)
         {
             if (--u32Delay == 0)
             {
-                g_EADC_i32ErrCode = EADC_CAL_ERR;
-
-                break;
+                return EADC_CAL_ERR;
             }
         }
 
@@ -137,7 +130,7 @@ void EADC_Open(EADC_T *eadc, uint32_t u32InputMode)
         if (((CLK->PCLKDIV & CLK_PCLKDIV_APB1DIV_Msk) >> CLK_PCLKDIV_APB1DIV_Pos) >
             ((CLK->CLKDIV0 & CLK_CLKDIV0_EADC0DIV_Msk) >> CLK_CLKDIV0_EADC0DIV_Pos))
         {
-            g_EADC_i32ErrCode = EADC_CLKDIV_ERR;
+            return EADC_CLKDIV_ERR;
         }
     }
     else if (eadc == EADC1)
@@ -145,7 +138,7 @@ void EADC_Open(EADC_T *eadc, uint32_t u32InputMode)
         if (((CLK->PCLKDIV & CLK_PCLKDIV_APB1DIV_Msk) >> CLK_PCLKDIV_APB1DIV_Pos) >
             ((CLK->CLKDIV2 & CLK_CLKDIV2_EADC1DIV_Msk) >> CLK_CLKDIV2_EADC1DIV_Pos))
         {
-            g_EADC_i32ErrCode = EADC_CLKDIV_ERR;
+            return EADC_CLKDIV_ERR;
         }
     }
     else if (eadc == EADC2)
@@ -153,9 +146,11 @@ void EADC_Open(EADC_T *eadc, uint32_t u32InputMode)
         if (((CLK->PCLKDIV & CLK_PCLKDIV_APB1DIV_Msk) >> CLK_PCLKDIV_APB1DIV_Pos) >
             ((CLK->CLKDIV5 & CLK_CLKDIV5_EADC2DIV_Msk) >> CLK_CLKDIV5_EADC2DIV_Pos))
         {
-            g_EADC_i32ErrCode = EADC_CLKDIV_ERR;
+            return EADC_CLKDIV_ERR;
         }
     }
+
+    return 0;
 }
 
 /**
