@@ -60,10 +60,25 @@ add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/KS_ECDH)
 add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/KS_ECDSA)
 add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/RNG_Random)
 add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/RNG_EntropyPoll)
-
-
-
-
+add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/EADC_Accumulate)
+add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/EADC_ADINT_Trigger)
+add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/EADC_Average)
+add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/EADC_BandGap)
+add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/EADC_EPWM_Trigger)
+add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/EADC_PDMA_EPWM_Trigger)
+add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/EADC_Pending_Priority)
+add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/EADC_ResultMonitor)
+add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/EADC_SWTRG_Trigger)
+add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/EADC_TempSensor)
+add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/EADC_Timer_Trigger)
+add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/EADC_VBat)
+add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/DAC_EPWMTrigger)
+add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/DAC_ExtPinTrigger)
+add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/DAC_GroupMode)
+add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/DAC_PDMA_EPWMTrigger)
+add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/DAC_PDMA_TimerTrigger)
+add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/DAC_SoftwareTrigger)
+add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/DAC_TimerTrigger)
 
 
 
