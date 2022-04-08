@@ -101,6 +101,8 @@ extern "C"
 /* Define Error Code                                                                                */
 /*--------------------------------------------------------------------------------------------------*/
 #define EADC_TIMEOUT_ERR                    (-1)    /*!< EADC operation abort due to timeout error \hideinitializer */
+#define EADC_CAL_ERR                        (-2)    /*!< EADC do calibration error \hideinitializer */
+#define EADC_CLKDIV_ERR                     (-3)    /*!< EADC clock frequency is faster than PCLK error \hideinitializer */
 
 /*@}*/ /* end of group EADC_EXPORTED_CONSTANTS */
 

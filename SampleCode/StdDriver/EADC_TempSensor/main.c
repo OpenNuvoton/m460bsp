@@ -104,6 +104,26 @@ void EADC_FunctionTest(void)
     /* Set input mode as single-end and enable the A/D converter */
     EADC_Open(EADC0, EADC_CTL_DIFFEN_SINGLE_END);
 
+    /* Check EADC global error code. */
+    if (g_EADC_i32ErrCode != 0)
+    {
+        if (g_EADC_i32ErrCode == EADC_CAL_ERR)
+        {
+            printf("EADC has calibration error.\n");
+            return;
+        }
+        else if (g_EADC_i32ErrCode == EADC_CLKDIV_ERR)
+        {
+            printf("EADC clock frequency is configured error.\n");
+            return;
+        }
+        else
+        {
+            printf("EADC has operation error.\n");
+            return;
+        }
+    }
+
     /* Set sample module 17 external sampling time to 0xFF */
     EADC_SetExtendSampleTime(EADC0, 17, 0xFF);
 
