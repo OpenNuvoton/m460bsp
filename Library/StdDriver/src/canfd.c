@@ -170,8 +170,6 @@
   @{
 */
 
-int32_t g_CANFD_i32ErrCode = 0;       /*!< CANFD global error code */
-
 /** @addtogroup CANFD_EXPORTED_FUNCTIONS CAN_FD Exported Functions
   @{
 */
@@ -896,7 +894,7 @@ void CANFD_DisableInt(CANFD_T *psCanfd, uint32_t u32IntLine0, uint32_t u32IntLin
 uint32_t CANFD_TransmitTxMsg(CANFD_T *psCanfd, uint32_t u32TxBufIdx, CANFD_FD_MSG_T *psTxMsg)
 {
     uint32_t u32Success = 0;
-    uint32_t u32TimeOutCount = CANFD_TIMEOUT;
+    uint32_t u32TimeOutCnt = CANFD_TIMEOUT;
 
     /* write the message to the message buffer */
     u32Success = CANFD_TransmitDMsg(psCanfd, u32TxBufIdx, psTxMsg);
@@ -906,7 +904,7 @@ uint32_t CANFD_TransmitTxMsg(CANFD_T *psCanfd, uint32_t u32TxBufIdx, CANFD_FD_MS
         /* wait for completion */
         while (!(psCanfd->TXBRP & (1UL << u32TxBufIdx)))
         {
-            if(u32TimeOutCount-- == 0)
+            if(--u32TimeOutCnt == 0)
             {
                 u32Success = 0;
                 break;
@@ -1788,18 +1786,15 @@ void CANFD_GetBusErrCount(CANFD_T *psCanfd, uint8_t *pu8TxErrBuf, uint8_t *pu8Rx
  * @param[in]   psCanfd        The pointer of the specified CAN FD module.
  * @param[in]   u8Enable       TxErrBuf Buffer to store Tx Error Counter value.
  *
- * @return      None.
+ * @retval      CANFD_OK          CANFD operation OK.
+ * @retval      CANFD_ERR_TIMEOUT CANFD operation abort due to timeout error.
  *
  * @details     This function gets the CAN FD Bus Error Counter value for both Tx and Rx direction.
  *              These values may be needed in the upper layer error handling.
- *
- * @note       This function sets g_CANFD_i32ErrCode to CANFD_TIMEOUT_ERR if waiting CANFD time-out.
  */
-void CANFD_RunToNormal(CANFD_T *psCanfd, uint8_t u8Enable)
+int32_t CANFD_RunToNormal(CANFD_T *psCanfd, uint8_t u8Enable)
 {
-    uint32_t u32TimeOutCount = CANFD_TIMEOUT;
-
-    g_CANFD_i32ErrCode = 0;
+    uint32_t u32TimeOutCnt = CANFD_TIMEOUT;
 
     if (u8Enable)
     {
@@ -1808,11 +1803,7 @@ void CANFD_RunToNormal(CANFD_T *psCanfd, uint8_t u8Enable)
 
         while (psCanfd->CCCR & CANFD_CCCR_INIT_Msk)
         {
-            if(u32TimeOutCount-- == 0)
-            {
-                g_CANFD_i32ErrCode = CANFD_TIMEOUT_ERR;
-                break;
-            }
+            if(--u32TimeOutCnt == 0) return CANFD_ERR_TIMEOUT;
         }
     }
     else
@@ -1822,13 +1813,11 @@ void CANFD_RunToNormal(CANFD_T *psCanfd, uint8_t u8Enable)
 
         while (!(psCanfd->CCCR & CANFD_CCCR_INIT_Msk))
         {
-            if(u32TimeOutCount-- == 0)
-            {
-                g_CANFD_i32ErrCode = CANFD_TIMEOUT_ERR;
-                break;
-            }
+            if(--u32TimeOutCnt == 0) return CANFD_ERR_TIMEOUT;
         }
     }
+
+    return CANFD_OK;
 }
 
 

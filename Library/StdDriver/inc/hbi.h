@@ -140,9 +140,15 @@ Register Space Range:
 #define HBI_CONFIG_CKDIV_HCLK_DIV4    (0x1 << HBI_CONFIG_CKDIV_Pos)
 /*---------------------------------------------------------------------------------------------------------*/
 
-#define HBI_TIMEOUT       SystemCoreClock   /*!< 1 second time-out \hideinitializer */
-#define HBI_TIMEOUT_ERR   (-2L)             /*!< HBI operation abort due to timeout error \hideinitializer */
+/*---------------------------------------------------------------------------------------------------------*/
+/* HBI Define Error Code                                                                                   */
+/*---------------------------------------------------------------------------------------------------------*/
 extern int32_t g_HBI_i32ErrCode;
+#define HBI_TIMEOUT         SystemCoreClock     /*!< HBI time-out counter (1 second time-out) */
+#define HBI_OK              ( 0L)               /*!< HBI operation OK */
+#define HBI_ERR_FAIL        (-1L)               /*!< HBI operation failed */
+#define HBI_ERR_TIMEOUT     (-2L)               /*!< HBI operation abort due to timeout error */
+
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Define Macros and functions                                                                            */

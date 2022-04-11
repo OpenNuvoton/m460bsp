@@ -27,7 +27,7 @@ int32_t g_HBI_i32ErrCode = 0;       /*!< HBI global error code */
 /**
   * @brief      Reset HBI function
   * @return     None
-  * @note       This function sets g_HBI_i32ErrCode to HBI_TIMEOUT_ERR if waiting Hyper RAM time-out.
+  * @note       This function sets g_HBI_i32ErrCode to HBI_ERR_TIMEOUT if waiting Hyper RAM time-out.
   */
 void HBI_ResetHyperRAM(void)
 {
@@ -40,7 +40,7 @@ void HBI_ResetHyperRAM(void)
     {
         if( i32TimeOutCnt-- <= 0)
         {
-            g_HBI_i32ErrCode = HBI_TIMEOUT_ERR;
+            g_HBI_i32ErrCode = HBI_ERR_TIMEOUT;
             break;
         }
     }
@@ -49,7 +49,7 @@ void HBI_ResetHyperRAM(void)
 /**
   * @brief      Exit from Hybrid sleep and deep Power down function
   * @return     None
-  * @note       This function sets g_HBI_i32ErrCode to HBI_TIMEOUT_ERR if waiting Hyper RAM time-out.
+  * @note       This function sets g_HBI_i32ErrCode to HBI_ERR_TIMEOUT if waiting Hyper RAM time-out.
   */
 void HBI_ExitHSAndDPD(void)
 {
@@ -62,7 +62,7 @@ void HBI_ExitHSAndDPD(void)
     {
         if( i32TimeOutCnt-- <= 0)
         {
-            g_HBI_i32ErrCode = HBI_TIMEOUT_ERR;
+            g_HBI_i32ErrCode = HBI_ERR_TIMEOUT;
             break;
         }
     }
@@ -92,7 +92,7 @@ int32_t HBI_ReadHyperRAMReg(uint32_t u32Addr)
         {
             if( i32TimeOutCnt-- <= 0)
             {
-                return HBI_TIMEOUT_ERR;
+                return HBI_ERR_TIMEOUT;
             }
         }
         return HBI->RDATA;
@@ -129,7 +129,7 @@ int32_t HBI_WriteHyperRAMReg(uint32_t u32Addr, uint32_t u32Value)
         {
             if( i32TimeOutCnt-- <= 0)
             {
-                return HBI_TIMEOUT_ERR;
+                return HBI_ERR_TIMEOUT;
             }
         }
         return 0;
@@ -144,7 +144,7 @@ int32_t HBI_WriteHyperRAMReg(uint32_t u32Addr, uint32_t u32Value)
   * @brief      Read 1 word from HyperRAM space
   * @param[in]  u32Addr  Address of HyperRAM space
   * @return     The 16 bit data of HyperRAM space.
-  * @note       This function sets g_HBI_i32ErrCode to HBI_TIMEOUT_ERR if waiting Hyper RAM time-out.
+  * @note       This function sets g_HBI_i32ErrCode to HBI_ERR_TIMEOUT if waiting Hyper RAM time-out.
   */
 uint32_t HBI_Read1Word(uint32_t u32Addr)
 {
@@ -158,7 +158,7 @@ uint32_t HBI_Read1Word(uint32_t u32Addr)
     {
         if( i32TimeOutCnt-- <= 0)
         {
-            g_HBI_i32ErrCode = HBI_TIMEOUT_ERR;
+            g_HBI_i32ErrCode = HBI_ERR_TIMEOUT;
             break;
         }
     }
@@ -182,7 +182,7 @@ uint32_t HBI_Read2Word(uint32_t u32Addr)
     {
         if( i32TimeOutCnt-- <= 0)
         {
-            g_HBI_i32ErrCode = HBI_TIMEOUT_ERR;
+            g_HBI_i32ErrCode = HBI_ERR_TIMEOUT;
             break;
         }
     }
@@ -194,7 +194,7 @@ uint32_t HBI_Read2Word(uint32_t u32Addr)
   * @param[in]  u32Addr  Address of HyperRAM space
   * @param[in]  u8Data   8 bits data to be written to HyperRAM space
   * @return     None.
-  * @note       This function sets g_HBI_i32ErrCode to HBI_TIMEOUT_ERR if waiting Hyper RAM time-out.
+  * @note       This function sets g_HBI_i32ErrCode to HBI_ERR_TIMEOUT if waiting Hyper RAM time-out.
   */
 void HBI_Write1Byte(uint32_t u32Addr, uint8_t u8Data)
 {
@@ -209,7 +209,7 @@ void HBI_Write1Byte(uint32_t u32Addr, uint8_t u8Data)
     {
         if( i32TimeOutCnt-- <= 0)
         {
-            g_HBI_i32ErrCode = HBI_TIMEOUT_ERR;
+            g_HBI_i32ErrCode = HBI_ERR_TIMEOUT;
             break;
         }
     }
@@ -220,7 +220,7 @@ void HBI_Write1Byte(uint32_t u32Addr, uint8_t u8Data)
   * @param[in]  u32Addr  Address of HyperRAM space
   * @param[in]  u16Data  16 bits data to be written to HyperRAM space
   * @return     None.
-  * @note       This function sets g_HBI_i32ErrCode to HBI_TIMEOUT_ERR if waiting Hyper RAM time-out.
+  * @note       This function sets g_HBI_i32ErrCode to HBI_ERR_TIMEOUT if waiting Hyper RAM time-out.
   */
 void HBI_Write2Byte(uint32_t u32Addr, uint16_t u16Data)
 {
@@ -235,7 +235,7 @@ void HBI_Write2Byte(uint32_t u32Addr, uint16_t u16Data)
     {
         if( i32TimeOutCnt-- <= 0)
         {
-            g_HBI_i32ErrCode = HBI_TIMEOUT_ERR;
+            g_HBI_i32ErrCode = HBI_ERR_TIMEOUT;
             break;
         }
     }
@@ -246,7 +246,7 @@ void HBI_Write2Byte(uint32_t u32Addr, uint16_t u16Data)
   * @param[in]  u32Addr  Address of HyperRAM space
   * @param[in]  u32Data  24 bits data to be written to HyperRAM space
   * @return     None.
-  * @note       This function sets g_HBI_i32ErrCode to HBI_TIMEOUT_ERR if waiting Hyper RAM time-out.
+  * @note       This function sets g_HBI_i32ErrCode to HBI_ERR_TIMEOUT if waiting Hyper RAM time-out.
   */
 void HBI_Write3Byte(uint32_t u32Addr, uint32_t u32Data)
 {
@@ -261,7 +261,7 @@ void HBI_Write3Byte(uint32_t u32Addr, uint32_t u32Data)
     {
         if( i32TimeOutCnt-- <= 0)
         {
-            g_HBI_i32ErrCode = HBI_TIMEOUT_ERR;
+            g_HBI_i32ErrCode = HBI_ERR_TIMEOUT;
             break;
         }
     }
@@ -272,7 +272,7 @@ void HBI_Write3Byte(uint32_t u32Addr, uint32_t u32Data)
   * @param[in]  u32Addr  Address of HyperRAM space
   * @param[in]  u32Data  32 bits data to be written to HyperRAM space
   * @return     None.
-  * @note       This function sets g_HBI_i32ErrCode to HBI_TIMEOUT_ERR if waiting Hyper RAM time-out.
+  * @note       This function sets g_HBI_i32ErrCode to HBI_ERR_TIMEOUT if waiting Hyper RAM time-out.
   */
 void HBI_Write4Byte(uint32_t u32Addr, uint32_t u32Data)
 {
@@ -287,7 +287,7 @@ void HBI_Write4Byte(uint32_t u32Addr, uint32_t u32Data)
     {
         if( i32TimeOutCnt-- <= 0)
         {
-            g_HBI_i32ErrCode = HBI_TIMEOUT_ERR;
+            g_HBI_i32ErrCode = HBI_ERR_TIMEOUT;
             break;
         }
     }

@@ -28,7 +28,7 @@ extern "C"
 */
 
 /*---------------------------------------------------------------------------------------------------------*/
-/*  I2C_CTL constant definitions.                                                                            */
+/*  I2C_CTL constant definitions.                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
 #define I2C_CTL_STA_SI            0x28UL /*!< I2C_CTL setting for I2C control bits. It would set STA and SI bits          \hideinitializer */
 #define I2C_CTL_STA_SI_AA         0x2CUL /*!< I2C_CTL setting for I2C control bits. It would set STA, SI and AA bits      \hideinitializer */
@@ -55,10 +55,12 @@ extern "C"
 #define I2C_PECTX_DISABLE           0    /*!< Disable SMBus Packet Error Check Transmit function                          \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
-/* I2C Time-out Handler Constant Definitions                                                               */
+/* I2C Define Error Code                                                                                   */
 /*---------------------------------------------------------------------------------------------------------*/
-#define I2C_TIMEOUT                 SystemCoreClock /*!< 1 second time-out \hideinitializer */
-#define I2C_TIMEOUT_ERR             (-1L)           /*!< I2C operation abort due to timeout error \hideinitializer */
+#define I2C_TIMEOUT     SystemCoreClock  /*!< I2C time-out counter (1 second time-out)                                    \hideinitializer */
+#define I2C_OK          ( 0L)            /*!< I2C operation OK                                                            \hideinitializer */
+#define I2C_ERR_FAIL    (-1L)            /*!< I2C operation failed                                                        \hideinitializer */
+#define I2C_ERR_TIMEOUT (-2L)            /*!< I2C operation abort due to timeout error                                    \hideinitializer */
 
 /*@}*/ /* end of group I2C_EXPORTED_CONSTANTS */
 

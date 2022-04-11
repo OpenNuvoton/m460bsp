@@ -361,9 +361,11 @@ typedef struct
 } CANFD_TX_EVNT_ELEM_T;
 
 
-#define CANFD_TIMEOUT        SystemCoreClock    /* 1 second time-out */
-#define CANFD_TIMEOUT_ERR    (-1L)              /*!< CANFD operation abort due to timeout error \hideinitializer */
-extern int32_t g_CANFD_i32ErrCode;
+#define CANFD_TIMEOUT        SystemCoreClock    /*!< CANFD time-out counter (1 second time-out) */
+#define CANFD_OK             ( 0L)              /*!< CANFD operation OK */
+#define CANFD_ERR_FAIL       (-1L)              /*!< CANFD operation failed */
+#define CANFD_ERR_TIMEOUT    (-2L)              /*!< CANFD operation abort due to timeout error */
+
 
 void CANFD_Open(CANFD_T *canfd, CANFD_FD_T *psCanfdStr);
 void CANFD_Close(CANFD_T *canfd);
@@ -391,7 +393,7 @@ uint32_t CANFD_IsTxBufTransmitOccur(CANFD_T *canfd, uint32_t u32TxBufIdx);
 uint32_t CANFD_GetTxEvntFifoWaterLvl(CANFD_T *canfd);
 void CANFD_CopyTxEvntFifoToUsrBuf(CANFD_T *canfd, uint32_t u32TxEvntNum, CANFD_TX_EVNT_ELEM_T *psTxEvntElem);
 void CANFD_GetBusErrCount(CANFD_T *canfd, uint8_t *pu8TxErrBuf, uint8_t *pu8RxErrBuf);
-void CANFD_RunToNormal(CANFD_T *canfd, uint8_t u8Enable);
+int32_t CANFD_RunToNormal(CANFD_T *canfd, uint8_t u8Enable);
 void CANFD_GetDefaultConfig(CANFD_FD_T *psConfig, uint8_t u8OpMode);
 void CANFD_ClearStatusFlag(CANFD_T *canfd, uint32_t u32InterruptFlag);
 uint32_t CANFD_GetStatusFlag(CANFD_T *canfd, uint32_t u32IntTypeFlag);

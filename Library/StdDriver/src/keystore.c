@@ -15,8 +15,6 @@
   @{
 */
 
-int32_t g_KS_i32ErrCode = 0;       /*!< KS global error code */
-
 /** @addtogroup KS_EXPORTED_FUNCTIONS Key Store Exported Functions
   @{
 */

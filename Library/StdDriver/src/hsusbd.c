@@ -46,8 +46,6 @@ uint8_t g_hsusbd_UsbAddr = 0ul;
 uint8_t g_hsusbd_ShortPacket = 0ul;
 uint32_t volatile g_hsusbd_DmaDone = 0ul;
 uint32_t g_hsusbd_CtrlInSize = 0ul;
-
-int32_t g_HSUSBD_i32ErrCode = 0;       /*!< HSUSBD global error code */
 /** @endcond HIDDEN_SYMBOLS */
 
 /**
@@ -57,17 +55,14 @@ int32_t g_HSUSBD_i32ErrCode = 0;       /*!< HSUSBD global error code */
  * @param[in]   pfnClassReq         Class Request Callback Function
  * @param[in]   pfnSetInterface     SetInterface Request Callback Function
  *
- * @return      None
+ * @retval      HSUSBD_OK           HSUSBD operation OK.
+ * @retval      HSUSBD_ERR_TIMEOUT  HSUSBD operation abort due to timeout error.
  *
  * @details     This function is used to initial HSUSBD.
- *
- * @note        This function sets g_HSUSBD_i32ErrCode to HSUSBD_TIMEOUT_ERR if waiting HSUSBD time-out.
  */
-void HSUSBD_Open(S_HSUSBD_INFO_T *param, HSUSBD_CLASS_REQ pfnClassReq, HSUSBD_SET_INTERFACE_REQ pfnSetInterface)
+int32_t HSUSBD_Open(S_HSUSBD_INFO_T *param, HSUSBD_CLASS_REQ pfnClassReq, HSUSBD_SET_INTERFACE_REQ pfnSetInterface)
 {
-    int32_t i32TimeOutCnt = HSUSBD_TIMEOUT;
-
-    g_HSUSBD_i32ErrCode = 0;
+    uint32_t u32TimeOutCnt;
 
     g_hsusbd_sInfo = param;
     g_hsusbd_pfnClassRequest = pfnClassReq;
@@ -80,15 +75,14 @@ void HSUSBD_Open(S_HSUSBD_INFO_T *param, HSUSBD_CLASS_REQ pfnClassReq, HSUSBD_SE
     HSUSBD_ENABLE_PHY();
 
     /* wait PHY clock ready */
+    u32TimeOutCnt = HSUSBD_TIMEOUT;
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk))
     {
-        if( i32TimeOutCnt-- < 0)
-        {
-            g_HSUSBD_i32ErrCode = HSUSBD_TIMEOUT_ERR;
-            break;
-        }
+        if( --u32TimeOutCnt == 0) return HSUSBD_ERR_TIMEOUT;
     }
     HSUSBD->OPER &= ~HSUSBD_OPER_HISPDEN_Msk;   /* full-speed */
+
+    return HSUSBD_OK;
 }
 
 /**
@@ -665,19 +659,16 @@ void HSUSBD_CtrlIn(void)
  * @param[in]   pu8Buf      Control OUT data pointer
  * @param[in]   u32Size     OUT transfer size
  *
- * @return      None
+ * @retval      HSUSBD_OK           HSUSBD operation OK.
+ * @retval      HSUSBD_ERR_TIMEOUT  HSUSBD operation abort due to timeout error.
  *
  * @details     This function is used to start Control OUT transfer
- *
- * @note        This function sets g_HSUSBD_i32ErrCode to HSUSBD_TIMEOUT_ERR if waiting HSUSBD time-out.
  */
-void HSUSBD_CtrlOut(uint8_t pu8Buf[], uint32_t u32Size)
+int32_t HSUSBD_CtrlOut(uint8_t pu8Buf[], uint32_t u32Size)
 {
     uint32_t volatile i;
-    int32_t i32TimeOutCnt = HSUSBD_TIMEOUT;
+    uint32_t u32TimeOutCnt = HSUSBD_TIMEOUT;
 
-    g_HSUSBD_i32ErrCode = 0;
-    
     while(1)
     {
         if((HSUSBD->CEPINTSTS & HSUSBD_CEPINTSTS_RXPKIF_Msk) == HSUSBD_CEPINTSTS_RXPKIF_Msk)
@@ -690,12 +681,10 @@ void HSUSBD_CtrlOut(uint8_t pu8Buf[], uint32_t u32Size)
             break;
         }
 
-        if( i32TimeOutCnt-- < 0)
-        {
-            g_HSUSBD_i32ErrCode = HSUSBD_TIMEOUT_ERR;
-            break;
-        }
+        if(--u32TimeOutCnt == 0) return HSUSBD_ERR_TIMEOUT;
     }
+
+    return HSUSBD_OK;
 }
 
 /**

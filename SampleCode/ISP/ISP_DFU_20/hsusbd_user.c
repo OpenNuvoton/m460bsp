@@ -55,13 +55,14 @@ uint32_t g_hsusbd_CtrlInSize = 0ul;
  * @param[in]   pfnClassReq         Class Request Callback Function
  * @param[in]   pfnSetInterface     SetInterface Request Callback Function
  *
- * @return      None
+ * @retval      HSUSBD_OK           HSUSBD operation OK.
+ * @retval      HSUSBD_ERR_TIMEOUT  HSUSBD operation abort due to timeout error.
  *
  * @details     This function is used to initial HSUSBD.
  */
-void HSUSBD_Open(S_HSUSBD_INFO_T *param, HSUSBD_CLASS_REQ pfnClassReq, HSUSBD_SET_INTERFACE_REQ pfnSetInterface)
+int32_t HSUSBD_Open(S_HSUSBD_INFO_T *param, HSUSBD_CLASS_REQ pfnClassReq, HSUSBD_SET_INTERFACE_REQ pfnSetInterface)
 {
-    uint32_t u32TimeOutCount = HSUSBD_TIMEOUT;
+    uint32_t u32TimeOutCnt = HSUSBD_TIMEOUT;
 
     /* Initial USB engine */
     /* Enable PHY */
@@ -70,9 +71,11 @@ void HSUSBD_Open(S_HSUSBD_INFO_T *param, HSUSBD_CLASS_REQ pfnClassReq, HSUSBD_SE
     /* wait PHY clock ready */
     while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk))
     {
-        if(--u32TimeOutCount == 0) break;
+        if(--u32TimeOutCnt == 0) return HSUSBD_ERR_TIMEOUT;
     }
     HSUSBD->OPER &= ~HSUSBD_OPER_HISPDEN_Msk;   /* full-speed */
+
+    return HSUSBD_OK;
 }
 
 /**
@@ -582,14 +585,15 @@ void HSUSBD_CtrlIn(void)
  * @param[in]   pu8Buf      Control OUT data pointer
  * @param[in]   u32Size     OUT transfer size
  *
- * @return      None
+ * @retval      HSUSBD_OK           HSUSBD operation OK.
+ * @retval      HSUSBD_ERR_TIMEOUT  HSUSBD operation abort due to timeout error.
  *
  * @details     This function is used to start Control OUT transfer
  */
-void HSUSBD_CtrlOut(uint8_t pu8Buf[], uint32_t u32Size)
+int32_t HSUSBD_CtrlOut(uint8_t pu8Buf[], uint32_t u32Size)
 {
     uint32_t volatile i;
-    int32_t i32TimeOutCnt = HSUSBD_TIMEOUT;
+    uint32_t u32TimeOutCnt = HSUSBD_TIMEOUT;
 
     while(1)
     {
@@ -604,8 +608,10 @@ void HSUSBD_CtrlOut(uint8_t pu8Buf[], uint32_t u32Size)
             break;
         }
 
-        if(--i32TimeOutCnt == 0) break;
+        if(--u32TimeOutCnt == 0) return HSUSBD_ERR_TIMEOUT;
     }
+
+    return HSUSBD_OK;
 }
 
 /**

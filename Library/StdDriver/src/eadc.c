@@ -26,7 +26,10 @@
   * @param[in] u32InputMode Decides the input mode.
   *                       - \ref EADC_CTL_DIFFEN_SINGLE_END      :Single end input mode.
   *                       - \ref EADC_CTL_DIFFEN_DIFFERENTIAL    :Differential input type.
-  * @return None
+  * @retval 0                EADC operation OK.
+  * @retval EADC_TIMEOUT_ERR EADC operation abort due to timeout error.
+  * @retval EADC_CAL_ERR     EADC has calibration error.
+  * @retval EADC_CLKDIV_ERR  EADC clock frequency is configured error.
   * @details This function is used to set analog input mode and enable A/D Converter.
   *         Before starting A/D conversion function, ADCEN bit (EADC_CTL[0]) should be set to 1.
   * @note This API will reset and calibrate EADC if EADC never be calibrated after chip power on.
@@ -51,7 +54,6 @@ int32_t EADC_Open(EADC_T *eadc, uint32_t u32InputMode)
             if (--u32Delay == 0)
             {
                 return EADC_TIMEOUT_ERR;
-                break;
             }
         }
 

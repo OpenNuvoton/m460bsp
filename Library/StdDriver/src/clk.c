@@ -17,8 +17,6 @@
   @{
 */
 
-int32_t g_CLK_i32ErrCode = 0;    /*!< CLK global error code */
-
 /** @addtogroup CLK_EXPORTED_FUNCTIONS CLK Exported Functions
   @{
 */
@@ -1183,19 +1181,16 @@ void CLK_DisablePLL(void)
   * @retval     0  clock is not stable
   * @retval     1  clock is stable
   * @details    To wait for clock ready by specified clock source stable flag or timeout (>500ms)
-  * @note       This function sets g_CLK_i32ErrCode to CLK_TIMEOUT_ERR if clock source status is not stable.
   */
 uint32_t CLK_WaitClockReady(uint32_t u32ClkMask)
 {
     uint32_t u32TimeOutCnt = SystemCoreClock>>1; /* 500ms time-out */
     uint32_t u32Ret = 1U;
 
-    g_CLK_i32ErrCode = 0;
     while((CLK->STATUS & u32ClkMask) != u32ClkMask)
     {
         if(--u32TimeOutCnt == 0)
         {
-            g_CLK_i32ErrCode = CLK_TIMEOUT_ERR;
             u32Ret = 0U;
             break;
         }
