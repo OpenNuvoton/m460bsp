@@ -38,7 +38,7 @@
 int32_t EADC_Open(EADC_T *eadc, uint32_t u32InputMode)
 {
     uint32_t u32Delay = SystemCoreClock >> 4;
-    uint32_t u32ClkSel0Backup, u32EadcDivBackup, u32PclkDivBackup, u32RegLockBackup = 0;
+    uint32_t u32ClkSel0Backup, u32ClkDivBackup, u32PclkDivBackup, u32RegLockBackup = 0;
 
     eadc->CTL &= (~EADC_CTL_DIFFEN_Msk);
 
@@ -69,21 +69,19 @@ int32_t EADC_Open(EADC_T *eadc, uint32_t u32InputMode)
         /* Set EADC clock is less than 2*PCLK to do calibration correctly. */
         if (eadc == EADC0)
         {
-            u32EadcDivBackup = CLK->CLKDIV0;
+            u32ClkDivBackup = CLK->CLKDIV0;
             CLK->CLKDIV0 = (CLK->CLKDIV0 & ~CLK_CLKDIV0_EADC0DIV_Msk) | (2 << CLK_CLKDIV0_EADC0DIV_Pos);
             CLK->CLKSEL0 = (CLK->CLKSEL0 & ~CLK_CLKSEL0_EADC0SEL_Msk) | CLK_CLKSEL0_EADC0SEL_HCLK;
         }
         else if (eadc == EADC1)
         {
-            u32EadcDivBackup = CLK->CLKDIV2;
-            CLK->CLKDIV2 = (CLK->CLKDIV2 & ~CLK_CLKDIV2_EADC1DIV_Msk);
+            u32ClkDivBackup = CLK->CLKDIV2;
             CLK->CLKDIV2 = (CLK->CLKDIV2 & ~CLK_CLKDIV2_EADC1DIV_Msk) | (2 << CLK_CLKDIV2_EADC1DIV_Pos);
             CLK->CLKSEL0 = (CLK->CLKSEL0 & ~CLK_CLKSEL0_EADC1SEL_Msk) | CLK_CLKSEL0_EADC1SEL_HCLK;
         }
         else if (eadc == EADC2)
         {
-            u32EadcDivBackup = CLK->CLKDIV5;
-            CLK->CLKDIV5 = (CLK->CLKDIV5 & ~CLK_CLKDIV5_EADC2DIV_Msk);
+            u32ClkDivBackup = CLK->CLKDIV5;
             CLK->CLKDIV5 = (CLK->CLKDIV5 & ~CLK_CLKDIV5_EADC2DIV_Msk) | (2 << CLK_CLKDIV5_EADC2DIV_Pos);
             CLK->CLKSEL0 = (CLK->CLKSEL0 & ~CLK_CLKSEL0_EADC2SEL_Msk) | CLK_CLKSEL0_EADC2SEL_HCLK;
         }
@@ -103,21 +101,19 @@ int32_t EADC_Open(EADC_T *eadc, uint32_t u32InputMode)
         }
 
         /* Restore registers */
-        CLK->PCLKDIV = (CLK->PCLKDIV & ~CLK_PCLKDIV_APB1DIV_Msk) | (u32PclkDivBackup & CLK_PCLKDIV_APB1DIV_Msk);
+        CLK->PCLKDIV = u32PclkDivBackup;
+        CLK->CLKSEL0 = u32ClkSel0Backup;
         if (eadc == EADC0)
         {
-            CLK->CLKDIV0 = (u32EadcDivBackup & CLK_CLKDIV0_EADC0DIV_Msk);
-            CLK->CLKSEL0 = (CLK->CLKSEL0 & ~CLK_CLKSEL0_EADC0SEL_Msk) | (u32ClkSel0Backup & CLK_CLKSEL0_EADC0SEL_Msk);
+            CLK->CLKDIV0 = u32ClkDivBackup;
         }
         else if (eadc == EADC1)
         {
-            CLK->CLKDIV2 = (u32EadcDivBackup & CLK_CLKDIV2_EADC1DIV_Msk);
-            CLK->CLKSEL0 = (CLK->CLKSEL0 & ~CLK_CLKSEL0_EADC1SEL_Msk) | (u32ClkSel0Backup & CLK_CLKSEL0_EADC1SEL_Msk);
+            CLK->CLKDIV2 = u32ClkDivBackup;
         }
         else if (eadc == EADC2)
         {
-            CLK->CLKDIV5 = (u32EadcDivBackup & CLK_CLKDIV5_EADC2DIV_Msk);
-            CLK->CLKSEL0 = (CLK->CLKSEL0 & ~CLK_CLKSEL0_EADC2SEL_Msk) | (u32ClkSel0Backup & CLK_CLKSEL0_EADC2SEL_Msk);
+            CLK->CLKDIV5 = u32ClkDivBackup;
         }
         if (u32RegLockBackup)
         {
