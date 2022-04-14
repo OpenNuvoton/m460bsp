@@ -312,67 +312,69 @@ void I2C_SetData(I2C_T *i2c, uint8_t u8Data)
 }
 
 /**
- * @brief      Set 7-bit Slave Address and GC Mode
+ * @brief      Set Slave Address and GC Mode
  *
  * @param[in]  i2c          Specify I2C port
  * @param[in]  u8SlaveNo    Set the number of I2C address register (0~3)
- * @param[in]  u8SlaveAddr  7-bit slave address
+ * @param[in]  u16SlaveAddr 7-bit or 10-bit slave address
  * @param[in]  u8GCMode     Enable/Disable GC mode (I2C_GCMODE_ENABLE / I2C_GCMODE_DISABLE)
  *
  * @return     None
  *
- * @details    This function is used to set 7-bit slave addresses in I2C SLAVE ADDRESS REGISTER (I2CADDR0~3)
+ * @details    This function is used to set slave addresses in I2C SLAVE ADDRESS REGISTER (I2CADDR0~3)
  *             and enable GC Mode.
  *
  */
-void I2C_SetSlaveAddr(I2C_T *i2c, uint8_t u8SlaveNo, uint8_t u8SlaveAddr, uint8_t u8GCMode)
+void I2C_SetSlaveAddr(I2C_T *i2c, uint8_t u8SlaveNo, uint16_t u16SlaveAddr, uint8_t u8GCMode)
 {
+    uint32_t u32AddrRegValue = ((uint32_t)(u16SlaveAddr&0x3ff) << 1U) | u8GCMode;
     switch(u8SlaveNo)
     {
     case 1:
-        i2c->ADDR1  = ((uint32_t)u8SlaveAddr << 1U) | u8GCMode;
+        i2c->ADDR1  = u32AddrRegValue;
         break;
     case 2:
-        i2c->ADDR2  = ((uint32_t)u8SlaveAddr << 1U) | u8GCMode;
+        i2c->ADDR2  = u32AddrRegValue;
         break;
     case 3:
-        i2c->ADDR3  = ((uint32_t)u8SlaveAddr << 1U) | u8GCMode;
+        i2c->ADDR3  = u32AddrRegValue;
         break;
     case 0:
     default:
-        i2c->ADDR0  = ((uint32_t)u8SlaveAddr << 1U) | u8GCMode;
+        i2c->ADDR0  = u32AddrRegValue;
         break;
     }
 }
 
 /**
- * @brief      Configure the mask bits of 7-bit Slave Address
+ * @brief      Configure the mask bits of Slave Address
  *
  * @param[in]  i2c              Specify I2C port
  * @param[in]  u8SlaveNo        Set the number of I2C address mask register (0~3)
- * @param[in]  u8SlaveAddrMask  A byte for slave address mask
+ * @param[in]  u16SlaveAddrMask  Slave address mask
  *
  * @return     None
  *
- * @details    This function is used to set 7-bit slave addresses.
+ * @details    This function is used to set slave addresses.
  *
  */
-void I2C_SetSlaveAddrMask(I2C_T *i2c, uint8_t u8SlaveNo, uint8_t u8SlaveAddrMask)
+void I2C_SetSlaveAddrMask(I2C_T *i2c, uint8_t u8SlaveNo, uint16_t u16SlaveAddrMask)
 {
+    uint32_t u32AddrMskRegValue = (uint32_t)(u16SlaveAddrMask&0x3ff) << 1U;
     switch(u8SlaveNo)
     {
     case 1:
-        i2c->ADDRMSK1  = (uint32_t)u8SlaveAddrMask << 1U;
+        i2c->ADDRMSK1  = u32AddrMskRegValue;
         break;
     case 2:
-        i2c->ADDRMSK2  = (uint32_t)u8SlaveAddrMask << 1U;
+        i2c->ADDRMSK2  = u32AddrMskRegValue;
         break;
     case 3:
-        i2c->ADDRMSK3  = (uint32_t)u8SlaveAddrMask << 1U;
+        i2c->ADDRMSK3  = u32AddrMskRegValue;
         break;
     case 0:
     default:
-        i2c->ADDRMSK0  = (uint32_t)u8SlaveAddrMask << 1U;
+        i2c->ADDRMSK0  = u32AddrMskRegValue;
         break;
     }
 }
