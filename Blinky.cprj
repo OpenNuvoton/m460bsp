@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<cprj schemaVersion="1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="CPRJ.xsd">
+
+  <created timestamp="2022-04-07T17:22:20" tool="uVision V5.36.0.0"/>
+
+  <info>
+    <name>Blinky</name>
+    <description/>
+  </info>
+
+  <packages>
+    <package name="CMSIS" vendor="ARM"/>
+    <package name="NuMicro_DFP" vendor="Nuvoton"/>
+    <package name="NuMicro_M460_BSP" vendor="Nuvoton"/>
+  </packages>
+
+  <compilers>
+    <compiler name="AC6" version="6.0.0:6.99.99"/>
+  </compilers>
+
+  <target Ddsp="NO_DSP" Dendian="Little-endian" Dfpu="SP_FPU" Dmve="NO_MVE" Dname="M467HJHAE" Dsecure="Non-secure" Dtz="NO_TZ" Dvendor="Nuvoton:18">
+    <output intdir="./obj/" name="CLK_ClockDetector" outdir="./obj/" type="exe"/>
+    <ldflags add="--library_type=microlib --ro-base 0x00000000 --entry 0x00000000 --rw-base 0x20000000 --entry Reset_Handler --first __Vectors --strict --summary_stderr --info summarysizes --map --load_addr_map_info --symbols --info sizes --info totals" compiler="AC6"/>
+    <cflags add="-D__MICROLIB -IC:/Keil_v5/ARM/PACK/Nuvoton/NuMicro_DFP/1.3.13/Device/M460/Include -O2 -fno-function-sections -fno-rtti -fshort-enums -fshort-wchar -funsigned-char -gdwarf-4 -std=c90 -xc" compiler="AC6"/>
+    <asflags add="--pd &quot;__MICROLIB SETA 1&quot; --xref -IC:/Keil_v5/ARM/PACK/Nuvoton/NuMicro_DFP/1.3.13/Device/M460/Include -g" compiler="AC6" use="armasm"/>
+    <includes/>
+    <defines/>
+  </target>
+
+  <components>
+    <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM"/>
+    <component Cclass="Device" Cgroup="Startup" Cvendor="Nuvoton">
+      <file attr="config" category="sourceAsm" name="Library/Device/Nuvoton/m460/Source/ARM/startup_m460.s" version="3.00.001"/>
+      <file attr="config" category="source" name="Library/Device/Nuvoton/m460/Source/system_m460.c" version="3.00.001"/>
+      <file attr="config" category="sourceC" name="Library/StdDriver/src/retarget.c" version="3.00.001"/>
+    </component>
+  </components>
+
+  <files>
+    <group name="User">
+      <file category="sourceC" name="SampleCode/NuMaker_M467HJ/Blinky/main.c"/>
+    </group>
+    <group name="library">
+      <file category="sourceC" name="Library/StdDriver/src/clk.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/sys.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/uart.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/acmp.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/bmc.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/bpwm.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/canfd.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/ccap.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/crc.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/crypto.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/dac.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/eadc.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/ebi.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/ecap.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/epwm.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/eqei.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/fmc.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/gpio.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/hbi.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/hsusbd.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/i2c.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/i2s.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/keystore.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/kpi.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/pdma.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/qspi.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/rng.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/rtc.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/sc.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/scuart.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/sdh.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/spi.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/spim.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/timer.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/timer_pwm.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/trng.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/usbd.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/usci_i2c.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/usci_spi.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/usci_uart.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/wdt.c"/>
+      <file category="sourceC" name="Library/StdDriver/src/wwdt.c"/>
+    </group>
+  </files>
+
+</cprj>
