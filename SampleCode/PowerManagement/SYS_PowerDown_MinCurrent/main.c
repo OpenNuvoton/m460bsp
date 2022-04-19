@@ -10,22 +10,73 @@
 #include "NuMicro.h"
 
 
+/*
+//-------- <<< Use Configuration Wizard in Context Menu >>> -----------------
+*/
+
+/*
+// <o0> Power-down Mode
+//      <0=> PD
+//      <1=> LLPD
+//      <2=> FWPD
+//      <4=> SPD
+//      <6=> DPD
+*/
+#define SET_PDMSEL       0
+
+/*
+// <o0> SPD mode SRAM retention size
+//      <0=> 0KB
+//      <1=> 16KB
+//      <2=> 32KB
+//      <3=> 64KB
+//      <4=> 128KB
+//      <5=> 256KB
+*/
+#define SET_SRETSEL       0
+
+/*
+// <o0> LVR
+//      <0=> Disable
+//      <1=> Enable
+*/
+#define SET_LVR       0
+
+/*
+// <o0> POR
+//      <0=> Disable
+//      <1=> Enable
+*/
+#define SET_POR       0
+
+/*
+// <o0> LIRC
+//      <0=> Disable
+//      <1=> Enable
+*/
+#define SET_LIRC       0
+
+/*
+// <o0> LXT
+//      <0=> Disable
+//      <1=> Enable
+*/
+#define SET_LXT       0
+
+
+
 #define GPIO_P0_TO_P15      0xFFFF
 
 void SYS_Disable_AnalogPORCircuit(void);
 void PowerDownFunction(void);
 void GPB_IRQHandler(void);
+int32_t LvrSetting(void);
+void PorSetting(void);
+int32_t LircSetting(void);
+int32_t LxtSetting(void);
 void SYS_Init(void);
 void UART0_Init(void);
 
-/*---------------------------------------------------------------------------------------------------------*/
-/*  Function for diasble internal analog POR circuit                                                       */
-/*---------------------------------------------------------------------------------------------------------*/
-void SYS_Disable_AnalogPORCircuit(void)
-{
-    /* Disable POR function */
-    SYS_DISABLE_POR();
-}
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Function for System Entry to Power Down Mode                                                           */
@@ -40,7 +91,7 @@ void PowerDownFunction(void)
         if(--u32TimeOutCnt == 0) break;
 
     /* Select Power-down mode */
-    CLK_SetPowerDownMode(CLK_PMUCTL_PDMSEL_PD);
+    CLK_SetPowerDownMode(SET_PDMSEL<<CLK_PMUCTL_PDMSEL_Pos);
 
     /* Enter to Power-down mode */
     CLK_PowerDown();
@@ -59,11 +110,11 @@ void GPB_IRQHandler(void)
 {
     volatile uint32_t u32temp;
 
-    /* To check if PB.3 interrupt occurred */
-    if(GPIO_GET_INT_FLAG(PB, BIT3))
+    /* To check if PB.2 interrupt occurred */
+    if(GPIO_GET_INT_FLAG(PB, BIT2))
     {
-        GPIO_CLR_INT_FLAG(PB, BIT3);
-        printf("PB.3 INT occurred.\n");
+        GPIO_CLR_INT_FLAG(PB, BIT2);
+        printf("PB2 INT occurred.\n");
     }
     else
     {
@@ -72,6 +123,112 @@ void GPB_IRQHandler(void)
         PB->INTSRC = u32temp;
         printf("Un-expected interrupts.\n");
     }
+}
+
+int32_t LvrSetting(void)
+{
+    uint32_t u32TimeOutCnt;
+
+    if(SET_LVR == 0)
+    {
+        SYS_DISABLE_LVR();
+        u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+        while( SYS->BODCTL & SYS_BODCTL_LVRRDY_Msk )
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for LVR disable time-out!\n");
+                return -1;
+            }
+        }
+    }
+    else
+    {
+        SYS_ENABLE_LVR();
+        u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+        while( (SYS->BODCTL & SYS_BODCTL_LVRRDY_Msk) == 0 )
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for LVR enable time-out!\n");
+                return -1;
+            }
+        }
+    }
+
+    return 0;
+}
+
+void PorSetting(void)
+{
+    if(SET_POR == 0)
+    {
+        SYS_DISABLE_POR();
+    }
+    else
+    {
+        SYS_ENABLE_POR();
+    }
+}
+
+int32_t LircSetting(void)
+{
+    uint32_t u32TimeOutCnt;
+
+    if(SET_LIRC == 0)
+    {
+        CLK_DisableXtalRC(CLK_PWRCTL_LIRCEN_Msk);
+        u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+        while( CLK->STATUS & CLK_STATUS_LIRCSTB_Msk )
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for LIRC disable time-out!\n");
+                return -1;
+            }
+        }
+    }
+    else
+    {
+        CLK_EnableXtalRC(CLK_PWRCTL_LIRCEN_Msk);
+        if( CLK_WaitClockReady(CLK_PWRCTL_LIRCEN_Msk) == 0)
+        {
+            printf("Wait for LIRC enable time-out!\n");
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
+int32_t LxtSetting(void)
+{
+    uint32_t u32TimeOutCnt;
+
+    if(SET_LXT == 0)
+    {
+        CLK_DisableXtalRC(CLK_PWRCTL_LXTEN_Msk);
+        u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+        while( CLK->STATUS & CLK_STATUS_LXTSTB_Msk )
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for LXT disable time-out!\n");
+                return -1;
+            }
+        }
+    }
+    else
+    {
+        CLK_EnableXtalRC(CLK_PWRCTL_LXTEN_Msk);
+        if( CLK_WaitClockReady(CLK_PWRCTL_LXTEN_Msk) == 0)
+        {
+            printf("Wait for LXT enable time-out!\n");
+            return -1;
+        }
+    }
+
+    return 0;
 }
 
 void SYS_Init(void)
@@ -125,6 +282,7 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
+    uint32_t u32TimeOutCnt, u32PMUSTS;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -138,22 +296,49 @@ int32_t main(void)
     /* Init UART0 for printf */
     UART0_Init();
 
-    printf("\n\nCPU @ %d Hz\n", SystemCoreClock);
-    printf("+------------------------------------------------------------------+\n");
-    printf("|  SYS_PowerDown_MinCurrent and Wake-up by PB.3 Sample Code        |\n");
-    printf("+------------------------------------------------------------------+\n\n");
+    /* Clear SPD/DPD mode wake-up status for enterning SPD/DPD mode again */
+    u32PMUSTS = CLK->PMUSTS;
+    if( CLK->PMUSTS )
+    {
+        /* Release I/O hold status for SPD mode */
+        CLK->IOPDCTL = 1;
 
-    printf("+------------------------------------------------------------------+\n");
-    printf("| Operating sequence                                               |\n");
-    printf("|  1. Remove all continuous load, e.g. LED.                        |\n");
-    printf("|  2. Configure all GPIO as Quasi-bidirectional Mode               |\n");
-    printf("|  3. Disable LVR                                                  |\n");
-    printf("|  4. Disable analog function, e.g. POR module                     |\n");
-    printf("|  5. Disable unused clock, e.g. LIRC                              |\n");
-    printf("|  6. Disable SRAM retention for SPD mode                          |\n");
-    printf("|  7. Enter to Power-Down                                          |\n");
-    printf("|  8. Wait for PB.3 rising-edge interrupt event to wake-up the MCU |\n");
-    printf("+------------------------------------------------------------------+\n\n");
+        /* Clear SPD/DPD mode wake-up status */
+        CLK->PMUSTS = CLK_PMUSTS_CLRWK_Msk;
+        u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+        while(CLK->PMUSTS)
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for SPD/DPD mode wake-up status is cleared time-out!\n");
+                return -1;
+            }
+        }
+    }
+
+    /* PB.2 falling-edge wake-up event */
+    if( u32PMUSTS & (CLK_PMUSTS_PINWK2_Msk|CLK_PMUSTS_GPBWK_Msk) )
+    {
+        printf("System waken-up done.\n\n");
+        while(1);
+    }
+
+    printf("\n\nCPU @ %d Hz\n", SystemCoreClock);
+    printf("+-------------------------------------------------------------------+\n");
+    printf("|  SYS_PowerDown_MinCurrent and Wake-up by PB.2 Sample Code         |\n");
+    printf("+-------------------------------------------------------------------+\n\n");
+
+    printf("+-------------------------------------------------------------------+\n");
+    printf("| Operating sequence                                                |\n");
+    printf("|  1. Remove all continuous load, e.g. LED.                         |\n");
+    printf("|  2. Configure all GPIO as Quasi-bidirectional Mode                |\n");
+    printf("|  3. Disable LVR                                                   |\n");
+    printf("|  4. Disable analog function, e.g. POR module                      |\n");
+    printf("|  5. Disable unused clock, e.g. LIRC                               |\n");
+    printf("|  6. Disable SRAM retention for SPD mode                           |\n");
+    printf("|  7. Enter to Power-Down                                           |\n");
+    printf("|  8. Wait for PB.2 falling-edge interrupt event to wake-up the MCU |\n");
+    printf("+-------------------------------------------------------------------+\n\n");
 
     /* Check if all the debug messages are finished */
     UART_WAIT_TX_EMPTY(DEBUG_PORT);
@@ -212,31 +397,58 @@ int32_t main(void)
     GPIO_SetMode(PI, GPIO_P0_TO_P15, GPIO_MODE_QUASI);
     GPIO_SetMode(PJ, GPIO_P0_TO_P15, GPIO_MODE_QUASI);
 
-    /* Configure PB.3 as Quasi mode and enable interrupt by rising edge trigger */
-    GPIO_SetMode(PB, BIT3, GPIO_MODE_QUASI);
-    GPIO_EnableInt(PB, 3, GPIO_INT_RISING);
-    NVIC_EnableIRQ(GPB_IRQn);
-
-    /* Unlock protected registers before entering Power-down mode */
+    /* Unlock protected registers for Power-down and wake-up setting */
     SYS_UnlockReg();
 
-    /* Disable LVR */
-    SYS_DISABLE_LVR();
+    /* LVR setting */
+    if( LvrSetting() < 0 ) return -1;
 
-    /* Turn off internal analog POR circuit */
-    SYS_Disable_AnalogPORCircuit();
+    /* POR setting */
+    PorSetting();
 
-    /* Disable unused clock */
-    CLK->PWRCTL &= ~CLK_PWRCTL_LIRCEN_Msk;
+    /* LIRC setting */
+    if( LircSetting() < 0 ) return -1;
 
-    /* Disable SRAM retention for SPD mode */
-    CLK->PMUCTL &= ~CLK_PMUCTL_SRETSEL_Msk;
+    /* LXT setting */
+    if( LxtSetting() < 0 ) return -1;
+
+    /* Select SPD mode SRAM retention size */
+    CLK->PMUCTL = (CLK->PMUCTL & (~CLK_PMUCTL_SRETSEL_Msk)) | (SET_SRETSEL<<CLK_PMUCTL_SRETSEL_Pos);
+
+    /* Wake-up source configuraion */
+    if( ( SET_PDMSEL == CLK_PMUCTL_PDMSEL_PD ) ||
+        ( SET_PDMSEL == CLK_PMUCTL_PDMSEL_LLPD ) ||
+        ( SET_PDMSEL == CLK_PMUCTL_PDMSEL_FWPD ) )
+    {
+        /* Configure PB.2 as Quasi mode and enable interrupt by falling edge trigger */
+        GPIO_SetMode(PB, BIT2, GPIO_MODE_QUASI);
+        GPIO_EnableInt(PB, 2, GPIO_INT_FALLING);
+        NVIC_EnableIRQ(GPB_IRQn);
+    }
+    else if( SET_PDMSEL == CLK_PMUCTL_PDMSEL_SPD )
+    {
+        CLK_EnableSPDWKPin(1, 2, CLK_SPDWKPIN_FALLING, CLK_SPDWKPIN_DEBOUNCEDIS);
+    }
+    else if( SET_PDMSEL == CLK_PMUCTL_PDMSEL_DPD )
+    {
+        CLK_EnableDPDWKPin(CLK_DPDWKPIN2_FALLING);
+    }
+    else
+    {
+        printf("Unknown Power-down mode!\n");
+        return -1;
+    }
 
     /* Enter to Power-down mode */
-    printf("Enter to Power-Down ......\n");
+    if( SET_PDMSEL == CLK_PMUCTL_PDMSEL_PD )        printf("Enter to PD Power-Down ......\n");
+    else if( SET_PDMSEL == CLK_PMUCTL_PDMSEL_LLPD ) printf("Enter to LLPD Power-Down ......\n");
+    else if( SET_PDMSEL == CLK_PMUCTL_PDMSEL_FWPD ) printf("Enter to FWPD Power-Down ......\n");
+    else if( SET_PDMSEL == CLK_PMUCTL_PDMSEL_SPD )  printf("Enter to SPD Power-Down ......\n");
+    else if( SET_PDMSEL == CLK_PMUCTL_PDMSEL_DPD )  printf("Enter to DPD Power-Down ......\n");
+
     PowerDownFunction();
 
-    /* Waiting for PB.3 falling-edge interrupt event */
+    /* Waiting for PB.2 falling-edge interrupt event */
     printf("System waken-up done.\n\n");
 
     while(1);

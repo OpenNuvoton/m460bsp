@@ -11,6 +11,50 @@
 #include "NuMicro.h"
 
 
+/*
+//-------- <<< Use Configuration Wizard in Context Menu >>> -----------------
+*/
+
+/*
+// <o0> SPD mode SRAM retention size
+//      <0=> 0KB
+//      <1=> 16KB
+//      <2=> 32KB
+//      <3=> 64KB
+//      <4=> 128KB
+//      <5=> 256KB
+*/
+#define SET_SRETSEL       0
+
+/*
+// <o0> LVR
+//      <0=> Disable
+//      <1=> Enable
+*/
+#define SET_LVR       0
+
+/*
+// <o0> POR
+//      <0=> Disable
+//      <1=> Enable
+*/
+#define SET_POR       0
+
+/*
+// <o0> LIRC
+//      <0=> Disable
+//      <1=> Enable
+*/
+#define SET_LIRC       0
+
+/*
+// <o0> LXT
+//      <0=> Disable
+//      <1=> Enable
+*/
+#define SET_LXT       0
+
+
 
 void PowerDownFunction(void);
 void WakeUpPinFunction(uint32_t u32PDMode);
@@ -23,6 +67,11 @@ void WakeUpLVRFunction(uint32_t u32PDMode);
 void WakeUpBODFunction(uint32_t u32PDMode);
 void CheckPowerSource(void);
 void GpioPinSetting(void);
+void GpioPinSettingRTC(void);
+int32_t LvrSetting(void);
+void PorSetting(void);
+int32_t LircSetting(void);
+int32_t LxtSetting(void);
 void SYS_Init(void);
 void UART0_Init(void);
 
@@ -57,7 +106,7 @@ void WakeUpPinFunction(uint32_t u32PDMode)
     GPIO_SetMode(PC, BIT0, GPIO_MODE_INPUT);
 
     /* GPIO SPD Power-down Wake-up Pin Select */
-    CLK_EnableSPDWKPin(2, 0, CLK_SPDWKPIN_RISING, CLK_SPDWKPIN_DEBOUNCEDIS);
+    CLK_EnableSPDWKPin(2, 0, CLK_SPDWKPIN_FALLING, CLK_SPDWKPIN_DEBOUNCEDIS);
 
     /* Enter to Power-down mode and wait for wake-up reset happen */
     PowerDownFunction();
@@ -68,6 +117,14 @@ void WakeUpPinFunction(uint32_t u32PDMode)
 /*-----------------------------------------------------------------------------------------------------------*/
 void WakeUpTimerFunction(uint32_t u32PDMode, uint32_t u32Interval)
 {
+    printf("Enable LIRC for wake-up source.\n");
+
+    /* Enable LIRC clock */
+    CLK_EnableXtalRC(CLK_PWRCTL_LIRCEN_Msk);
+
+    /* Wait for LIRC clock ready */
+    CLK_WaitClockReady(CLK_STATUS_LIRCSTB_Msk);
+
     printf("Enter to SPD Power-down mode......\n");
 
     /* Select Power-down mode */
@@ -130,6 +187,14 @@ void WakeUpACMP0Function(uint32_t u32PDMode)
 /*-----------------------------------------------------------------------------------------------------------*/
 void WakeUpRTCTickFunction(uint32_t u32PDMode)
 {
+    printf("Enable LXT for RTC wake-up source.\n");
+
+    /* Enable LXT clock */
+    CLK_EnableXtalRC(CLK_PWRCTL_LXTEN_Msk);
+
+    /* Wait for LXT clock ready */
+    CLK_WaitClockReady(CLK_STATUS_LXTSTB_Msk);
+
     /* Enable RTC peripheral clock */
     CLK->APBCLK0 |= CLK_APBCLK0_RTCCKEN_Msk;
 
@@ -155,6 +220,9 @@ void WakeUpRTCTickFunction(uint32_t u32PDMode)
     /* Set RTC tick period as 1 second */
     RTC_SetTickPeriod(RTC_TICK_1_SEC);
 
+    /* Set PF.4 ~ PF.11 I/O state by RTC control to prevent floating */
+    GpioPinSettingRTC();
+
     /* Enable RTC wake-up */
     CLK_ENABLE_RTCWK();
 
@@ -170,6 +238,14 @@ void WakeUpRTCTickFunction(uint32_t u32PDMode)
 void WakeUpRTCAlarmFunction(uint32_t u32PDMode)
 {
     S_RTC_TIME_DATA_T sWriteRTC;
+
+    printf("Enable LXT for RTC wake-up source.\n");
+
+    /* Enable LXT clock */
+    CLK_EnableXtalRC(CLK_PWRCTL_LXTEN_Msk);
+
+    /* Wait for LXT clock ready */
+    CLK_WaitClockReady(CLK_STATUS_LXTSTB_Msk);
 
     /* Enable RTC peripheral clock */
     CLK->APBCLK0 |= CLK_APBCLK0_RTCCKEN_Msk;
@@ -215,6 +291,9 @@ void WakeUpRTCAlarmFunction(uint32_t u32PDMode)
     /* Select Power-down mode */
     CLK_SetPowerDownMode(u32PDMode);
 
+    /* Set PF.4 ~ PF.11 I/O state by RTC control to prevent floating */
+    GpioPinSettingRTC();
+
     /* Enable RTC wake-up */
     CLK_ENABLE_RTCWK();
 
@@ -227,6 +306,14 @@ void WakeUpRTCAlarmFunction(uint32_t u32PDMode)
 /*-----------------------------------------------------------------------------------------------------------*/
 void WakeUpRTCTamperFunction(uint32_t u32PDMode)
 {
+    printf("Enable LXT for RTC wake-up source.\n");
+
+    /* Enable LXT clock */
+    CLK_EnableXtalRC(CLK_PWRCTL_LXTEN_Msk);
+
+    /* Wait for LXT clock ready */
+    CLK_WaitClockReady(CLK_STATUS_LXTSTB_Msk);
+
     /* Enable RTC peripheral clock */
     CLK->APBCLK0 |= CLK_APBCLK0_RTCCKEN_Msk;
 
@@ -255,6 +342,9 @@ void WakeUpRTCTamperFunction(uint32_t u32PDMode)
     /* Select Power-down mode */
     CLK_SetPowerDownMode(u32PDMode);
 
+    /* Set PF.4 ~ PF.11 I/O state by RTC control to prevent floating */
+    GpioPinSettingRTC();
+
     /* Enable RTC wake-up */
     CLK_ENABLE_RTCWK();
 
@@ -268,6 +358,21 @@ void WakeUpRTCTamperFunction(uint32_t u32PDMode)
 /*---------------------------------------------------------------------------------------------------------*/
 void WakeUpLVRFunction(uint32_t u32PDMode)
 {
+    uint32_t u32TimeOutCnt;
+
+    printf("Enable LVR for wake-up source.\n");
+
+    SYS_ENABLE_LVR();
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    while( (SYS->BODCTL & SYS_BODCTL_LVRRDY_Msk) == 0 )
+    {
+        if(--u32TimeOutCnt == 0)
+        {
+            printf("Wait for LVR enable time-out!\n");
+            break;
+        }
+    }
+
     printf("Enter to SPD Power-down mode......\n");
 
     /* Select Power-down mode */
@@ -331,21 +436,21 @@ void CheckPowerSource(void)
 }
 
 /*-----------------------------------------------------------------------------------------------------------*/
-/*  Function for GPIO Setting                                                                                */
+/*  Function for GPIO, LVR, POR, LIRC and LXT setting for power consumption                                  */
 /*-----------------------------------------------------------------------------------------------------------*/
 void GpioPinSetting(void)
 {
-    /* Set all GPIOs are output mode */
-    PA->MODE = 0x55555555;
-    PB->MODE = 0x55555555;
-    PC->MODE = 0x55555555;
-    PD->MODE = 0x55555555;
-    PE->MODE = 0x55555555;
-    PF->MODE = 0x55555555;
-    PG->MODE = 0x55555555;
-    PH->MODE = 0x55555555;
-    PI->MODE = 0x55555555;
-    PJ->MODE = 0x55555555;
+    /* Set all GPIOs are quasi mode */
+    PA->MODE = 0xFFFFFFFF;
+    PB->MODE = 0xFFFFFFFF;
+    PC->MODE = 0xFFFFFFFF;
+    PD->MODE = 0xFFFFFFFF;
+    PE->MODE = 0xFFFFFFFF;
+    PF->MODE = 0xFFFFFFFF;
+    PG->MODE = 0xFFFFFFFF;
+    PH->MODE = 0xFFFFFFFF;
+    PI->MODE = 0xFFFFFFFF;
+    PJ->MODE = 0xFFFFFFFF;
 
     /* Set all GPIOs are output high */
     PA->DOUT = 0x0000FFFF;
@@ -358,7 +463,10 @@ void GpioPinSetting(void)
     PH->DOUT = 0x0000FFFF;
     PI->DOUT = 0x0000FFFF;
     PJ->DOUT = 0x0000FFFF;
+}
 
+void GpioPinSettingRTC(void)
+{
     /* Set PF.4~PF.11 as Quasi mode output high by RTC control */
     CLK->APBCLK0 |= CLK_APBCLK0_RTCCKEN_Msk;
     RTC->GPIOCTL1 = RTC_GPIOCTL1_DOUT7_Msk | (RTC_IO_MODE_QUASI<<RTC_GPIOCTL1_OPMODE7_Pos) |
@@ -372,22 +480,117 @@ void GpioPinSetting(void)
     CLK->APBCLK0 &= ~CLK_APBCLK0_RTCCKEN_Msk;
 }
 
+int32_t LvrSetting(void)
+{
+    uint32_t u32TimeOutCnt;
+
+    if(SET_LVR == 0)
+    {
+        SYS_DISABLE_LVR();
+        u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+        while( SYS->BODCTL & SYS_BODCTL_LVRRDY_Msk )
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for LVR disable time-out!\n");
+                return -1;
+            }
+        }
+    }
+    else
+    {
+        SYS_ENABLE_LVR();
+        u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+        while( (SYS->BODCTL & SYS_BODCTL_LVRRDY_Msk) == 0 )
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for LVR enable time-out!\n");
+                return -1;
+            }
+        }
+    }
+
+    return 0;
+}
+
+void PorSetting(void)
+{
+    if(SET_POR == 0)
+    {
+        SYS_DISABLE_POR();
+    }
+    else
+    {
+        SYS_ENABLE_POR();
+    }
+}
+
+int32_t LircSetting(void)
+{
+    uint32_t u32TimeOutCnt;
+
+    if(SET_LIRC == 0)
+    {
+        CLK_DisableXtalRC(CLK_PWRCTL_LIRCEN_Msk);
+        u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+        while( CLK->STATUS & CLK_STATUS_LIRCSTB_Msk )
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for LIRC disable time-out!\n");
+                return -1;
+            }
+        }
+    }
+    else
+    {
+        CLK_EnableXtalRC(CLK_PWRCTL_LIRCEN_Msk);
+        if( CLK_WaitClockReady(CLK_PWRCTL_LIRCEN_Msk) == 0)
+        {
+            printf("Wait for LIRC enable time-out!\n");
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
+int32_t LxtSetting(void)
+{
+    uint32_t u32TimeOutCnt;
+
+    if(SET_LXT == 0)
+    {
+        CLK_DisableXtalRC(CLK_PWRCTL_LXTEN_Msk);
+        u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+        while( CLK->STATUS & CLK_STATUS_LXTSTB_Msk )
+        {
+            if(--u32TimeOutCnt == 0)
+            {
+                printf("Wait for LXT disable time-out!\n");
+                return -1;
+            }
+        }
+    }
+    else
+    {
+        CLK_EnableXtalRC(CLK_PWRCTL_LXTEN_Msk);
+        if( CLK_WaitClockReady(CLK_PWRCTL_LXTEN_Msk) == 0)
+        {
+            printf("Wait for LXT enable time-out!\n");
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
 void SYS_Init(void)
 {
-
-    /* Set PF multi-function pins for X32_OUT(PF.4) and X32_IN(PF.5) */
-    SET_X32_OUT_PF4();
-    SET_X32_IN_PF5();
-
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-
-    /* Enable LXT clock */
-    CLK_EnableXtalRC(CLK_PWRCTL_LXTEN_Msk);
-
-    /* Wait for LXT clock ready */
-    CLK_WaitClockReady(CLK_STATUS_LXTSTB_Msk);
 
     /* Set PCLK0 and PCLK1 to HCLK/2 */
     CLK->PCLKDIV = (CLK_PCLKDIV_APB0DIV_DIV2 | CLK_PCLKDIV_APB1DIV_DIV2);
@@ -420,6 +623,9 @@ void SYS_Init(void)
     /* Set PF multi-function pin for TAMPER0(PF.6) */
     SET_TAMPER0_PF6();
 
+    /* Set PF multi-function pins for X32_OUT(PF.4) and X32_IN(PF.5) */
+    SET_X32_OUT_PF4();
+    SET_X32_IN_PF5();
 }
 
 void UART0_Init(void)
@@ -468,11 +674,26 @@ int32_t main(void)
     /* Get power manager wake up source */
     CheckPowerSource();
 
+    /* LVR setting */
+    if( LvrSetting() < 0 ) return -1;
+
+    /* POR setting */
+    PorSetting();
+
+    /* LIRC setting */
+    if( LircSetting() < 0 ) return -1;
+
+    /* LXT setting */
+    if( LxtSetting() < 0 ) return -1;
+
+    /* Select SPD mode SRAM retention size */
+    CLK->PMUCTL = (CLK->PMUCTL & (~CLK_PMUCTL_SRETSEL_Msk)) | (SET_SRETSEL<<CLK_PMUCTL_SRETSEL_Pos);
+
     printf("+-----------------------------------------------------------------+\n");
     printf("|    SPD Power-down Mode and Wake-up Sample Code                  |\n");
     printf("|    Please Select Power Down Mode and Wake up source.            |\n");
     printf("+-----------------------------------------------------------------+\n");
-    printf("|[1] SPD GPIO Wake-up pin(PC.0) and using rising edge wake up.    |\n");
+    printf("|[1] SPD GPIO Wake-up pin(PC.0) and using falling edge wake up.   |\n");
     printf("|[2] SPD Wake-up TIMER time-out interval is 16384 LIRC clocks.    |\n");
     printf("|[3] SPD Wake-up by ACMP0.(band-gap voltage)                      |\n");
     printf("|[4] SPD Wake-up by RTC Tick.                                     |\n");
