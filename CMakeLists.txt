@@ -47,8 +47,6 @@ include_directories(${BSP_DIR}/Library/StdDriver/inc)
 add_subdirectory(${BSP_DIR}/Library/StdDriver/src)
 add_subdirectory(${BSP_DIR}/Library/Device/Nuvoton/m460/Source)
 
-# Download to board
-set(DOWNLOAD_BOARD FALSE)
 
 # Build sample code
 add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/TIMER_Periodic)
@@ -79,6 +77,9 @@ add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/DAC_PDMA_EPWMTrigger)
 add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/DAC_PDMA_TimerTrigger)
 add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/DAC_SoftwareTrigger)
 add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/DAC_TimerTrigger)
+add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/HBI_ExeInHRAM)
+add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/HBI_RW)
+add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/HBI_RW_MemMap)
 
 
 

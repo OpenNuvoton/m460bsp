@@ -30,7 +30,7 @@ target_link_options(${PRJ}
     --symbols
 )
 
-set(DOWNLOAD_BOARD TRUE)
+set(DOWNLOAD_BOARD FALSE)
 
 # Convert to binary and copy to target device
 if(${DOWNLOAD_BOARD})
