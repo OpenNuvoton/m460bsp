@@ -14,7 +14,6 @@
   DEFINES
  *----------------------------------------------------------------------------*/
 
-
 /*----------------------------------------------------------------------------
   Clock Variable definitions
  *----------------------------------------------------------------------------*/
@@ -88,6 +87,52 @@ void SystemInit (void)
     /* Set HXT crystal as INV type */
     CLK->PWRCTL &= ~CLK_PWRCTL_HXTSELTYP_Msk;
 
+#ifdef HBI_ENABLE    
+    /* Default to Enable HyperRAM */
+    CLK->AHBCLK0 |= CLK_AHBCLK0_HBICKEN_Msk;
+    
+    /* Set multi-function pins for HBI */
+#if HBI_ENABLE == 1
+
+    SET_HBI_D0_PG11();
+    SET_HBI_D1_PG12();
+    SET_HBI_D2_PC0();
+    SET_HBI_D3_PG10();
+    SET_HBI_D4_PG9();
+    SET_HBI_D5_PG13();
+    SET_HBI_D6_PG14();
+    SET_HBI_D7_PG15();
+
+    SET_HBI_RWDS_PC1();
+    SET_HBI_nRESET_PC2();
+    SET_HBI_nCS_PC3();
+    SET_HBI_CK_PC4();
+    SET_HBI_nCK_PC5();
+
+#elif HBI_ENABLE == 2
+
+    SET_HBI_D0_PJ6();
+    SET_HBI_D1_PJ5();
+    SET_HBI_D2_PJ4();
+    SET_HBI_D3_PJ3();
+    SET_HBI_D4_PH15();
+    SET_HBI_D5_PD7();
+    SET_HBI_D6_PD6();
+    SET_HBI_D7_PD5();
+
+    SET_HBI_RWDS_PH14();
+    SET_HBI_nRESET_PJ2();
+    SET_HBI_nCS_PJ7();
+    SET_HBI_CK_PH13();
+    SET_HBI_nCK_PH12();
+
+#else
+# error "HBI_ENABLE must be 1 or 2 to set relative MFP"
+#endif
+#endif    
+    
+    
+    
     /* Lock protected registers */
     SYS_LockReg();
 
