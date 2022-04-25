@@ -368,7 +368,6 @@ void SDH0_IRQHandler(void)
 
 void SYS_Init(void)
 {
-
     /* Set PF multi-function pins for XT1_OUT(PF.2) and XT1_IN(PF.3) */
     SET_XT1_OUT_PF2();
     SET_XT1_IN_PF3();
@@ -400,15 +399,15 @@ void SYS_Init(void)
     /* Select UART0 module clock source as HIRC and UART0 module clock divider as 1 */
     CLK_SetModuleClock(UART0_MODULE, CLK_CLKSEL1_UART0SEL_HIRC, CLK_CLKDIV0_UART0(1));
 
-    /* Enable SDH0 module clock */
+    /* Enable SDH0 module clock source as HCLK and SDH0 module clock divider as 4 */
     CLK_EnableModuleClock(SDH0_MODULE);
+    CLK_SetModuleClock(SDH0_MODULE, CLK_CLKSEL0_SDH0SEL_HCLK, CLK_CLKDIV0_SDH0(4));
 
     /* Enable Tiemr 0 module clock */
     CLK_EnableModuleClock(TMR0_MODULE);
 
     /* Select Timer 0 module clock source as HXT */
     CLK_SetModuleClock(TMR0_MODULE, CLK_CLKSEL1_TMR0SEL_HXT, 0);
-
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -446,7 +445,6 @@ void SYS_Init(void)
     /* D3: PB5(3)-, PE5(3) */
     //SET_SD0_DAT3_PB5();
     SET_SD0_DAT3_PE5();
-
 }
 
 
@@ -487,9 +485,19 @@ int32_t main(void)
 
     Buff = (BYTE *)Buff_Pool;
 
+    SYS_UnlockReg();
+
     SYS_Init();
     UART_Open(UART0, 115200);
     timer_init();
+
+    /*
+        SD initial state needs 300KHz clock output, driver will use HIRC for SD initial clock source.
+        And then switch back to the user's setting.
+    */
+    SDH_Open_Disk(SDH0, CardDetect_From_GPIO);
+
+    SYS_LockReg();
 
     printf("\n");
     printf("====================================\n");
@@ -497,11 +505,7 @@ int32_t main(void)
     printf("====================================\n");
 
     printf("\n\n SDH FATFS TEST!\n");
-    /*
-        SD initial state needs 400KHz clock output, driver will use HIRC for SD initial clock source.
-        And then switch back to the user's setting.
-    */
-    SDH_Open_Disk(SDH0, CardDetect_From_GPIO);
+
     f_chdrive(sd_path);          /* set default path */
 
     for (;;)

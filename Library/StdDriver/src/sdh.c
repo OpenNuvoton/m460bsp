@@ -452,6 +452,9 @@ void SDH_Set_clock(SDH_T *sdh, uint32_t sd_clock_khz)
         CLK->CLKDIV3 &= ~CLK_CLKDIV3_SDH1DIV_Msk;
         CLK->CLKDIV3 |= (div1 << CLK_CLKDIV3_SDH1DIV_Pos);
     }
+
+    SYS_LockReg();
+
     return;
 }
 
