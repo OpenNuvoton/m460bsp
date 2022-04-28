@@ -433,9 +433,9 @@
               <FilePath>..\..\..\..\Library\StdDriver\src\crypto.c</FilePath>
             </File>
             <File>
-              <FileName>trng.c</FileName>
+              <FileName>rng.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\Library\StdDriver\src\trng.c</FilePath>
+              <FilePath>..\..\..\..\Library\StdDriver\src\rng.c</FilePath>
             </File>
           </Files>
         </Group>

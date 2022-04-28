@@ -208,8 +208,9 @@ int32_t PrepareKeys(void)
 int32_t main(void)
 {
     char    OutputResult[RSA_KBUF_HLEN];
-    uint32_t u32RndNum;
     uint32_t u32TimeOutCnt;
+    int32_t i, n;
+    uint32_t au32Buf[8];
 
     SYS_UnlockReg();
 
@@ -223,14 +224,24 @@ int32_t main(void)
     printf("|   Crypto RSA SCAP mode access key from key store sample   |\n");
     printf("+-----------------------------------------------------------+\n");
 
-    /* Open TRNG */
-    TRNG_Open();
+    /* Initial Random Number Generator */
+    RNG_Open();
 
-    /* Generate a random number */
-    if (TRNG_GenWord(&u32RndNum) == -1)
+    /* Get random number */
+    n = RNG_Random(au32Buf, 8);
+    if (n == 0)
     {
-        printf("\nTRNG has error!!\n");
+        printf("\nGet random number has error!!\n");
         return -1;
+    }
+
+    if(n)
+    {
+        for(i = 0; i < 8; i++)
+        {
+            printf("%08x", au32Buf[i]);
+        }
+        printf("\n");
     }
 
     /* Open key store */
