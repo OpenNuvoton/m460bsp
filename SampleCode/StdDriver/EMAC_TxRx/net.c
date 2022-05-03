@@ -1,15 +1,15 @@
 /*************************************************************************//**
  * @file     net.c
- * @brief    Packet processor source file for M480 MCU
+ * @brief    Packet processor source file for M460 MCU
  *
- * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2017 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
 #include <string.h>
 #include "NuMicro.h"
-#include "net.h"
 
-extern void EMAC_SendPkt(uint8_t *pu8Data, uint32_t u32Size);
+#include "m460_emac.h"
+#include "net.h"
 
 extern uint8_t  g_au8MacAddr[6];
 extern uint8_t  volatile g_au8IpAddr[4];
@@ -94,7 +94,7 @@ static void arp_reply(uint8_t *target_ip, uint8_t *target_mac)
     memcpy((char *)arp->su8SenderIP, (char *)g_au8IpAddr, 4);
     memcpy((char *)arp->au8TargetHA, (char *)target_mac, 6);
     memcpy((char *)arp->au8TargetIP, (char *)target_ip, 4);
-    EMAC_SendPkt(&au8TxBuf[0], sizeof(ARP_PACKET));
+    EMAC_TransmitPkt(NULL, &au8TxBuf[0], sizeof(ARP_PACKET));
 }
 
 static void  udp_send( uint8_t *pu8SrcMac, uint8_t *pu8SrcIP, uint16_t u16SrcPort,
@@ -131,7 +131,7 @@ static void  udp_send( uint8_t *pu8SrcMac, uint8_t *pu8SrcIP, uint16_t u16SrcPor
     udp->u16MLen = SWAP16(8 + u32Len);
     udp->u16UDPChksum = 0;
 
-    EMAC_SendPkt(&au8TxBuf[0], sizeof(UDP_PACKET) + u32Len);
+    EMAC_TransmitPkt(NULL, &au8TxBuf[0], sizeof(UDP_PACKET) + u32Len);
     // To enable RX IRQ ?
 }
 
@@ -223,7 +223,7 @@ int process_rx_packet(uint8_t *pu8Packet, uint32_t u32Len)
             au8TxBuf[37] = 0;
             *(uint16_t *)&au8TxBuf[36] = ~chksum((uint16_t *)&au8TxBuf[34], (u32Len - 34) / 2);
 
-            EMAC_SendPkt(au8TxBuf, u32Len);
+            EMAC_TransmitPkt(NULL, au8TxBuf, u32Len);
 
             return 0;
         }

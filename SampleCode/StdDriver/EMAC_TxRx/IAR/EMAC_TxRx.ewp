@@ -353,6 +353,7 @@
                     <state>$PROJ_DIR$\..\..\..\..\Library\Device\Nuvoton\m460\Include</state>
                     <state>$PROJ_DIR$\..\..\..\..\Library\StdDriver\inc</state>
                     <state>$PROJ_DIR$\..\drv_emac</state>
+                    <state>$PROJ_DIR$\..</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -1050,6 +1051,15 @@
     </group>
     <group>
         <name>drv_emac</name>
+        <file>
+            <name>$PROJ_DIR$\..\drv_emac\m460_emac.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\drv_emac\m460_emac_process.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\drv_emac\m460_mii.c</name>
+        </file>
         <file>
             <name>$PROJ_DIR$\..\drv_emac\synopGMAC_Dev.c</name>
         </file>
