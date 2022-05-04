@@ -1,27 +1,27 @@
 
 set(PRJ timer_periodic)
 add_executable(${PRJ} main.c)
-target_link_libraries(${PRJ} m460_startup m460_driver)
+target_link_libraries(${PRJ} system_startup standard_driver)
 
-target_link_options(timer_periodic 
-   PUBLIC 
+target_link_options(timer_periodic
+   PUBLIC
     --cpu=Cortex-M4.fp.sp
-    --library_type=microlib 
+    --library_type=microlib
     --ro-base 0x00000000
     --rw-base 0x20000000
     --entry Reset_Handler
     --first __Vectors
     --strict
-    --map 
-    --datacompressor=off 
-    --info=inline 
-    --entry Reset_Handler 
-    --summary_stderr 
+    --map
+    --datacompressor=off
+    --info=inline
+    --entry Reset_Handler
+    --summary_stderr
     --info totals
-    --map 
-    --load_addr_map_info 
-    --xref 
-    --callgraph 
+    --map
+    --load_addr_map_info
+    --xref
+    --callgraph
     --symbols
 )
 

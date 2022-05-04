@@ -2,7 +2,7 @@
 
 set(PRJ EADC_BandGap)
 add_executable(${PRJ} main.c)
-target_link_libraries(${PRJ} m460_startup m460_driver)
+target_link_libraries(${PRJ} system_startup standard_driver)
 
 target_link_options(${PRJ} 
    PUBLIC 

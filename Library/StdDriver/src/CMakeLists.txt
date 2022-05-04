@@ -1,4 +1,4 @@
-set(DRV_SRC  
+set(DRV_SRC
     acmp.c
     bmc.c
     bpwm.c
@@ -45,4 +45,4 @@ set(DRV_SRC
 )
 
 
-add_library(m460_driver ${DRV_SRC})
+add_library(standard_driver ${DRV_SRC})

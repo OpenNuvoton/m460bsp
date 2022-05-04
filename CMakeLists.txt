@@ -2,6 +2,40 @@ cmake_minimum_required(VERSION 3.21)
 cmake_policy(SET CMP0123 NEW)
 
 
+# Create a symbolic link from ${base_name} in the binary directory
+# to the corresponding path in the source directory.
+function(link_to_source base_name)
+    # Get OS dependent path to use in `execute_process`
+    if (CMAKE_HOST_WIN32)
+        #mklink is an internal command of cmd.exe it can only work with \
+        string(REPLACE "/" "\\" link "${CMAKE_CURRENT_BINARY_DIR}/${base_name}")
+        string(REPLACE "/" "\\" target "${CMAKE_CURRENT_SOURCE_DIR}/${base_name}")
+    else()
+        set(link "${CMAKE_CURRENT_BINARY_DIR}/${base_name}")
+        set(target "${CMAKE_CURRENT_SOURCE_DIR}/${base_name}")
+    endif()
+
+    if (NOT EXISTS ${link})
+        if (CMAKE_HOST_UNIX)
+            set(command ln -s ${target} ${link})
+        else()
+            if (IS_DIRECTORY ${target})
+                set(command cmd.exe /c mklink /j ${link} ${target})
+            else()
+                set(command cmd.exe /c mklink /h ${link} ${target})
+            endif()
+        endif()
+
+        execute_process(COMMAND ${command}
+            RESULT_VARIABLE result
+            ERROR_VARIABLE output)
+
+        if (NOT ${result} EQUAL 0)
+            message(FATAL_ERROR "Could not create symbolic link for: ${target} --> ${output}")
+        endif()
+    endif()
+endfunction(link_to_source)
+
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_VERSION "5")
 set(CMAKE_SYSTEM_PROCESSOR ARM)
@@ -25,12 +59,17 @@ set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 set(CMAKE_FIND_ROOT_PATH ${TOOLCHAIN_PATH})
 
+set(LINK_MCU_CORE "Cortex-M4.fp.sp")
+
+set(STACK_SIZE 0x4000)
+set(HEAP_SIZE 0x20000)
+
 #SET(CMAKE_C_FLAGS    "-mcpu=cortex-m4 -Wno-ignored-optimization-argument -Wno-unused-command-line-argument -Wall    -Wno-error=cpp    -c    -fdata-sections    -ffunction-sections        -fshort-enums    -fshort-wchar -funsigned-char -masm=auto -nostdlib -mfpu=none -g -std=c99 -D__MICROLIB")
 #SET(CMAKE_CXX_FLAGS  "-mcpu=cortex-m4 -Wno-ignored-optimization-argument -Wno-unused-command-line-argument -Wall    -Wno-error=cpp    -c    -fdata-sections    -ffunction-sections        -fshort-enums    -fshort-wchar -funsigned-char -masm=auto -nostdlib -mfpu=none -g -D__MICROLIB")
-set(C_FLAGS "--target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c -fno-rtti -funsigned-char -fshort-enums -fshort-wchar -D__MICROLIB -gdwarf-3 -O2 -fno-function-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -D__MICROLIB")
+set(C_FLAGS "--target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c -fno-rtti -funsigned-char -fshort-enums -fshort-wchar -D__MICROLIB -gdwarf-3 -O2 -fno-function-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -D__MICROLIB -DMBEDTLS_CONFIG_FILE=mbedtls_config.h")
 set(CMAKE_C_FLAGS "-xc -std=c99  ${C_FLAGS}")
 set(CMAKE_CXX_FLAGS ${C_FLAGS})
-set(CMAKE_ASM_FLAGS "--cpu Cortex-M4.fp.sp -g --16 --apcs=interwork --pd \"__MICROLIB SETA 1\"" )
+set(CMAKE_ASM_FLAGS "--cpu Cortex-M4.fp.sp -g --16 --apcs=interwork --pd \"__MICROLIB SETA 1\" --pd \"Stack_Size SETA ${STACK_SIZE}\" --pd \"Heap_Size SETA ${HEAP_SIZE}\"" )
 set(CMAKE_EXECUTABLE_SUFFIX ".axf")
 
 
@@ -42,13 +81,37 @@ include_directories(${TOOLCHAIN_PATH}/include)
 include_directories(${BSP_DIR}/Library/CMSIS/Include)
 include_directories(${BSP_DIR}/Library/Device/Nuvoton/m460/Include)
 include_directories(${BSP_DIR}/Library/StdDriver/inc)
+include_directories(${BSP_DIR}/Library/CryptoAccellerator)
+include_directories(${BSP_DIR}/ThirdParty/mbedtls-3.1.0/include)
+include_directories(${BSP_DIR}/ThirdParty/mbedtls-3.1.0/library)
 
-# Build library 
+# Build library
 add_subdirectory(${BSP_DIR}/Library/StdDriver/src)
 add_subdirectory(${BSP_DIR}/Library/Device/Nuvoton/m460/Source)
+add_subdirectory(${BSP_DIR}/Library/CryptoAccellerator)
+add_subdirectory(${BSP_DIR}/ThirdParty/mbedtls-3.1.0/library)
+
+# Library for mbedtls test
+add_library(test_lib
+    ${BSP_DIR}/ThirdParty/mbedtls-3.1.0/tests/src/helpers.c
+    ${BSP_DIR}/ThirdParty/mbedtls-3.1.0/tests/src/random.c
+    ${BSP_DIR}/ThirdParty/mbedtls-3.1.0/tests/src/psa_crypto_helpers.c
+)
+target_include_directories(test_lib
+  PUBLIC
+    ${BSP_DIR}/ThirdParty/mbedtls-3.1.0/tests/include
+
+)
+
 
 
 # Build sample code
+
+add_subdirectory(${BSP_DIR}/SampleCode/Crypto/mbedTLS_SHA256)
+add_subdirectory(${BSP_DIR}/SampleCode/Crypto/mbedTLS_RSA)
+add_subdirectory(${BSP_DIR}/SampleCode/Crypto/mbedTLS_ECDSA)
+add_subdirectory(${BSP_DIR}/SampleCode/Crypto/mbedTLS_ECDH)
+add_subdirectory(${BSP_DIR}/SampleCode/Crypto/mbedTLS_AES)
 add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/TIMER_Periodic)
 add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/ACMP_CompareDAC)
 add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/ACMP_CompareVBG)
