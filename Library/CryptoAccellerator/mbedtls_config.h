@@ -3319,3 +3319,16 @@
 //#define MBEDTLS_ECDH_VARIANT_EVEREST_ENABLED
 
 /* \} name SECTION: Customisation configuration options */
+
+/**
+* Configuration check for M460
+*
+*/
+
+#if (defined(MBEDTLS_ECDH_GEN_PUBLIC_ALT) || defined(MBEDTLS_ECDH_COMPUTE_SHARED_ALT) || defined(MBEDTLS_ECDSA_VERIFY_ALT) || defined(MBEDTLS_ECDSA_SIGN_ALT)) && defined(MBEDTLS_SHA256_ALT)
+#error "SHA256_ALT cannot work with ECDH or ECDSA ALT"
+#endif
+
+#if (defined(MBEDTLS_ECDH_GEN_PUBLIC_ALT) || defined(MBEDTLS_ECDH_COMPUTE_SHARED_ALT) || defined(MBEDTLS_ECDSA_VERIFY_ALT) || defined(MBEDTLS_ECDSA_SIGN_ALT)) && defined(MBEDTLS_ECP_DP_CURVE25519_ENABLED)
+#error "MBEDTLS_ECP_DP_CURVE25519_ENABLED cannot work with ECDH or ECDSA ALT"
+#endif
