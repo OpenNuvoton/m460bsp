@@ -166,46 +166,36 @@ static int ECC_FixCurve(mbedtls_ecp_group* grp)
     }
 
 
-    if(grp->id == MBEDTLS_ECP_DP_SECP192R1)
+    if(mbedtls_mpi_size(&grp->A) < 1)
     {
-        mbedtls_mpi_read_string(&grp->A, 16, "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFFFFFFFFFFFC");
-        mbedtls_mpi_read_string(&grp->MBEDTLS_PRIVATE(T)->MBEDTLS_PRIVATE(X), 16, "188da80eb03090f67cbf20eb43a18800f4ff0afd82ff1012");
-        mbedtls_mpi_read_string(&grp->MBEDTLS_PRIVATE(T)->MBEDTLS_PRIVATE(Y), 16, "07192b95ffc8da78631011ed6b24cdd573f977a11e794811");
+        if(grp->id == MBEDTLS_ECP_DP_SECP192R1)
+        {
+            mbedtls_mpi_read_string(&grp->A, 16, "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFFFFFFFFFFFC");
+        }
+        else if(grp->id == MBEDTLS_ECP_DP_SECP224R1)
+        {
+            mbedtls_mpi_read_string(&grp->A, 16, "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFE");
+        }
+        else if(grp->id == MBEDTLS_ECP_DP_SECP256R1)
+        {
+            mbedtls_mpi_read_string(&grp->A, 16, "FFFFFFFF00000001000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFC");
+        }
+        else if(grp->id == MBEDTLS_ECP_DP_SECP384R1)
+        {
+            mbedtls_mpi_read_string(&grp->A, 16, "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFFFF0000000000000000FFFFFFFC");
+        }
+        else if(grp->id == MBEDTLS_ECP_DP_SECP521R1)
+        {
+            mbedtls_mpi_read_string(&grp->A, 16, "1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC");
+        }
+        else if(grp->id == MBEDTLS_ECP_DP_CURVE25519)
+        {
+            mbedtls_mpi_read_string(&grp->A, 16, "0000000000000000000000000000000000000000000000000000000000076D06");
+            mbedtls_mpi_read_string(&grp->B, 16, "0000000000000000000000000000000000000000000000000000000000000001");
+            mbedtls_mpi_read_string(&grp->P, 16, "7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffed");
+            mbedtls_mpi_read_string(&grp->N, 16, "1000000000000000000000000000000014def9dea2f79cd65812631a5cf5d3ed");
+        }
     }
-    else if(grp->id == MBEDTLS_ECP_DP_SECP224R1)
-    {
-        mbedtls_mpi_read_string(&grp->A, 16, "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFE");
-        mbedtls_mpi_read_string(&grp->MBEDTLS_PRIVATE(T)->MBEDTLS_PRIVATE(X), 16, "b70e0cbd6bb4bf7f321390b94a03c1d356c21122343280d6115c1d21");
-        mbedtls_mpi_read_string(&grp->MBEDTLS_PRIVATE(T)->MBEDTLS_PRIVATE(Y), 16, "bd376388b5f723fb4c22dfe6cd4375a05a07476444d5819985007e34");
-    }
-    else if(grp->id == MBEDTLS_ECP_DP_SECP256R1)
-    {
-        mbedtls_mpi_read_string(&grp->A, 16, "FFFFFFFF00000001000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFC");
-        mbedtls_mpi_read_string(&grp->MBEDTLS_PRIVATE(T)->MBEDTLS_PRIVATE(X), 16, "6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296");
-        mbedtls_mpi_read_string(&grp->MBEDTLS_PRIVATE(T)->MBEDTLS_PRIVATE(Y), 16, "4fe342e2fe1a7f9b8ee7eb4a7c0f9e162bce33576b315ececbb6406837bf51f5");
-    }
-    else if(grp->id == MBEDTLS_ECP_DP_SECP384R1)
-    {
-        mbedtls_mpi_read_string(&grp->A, 16, "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFFFF0000000000000000FFFFFFFC");
-        mbedtls_mpi_read_string(&grp->MBEDTLS_PRIVATE(T)->MBEDTLS_PRIVATE(X), 16, "aa87ca22be8b05378eb1c71ef320ad746e1d3b628ba79b9859f741e082542a385502f25dbf55296c3a545e3872760ab7");
-        mbedtls_mpi_read_string(&grp->MBEDTLS_PRIVATE(T)->MBEDTLS_PRIVATE(Y), 16, "3617de4a96262c6f5d9e98bf9292dc29f8f41dbd289a147ce9da3113b5f0b8c00a60b1ce1d7e819d7a431d7c90ea0e5f");
-    }
-    else if(grp->id == MBEDTLS_ECP_DP_SECP521R1)
-    {
-        mbedtls_mpi_read_string(&grp->A, 16, "1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC");
-        mbedtls_mpi_read_string(&grp->MBEDTLS_PRIVATE(T)->MBEDTLS_PRIVATE(X), 16, "0c6858e06b70404e9cd9e3ecb662395b4429c648139053fb521f828af606b4d3dbaa14b5e77efe75928fe1dc127a2ffa8de3348b3c1856a429bf97e7e31c2e5bd66");
-        mbedtls_mpi_read_string(&grp->MBEDTLS_PRIVATE(T)->MBEDTLS_PRIVATE(Y), 16, "11839296a789a3bc0045c8a5fb42c7d1bd998f54449579b446817afbd17273e662c97ee72995ef42640c550b9013fad0761353c7086a272c24088be94769fd16650");
-    }
-    else if(grp->id == MBEDTLS_ECP_DP_CURVE25519)
-    {
-        mbedtls_mpi_read_string(&grp->A, 16, "0000000000000000000000000000000000000000000000000000000000076D06");
-        mbedtls_mpi_read_string(&grp->B, 16, "0000000000000000000000000000000000000000000000000000000000000001");
-        mbedtls_mpi_read_string(&grp->P, 16, "7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffed");
-        mbedtls_mpi_read_string(&grp->N, 16, "1000000000000000000000000000000014def9dea2f79cd65812631a5cf5d3ed");
-        mbedtls_mpi_read_string(&grp->MBEDTLS_PRIVATE(T)->MBEDTLS_PRIVATE(X), 16, "0000000000000000000000000000000000000000000000000000000000000009");
-        mbedtls_mpi_read_string(&grp->MBEDTLS_PRIVATE(T)->MBEDTLS_PRIVATE(Y), 16, "20ae19a1b8a086b4e01edd2c7748d14c923d4d7e6d7c61b229e9c5a27eced3d9");
-    }
-
     return 0;
 }
 
@@ -573,16 +563,6 @@ int  ECC_Verify(mbedtls_ecp_group * grp,
 
     mbedtls_mpi_init(&e);
     derive_mpi(grp, &e, buf, blen);
-
-    if(0)
-    {
-        char str[256] = { 0 };
-        size_t len;
-
-        mbedtls_mpi_write_string(&e, 16, str, 256, &len);
-        printf("e: %s\n", str);
-    }
-
 
     ECC_Copy((uint32_t*)crpt->ECC_X1, e.MBEDTLS_PRIVATE(p), mbedtls_mpi_size(&e));
     mbedtls_mpi_free(&e);
