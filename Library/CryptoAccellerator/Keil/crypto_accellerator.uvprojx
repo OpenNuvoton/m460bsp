@@ -574,11 +574,6 @@
               <FilePath>..\..\..\ThirdParty\mbedtls-3.1.0\library\entropy_poll.c</FilePath>
             </File>
             <File>
-              <FileName>error.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\ThirdParty\mbedtls-3.1.0\library\error.c</FilePath>
-            </File>
-            <File>
               <FileName>gcm.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\ThirdParty\mbedtls-3.1.0\library\gcm.c</FilePath>
@@ -784,11 +779,6 @@
               <FilePath>..\..\..\ThirdParty\mbedtls-3.1.0\library\sha512.c</FilePath>
             </File>
             <File>
-              <FileName>ssl_debug_helpers_generated.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\ThirdParty\mbedtls-3.1.0\library\ssl_debug_helpers_generated.c</FilePath>
-            </File>
-            <File>
               <FileName>threading.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\ThirdParty\mbedtls-3.1.0\library\threading.c</FilePath>
@@ -802,11 +792,6 @@
               <FileName>version.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\ThirdParty\mbedtls-3.1.0\library\version.c</FilePath>
-            </File>
-            <File>
-              <FileName>version_features.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\ThirdParty\mbedtls-3.1.0\library\version_features.c</FilePath>
             </File>
           </Files>
         </Group>
