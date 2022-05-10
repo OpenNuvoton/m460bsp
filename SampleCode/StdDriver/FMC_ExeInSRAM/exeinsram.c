@@ -32,7 +32,7 @@ int32_t FlashAccess_OnSRAM(void)
         u32Data = u32Cnt + 0x12345678;
         FMC_Write(u32Addr + u32Cnt, u32Data);
 
-        if ((u32Cnt & 0xf) == 0)
+        if ((u32Cnt/4 & 0xf) == 0)
             printf(".");
 
         /* Read Demo */

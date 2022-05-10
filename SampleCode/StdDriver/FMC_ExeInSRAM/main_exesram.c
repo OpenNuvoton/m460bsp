@@ -19,9 +19,25 @@
 #define SRAM_CODE_BASE      0x8000
 #define SRAM_CODE_SIZE      0x2000
 
+#define TOTAL_VECTORS   (144)                               /* Total vector numbers */
+__ALIGNED(256) uint32_t g_au32Vector[TOTAL_VECTORS] = {0};  /* Vector space in SRAM */
+
+
 typedef void (FUNC_PTR)(void);
 
 extern int32_t FlashAccess_OnSRAM(void);
+
+volatile uint32_t g_u32Ticks = 0;
+void SysTick_Handler()
+{
+    g_u32Ticks++;
+    
+    if((g_u32Ticks % 1000) == 0)
+    {
+        printf("Time elapse: %d\n", g_u32Ticks / 1000);
+    }
+    
+}
 
 void SYS_Init(void)
 {
@@ -57,7 +73,8 @@ void SYS_Init(void)
 
 int32_t main(void)
 {
-
+    int32_t i;
+    uint32_t *au32Vectors = (uint32_t *)0x0;
     FUNC_PTR    *func;
 
     /* Unlock protected registers */
@@ -65,6 +82,13 @@ int32_t main(void)
 
     /* Init System, IP clock and multi-function I/O. */
     SYS_Init();
+
+    /* Init Vector Table to SRAM */
+    for(i=0;i<TOTAL_VECTORS;i++)
+    {
+        g_au32Vector[i] = au32Vectors[i];
+    }
+    SCB->VTOR = (uint32_t)&g_au32Vector[0];
 
     /* Lock protected registers */
     SYS_LockReg();
@@ -83,6 +107,9 @@ int32_t main(void)
        RO code is placed to 0x20000000 ~ 0x20001fff with RW is placed to 0x20002000 ~ 0x20003fff.
     */
 
+    /* SysTick used for test interrupts in SRAM */
+    SysTick_Config(SystemCoreClock/1000);
+    
     /* Unlock protected registers */
     SYS_UnlockReg();
 
