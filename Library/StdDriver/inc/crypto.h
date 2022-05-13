@@ -231,7 +231,7 @@ typedef struct
     uint32_t au32RsaE[128]; /* The exponent of exponentiation words. */
     uint32_t au32RsaP[128]; /* The Factor of Modulus Operation. */
     uint32_t au32RsaQ[128]; /* The Factor of Modulus Operation. */
-    uint32_t au32RsaTmpBlindKey[128]; /* The Temporary Value(blind key) of RSA SCAP. */
+    uint32_t au32RsaTmpBlindKey[128+4]; /* The Temporary Value(blind key) of RSA SCAP. */
 } RSA_BUF_SCAP_T;
 
 /* RSA working buffer for CRT ( + CRT bypass ) + SCAP mode */
