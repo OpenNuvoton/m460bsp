@@ -38,33 +38,40 @@
  * format.
  */
 
-
 struct mad_stream   Stream;
 struct mad_frame    Frame;
 struct mad_synth    Synth;
 
-FIL             mp3FileObject;
-FILINFO         Finfo;
-size_t          ReadSize;
-size_t          Remaining;
-size_t          ReturnSize;
+FILINFO             Finfo;
+size_t              ReadSize;
+size_t              Remaining;
 
+extern FIL          mp3FileObject;
+extern size_t       ReturnSize;
+
+/*---------------------------------------------------------------------------*/
+/* Global variables                                                          */
+/*---------------------------------------------------------------------------*/
 // I2S PCM buffer x2
-signed int aPCMBuffer[2][PCM_BUFFER_SIZE];
+int32_t g_ai32PCMBuffer[2][PCM_BUFFER_SIZE];
 // File IO buffer for MP3 library
-unsigned char MadInputBuffer[FILE_IO_BUFFER_SIZE + MAD_BUFFER_GUARD];
+uint8_t g_au8MadInputBuffer[FILE_IO_BUFFER_SIZE + MAD_BUFFER_GUARD];
 // buffer full flag x2
-volatile uint8_t aPCMBuffer_Full[2] = {0, 0};
+volatile uint8_t g_au8PCMBuffer_Full[2] = {0, 0};
 // audio information structure
 struct AudioInfoObject audioInfo;
 
-// Parse MP3 header and get some informations
+/*---------------------------------------------------------------------------*/
+/* Functions                                                                 */
+/*---------------------------------------------------------------------------*/
+/* Parse MP3 header and get some informations */
 void MP3_ParseHeaderInfo(uint8_t *pFileName)
 {
     FRESULT res;
     uint32_t fptr = 0;
 
     res = f_open(&mp3FileObject, (void *)pFileName, FA_OPEN_EXISTING | FA_READ);
+
     if(res == FR_OK)
     {
         printf("file is opened!!\r\n");
@@ -73,20 +80,22 @@ void MP3_ParseHeaderInfo(uint8_t *pFileName)
 
         while(1)
         {
-            res = f_read(&mp3FileObject, (char *)(&MadInputBuffer[0]), FILE_IO_BUFFER_SIZE, &ReturnSize);
+            res = f_read(&mp3FileObject, (int8_t *)(&g_au8MadInputBuffer[0]), FILE_IO_BUFFER_SIZE, &ReturnSize);
 
-            //parsing MP3 header
-            mp3CountV1L3Headers((unsigned char *)(&MadInputBuffer[0]), ReturnSize);
+            /* Parsing MP3 header */
+            mp3CountV1L3Headers((uint8_t *)(&g_au8MadInputBuffer[0]), ReturnSize);
+
             if(audioInfo.mp3SampleRate != 0)
-                // Got the header and sampling rate
+                /* Got the header and sampling rate */
                 break;
 
-            // ID3 may too long, try to parse following data
-            // but only forward file point to half of buffer to prevent the header is
-            // just right at the boundry of buffer
+            /* ID3 may too long, try to parse following data */
+            /* but only forward file point to half of buffer to prevent the header is */
+            /* just right at the boundry of buffer */
             fptr += FILE_IO_BUFFER_SIZE / 2;
+
             if(fptr >= audioInfo.playFileSize)
-                // Fail to find header
+                /* Fail to find header */
                 break;
 
             f_lseek(&mp3FileObject, fptr);
@@ -97,6 +106,7 @@ void MP3_ParseHeaderInfo(uint8_t *pFileName)
         //printf("Open File Error\r\n");
         return;
     }
+
     f_close(&mp3FileObject);
 
     printf("====[MP3 Info]======\r\n");
@@ -104,11 +114,10 @@ void MP3_ParseHeaderInfo(uint8_t *pFileName)
     printf("SampleRate = %d\r\n", audioInfo.mp3SampleRate);
     printf("BitRate = %d\r\n", audioInfo.mp3BitRate);
     printf("Channel = %d\r\n", audioInfo.mp3Channel);
-    printf("PlayTime = %d\r\n", audioInfo.mp3PlayTime);
     printf("=====================\r\n");
 }
 
-// Enable I2S TX with PDMA function
+/* Enable I2S TX with PDMA function */
 void StartPlay(void)
 {
     printf("Start playing ...\n");
@@ -116,11 +125,11 @@ void StartPlay(void)
     I2S_ENABLE_TXDMA(I2S0);
     I2S_ENABLE_TX(I2S0);
 
-    // enable sound output
+    /* Enable sound output */
     audioInfo.mp3Playing = 1;
 }
 
-// Disable I2S TX with PDMA function
+/* Disable I2S TX with PDMA function */
 void StopPlay(void)
 {
     I2S_DISABLE_TXDMA(I2S0);
@@ -128,12 +137,12 @@ void StopPlay(void)
 
     PDMA_Close(PDMA0);
 
-    // disable sound output
+    /* Disable sound output */
     audioInfo.mp3Playing = 0;
-    printf("Stop ...\n");
+    printf("Stop ...\n\n");
 }
 
-// MP3 decode player
+/* MP3 decode player */
 void MP3Player(void)
 {
     FRESULT res;
@@ -141,42 +150,38 @@ void MP3Player(void)
     uint8_t *GuardPtr;
     volatile uint8_t u8PCMBufferTargetIdx = 0;
     volatile uint32_t pcmbuf_idx, i;
-    volatile unsigned int Mp3FileOffset = 0;
+    volatile uint32_t Mp3FileOffset = 0;
     uint16_t sampleL, sampleR;
 
     pcmbuf_idx = 0;
-    u8PCMBuffer_Playing = 0;
+    g_u8PCMBuffer_Playing = 0;
     memset((void *)&audioInfo, 0, sizeof(audioInfo));
-    memset((void *)MadInputBuffer, 0, sizeof(MadInputBuffer));
-    memset((void *)aPCMBuffer, 0, sizeof(aPCMBuffer));
-    memset((void *)aPCMBuffer_Full, 0, sizeof(aPCMBuffer_Full));
+    memset((void *)g_au8MadInputBuffer, 0, sizeof(g_au8MadInputBuffer));
+    memset((void *)g_ai32PCMBuffer, 0, sizeof(g_ai32PCMBuffer));
+    memset((void *)g_au8PCMBuffer_Full, 0, sizeof(g_au8PCMBuffer_Full));
 
     /* Parse MP3 header */
-    MP3_ParseHeaderInfo(MP3_FILE);
+    MP3_ParseHeaderInfo((uint8_t *)MP3_FILE);
 
-    /* First the structures used by libmad must be initialized. */
+    /* First the structures used by libmad must be initialized */
     mad_stream_init(&Stream);
     mad_frame_init(&Frame);
     mad_synth_init(&Synth);
 
     /* Open MP3 file */
     res = f_open(&mp3FileObject, MP3_FILE, FA_OPEN_EXISTING | FA_READ);
+
     if(res != FR_OK)
     {
         //printf("Open file error \r\n");
         return;
     }
 
-#if (!NAU8822)
-    /* Reset NAU88L25 codec */
-    NAU88L25_Reset();
-#endif
-
     /* Open I2S0 interface and set to slave mode, audio format, I2S format */
     I2S_Open(I2S0, I2S_MODE_SLAVE, 16000, I2S_DATABIT_16, PLAY_FORMAT, I2S_FORMAT_I2S);
     NVIC_EnableIRQ(I2S0_IRQn);
 
-    /* Set PD3 low to enable phone jack on NuMaker board. */
+    /* Set PD3 low to enable phone jack on NuMaker board */
     SYS->GPD_MFP0 &= ~(SYS_GPD_MFP0_PD3MFP_Msk);
     GPIO_SetMode(PD, BIT3, GPIO_MODE_OUTPUT);
     PD3 = 0;
@@ -186,22 +191,11 @@ void MP3Player(void)
     I2S0->CTL0 |= I2S_CTL0_ORDER_Msk;
     I2S0->CTL1 |= I2S_CTL1_PBWIDTH_Msk;
 
-#if NAU8822
     /* Initialize NAU8822 codec */
     NAU8822_Setup();
-#else
-    /* Initialize NAU88L25 codec */
-    CLK_SysTickDelay(20000);
-    NAU88L25_Setup();
-#endif
 
-#if NAU8822
     /* Configure NAU8822 to specific sample rate */
     NAU8822_ConfigSampleRate(audioInfo.mp3SampleRate);
-#else
-    /* Configure NAU88L25 to specific sample rate */
-    NAU88L25_ConfigSampleRate(audioInfo.mp3SampleRate);
-#endif
 
     while(1)
     {
@@ -211,19 +205,20 @@ void MP3Player(void)
             {
                 /* Get the remaining frame */
                 Remaining = Stream.bufend - Stream.next_frame;
-                memmove(MadInputBuffer, Stream.next_frame, Remaining);
-                ReadStart = MadInputBuffer + Remaining;
+                memmove(g_au8MadInputBuffer, Stream.next_frame, Remaining);
+                ReadStart = g_au8MadInputBuffer + Remaining;
                 ReadSize = FILE_IO_BUFFER_SIZE - Remaining;
             }
             else
             {
                 ReadSize = FILE_IO_BUFFER_SIZE,
-                ReadStart = MadInputBuffer,
+                ReadStart = g_au8MadInputBuffer,
                 Remaining = 0;
             }
 
-            /* read the file */
+            /* Read the file */
             res = f_read(&mp3FileObject, ReadStart, ReadSize, &ReturnSize);
+
             if(res != FR_OK)
             {
                 printf("Stop !(%x)\n\r", res);
@@ -236,36 +231,35 @@ void MP3Player(void)
                     goto stop;
             }
 
-            /* if the file is over */
+            /* If the file is over */
             if(ReadSize > ReturnSize)
             {
-                GuardPtr = ReadStart + ReadSize;
+                GuardPtr = ReadStart + ReturnSize;
                 memset(GuardPtr, 0, MAD_BUFFER_GUARD);
-                ReadSize += MAD_BUFFER_GUARD;
+                ReturnSize += MAD_BUFFER_GUARD;
             }
 
             Mp3FileOffset = Mp3FileOffset + ReturnSize;
-            /* Pipe the new buffer content to libmad's stream decoder
-                     * facility.
-            */
-            mad_stream_buffer(&Stream, MadInputBuffer, ReadSize + Remaining);
+            /* Pipe the new buffer content to libmad's stream decoder facility */
+            mad_stream_buffer(&Stream, g_au8MadInputBuffer, ReturnSize + Remaining);
             Stream.error = (enum  mad_error)0;
         }
 
-        /* decode a frame from the mp3 stream data */
+        /* Decode a frame from the mp3 stream data */
         if(mad_frame_decode(&Frame, &Stream))
         {
             if(MAD_RECOVERABLE(Stream.error))
             {
-                /*if(Stream.error!=MAD_ERROR_LOSTSYNC ||
-                   Stream.this_frame!=GuardPtr)
+                /*
+                if(Stream.error!=MAD_ERROR_LOSTSYNC || Stream.this_frame!=GuardPtr)
                 {
-                }*/
+                }
+                */
                 continue;
             }
             else
             {
-                /* the current frame is not full, need to read the remaining part */
+                /* The current frame is not full, need to read the remaining part */
                 if(Stream.error == MAD_ERROR_BUFLEN)
                 {
                     continue;
@@ -274,7 +268,7 @@ void MP3Player(void)
                 {
                     printf("Something error!!\n");
 
-                    /* play the next file */
+                    /* Play the next file */
                     audioInfo.mp3FileEndFlag = 1;
                     goto stop;
                 }
@@ -282,49 +276,48 @@ void MP3Player(void)
         }
 
         /* Once decoded the frame is synthesized to PCM samples. No errors
-        * are reported by mad_synth_frame();
+           are reported by mad_synth_frame();
         */
         mad_synth_frame(&Synth, &Frame);
 
-        //
-        // decode finished, try to copy pcm data to audio buffer
-        //
+        /* decode finished, try to copy pcm data to audio buffer */
 
         if(audioInfo.mp3Playing)
         {
-            //if next buffer is still full (playing), wait until it's empty
-            if(aPCMBuffer_Full[u8PCMBufferTargetIdx] == 1)
-                while(aPCMBuffer_Full[u8PCMBufferTargetIdx]);
+            /* If next buffer is still full (playing), wait until it's empty */
+            if(g_au8PCMBuffer_Full[u8PCMBufferTargetIdx] == 1)
+                while(g_au8PCMBuffer_Full[u8PCMBufferTargetIdx]);
         }
         else
         {
 
-            if((aPCMBuffer_Full[0] == 1) && (aPCMBuffer_Full[1] == 1))          //all buffers are full, wait
+            if((g_au8PCMBuffer_Full[0] == 1) && (g_au8PCMBuffer_Full[1] == 1))          /* All buffers are full, wait */
             {
                 StartPlay();
             }
         }
 
-        for(i = 0; i < (int)Synth.pcm.length; i++)
+        for(i = 0; i < (int32_t)Synth.pcm.length; i++)
         {
             /* Get the left/right samples */
             sampleL = Synth.pcm.samples[0][i];
             sampleR = Synth.pcm.samples[1][i];
 
             /* Fill PCM data to I2S(PDMA) buffer */
-            aPCMBuffer[u8PCMBufferTargetIdx][pcmbuf_idx++] = sampleL;
+            g_ai32PCMBuffer[u8PCMBufferTargetIdx][pcmbuf_idx++] = sampleL;
 
             /* Need change buffer ? */
             if(pcmbuf_idx == PCM_BUFFER_SIZE)
             {
-                aPCMBuffer_Full[u8PCMBufferTargetIdx] = 1;      //set full flag
+                g_au8PCMBuffer_Full[u8PCMBufferTargetIdx] = 1;      /* Set full flag */
                 u8PCMBufferTargetIdx ^= 1;
 
                 pcmbuf_idx = 0;
+
                 //printf("change to ==>%d ..\n", u8PCMBufferTargetIdx);
-                /* if next buffer is still full (playing), wait until it's empty */
-                if((aPCMBuffer_Full[u8PCMBufferTargetIdx] == 1) && (audioInfo.mp3Playing))
-                    while(aPCMBuffer_Full[u8PCMBufferTargetIdx]);
+                /* If next buffer is still full (playing), wait until it's empty */
+                if((g_au8PCMBuffer_Full[u8PCMBufferTargetIdx] == 1) && (audioInfo.mp3Playing))
+                    while(g_au8PCMBuffer_Full[u8PCMBufferTargetIdx]);
             }
         }
     }

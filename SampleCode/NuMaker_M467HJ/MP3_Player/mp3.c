@@ -106,7 +106,6 @@ void MP3_ParseHeaderInfo(uint8_t *pFileName)
     printf("SampleRate = %d\r\n", audioInfo.mp3SampleRate);
     printf("BitRate = %d\r\n", audioInfo.mp3BitRate);
     printf("Channel = %d\r\n", audioInfo.mp3Channel);
-    printf("PlayTime = %d\r\n", audioInfo.mp3PlayTime);
     printf("=====================\r\n");
 }
 
@@ -240,16 +239,16 @@ void MP3Player(void)
             /* if the file is over */
             if(ReadSize > ReturnSize)
             {
-                GuardPtr = ReadStart + ReadSize;
+                GuardPtr = ReadStart + ReturnSize;
                 memset(GuardPtr, 0, MAD_BUFFER_GUARD);
-                ReadSize += MAD_BUFFER_GUARD;
+                ReturnSize += MAD_BUFFER_GUARD;
             }
 
             Mp3FileOffset = Mp3FileOffset + ReturnSize;
             /* Pipe the new buffer content to libmad's stream decoder
                      * facility.
             */
-            mad_stream_buffer(&Stream, MadInputBuffer, ReadSize + Remaining);
+            mad_stream_buffer(&Stream, MadInputBuffer, ReturnSize + Remaining);
             Stream.error = (enum  mad_error)0;
         }
 

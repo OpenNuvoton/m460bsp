@@ -16,42 +16,45 @@ typedef struct mp3Header mp3Header;
 
 extern struct AudioInfoObject audioInfo;
 
-void MP3_DECODE_HEADER(unsigned char *pBytes, struct mp3Header *hdr)
+/*---------------------------------------------------------------------------*/
+/* Functions                                                                 */
+/*---------------------------------------------------------------------------*/
+void MP3_DECODE_HEADER(uint8_t *pu8Bytes, struct mp3Header *hdr)
 {
-    (hdr)->sync     = (pBytes)[0];
+    (hdr)->sync     = (pu8Bytes)[0];
     (hdr)->sync     = (hdr)->sync << 3;
-    (hdr)->sync     |= ((pBytes)[1] & 0xE0) >> 5;
-    (hdr)->version  = ((pBytes)[1] & 0x18) >> 3;
-    (hdr)->layer    = ((pBytes)[1] & 0x06) >> 1;
-    (hdr)->protect  = ((pBytes)[1] & 0x01);
-    (hdr)->bitrate  = ((pBytes)[2] & 0xF0) >> 4;
-    (hdr)->samfreq  = ((pBytes)[2] & 0x0C) >> 2;
-    (hdr)->padding  = ((pBytes)[2] & 0x02) >> 1;
-    (hdr)->private  = ((pBytes)[2] & 0x01);
-    (hdr)->channel  = ((pBytes)[3] & 0xC0) >> 6;
-    (hdr)->mode     = ((pBytes)[3] & 0x30) >> 4;
-    (hdr)->copy     = ((pBytes)[3] & 0x08) >> 3;
-    (hdr)->original = ((pBytes)[3] & 0x04) >> 2;
-    (hdr)->emphasis = ((pBytes)[3] & 0x03);
+    (hdr)->sync     |= ((pu8Bytes)[1] & 0xE0) >> 5;
+    (hdr)->version  = ((pu8Bytes)[1] & 0x18) >> 3;
+    (hdr)->layer    = ((pu8Bytes)[1] & 0x06) >> 1;
+    (hdr)->protect  = ((pu8Bytes)[1] & 0x01);
+    (hdr)->bitrate  = ((pu8Bytes)[2] & 0xF0) >> 4;
+    (hdr)->samfreq  = ((pu8Bytes)[2] & 0x0C) >> 2;
+    (hdr)->padding  = ((pu8Bytes)[2] & 0x02) >> 1;
+    (hdr)->private  = ((pu8Bytes)[2] & 0x01);
+    (hdr)->channel  = ((pu8Bytes)[3] & 0xC0) >> 6;
+    (hdr)->mode     = ((pu8Bytes)[3] & 0x30) >> 4;
+    (hdr)->copy     = ((pu8Bytes)[3] & 0x08) >> 3;
+    (hdr)->original = ((pu8Bytes)[3] & 0x04) >> 2;
+    (hdr)->emphasis = ((pu8Bytes)[3] & 0x03);
 }
 
-int MP3_IS_VALID_HEADER(struct mp3Header *hdr)
+int32_t MP3_IS_VALID_HEADER(struct mp3Header *hdr)
 {
-    return((((hdr)->sync == 0x7FF)
-            && ((hdr)->bitrate != 0x0f)
-            && ((hdr)->version != 0x01)
-            && ((hdr)->layer != 0x00)
-            && ((hdr)->samfreq != 0x03)
-            && ((hdr)->emphasis != 0x02)) ? 1 : 0);
+    return ((((hdr)->sync == 0x7FF)
+             && ((hdr)->bitrate != 0x0f)
+             && ((hdr)->version != 0x01)
+             && ((hdr)->layer != 0x00)
+             && ((hdr)->samfreq != 0x03)
+             && ((hdr)->emphasis != 0x02)) ? 1 : 0);
 }
 
-int MP3_IS_V1L3_HEADER(struct mp3Header *hdr)
+int32_t MP3_IS_V1L3_HEADER(struct mp3Header *hdr)
 {
-    return(((hdr)->layer == 0x01)
-           && (((hdr)->version == 0x03) || ((hdr)->version == 0x02)) ? 1 : 0);
+    return (((hdr)->layer == 0x01)
+            && (((hdr)->version == 0x03) || ((hdr)->version == 0x02)) ? 1 : 0);
 }
 
-static int mp3GetFrameLength(mp3Header *pHdr)
+static int32_t mp3GetFrameLength(mp3Header *pHdr)
 {
     int pL1Rates[] =   {   0,  32,  64,  96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448,  -1 };
     int pL2Rates[] =   {   0,  32,  48,  56,  64,  80,  96, 112, 128, 160, 192, 224, 256, 320, 384,  -1 };
@@ -151,7 +154,7 @@ static void mp3PrintHeader(mp3Header *pHdr)
 
 }
 
-int mp3CountV1L3Headers(unsigned char *pBytes, size_t size)
+int32_t mp3CountV1L3Headers(uint8_t *pu8Bytes, size_t size)
 {
     int             offset              = 0;
     int             result              = 0;
@@ -159,11 +162,11 @@ int mp3CountV1L3Headers(unsigned char *pBytes, size_t size)
 
     while(size >= 4)
     {
-        if((pBytes[0] == 0xFF)
-                && ((pBytes[1] & 0xE0) == 0xE0)
+        if((pu8Bytes[0] == 0xFF)
+                && ((pu8Bytes[1] & 0xE0) == 0xE0)
           )
         {
-            MP3_DECODE_HEADER(pBytes, &header);
+            MP3_DECODE_HEADER(pu8Bytes, &header);
 
             if(MP3_IS_VALID_HEADER(&header))
             {
@@ -171,7 +174,7 @@ int mp3CountV1L3Headers(unsigned char *pBytes, size_t size)
 
                 if((framelength > 0) && (size > framelength + 4))
                 {
-                    MP3_DECODE_HEADER(pBytes + framelength, &header);
+                    MP3_DECODE_HEADER(pu8Bytes + framelength, &header);
 
                     if(MP3_IS_VALID_HEADER(&header))
                     {
@@ -184,7 +187,7 @@ int mp3CountV1L3Headers(unsigned char *pBytes, size_t size)
         }
 
         offset++;
-        pBytes++;
+        pu8Bytes++;
         size--;
     }
 

@@ -1,8 +1,8 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V3.00
- * @brief    MP3 recorder sample records sound to MP3 files stored on SD memory
- *           card and press button to play it.
+ * @brief    MP3 recorder sample encodes sound to MP3 format and stores it to
+ *           a microSD card, and this MP3 file can also be played.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
@@ -15,23 +15,28 @@
 #include "ff.h"
 #include "l3.h"
 
-FATFS FatFs[FF_VOLUMES];               /* File system object for logical drive */
-
+/*---------------------------------------------------------------------------*/
+/* Global variables                                                          */
+/*---------------------------------------------------------------------------*/
 #ifdef __ICCARM__
 #pragma data_alignment=32
-BYTE Buff[16] ;                   /* Working buffer */
-DMA_DESC_T DMA_DESC[2];
+DMA_DESC_T DMA_DESC[2] @0x20003000;
 #else
-BYTE Buff[16] __attribute__((aligned(32)));       /* Working buffer */
 DMA_DESC_T DMA_DESC[2] __attribute__((aligned(32)));
 #endif
 
-uint8_t bAudioPlaying = 0;
-extern signed int aPCMBuffer[2][PCM_BUFFER_SIZE];
+volatile uint32_t u32BTN0 = 0xF, u32BTN1 = 0xF;
+volatile uint32_t g_u32RecordStart = 0, g_u32RecordDone = 0;
+volatile uint32_t g_u32WriteSDToggle = 0;
 
-volatile uint32_t u32SW2 = 0xF, u32SW3 = 0xF;
-volatile uint32_t u32StartRecord = 1, u32StopRecord = 0, u32RecordDone = 0;
+extern shine_config_t config;
+extern shine_t        s;
+extern int32_t        samples_per_pass;
+extern FIL            mp3FileObject;
 
+/*---------------------------------------------------------------------------*/
+/* Functions                                                                 */
+/*---------------------------------------------------------------------------*/
 /*---------------------------------------------------------*/
 /* User Provided RTC Function for FatFs module             */
 /*---------------------------------------------------------*/
@@ -51,8 +56,7 @@ unsigned long get_fattime(void)
 
 void SDH0_IRQHandler(void)
 {
-    unsigned int volatile isr;
-    unsigned int volatile ier;
+    uint32_t volatile u32Isr;
 
     // FMI data abort interrupt
     if(SDH0->GINTSTS & SDH_GINTSTS_DTAIF_Msk)
@@ -62,25 +66,28 @@ void SDH0_IRQHandler(void)
     }
 
     //----- SD interrupt status
-    isr = SDH0->INTSTS;
-    if(isr & SDH_INTSTS_BLKDIF_Msk)
+    u32Isr = SDH0->INTSTS;
+
+    if(u32Isr & SDH_INTSTS_BLKDIF_Msk)
     {
         // block down
         SD0.DataReadyFlag = TRUE;
         SDH0->INTSTS = SDH_INTSTS_BLKDIF_Msk;
     }
 
-    if(isr & SDH_INTSTS_CDIF_Msk)    // port 0 card detect
+    if(u32Isr & SDH_INTSTS_CDIF_Msk)    // port 0 card detect
     {
         //----- SD interrupt status
         // it is work to delay 50 times for SD_CLK = 200KHz
         {
             int volatile i;         // delay 30 fail, 50 OK
-            for(i = 0; i < 0x500; i++); // delay to make sure got updated value from REG_SDISR.
-            isr = SDH0->INTSTS;
+
+            for(i = 0; i < 0x500; i++);  // delay to make sure got updated value from REG_SDISR.
+
+            u32Isr = SDH0->INTSTS;
         }
 
-        if(isr & SDH_INTSTS_CDSTS_Msk)
+        if(u32Isr & SDH_INTSTS_CDSTS_Msk)
         {
             printf("\n***** card remove !\n");
             SD0.IsCardInsert = FALSE;   // SDISR_CD_Card = 1 means card remove for GPIO mode
@@ -97,14 +104,14 @@ void SDH0_IRQHandler(void)
     }
 
     // CRC error interrupt
-    if(isr & SDH_INTSTS_CRCIF_Msk)
+    if(u32Isr & SDH_INTSTS_CRCIF_Msk)
     {
-        if(!(isr & SDH_INTSTS_CRC16_Msk))
+        if(!(u32Isr & SDH_INTSTS_CRC16_Msk))
         {
             //printf("***** ISR sdioIntHandler(): CRC_16 error !\n");
             // handle CRC error
         }
-        else if(!(isr & SDH_INTSTS_CRC7_Msk))
+        else if(!(u32Isr & SDH_INTSTS_CRC7_Msk))
         {
             if(!SD0.R3Flag)
             {
@@ -112,24 +119,25 @@ void SDH0_IRQHandler(void)
                 // handle CRC error
             }
         }
+
         SDH0->INTSTS = SDH_INTSTS_CRCIF_Msk;      // clear interrupt flag
     }
 
-    if(isr & SDH_INTSTS_DITOIF_Msk)
+    if(u32Isr & SDH_INTSTS_DITOIF_Msk)
     {
         printf("***** ISR: data in timeout !\n");
         SDH0->INTSTS |= SDH_INTSTS_DITOIF_Msk;
     }
 
     // Response in timeout interrupt
-    if(isr & SDH_INTSTS_RTOIF_Msk)
+    if(u32Isr & SDH_INTSTS_RTOIF_Msk)
     {
         printf("***** ISR: response in timeout !\n");
         SDH0->INTSTS |= SDH_INTSTS_RTOIF_Msk;
     }
 }
 
-void SD_Inits(void)
+void SD_Init(void)
 {
     /* Select multi-function pins */
     SET_SD0_DAT0_PE2();
@@ -141,9 +149,11 @@ void SD_Inits(void)
     SET_SD0_nCD_PD13();
 
     /* Select IP clock source */
-    CLK_SetModuleClock(SDH0_MODULE, CLK_CLKSEL0_SDH0SEL_PLL_DIV2, CLK_CLKDIV0_SDH0(5));
+    CLK_SetModuleClock(SDH0_MODULE, CLK_CLKSEL0_SDH0SEL_PLL_DIV2, CLK_CLKDIV0_SDH0(2));
     /* Enable IP clock */
     CLK_EnableModuleClock(SDH0_MODULE);
+
+    NVIC_SetPriority(SDH0_IRQn, 3);
 }
 
 void SYS_Init(void)
@@ -243,12 +253,12 @@ void I2C2_Init(void)
 void PDMA_Init(void)
 {
     DMA_DESC[0].ctl = ((PCM_BUFFER_SIZE - 1) << PDMA_DSCT_CTL_TXCNT_Pos) | PDMA_WIDTH_32 | PDMA_SAR_INC | PDMA_DAR_FIX | PDMA_REQ_SINGLE | PDMA_OP_SCATTER;
-    DMA_DESC[0].src = (uint32_t)&aPCMBuffer[0][0];
+    DMA_DESC[0].src = (uint32_t)&g_ai32PCMBuffer[0][0];
     DMA_DESC[0].dest = (uint32_t)&I2S0->TXFIFO;
     DMA_DESC[0].offset = (uint32_t)&DMA_DESC[1] - (PDMA0->SCATBA);
 
     DMA_DESC[1].ctl = ((PCM_BUFFER_SIZE - 1) << PDMA_DSCT_CTL_TXCNT_Pos) | PDMA_WIDTH_32 | PDMA_SAR_INC | PDMA_DAR_FIX | PDMA_REQ_SINGLE | PDMA_OP_SCATTER;
-    DMA_DESC[1].src = (uint32_t)&aPCMBuffer[1][0];
+    DMA_DESC[1].src = (uint32_t)&g_ai32PCMBuffer[1][0];
     DMA_DESC[1].dest = (uint32_t)&I2S0->TXFIFO;
     DMA_DESC[1].offset = (uint32_t)&DMA_DESC[0] - (PDMA0->SCATBA);
 
@@ -263,14 +273,13 @@ void GPH_IRQHandler(void)
 {
     volatile uint32_t u32Temp;
 
-    /* To check if PH.0 interrupt occurred */
-    if(GPIO_GET_INT_FLAG(PH, BIT0))
+    /* To check if PH.1 interrupt occurred */
+    if(GPIO_GET_INT_FLAG(PH, BIT1))
     {
-        GPIO_CLR_INT_FLAG(PH, BIT0);
+        GPIO_CLR_INT_FLAG(PH, BIT1);
 
-        u32SW2 = 0;
-        u32RecordDone = 1;
-        I2S_DISABLE_RX(I2S0);
+        if(g_u32RecordStart == 1)
+            g_u32RecordDone = 1;
     }
     else
     {
@@ -280,6 +289,8 @@ void GPH_IRQHandler(void)
         printf("Un-expected interrupts.\n");
     }
 }
+
+#ifndef REC_IN_RT
 
 static int32_t Clear4Bytes(uint32_t u32StartAddr)
 {
@@ -297,18 +308,27 @@ static int32_t ClearHyperRAM(uint32_t u32StartAddr, uint32_t u32EndAddr)
         {
             return -1;
         }
+
         u32Data = inp32(i);
+
         if(u32Data != 0)
         {
             printf("ClearHyperRAM fail!! Read address:0x%08x  data::0x%08x  expect: 0\n",  i, u32Data);
             return -1;
         }
     }
+
     return 0;
 }
 
+#endif
+
 int32_t main(void)
 {
+    int32_t i32Written;
+    uint8_t *pu8Data;
+    uint32_t u32PrintFlag = 1;
+
     TCHAR sd_path[] = { '0', ':', 0 };    /* SD drive started from 0 */
 
     /* Unlock protected registers */
@@ -318,27 +338,32 @@ int32_t main(void)
     SYS_Init();
 
     /* Init SD */
-    SD_Inits();
+    SD_Init();
 
     /* Init UART to 115200-8n1 for print message */
     UART_Open(UART0, 115200);
 
     printf("+-----------------------------------------------------------------------+\n");
-    printf("|                  MP3 Recorder Sample with audio codec                 |\n");
+    printf("|                  MP3 Recorder Sample with Audio Codec                 |\n");
     printf("+-----------------------------------------------------------------------+\n");
-    printf(" Please insert SD card \n");
-    printf(" Press SW2 button to start recording and press again to stop recording \n");
-    printf(" Press SW3 button to play MP3 files on SD card \n");
+    printf(" Please insert a microSD card\n");
+    printf(" Press BTN0 button to start recording and press BTN1 button to stop recording\n");
+    printf(" Press BTN1 button can also play MP3 file from microSD card\n");
 
     /* Configure PH.0 and PH.1 as Output mode */
     GPIO_SetMode(PH, BIT0, GPIO_MODE_OUTPUT);
     GPIO_SetMode(PH, BIT1, GPIO_MODE_OUTPUT);
 
+    /* Enable PH.1 interrupt by falling edge trigger */
+    GPIO_EnableInt(PH, 1, GPIO_INT_FALLING);
+    NVIC_EnableIRQ(GPH_IRQn);
+    NVIC_SetPriority(GPH_IRQn, (1 << __NVIC_PRIO_BITS) - 2);
+
     /* Configure FATFS */
     SDH_Open_Disk(SDH0, CardDetect_From_GPIO);
     f_chdrive(sd_path);          /* Set default path */
 
-    /* Init I2C2 to access codec */
+    /* Init I2C2 to access audio codec */
     I2C2_Init();
 
     /* Select source from HXT(12MHz) */
@@ -346,45 +371,121 @@ int32_t main(void)
 
     while(1)
     {
-        u32SW2 = (PH->PIN & (1 << 0)) ? 0 : 1;
-        u32SW3 = (PH->PIN & (1 << 1)) ? 0 : 1;
+        /* Read pin state of PH.0 and PH.1 */
+        u32BTN0 = (PH->PIN & (1 << 0)) ? 0 : 1;
+        u32BTN1 = (PH->PIN & (1 << 1)) ? 0 : 1;
 
         if(SD0.IsCardInsert == TRUE)
         {
-            if((u32SW2 == 1) && (u32StartRecord == 1) && (u32RecordDone == 0))
-            {
-                GPIO_EnableInt(PH, 0, GPIO_INT_FALLING);
-                NVIC_EnableIRQ(GPH_IRQn);
-                NVIC_SetPriority(GPH_IRQn, 3);
+#ifdef REC_IN_RT
 
-                if(u32StartRecord == 1)
-                {
-                    /* Clear HyperRAM */
-                    if(ClearHyperRAM(HYPER_RAM_MEM_MAP, HYPER_RAM_MEM_MAP + 0x800000) < 0)
-                        return -1;
-                    Recorder_Init();
-                    u32StartRecord = 0;
-                }
-                printf("Start recording ...\n\n");
-                /* Record MP3 */
-                MP3Recorder();
-            }
-            else
+            /* Inform users about microSD card usage */
+            if((u32PrintFlag == 1) && (g_u32ErrorFlag != 0))
             {
-                if(u32RecordDone == 1)
+                printf("\n\nSome sounds have been lost due to poor microSD card performance.\nPlease replace !!!\n\n");
+
+                u32PrintFlag = 0;
+                g_u32ErrorFlag = 0;
+            }
+
+            /* Encode sound data to MP3 format and store in microSD card */
+            if(g_u32RecordStart == 1)
+            {
+                if((g_u32WriteSDToggle == 0) && (g_u32BuffPos1 > 0) && (g_u32BuffPos1 == ((samples_per_pass * config.wave.channels) >> 1)))
                 {
-                    GPIO_DisableInt(PH, 0);
-                    u32StartRecord = 1;
-                    u32StopRecord = 1;
-                    Recorder_Uninit();
-                    u32RecordDone = 0;
+                    pu8Data = shine_encode_buffer_interleaved(s, (int16_t *)(&g_au32PcmBuff1), (int *)&i32Written);
+
+                    if(Write_MP3(i32Written, pu8Data, &config) != i32Written)
+                    {
+                        printf("shineenc: write error\n");
+                    }
+
+                    g_u32BuffPos1 = 0;
+                    g_u32WriteSDToggle = 1;
                 }
+                else if((g_u32WriteSDToggle == 1) && (g_u32BuffPos2 > 0) && (g_u32BuffPos2 == ((samples_per_pass * config.wave.channels) >> 1)))
+                {
+                    pu8Data = shine_encode_buffer_interleaved(s, (int16_t *)(&g_au32PcmBuff2), (int *)&i32Written);
+
+                    if(Write_MP3(i32Written, pu8Data, &config) != i32Written)
+                    {
+                        printf("shineenc: write error\n");
+                    }
+
+                    g_u32BuffPos2 = 0;
+                    g_u32WriteSDToggle = 0;
+                }
+            }
+
+#endif
+
+            if((u32BTN0 == 1) && (g_u32RecordStart == 0) && (g_u32RecordDone == 0))
+            {
+#ifndef REC_IN_RT
+
+                /* Clear HyperRAM */
+                if(ClearHyperRAM(HYPER_RAM_MEM_MAP, HYPER_RAM_MEM_MAP + 0x800000) < 0)
+                    return -1;
+
+#endif
+
+                /* Configure recording condition, init I2S, audio codec and encoder */
+                Recorder_Init();
+
+#ifdef REC_IN_RT
+
+                printf("Start recording ... (online)\n");
+
+#else
+
+                printf("Start recording ... (offline)\n");
+
+#endif
+
+                /* Enable I2S RX function to receive sound data */
+                I2S_ENABLE_RX(I2S0);
+
+                g_u32RecordStart = 1;
+
+#ifdef REC_IN_RT
+
+                u32PrintFlag = 1;
+
+                printf("Encode and write out the MP3 file ");
+
+#endif
+            }
+
+            /* Play MP3 */
+            if((u32BTN1 == 1) && (g_u32RecordStart == 0))
+            {
+                MP3Player();
+            }
+
+            if(((u32BTN1 == 1) && (g_u32RecordDone == 1)) || (g_u32RecordDone == 1))
+            {
+                /* Disable I2S RX function */
+                I2S_DISABLE_RX(I2S0);
+
+#ifndef REC_IN_RT
+
+                /* Encode sound data to MP3 format and store in microSD card */
+                MP3Recorder();
+
+#endif
+
+                /* Close encoder */
+                shine_close(s);
+
+                f_close(&mp3FileObject);
+
+                printf(" Done !\n\n");
+
+                g_u32RecordStart = 0;
+                g_u32RecordDone = 0;
 
                 /* Play MP3 */
-                if(u32SW3 == 1)
-                {
-                    MP3Player();
-                }
+                MP3Player();
             }
         }
     }

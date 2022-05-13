@@ -159,7 +159,7 @@ int32_t main(void)
     printf("+--------------------------------------------------------+\n");
 
     printf("Mouse draws circle on the screen.\n");
-    printf("If PH.0 = 0 or press SW2 button, just report it is key 'a'.\n");
+    printf("If PH.0 = 0 or press BTN0 button, just report it is key 'a'.\n");
 
     USBD_Open(&gsInfo, HID_ClassRequest, NULL);
 

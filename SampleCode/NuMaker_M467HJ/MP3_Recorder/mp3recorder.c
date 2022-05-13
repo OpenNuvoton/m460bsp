@@ -13,23 +13,23 @@
 #include "config.h"
 #include "diskio.h"
 #include "ff.h"
-
-/* Required headers from libshine. */
 #include "l3.h"
 
+/*---------------------------------------------------------------------------*/
+/* Global variables                                                          */
+/*---------------------------------------------------------------------------*/
+static int32_t i32Cnt = 0;
 shine_config_t config;
 shine_t        s;
-int samples_per_pass;
+int32_t        samples_per_pass;
+FIL            mp3FileObject;
+size_t         ReturnSize;
 
-static int32_t i32Cnt = 0;
-
-extern FIL             mp3FileObject;
-extern size_t          ReturnSize;
-
-extern uint32_t volatile g_u32BuffPos;
-
+/*---------------------------------------------------------------------------*/
+/* Functions                                                                 */
+/*---------------------------------------------------------------------------*/
 /* Write out the MP3 file */
-int write_mp3(long bytes, void *buffer, void *config)
+int32_t Write_MP3(long bytes, void *buffer, void *config)
 {
     f_write(&mp3FileObject, buffer, bytes, &ReturnSize);
 
@@ -75,11 +75,6 @@ void Recorder_Init(void)
     NVIC_EnableIRQ(I2S0_IRQn);
     NVIC_SetPriority(I2S0_IRQn, 4);
 
-    /* Set PD3 low to enable phone jack on NuMaker board. */
-    SYS->GPD_MFP0 &= ~(SYS_GPD_MFP0_PD3MFP_Msk);
-    GPIO_SetMode(PD, BIT3, GPIO_MODE_OUTPUT);
-    PD3 = 0;
-
     /* Set MCLK and enable MCLK */
     I2S_EnableMCLK(I2S0, 12000000);
 
@@ -92,10 +87,11 @@ void Recorder_Init(void)
     /* Configure NAU8822 to specific sample rate */
     NAU8822_ConfigSampleRate(REC_SAMPLE_RATE);
 
-    /* Enable Rx threshold level interrupt */
+    /* Enable RX threshold level interrupt */
     I2S_EnableInt(I2S0, I2S_IEN_RXTHIEN_Msk);
 
     res = f_open(&mp3FileObject, MP3_FILE, FA_CREATE_ALWAYS | FA_WRITE);
+
     if(res != FR_OK)
     {
         printf("Open file error!\n");
@@ -108,6 +104,7 @@ void Recorder_Init(void)
         config.wave.channels = 1;
     else
         config.wave.channels = 2;
+
     config.wave.samplerate = REC_SAMPLE_RATE;
     config.mpeg.bitr = REC_BIT_RATE;
 
@@ -115,56 +112,41 @@ void Recorder_Init(void)
     if(shine_check_config(config.wave.samplerate, config.mpeg.bitr) < 0)
         printf("Unsupported samplerate/bitrate configuration.");
 
-    /* Set to stereo mode if wave data is stereo, mono otherwise. */
+    /* Set to stereo mode if wave data is stereo, mono otherwise */
     if(config.wave.channels > 1)
         config.mpeg.mode = STEREO;
     else
         config.mpeg.mode = MONO;
-}
 
-void MP3Recorder(void)
-{
     /* Initiate encoder */
     s = shine_initialise(&config);
 
     check_config(&config);
 
     samples_per_pass = shine_samples_per_pass(s);
-
-    /* Enable I2S Rx function to receive data */
-    I2S_ENABLE_RX(I2S0);
 }
 
-void Recorder_Uninit(void)
+void MP3Recorder(void)
 {
-    int            written;
-    unsigned char  *data;
-    uint32_t       u32BuffPos = 0;
-    uint32_t       u32Len;
-
-    I2S_DISABLE_RX(I2S0);
+    int32_t i32Written;
+    uint8_t *pu8Data;
+    uint32_t u32BuffPos = 0;
+    uint32_t u32Len;
 
     u32Len = samples_per_pass * config.wave.channels;
 
+    printf("Stop ...\n");
     printf("Encode and write out the MP3 file ");
-    for(u32BuffPos = 0; u32BuffPos < g_u32BuffPos; u32BuffPos += u32Len)
+
+    for(u32BuffPos = 0; u32BuffPos < g_u32BuffPos; u32BuffPos += 2 * u32Len)
     {
-        data = shine_encode_buffer_interleaved(s, (int16_t *)(HYPER_RAM_MEM_MAP + u32BuffPos), &written);
-        if(write_mp3(written, data, &config) != written)
+        pu8Data = shine_encode_buffer_interleaved(s, (int16_t *)(HYPER_RAM_MEM_MAP + u32BuffPos), (int *)&i32Written);
+
+        if(Write_MP3(i32Written, pu8Data, &config) != i32Written)
         {
             printf("shineenc: write error\n");
         }
     }
+
     g_u32BuffPos = 0;
-
-    /* Flush and write remaining data. */
-    data = shine_flush(s, &written);
-    write_mp3(written, data, &config);
-
-    /* Close encoder. */
-    shine_close(s);
-
-    f_close(&mp3FileObject);
-
-    printf(" Done !\n\n");
 }

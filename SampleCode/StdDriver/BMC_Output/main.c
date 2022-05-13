@@ -125,8 +125,10 @@ void SYS_Init(void)
     SET_UART0_TXD_PB13();
 
     /* Configure BMC related multi-function pins for group 0. */
-    SYS->GPB_MFP1 = (SYS->GPB_MFP1 & (~0x00001F1F)) | 0x00001414;
-    SYS->GPB_MFP0 = (SYS->GPB_MFP0 & (~0x1F1F0000)) | 0x14140000;
+    SET_BMC0_PB5();
+    SET_BMC1_PB4();
+    SET_BMC2_PB3();
+    SET_BMC3_PB2();
 }
 
 void BMC_Init(void)

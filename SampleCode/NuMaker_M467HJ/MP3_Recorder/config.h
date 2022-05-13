@@ -9,36 +9,37 @@
 #ifndef PROJECT_CONFIG_H
 #define PROJECT_CONFIG_H
 
-#define NAU8822     1
+/*---------------------------------------------------------------------------*/
+/* Define                                                                    */
+/*---------------------------------------------------------------------------*/
+/* Defined when online recording; undefined when offline recording. */
+#define REC_IN_RT
 
 /*
-For shine MP3 encoder, the following cases are not supported when audio format is mono mode:
+For shine MP3 encoder, the following cases are supported when audio format is mono mode.
+If user wants to implement stereo mode, the sampling rate and bit rate can reach 48 kHz and 192 kbps.
  --------------------------------------
 | Sampling rate (Hz) | Bit rate (kbps) |
 |--------------------------------------|
-|        32000       |      >= 256     |
+|        32000       |      <= 128     |
 |--------------------------------------|
-|        16000       |      >= 128     |
+|        16000       |      <=  64     |
 |--------------------------------------|
-|         8000       |      >=  64     |
+|         8000       |      <=  32     |
  --------------------------------------
 */
 #define REC_FORMAT          I2S_MONO    /* The record audio format. */
-#define REC_SAMPLE_RATE     32000       /* The record sampling rate. */
+#define REC_SAMPLE_RATE     16000       /* The record sampling rate. */
 #define REC_BIT_RATE        64          /* The record bit rate. */
 
 #define PLAY_FORMAT         REC_FORMAT  /* The play audio format. Must be the same with REC_FORMAT */
 
-/*---------------------------------------------------------------------------------------------------------*/
-/* Global variables                                                                                        */
-/*---------------------------------------------------------------------------------------------------------*/
 #define USE_SDH
-//#define USE_USBH
+
+#define MP3_FILE            "0:\\test.mp3"
 
 #define PCM_BUFFER_SIZE        2304
 #define FILE_IO_BUFFER_SIZE    4096
-
-#define MP3_FILE    "0:\\test.mp3"
 
 struct mp3Header
 {
@@ -76,22 +77,29 @@ typedef struct dma_desc_t
     uint32_t offset;
 } DMA_DESC_T;
 
+extern volatile uint32_t g_au32PcmBuff1[PCM_BUFFER_SIZE];
+extern volatile uint32_t g_au32PcmBuff2[PCM_BUFFER_SIZE];
 
-void PDMA_Reset_SCTable(uint8_t id);
+extern volatile uint32_t g_u32RecordDone;
+extern volatile uint32_t g_u32BuffPos;
+extern volatile uint32_t g_u32BuffPos1, g_u32BuffPos2;
+extern volatile uint32_t g_u32WriteSDToggle;
+extern volatile uint32_t g_u32ErrorFlag;
+
+extern int32_t g_ai32PCMBuffer[2][PCM_BUFFER_SIZE];
+extern volatile uint8_t g_au8PCMBuffer_Full[2];
+extern volatile uint8_t g_u8PCMBuffer_Playing;
+
+void I2C_WriteNAU8822(uint8_t u8Addr, uint16_t u16Data);
 void NAU8822_ConfigSampleRate(uint32_t u32SampleRate);
-void NAU88L25_ConfigSampleRate(uint32_t u32SampleRate);
+void NAU8822_Setup(void);
 
-int mp3CountV1L3Headers(unsigned char *pBytes, size_t size);
-extern void PDMA_Init(void);
-extern void NAU8822_Setup(void);
-extern void NAU88L25_Setup(void);
-extern void NAU88L25_Reset(void);
-extern void MP3Player(void);
-extern volatile uint8_t u8PCMBuffer_Playing;
+void Recorder_Init(void);
+void MP3Recorder(void);
+int32_t Write_MP3(long bytes, void *buffer, void *config);
 
-extern void Recorder_Init(void);
-extern void Recorder_Uninit(void);
-extern void MP3Recorder(void);
-extern int write_mp3(long bytes, void *buffer, void *config);
+int32_t mp3CountV1L3Headers(unsigned char *pu8Bytes, size_t size);
+void PDMA_Init(void);
+void MP3Player(void);
 
 #endif
