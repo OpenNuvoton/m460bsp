@@ -380,7 +380,6 @@ extern "C"
 /*  CLKDIV3 constant definitions.                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
 #define CLK_CLKDIV3_VSENSE(x)            (((x) - 1UL) << CLK_CLKDIV3_VSENSEDIV_Pos) /*!< CLKDIV3 Setting for VSENSE clock divider. It could be 1~256 \hideinitializer */
-#define CLK_CLKDIV3_EMAC0(x)             (((x) - 1UL) << CLK_CLKDIV3_EMAC0DIV_Pos)  /*!< CLKDIV3 Setting for EMAC0 clock divider. It could be 1~256 \hideinitializer */
 #define CLK_CLKDIV3_SDH1(x)              (((x) - 1UL) << CLK_CLKDIV3_SDH1DIV_Pos)   /*!< CLKDIV3 Setting for SDH1 clock divider. It could be 1~256 \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -509,7 +508,7 @@ extern "C"
 
 #define EMAC0_MODULE   (MODULE_APBCLK_ENC( 0UL)|MODULE_IP_EN_Pos_ENC((uint32_t)CLK_AHBCLK0_EMAC0CKEN_Pos)|\
                         MODULE_CLKSEL_ENC(  NA)|MODULE_CLKSEL_Msk_ENC(    NA)|MODULE_CLKSEL_Pos_ENC(  NA)|\
-                        MODULE_CLKDIV_ENC( 3UL)|MODULE_CLKDIV_Msk_ENC(0x0FUL)|MODULE_CLKDIV_Pos_ENC(16UL))  /*!< EMAC0 Module */
+                        MODULE_CLKDIV_ENC(  NA)|MODULE_CLKDIV_Msk_ENC(    NA)|MODULE_CLKDIV_Pos_ENC(  NA))  /*!< EMAC0 Module */
 
 #define SDH0_MODULE    (MODULE_APBCLK_ENC( 0UL)|MODULE_IP_EN_Pos_ENC((uint32_t)CLK_AHBCLK0_SDH0CKEN_Pos)|\
                         MODULE_CLKSEL_ENC( 0UL)|MODULE_CLKSEL_Msk_ENC(   3UL)|MODULE_CLKSEL_Pos_ENC(20UL)|\

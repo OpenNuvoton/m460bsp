@@ -109,7 +109,7 @@ void UART0_Init(void)
 /**
  * @brief       Calculate the comparator value of new duty by configured period
  *
- * @param       bpwm                  The pointer of the specified BPWM module
+ * @param       bpwm                 The pointer of the specified BPWM module
  *
  * @param       u32ChannelNum        BPWM channel number. Valid values are between 0~5
  *
@@ -154,7 +154,7 @@ int32_t main(void)
 
     printf("\n\nCPU @ %dHz(PLL@ %dHz)\n", SystemCoreClock, PllClock);
     printf("+-----------------------------------------------------------------------------------+\n");
-    printf("|                          BPWM Driver Sample Code                                   |\n");
+    printf("|                          BPWM Driver Sample Code                                  |\n");
     printf("|                                                                                   |\n");
     printf("+-----------------------------------------------------------------------------------+\n");
     printf("  This sample code will use BPWM0 channel 0 to output waveform, and switch duty cycle.\n");

@@ -674,7 +674,7 @@ int32_t SMBusSendByteTest(uint8_t slvaddr)
 
 int32_t SMBusAlertTest(uint8_t slvaddr)
 {
-    uint32_t u32TimeOutCnt= I2C_TIMEOUT;
+    uint32_t u32TimeOutCnt;
 
     g_u8DeviceAddr = slvaddr;
 
@@ -688,11 +688,12 @@ int32_t SMBusAlertTest(uint8_t slvaddr)
     g_u8DataLen0 = 0;
 
     /* Waiting for Get Alert Address */
+    u32TimeOutCnt = I2C_TIMEOUT;
     while(g_u8AlertAddrAck0 == 0)
     {
         if(--u32TimeOutCnt == 0)
         {
-            printf("Wait for I2C transmit finish time-out!\n");
+            printf("Wait for I2C get alert address time-out!\n");
             return -1;
         }
     }
@@ -709,7 +710,7 @@ int32_t SMBusAlertTest(uint8_t slvaddr)
 
 int32_t SMBusDefaultAddressTest(uint8_t slvaddr)
 {
-    uint32_t u32TimeOutCnt= I2C_TIMEOUT;
+    uint32_t u32TimeOutCnt;
 
     g_u8DeviceAddr = slvaddr;
 
@@ -728,6 +729,7 @@ int32_t SMBusDefaultAddressTest(uint8_t slvaddr)
     I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STA);
 
     /* Wait I2C0 transmit finish */
+    u32TimeOutCnt = I2C_TIMEOUT;
     while(g_u8EndFlag == 0)
     {
         if(--u32TimeOutCnt == 0)
@@ -834,8 +836,7 @@ int32_t main(void)
             printf(" == SMBus Send Bytes Protocol test ==\n");
 
             /* SMBus send byte protocol test*/
-            if( SMBusSendByteTest(g_u8SlaveAddr[0]) < 0 )
-                goto lexit;
+            if( SMBusSendByteTest(g_u8SlaveAddr[0]) < 0 ) goto lexit;
 
             printf("\n");
             printf("SMBus transmit data done.\n");
@@ -905,8 +906,7 @@ int32_t main(void)
             printf("I2C0 Get Alert Interrupt Request\n");
 
             /* I2C0 Send Alert Response Address(ARA) to I2C bus */
-            if( SMBusAlertTest(SMBUS_ALERT_RESPONSE_ADDRESS) < 0 )
-                goto lexit;
+            if( SMBusAlertTest(SMBUS_ALERT_RESPONSE_ADDRESS) < 0 ) goto lexit;
 
             /* Printf the Alert Slave address */
             printf("\n");
@@ -959,8 +959,7 @@ int32_t main(void)
             printf("== Simple ARP and Acknowledge by Manual Test ==\n");
 
             /* I2C0 sends Default Address and ARP Command (0x01) to Slave */
-            if( SMBusDefaultAddressTest(SMBUS_DEFAULT_ADDRESS) < 0 )
-                goto lexit;
+            if( SMBusDefaultAddressTest(SMBUS_DEFAULT_ADDRESS) < 0 ) goto lexit;
 
             /* Show I2C1 get ARP command from  I2C0 */
             printf("\n");
