@@ -728,8 +728,6 @@ typedef struct
  * | :----: | :----:   | :---- |
  * |[15:8]  |VSENSEDIV |Video Pixel Clock Divide Number from CCAP Sensor Clock Source
  * |        |          |Video pixel clock frequency = (CCAP sensor clock source frequency) / (VSENSEDIV + 1).
- * |[23:16] |EMAC0DIV  |EMAC0 Clock Divide Number form HCLK
- * |        |          |EMAC0 MDCLK clock frequency = (HCLK) / (EMAC0DIV + 1).
  * |[31:24] |SDH1DIV   |SDH1 Clock Divide Number from SDH1 Clock Source
  * |        |          |SDH1 clock frequency = (SDH1 clock source frequency) / (SDH1DIV + 1).
  * @var CLK_T::CLKDIV4
@@ -2001,9 +1999,6 @@ typedef struct
 
 #define CLK_CLKDIV3_VSENSEDIV_Pos        (8)                                               /*!< CLK_T::CLKDIV3: VSENSEDIV Position     */
 #define CLK_CLKDIV3_VSENSEDIV_Msk        (0xfful << CLK_CLKDIV3_VSENSEDIV_Pos)             /*!< CLK_T::CLKDIV3: VSENSEDIV Mask         */
-
-#define CLK_CLKDIV3_EMAC0DIV_Pos         (16)                                              /*!< CLK_T::CLKDIV3: EMAC0DIV Position      */
-#define CLK_CLKDIV3_EMAC0DIV_Msk         (0xfful << CLK_CLKDIV3_EMAC0DIV_Pos)              /*!< CLK_T::CLKDIV3: EMAC0DIV Mask          */
 
 #define CLK_CLKDIV3_SDH1DIV_Pos          (24)                                              /*!< CLK_T::CLKDIV3: SDH1DIV Position       */
 #define CLK_CLKDIV3_SDH1DIV_Msk          (0xfful << CLK_CLKDIV3_SDH1DIV_Pos)               /*!< CLK_T::CLKDIV3: SDH1DIV Mask           */

@@ -488,7 +488,7 @@ void CLK_SetHCLK(uint32_t u32ClkSrc, uint32_t u32ClkDiv)
   * |\ref CANFD3_MODULE  |\ref CLK_CLKSEL0_CANFD3SEL_PLL_DIV2    |\ref CLK_CLKDIV5_CANFD3(x)     |
   * |\ref CANFD3_MODULE  |\ref CLK_CLKSEL0_CANFD3SEL_HCLK        |\ref CLK_CLKDIV5_CANFD3(x)     |
   * |\ref CANFD3_MODULE  |\ref CLK_CLKSEL0_CANFD3SEL_HIRC        |\ref CLK_CLKDIV5_CANFD3(x)     |  
-  * |\ref EMAC0_MODULE   | x                                     |\ref CLK_CLKDIV3_EMAC0(x)      |  
+  * |\ref EMAC0_MODULE   | x                                     | x                             |  
   * |\ref WDT_MODULE     |\ref CLK_CLKSEL1_WDTSEL_LXT            | x                             |
   * |\ref WDT_MODULE     |\ref CLK_CLKSEL1_WDTSEL_HCLK_DIV2048   | x                             |
   * |\ref WDT_MODULE     |\ref CLK_CLKSEL1_WDTSEL_LIRC           | x                             |
@@ -709,7 +709,6 @@ void CLK_SetModuleClock(uint32_t u32ModuleIdx, uint32_t u32ClkSrc, uint32_t u32C
             case KPI_MODULE:   CLK->CLKDIV2 = (CLK->CLKDIV2 & (~CLK_CLKDIV2_KPIDIV_Msk)) | (u32ClkDiv);    break;
             case EADC1_MODULE: CLK->CLKDIV2 = (CLK->CLKDIV2 & (~CLK_CLKDIV2_EADC1DIV_Msk)) | (u32ClkDiv);  break;
             case SEN_MODULE:   CLK->CLKDIV3 = (CLK->CLKDIV3 & (~CLK_CLKDIV3_VSENSEDIV_Msk)) | (u32ClkDiv); break;
-            case EMAC0_MODULE: CLK->CLKDIV3 = (CLK->CLKDIV3 & (~CLK_CLKDIV3_EMAC0DIV_Msk)) | (u32ClkDiv);  break;
             case SDH1_MODULE:  CLK->CLKDIV3 = (CLK->CLKDIV3 & (~CLK_CLKDIV3_SDH1DIV_Msk)) | (u32ClkDiv);   break;
             case EADC2_MODULE: CLK->CLKDIV5 = (CLK->CLKDIV5 & (~CLK_CLKDIV5_EADC2DIV_Msk)) | (u32ClkDiv);  break;
 
@@ -1566,7 +1565,6 @@ uint32_t CLK_GetModuleClockSource(uint32_t u32ModuleIdx)
   *             - \ref SC2_MODULE
   *             - \ref PSIO_MODULE
   *             - \ref KPI_MODULE
-  *             - \ref EMAC0_MODULE
   * @return     Selected module clock divider number setting
   * @details    This function get selected module clock divider number.
   */
@@ -1587,7 +1585,6 @@ uint32_t CLK_GetModuleClockDivider(uint32_t u32ModuleIdx)
         case KPI_MODULE:   u32DivVal = (CLK->CLKDIV2 & CLK_CLKDIV2_KPIDIV_Msk) >> CLK_CLKDIV2_KPIDIV_Pos;       break;
         case EADC1_MODULE: u32DivVal = (CLK->CLKDIV2 & CLK_CLKDIV2_EADC1DIV_Msk) >> CLK_CLKDIV2_EADC1DIV_Pos;   break;
         case SEN_MODULE:   u32DivVal = (CLK->CLKDIV3 & CLK_CLKDIV3_VSENSEDIV_Msk) >> CLK_CLKDIV3_VSENSEDIV_Pos; break;
-        case EMAC0_MODULE: u32DivVal = (CLK->CLKDIV3 & CLK_CLKDIV3_EMAC0DIV_Msk) >> CLK_CLKDIV3_EMAC0DIV_Pos;   break;
         case SDH1_MODULE:  u32DivVal = (CLK->CLKDIV3 & CLK_CLKDIV3_SDH1DIV_Msk) >> CLK_CLKDIV3_SDH1DIV_Pos;     break;
         case EADC2_MODULE: u32DivVal = (CLK->CLKDIV5 & CLK_CLKDIV5_EADC2DIV_Msk) >> CLK_CLKDIV5_EADC2DIV_Pos;   break;
 
