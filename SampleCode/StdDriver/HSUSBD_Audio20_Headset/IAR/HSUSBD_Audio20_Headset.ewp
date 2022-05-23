@@ -706,7 +706,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>HSUSBD_Audio20_Codec.out</state>
+                    <state>HSUSBD_Audio20_Headset.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>

@@ -61,12 +61,15 @@ const uint16_t PlayVolx[4] =
 const uint8_t Speedx[] =
 {
 #if NAU8822
-    0x02, 0x00,                         //number of sample rate triplets
+    0x03, 0x00,                         //number of sample rate triplets
     0x80, 0xBB, 0x00, 0x00, //48k Max
     0x80, 0xBB, 0x00, 0x00, //48k Max
     0x00, 0x00, 0x00, 0x00,
     0x00, 0x77, 0x01, 0x00, //96k Max
     0x00, 0x77, 0x01, 0x00, //96k Max
+    0x00, 0x00, 0x00, 0x00,
+    0x00, 0xEE, 0x02, 0x00, //192k Max
+    0x00, 0xEE, 0x02, 0x00, //192k Max
     0x00, 0x00, 0x00, 0x00,
 #else
     0x03, 0x00,                         //number of sample rate triplets
@@ -780,6 +783,7 @@ void UAC_DeviceEnable(uint32_t bIsPlay)
     {
         /* Enable play hardware */
         u8PlayEn = 1;
+        TIMER_Start(TIMER0);
     }
     else
     {
@@ -789,7 +793,6 @@ void UAC_DeviceEnable(uint32_t bIsPlay)
 
         u8RecEn = 1;
     }
-    TIMER_Start(TIMER0);
 }
 
 

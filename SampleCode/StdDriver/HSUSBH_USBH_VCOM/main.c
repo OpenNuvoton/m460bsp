@@ -277,11 +277,11 @@ void SYS_Init(void)
     /* USB_VBUS_ST (USB 1.1 over-current detect pin) multi-function pin - PC.14   */
     SET_USB_VBUS_ST_PC14();
 
-    /* HSUSB_VBUS_EN (USB 2.0 VBUS power enable pin) multi-function pin - PB.10   */
-    SET_HSUSB_VBUS_EN_PB10();
+    /* HSUSB_VBUS_EN (USB 2.0 VBUS power enable pin) multi-function pin - PJ.13   */
+    SET_HSUSB_VBUS_EN_PJ13();
 
-    /* HSUSB_VBUS_ST (USB 2.0 over-current detect pin) multi-function pin - PB.11 */
-    SET_HSUSB_VBUS_ST_PB11();
+    /* HSUSB_VBUS_ST (USB 2.0 over-current detect pin) multi-function pin - PJ.12 */
+    SET_HSUSB_VBUS_ST_PJ12();
 
     /* USB 1.1 port multi-function pin VBUS, D+, D-, and ID pins */
     SET_USB_VBUS_PA12();

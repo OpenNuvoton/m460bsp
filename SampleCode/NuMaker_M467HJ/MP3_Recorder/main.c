@@ -462,7 +462,7 @@ int32_t main(void)
                 MP3Player();
             }
 
-            if(((u32BTN1 == 1) && (g_u32RecordDone == 1)) || (g_u32RecordDone == 1))
+            if(g_u32RecordDone == 1)
             {
                 /* Disable I2S RX function */
                 I2S_DISABLE_RX(I2S0);

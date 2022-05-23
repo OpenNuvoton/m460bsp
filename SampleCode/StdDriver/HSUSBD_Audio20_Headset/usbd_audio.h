@@ -11,7 +11,10 @@
 
 #include "config.h"
 
-#define NAU8822     0
+#define NAU8822     1
+
+/* Use LIN as source, undefine it if MIC is used */
+//#define INPUT_IS_LIN
 
 /* Define the vendor id and product id */
 #define USBD_VID        0x0416

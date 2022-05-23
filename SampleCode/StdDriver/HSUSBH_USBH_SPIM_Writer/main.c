@@ -152,21 +152,22 @@ void SYS_Init(void)
     SET_UART0_RXD_PB12();
     SET_UART0_TXD_PB13();
 
-    /* Init SPIM multi-function pins, MOSI(PE.2), MISO(PE.3), CLK(PE.4), SS(PE.5), D3(PE.6), and D2(PE.7) */
-    SET_SPIM_MOSI_PE2();
-    SET_SPIM_MISO_PE3();
-    SET_SPIM_CLK_PE4();
-    SET_SPIM_SS_PE5();
-    SET_SPIM_D3_PE6();
-    SET_SPIM_D2_PE7();
+    /* Init SPIM multi-function pins, CLK(PJ.0), MOSI(PJ.1), SS(PI.12), MISO(PI.13), D2(PI.14), and D3(PI.15) */
+    SET_SPIM_CLK_PJ0();
+    SET_SPIM_MOSI_PJ1();
+    SET_SPIM_SS_PI12();
+    SET_SPIM_MISO_PI13();
+    SET_SPIM_D2_PI14();
+    SET_SPIM_D3_PI15();
 
-    PE->SMTEN |= GPIO_SMTEN_SMTEN4_Msk;
+    PJ->SMTEN |= GPIO_SMTEN_SMTEN0_Msk;
 
     /* Set SPIM I/O pins as high slew rate up to 80 MHz. */
-    PE->SLEWCTL = (PE->SLEWCTL & 0xFFFF000F) |
-                  (0x1<<GPIO_SLEWCTL_HSREN2_Pos) | (0x1<<GPIO_SLEWCTL_HSREN3_Pos) |
-                  (0x1<<GPIO_SLEWCTL_HSREN4_Pos) | (0x1<<GPIO_SLEWCTL_HSREN5_Pos) |
-                  (0x1<<GPIO_SLEWCTL_HSREN6_Pos) | (0x1<<GPIO_SLEWCTL_HSREN7_Pos);
+    PI->SLEWCTL = (PI->SLEWCTL & 0x00FFFFFF) |
+                  (0x1 << GPIO_SLEWCTL_HSREN12_Pos) | (0x1 << GPIO_SLEWCTL_HSREN13_Pos) |
+                  (0x1 << GPIO_SLEWCTL_HSREN14_Pos) | (0x1 << GPIO_SLEWCTL_HSREN15_Pos);
+    PJ->SLEWCTL = (PJ->SLEWCTL & 0xFFFFFFF0) |
+                  (0x1 << GPIO_SLEWCTL_HSREN0_Pos) | (0x1 << GPIO_SLEWCTL_HSREN1_Pos);
 
     /* USB_VBUS_EN (USB 1.1 VBUS power enable pin) multi-function pin - PB.15     */
     SET_USB_VBUS_EN_PB15();
@@ -174,11 +175,11 @@ void SYS_Init(void)
     /* USB_VBUS_ST (USB 1.1 over-current detect pin) multi-function pin - PC.14   */
     SET_USB_VBUS_ST_PC14();
 
-    /* HSUSB_VBUS_EN (USB 2.0 VBUS power enable pin) multi-function pin - PB.10   */
-    SET_HSUSB_VBUS_EN_PB10();
+    /* HSUSB_VBUS_EN (USB 2.0 VBUS power enable pin) multi-function pin - PJ.13   */
+    SET_HSUSB_VBUS_EN_PJ13();
 
-    /* HSUSB_VBUS_ST (USB 2.0 over-current detect pin) multi-function pin - PB.11 */
-    SET_HSUSB_VBUS_ST_PB11();
+    /* HSUSB_VBUS_ST (USB 2.0 over-current detect pin) multi-function pin - PJ.12 */
+    SET_HSUSB_VBUS_ST_PJ12();
 
     /* USB 1.1 port multi-function pin VBUS, D+, D-, and ID pins */
     SET_USB_VBUS_PA12();

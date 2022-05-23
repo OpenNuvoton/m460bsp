@@ -22,7 +22,7 @@
   </DaveTm>
 
   <Target>
-    <TargetName>HSUSBD_UAC10_Headset</TargetName>
+    <TargetName>HSUSBD_Audio10_Headset</TargetName>
     <ToolsetNumber>0x4</ToolsetNumber>
     <ToolsetName>ARM-ADS</ToolsetName>
     <TargetOption>

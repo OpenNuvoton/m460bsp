@@ -1,7 +1,7 @@
 /***************************************************************************//**
  * @file     main.c
  * @version  V3.00
- * @brief    This is an UAC1.0 sample and used to plays the sound send from PC
+ * @brief    This is an UAC2.0 sample and used to plays the sound send from PC
  *           through the USB interface
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
@@ -81,18 +81,18 @@ void SYS_Init(void)
     SET_UART0_TXD_PB13();
 
     /* Set multi-function pins for I2S0 */
-    SET_I2S0_LRCK_PF6();
-    SET_I2S0_DO_PF7();
-    SET_I2S0_DI_PF8();
-    SET_I2S0_MCLK_PF9();
-    SET_I2S0_BCLK_PF10();
+    SET_I2S0_BCLK_PI6();
+    SET_I2S0_MCLK_PI7();
+    SET_I2S0_DI_PI8();
+    SET_I2S0_DO_PI9();
+    SET_I2S0_LRCK_PI10();
 
     /* Set I2C2 multi-function pins */
-    SET_I2C2_SDA_PD8();
-    SET_I2C2_SCL_PD9();
+    SET_I2C2_SDA_PD0();
+    SET_I2C2_SCL_PD1();
 
-    PF->SMTEN |= GPIO_SMTEN_SMTEN10_Msk;
-    PD->SMTEN |= GPIO_SMTEN_SMTEN9_Msk;
+    PI->SMTEN |= GPIO_SMTEN_SMTEN6_Msk;
+    PD->SMTEN |= GPIO_SMTEN_SMTEN1_Msk;
 
     /* Lock protected registers */
     SYS_LockReg();
@@ -110,7 +110,7 @@ void I2C2_Init(void)
 
 extern uint32_t volatile u32AdjSample;
 
-int32_t main (void)
+int32_t main(void)
 {
     uint32_t volatile i;
 
@@ -127,17 +127,32 @@ int32_t main (void)
     printf("HXT clock %d Hz\n", CLK_GetHXTFreq());
     printf("CPU clock %d Hz\n", CLK_GetCPUFreq());
 
-    /* Init I2C2 to access NAU88L25 */
+    /* Init I2C2 to access codec */
     I2C2_Init();
 
     /* Select source from PLL/2 */
     CLK_SetModuleClock(I2S0_MODULE, CLK_CLKSEL3_I2S0SEL_PLL_DIV2, 0);
 
-    /* Open I2S0 as slave mode */
-    I2S_Open(I2S0, I2S_MODE_SLAVE, 192000, I2S_DATABIT_16, I2S_DISABLE_MONO, I2S_FORMAT_I2S);
+#ifdef INPUT_IS_LIN
+    /* Open I2S0 interface and set to slave mode, stereo channel, I2S format */
+    I2S_Open(I2S0, I2S_MODE_SLAVE, 192000, I2S_DATABIT_16, I2S_STEREO, I2S_FORMAT_I2S);
+#else
+    /* Open I2S0 interface and set to slave mode, mono channel, I2S format */
+    I2S_Open(I2S0, I2S_MODE_SLAVE, 192000, I2S_DATABIT_16, I2S_MONO, I2S_FORMAT_I2S);
+#endif
+
+    /* Set PD3 low to enable phone jack on NuMaker board. */
+    SYS->GPD_MFP0 &= ~(SYS_GPD_MFP0_PD3MFP_Msk);
+    GPIO_SetMode(PD, BIT3, GPIO_MODE_OUTPUT);
+    PD3 = 0;
 
     /* Set MCLK and enable MCLK */
     I2S_EnableMCLK(I2S0, 12000000);
+
+#ifndef INPUT_IS_LIN
+    /* NAU8822 will store data in left channel */
+    I2S_SET_MONO_RX_CHANNEL(I2S0, I2S_MONO_LEFT);
+#endif
 
 #if NAU8822
     NAU8822_Setup();
@@ -154,7 +169,7 @@ int32_t main (void)
     /* Configure PDMA */
     PDMA_Init();
 
-    /* Configure TIMER0 for adjusting NAU88L25's PLL */
+    /* Configure TIMER0 for adjusting codec's PLL */
     TIMER_Open(TIMER0, TIMER_PERIODIC_MODE, 300);
     TIMER_EnableInt(TIMER0);
     NVIC_SetPriority(TMR0_IRQn, 3);
@@ -169,7 +184,7 @@ int32_t main (void)
 
     while(1)
     {
-        if ((i8TxDataCntInBuffer != 0) && ((++i % 0x200000) == 0))
+        if((i8TxDataCntInBuffer != 0) && ((++i % 0x200000) == 0))
         {
             printf("%d <-> %d (0x%x)\n", i8TxDataCntInBuffer, i8RxDataCntInBuffer, u32AdjSample);
         }

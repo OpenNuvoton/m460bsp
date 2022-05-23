@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>HSUSBD_UAC10_Headset</TargetName>
+      <TargetName>HSUSBD_Audio10_Headset</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
