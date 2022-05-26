@@ -140,7 +140,7 @@ void MP3Recorder(void)
 
     for(u32BuffPos = 0; u32BuffPos < g_u32BuffPos; u32BuffPos += 2 * u32Len)
     {
-        pu8Data = shine_encode_buffer_interleaved(s, (int16_t *)(HYPER_RAM_MEM_MAP + u32BuffPos), (int *)&i32Written);
+        pu8Data = shine_encode_buffer_interleaved(s, (int16_t *)(HYPERRAM_BASE + u32BuffPos), (int *)&i32Written);
 
         if(Write_MP3(i32Written, pu8Data, &config) != i32Written)
         {

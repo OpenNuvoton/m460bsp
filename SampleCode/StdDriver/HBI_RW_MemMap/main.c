@@ -128,7 +128,7 @@ int main()
     
 
     /* Memory max space 64MBits --> 8Mbytes --> 0x800000 */
-    u32StartAddr = HYPER_RAM_MEM_MAP;
+    u32StartAddr = HYPERRAM_BASE;
     u32EndAddr   = u32StartAddr+0x1000;
 
     for(u32PatCnt = 0; u32PatCnt < 5; u32PatCnt++)

@@ -34,7 +34,7 @@ extern "C"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* HyperRAM memory mapping address*/
-#define HYPER_RAM_MEM_MAP 0x80000000
+#define HYPERRAM_BASE 0x80000000
 /*---------------------------------------------------------------------------------------------------------*/
 /* HyperRAM Register Space constant definitions
 Register Space Range:
