@@ -67,27 +67,27 @@
 		<link>
 			<name>drv_emac/m460_emac.c</name>
 			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/M460___dev/SampleCode/My_StdDriver/EMAC_TxRx/drv_emac/m460_emac.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/drv_emac/m460_emac.c</locationURI>
 		</link>
 		<link>
 			<name>drv_emac/m460_emac_process.c</name>
 			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/M460___dev/SampleCode/My_StdDriver/EMAC_TxRx/drv_emac/m460_emac_process.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/drv_emac/m460_emac_process.c</locationURI>
 		</link>
 		<link>
 			<name>drv_emac/m460_mii.c</name>
 			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/M460___dev/SampleCode/My_StdDriver/EMAC_TxRx/drv_emac/m460_mii.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/drv_emac/m460_mii.c</locationURI>
 		</link>
 		<link>
 			<name>drv_emac/synopGMAC_Dev.c</name>
 			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/M460___dev/SampleCode/My_StdDriver/EMAC_TxRx/drv_emac/synopGMAC_Dev.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/drv_emac/synopGMAC_Dev.c</locationURI>
 		</link>
 		<link>
 			<name>drv_emac/synopGMAC_network_interface.c</name>
 			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/M460___dev/SampleCode/My_StdDriver/EMAC_TxRx/drv_emac/synopGMAC_network_interface.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/drv_emac/synopGMAC_network_interface.c</locationURI>
 		</link>
 	</linkedResources>
 	<filteredResources>
