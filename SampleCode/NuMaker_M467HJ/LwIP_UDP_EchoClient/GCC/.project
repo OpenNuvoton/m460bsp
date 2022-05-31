@@ -62,7 +62,7 @@
 		<link>
 			<name>Library/Library</name>
 			<type>2</type>
-			<location>C:/[git]/M460___dev/Library/StdDriver/src</location>
+			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src</locationURI>
 		</link>
 		<link>
 			<name>User/lwIP</name>
