@@ -153,7 +153,7 @@ void MP3Player(void)
     memset((void *)aPCMBuffer_Full, 0, sizeof(aPCMBuffer_Full));
 
     /* Parse MP3 header */
-    MP3_ParseHeaderInfo(MP3_FILE);
+    MP3_ParseHeaderInfo((uint8_t *)MP3_FILE);
 
     /* First the structures used by libmad must be initialized. */
     mad_stream_init(&Stream);

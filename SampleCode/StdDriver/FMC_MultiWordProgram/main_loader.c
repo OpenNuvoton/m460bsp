@@ -57,18 +57,6 @@ void UART0_Init(void)
 }
 
 
-/*
- *  Set stack base address to SP register.
- */
-#ifdef __ARMCC_VERSION                 /* for Keil compiler */
-void __asm __set_SP(uint32_t _sp)
-{
-    MSR MSP, r0
-    BX lr
-}
-#endif
-
-
 int main()
 {
 #ifdef __GNUC__                        /* for GNU C compiler */
@@ -96,13 +84,9 @@ int main()
     func = (FUNC_PTR *)*(uint32_t *)(SRAM_IMAGE_BASE+4);
 
     /* Get and set the SP (Stack Pointer Base) of multi_word_prog.bin. */
-#ifdef __GNUC__                        /* for GNU C compiler */
-    u32Data = *(uint32_t *)SRAM_IMAGE_BASE;
-    asm("msr msp, %0" : : "r" (u32Data));
-#else
-    __set_SP(*(uint32_t *)SRAM_IMAGE_BASE);
-#endif
-
+    
+    __set_MSP(SRAM_IMAGE_BASE);
+    
     /*
      *  Branch to the multi_word_prog.bin's reset handler in way of function call.
      */
