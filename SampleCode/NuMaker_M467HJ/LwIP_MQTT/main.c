@@ -283,16 +283,6 @@ static void vMqttTask( void *pvParameters )
     netif_set_default(&netif);
     netif_set_up(&netif);
 
-    /* Enable M460 Crypto for MQTT */
-    CLK_EnableModuleClock(CRPT_MODULE);
-    NVIC_EnableIRQ(CRPT_IRQn);
-    ECC_ENABLE_INT(CRPT);
-    SHA_ENABLE_INT(CRPT);
-    AES_ENABLE_INT(CRPT);
-#if 0 // not support in M460
-    TDES_ENABLE_INT(CRPT);
-#endif
-
 #if LWIP_DHCP
     printf("DHCP starting ...\n");
     
@@ -319,29 +309,4 @@ static void vMqttTask( void *pvParameters )
     mqtt_test_init();
 
     vTaskSuspend( NULL );
-}
-
-/*----------------------------------------------------------------------------
-  Crypto IRQ Handler
- *----------------------------------------------------------------------------*/
-void CRPT_IRQHandler(void)
-{
-    if (AES_GET_INT_FLAG(CRPT))
-    {
-        g_Crypto_Int_done = 1;
-        AES_CLR_INT_FLAG(CRPT);
-    }
-    if (SHA_GET_INT_FLAG(CRPT))
-    {
-        g_Crypto_Int_done = 1;
-        SHA_CLR_INT_FLAG(CRPT);
-    }
-#if 0 // not support in M460
-    if (TDES_GET_INT_FLAG(CRPT))
-    {
-        g_Crypto_Int_done = 1;
-        TDES_CLR_INT_FLAG(CRPT);
-    }
-#endif    
-    ECC_DriverISR(CRPT);
 }

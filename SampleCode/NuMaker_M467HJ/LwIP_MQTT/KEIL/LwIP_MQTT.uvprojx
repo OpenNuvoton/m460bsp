@@ -10,7 +10,7 @@
       <TargetName>LwIP_MQTT</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060960::V5.06 update 7 (build 960)::ARMCC</pCCUsed>
+      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
       <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -185,7 +185,6 @@
             <uocXRam>0</uocXRam>
             <RvdsVP>2</RvdsVP>
             <RvdsMve>0</RvdsMve>
-            <RvdsCdeCp>0</RvdsCdeCp>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -313,7 +312,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>1</Optim>
+            <Optim>3</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>0</OneElfS>
@@ -322,14 +321,14 @@
             <PlainCh>0</PlainCh>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
-            <wLevel>2</wLevel>
+            <wLevel>1</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
-            <uC99>0</uC99>
+            <uC99>1</uC99>
             <uGnu>0</uGnu>
             <useXO>0</useXO>
-            <v6Lang>3</v6Lang>
-            <v6LangP>3</v6LangP>
+            <v6Lang>1</v6Lang>
+            <v6LangP>1</v6LangP>
             <vShortEn>1</vShortEn>
             <vShortWch>1</vShortWch>
             <v6Lto>0</v6Lto>
@@ -337,9 +336,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls>--diag_suppress=550,177,C4017,111,188,66</MiscControls>
-              <Define>RVDS_ARMCM4_NUC4xx LWIP_ENABLE_CLIENT_CA=1 FREERTOS MBEDTLS_CONFIG_FILE=&lt;mbedtls_config.h&gt;</Define>
+              <Define>RVDS_ARMCM4_NUC4xx LWIP_ENABLE_CLIENT_CA=1 FREERTOS MBEDTLS_ALLOW_PRIVATE_ACCESS MBEDTLS_CONFIG_FILE=&lt;mbedtls_config.h&gt;</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\..\ThirdParty\FreeRTOS\SOURCE\include;..\..\..\..\Library\Device\Nuvoton\m460\Include;..\..\..\..\Library\StdDriver\inc;..\..\..\..\ThirdParty\FreeRTOS\DEMO\COMMON\include;..\..\..\..\ThirdParty\FreeRTOS\SOURCE\portable\RVDS\ARM_CM4F;..\;..\..\..\..\ThirdParty\lwip\src\include;..\..\lwIP\include;..\..\..\..\Library\CMSIS\Include;..\..\lwIP\drv_emac;..\src\mbedtls_app;..\..\..\..\ThirdParty\mbedtls-2.13.0\include;..\src\mqtt_app;..\src\config;..\..\..\..\ThirdParty\paho.mqtt.embedded-c\MQTTPacket\src;..\..\..\..\ThirdParty\lwIP\src\include\lwip</IncludePath>
+              <IncludePath>..\..\..\..\ThirdParty\FreeRTOS\SOURCE\include;..\..\..\..\Library\CMSIS\Include;..\..\..\..\Library\Device\Nuvoton\m460\Include;..\..\..\..\Library\StdDriver\inc;..\..\..\..\ThirdParty\FreeRTOS\DEMO\COMMON\include;..\..\..\..\ThirdParty\FreeRTOS\SOURCE\portable\RVDS\ARM_CM4F;..\;..\..\..\..\ThirdParty\lwip\src\include;..\..\lwIP\include;..\..\lwIP\drv_emac;..\src\mbedtls_app;..\..\..\..\ThirdParty\mbedtls-3.1.0\include;..\..\..\..\ThirdParty\mbedtls-3.1.0\library;..\..\..\..\ThirdParty\mbedtls-3.1.0\tests\include;..\src\mqtt_app;..\src\config;..\..\..\..\ThirdParty\paho.mqtt.embedded-c\MQTTPacket\src;..\..\..\..\ThirdParty\lwIP\src\include\lwip</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -352,7 +351,7 @@
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
             <useXO>0</useXO>
-            <ClangAsOpt>4</ClangAsOpt>
+            <uClangAs>0</uClangAs>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define>Stack_Size= 0x00001800</Define>
@@ -806,262 +805,549 @@
             <File>
               <FileName>aes.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\aes.c</FilePath>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\aes.c</FilePath>
             </File>
             <File>
-              <FileName>threading.c</FileName>
+              <FileName>aesni.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\threading.c</FilePath>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\aesni.c</FilePath>
             </File>
             <File>
-              <FileName>des.c</FileName>
+              <FileName>aria.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\des.c</FilePath>
-            </File>
-            <File>
-              <FileName>bignum.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\bignum.c</FilePath>
-            </File>
-            <File>
-              <FileName>ecdh.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\ecdh.c</FilePath>
-            </File>
-            <File>
-              <FileName>ecp.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\ecp.c</FilePath>
-            </File>
-            <File>
-              <FileName>ecp_curves.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\ecp_curves.c</FilePath>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\aria.c</FilePath>
             </File>
             <File>
               <FileName>asn1parse.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\asn1parse.c</FilePath>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\asn1parse.c</FilePath>
             </File>
             <File>
               <FileName>asn1write.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\asn1write.c</FilePath>
-            </File>
-            <File>
-              <FileName>ecdsa.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\ecdsa.c</FilePath>
-            </File>
-            <File>
-              <FileName>hmac_drbg.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\hmac_drbg.c</FilePath>
-            </File>
-            <File>
-              <FileName>md.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\md.c</FilePath>
-            </File>
-            <File>
-              <FileName>md_wrap.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\md_wrap.c</FilePath>
-            </File>
-            <File>
-              <FileName>md5.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\md5.c</FilePath>
-            </File>
-            <File>
-              <FileName>ripemd160.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\ripemd160.c</FilePath>
-            </File>
-            <File>
-              <FileName>sha1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\sha1.c</FilePath>
-            </File>
-            <File>
-              <FileName>sha256.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\sha256.c</FilePath>
-            </File>
-            <File>
-              <FileName>sha512.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\sha512.c</FilePath>
-            </File>
-            <File>
-              <FileName>entropy.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\entropy.c</FilePath>
-            </File>
-            <File>
-              <FileName>entropy_poll.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\entropy_poll.c</FilePath>
-            </File>
-            <File>
-              <FileName>ssl_tls.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\ssl_tls.c</FilePath>
-            </File>
-            <File>
-              <FileName>ctr_drbg.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\ctr_drbg.c</FilePath>
-            </File>
-            <File>
-              <FileName>x509_crt.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\x509_crt.c</FilePath>
-            </File>
-            <File>
-              <FileName>x509.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\x509.c</FilePath>
-            </File>
-            <File>
-              <FileName>debug.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\debug.c</FilePath>
-            </File>
-            <File>
-              <FileName>dhm.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\dhm.c</FilePath>
-            </File>
-            <File>
-              <FileName>ssl_ciphersuites.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\ssl_ciphersuites.c</FilePath>
-            </File>
-            <File>
-              <FileName>pem.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\pem.c</FilePath>
-            </File>
-            <File>
-              <FileName>pk.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\pk.c</FilePath>
-            </File>
-            <File>
-              <FileName>cipher.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\cipher.c</FilePath>
-            </File>
-            <File>
-              <FileName>cipher_wrap.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\cipher_wrap.c</FilePath>
-            </File>
-            <File>
-              <FileName>ssl_cli.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\ssl_cli.c</FilePath>
-            </File>
-            <File>
-              <FileName>oid.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\oid.c</FilePath>
-            </File>
-            <File>
-              <FileName>pkparse.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\pkparse.c</FilePath>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\asn1write.c</FilePath>
             </File>
             <File>
               <FileName>base64.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\base64.c</FilePath>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\base64.c</FilePath>
             </File>
             <File>
-              <FileName>gcm.c</FileName>
+              <FileName>bignum.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\gcm.c</FilePath>
-            </File>
-            <File>
-              <FileName>pkcs12.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\pkcs12.c</FilePath>
-            </File>
-            <File>
-              <FileName>pk_wrap.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\pk_wrap.c</FilePath>
-            </File>
-            <File>
-              <FileName>arc4.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\arc4.c</FilePath>
-            </File>
-            <File>
-              <FileName>rsa.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\rsa.c</FilePath>
-            </File>
-            <File>
-              <FileName>ssl_srv.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\ssl_srv.c</FilePath>
-            </File>
-            <File>
-              <FileName>certs.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\certs.c</FilePath>
-            </File>
-            <File>
-              <FileName>ccm.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\ccm.c</FilePath>
-            </File>
-            <File>
-              <FileName>blowfish.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\blowfish.c</FilePath>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\bignum.c</FilePath>
             </File>
             <File>
               <FileName>camellia.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\camellia.c</FilePath>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\camellia.c</FilePath>
             </File>
             <File>
-              <FileName>timing.c</FileName>
+              <FileName>ccm.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\timing.c</FilePath>
-            </File>
-            <File>
-              <FileName>pkcs5.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\pkcs5.c</FilePath>
-            </File>
-            <File>
-              <FileName>platform_util.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\platform_util.c</FilePath>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\ccm.c</FilePath>
             </File>
             <File>
               <FileName>chacha20.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\chacha20.c</FilePath>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\chacha20.c</FilePath>
             </File>
             <File>
               <FileName>chachapoly.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\chachapoly.c</FilePath>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\chachapoly.c</FilePath>
             </File>
             <File>
-              <FileName>rsa_internal.c</FileName>
+              <FileName>cipher.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\rsa_internal.c</FilePath>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\cipher.c</FilePath>
+            </File>
+            <File>
+              <FileName>cipher_wrap.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\cipher_wrap.c</FilePath>
+            </File>
+            <File>
+              <FileName>cmac.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\cmac.c</FilePath>
+            </File>
+            <File>
+              <FileName>constant_time.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\constant_time.c</FilePath>
+            </File>
+            <File>
+              <FileName>ctr_drbg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\ctr_drbg.c</FilePath>
+            </File>
+            <File>
+              <FileName>debug.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\debug.c</FilePath>
+            </File>
+            <File>
+              <FileName>des.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\des.c</FilePath>
+            </File>
+            <File>
+              <FileName>dhm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\dhm.c</FilePath>
+            </File>
+            <File>
+              <FileName>ecdh.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\ecdh.c</FilePath>
+            </File>
+            <File>
+              <FileName>ecdsa.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\ecdsa.c</FilePath>
+            </File>
+            <File>
+              <FileName>ecjpake.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\ecjpake.c</FilePath>
+            </File>
+            <File>
+              <FileName>ecp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\ecp.c</FilePath>
+            </File>
+            <File>
+              <FileName>ecp_curves.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\ecp_curves.c</FilePath>
+            </File>
+            <File>
+              <FileName>entropy.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\entropy.c</FilePath>
+            </File>
+            <File>
+              <FileName>entropy_poll.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\entropy_poll.c</FilePath>
+            </File>
+            <File>
+              <FileName>gcm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\gcm.c</FilePath>
+            </File>
+            <File>
+              <FileName>hkdf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\hkdf.c</FilePath>
+            </File>
+            <File>
+              <FileName>hmac_drbg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\hmac_drbg.c</FilePath>
+            </File>
+            <File>
+              <FileName>md.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\md.c</FilePath>
+            </File>
+            <File>
+              <FileName>md5.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\md5.c</FilePath>
+            </File>
+            <File>
+              <FileName>memory_buffer_alloc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\memory_buffer_alloc.c</FilePath>
+            </File>
+            <File>
+              <FileName>mps_reader.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\mps_reader.c</FilePath>
+            </File>
+            <File>
+              <FileName>mps_trace.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\mps_trace.c</FilePath>
+            </File>
+            <File>
+              <FileName>net_sockets.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\net_sockets.c</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>0</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
+                </CommonProperty>
+                <FileArmAds>
+                  <Cads>
+                    <interw>2</interw>
+                    <Optim>0</Optim>
+                    <oTime>2</oTime>
+                    <SplitLS>2</SplitLS>
+                    <OneElfS>2</OneElfS>
+                    <Strict>2</Strict>
+                    <EnumInt>2</EnumInt>
+                    <PlainCh>2</PlainCh>
+                    <Ropi>2</Ropi>
+                    <Rwpi>2</Rwpi>
+                    <wLevel>0</wLevel>
+                    <uThumb>2</uThumb>
+                    <uSurpInc>2</uSurpInc>
+                    <uC99>2</uC99>
+                    <uGnu>2</uGnu>
+                    <useXO>2</useXO>
+                    <v6Lang>0</v6Lang>
+                    <v6LangP>0</v6LangP>
+                    <vShortEn>2</vShortEn>
+                    <vShortWch>2</vShortWch>
+                    <v6Lto>2</v6Lto>
+                    <v6WtE>2</v6WtE>
+                    <v6Rtti>2</v6Rtti>
+                    <VariousControls>
+                      <MiscControls></MiscControls>
+                      <Define></Define>
+                      <Undefine></Undefine>
+                      <IncludePath></IncludePath>
+                    </VariousControls>
+                  </Cads>
+                </FileArmAds>
+              </FileOption>
+            </File>
+            <File>
+              <FileName>nist_kw.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\nist_kw.c</FilePath>
+            </File>
+            <File>
+              <FileName>oid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\oid.c</FilePath>
+            </File>
+            <File>
+              <FileName>padlock.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\padlock.c</FilePath>
+            </File>
+            <File>
+              <FileName>pem.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\pem.c</FilePath>
+            </File>
+            <File>
+              <FileName>pk.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\pk.c</FilePath>
+            </File>
+            <File>
+              <FileName>pk_wrap.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\pk_wrap.c</FilePath>
+            </File>
+            <File>
+              <FileName>pkcs5.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\pkcs5.c</FilePath>
+            </File>
+            <File>
+              <FileName>pkcs12.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\pkcs12.c</FilePath>
+            </File>
+            <File>
+              <FileName>pkparse.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\pkparse.c</FilePath>
+            </File>
+            <File>
+              <FileName>pkwrite.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\pkwrite.c</FilePath>
+            </File>
+            <File>
+              <FileName>platform.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\platform.c</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>0</IncludeInBuild>
+                  <AlwaysBuild>2</AlwaysBuild>
+                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
+                  <PublicsOnly>2</PublicsOnly>
+                  <StopOnExitCode>11</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
+                </CommonProperty>
+                <FileArmAds>
+                  <Cads>
+                    <interw>2</interw>
+                    <Optim>0</Optim>
+                    <oTime>2</oTime>
+                    <SplitLS>2</SplitLS>
+                    <OneElfS>2</OneElfS>
+                    <Strict>2</Strict>
+                    <EnumInt>2</EnumInt>
+                    <PlainCh>2</PlainCh>
+                    <Ropi>2</Ropi>
+                    <Rwpi>2</Rwpi>
+                    <wLevel>0</wLevel>
+                    <uThumb>2</uThumb>
+                    <uSurpInc>2</uSurpInc>
+                    <uC99>2</uC99>
+                    <uGnu>2</uGnu>
+                    <useXO>2</useXO>
+                    <v6Lang>0</v6Lang>
+                    <v6LangP>0</v6LangP>
+                    <vShortEn>2</vShortEn>
+                    <vShortWch>2</vShortWch>
+                    <v6Lto>2</v6Lto>
+                    <v6WtE>2</v6WtE>
+                    <v6Rtti>2</v6Rtti>
+                    <VariousControls>
+                      <MiscControls></MiscControls>
+                      <Define></Define>
+                      <Undefine></Undefine>
+                      <IncludePath></IncludePath>
+                    </VariousControls>
+                  </Cads>
+                </FileArmAds>
+              </FileOption>
+            </File>
+            <File>
+              <FileName>platform_util.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\platform_util.c</FilePath>
             </File>
             <File>
               <FileName>poly1305.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\ThirdParty\mbedtls-2.13.0\library\poly1305.c</FilePath>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\poly1305.c</FilePath>
+            </File>
+            <File>
+              <FileName>psa_crypto.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\psa_crypto.c</FilePath>
+            </File>
+            <File>
+              <FileName>psa_crypto_aead.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\psa_crypto_aead.c</FilePath>
+            </File>
+            <File>
+              <FileName>psa_crypto_cipher.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\psa_crypto_cipher.c</FilePath>
+            </File>
+            <File>
+              <FileName>psa_crypto_client.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\psa_crypto_client.c</FilePath>
+            </File>
+            <File>
+              <FileName>psa_crypto_driver_wrappers.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\psa_crypto_driver_wrappers.c</FilePath>
+            </File>
+            <File>
+              <FileName>psa_crypto_ecp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\psa_crypto_ecp.c</FilePath>
+            </File>
+            <File>
+              <FileName>psa_crypto_hash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\psa_crypto_hash.c</FilePath>
+            </File>
+            <File>
+              <FileName>psa_crypto_mac.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\psa_crypto_mac.c</FilePath>
+            </File>
+            <File>
+              <FileName>psa_crypto_rsa.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\psa_crypto_rsa.c</FilePath>
+            </File>
+            <File>
+              <FileName>psa_crypto_se.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\psa_crypto_se.c</FilePath>
+            </File>
+            <File>
+              <FileName>psa_crypto_slot_management.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\psa_crypto_slot_management.c</FilePath>
+            </File>
+            <File>
+              <FileName>psa_crypto_storage.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\psa_crypto_storage.c</FilePath>
+            </File>
+            <File>
+              <FileName>psa_its_file.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\psa_its_file.c</FilePath>
+            </File>
+            <File>
+              <FileName>ripemd160.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\ripemd160.c</FilePath>
+            </File>
+            <File>
+              <FileName>rsa.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\rsa.c</FilePath>
+            </File>
+            <File>
+              <FileName>rsa_alt_helpers.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\rsa_alt_helpers.c</FilePath>
+            </File>
+            <File>
+              <FileName>sha1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\sha1.c</FilePath>
+            </File>
+            <File>
+              <FileName>sha256.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\sha256.c</FilePath>
+            </File>
+            <File>
+              <FileName>sha512.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\sha512.c</FilePath>
+            </File>
+            <File>
+              <FileName>ssl_cache.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\ssl_cache.c</FilePath>
+            </File>
+            <File>
+              <FileName>ssl_ciphersuites.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\ssl_ciphersuites.c</FilePath>
+            </File>
+            <File>
+              <FileName>ssl_cli.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\ssl_cli.c</FilePath>
+            </File>
+            <File>
+              <FileName>ssl_cookie.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\ssl_cookie.c</FilePath>
+            </File>
+            <File>
+              <FileName>ssl_msg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\ssl_msg.c</FilePath>
+            </File>
+            <File>
+              <FileName>ssl_srv.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\ssl_srv.c</FilePath>
+            </File>
+            <File>
+              <FileName>ssl_ticket.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\ssl_ticket.c</FilePath>
+            </File>
+            <File>
+              <FileName>ssl_tls.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\ssl_tls.c</FilePath>
+            </File>
+            <File>
+              <FileName>ssl_tls13_client.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\ssl_tls13_client.c</FilePath>
+            </File>
+            <File>
+              <FileName>ssl_tls13_generic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\ssl_tls13_generic.c</FilePath>
+            </File>
+            <File>
+              <FileName>ssl_tls13_keys.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\ssl_tls13_keys.c</FilePath>
+            </File>
+            <File>
+              <FileName>ssl_tls13_server.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\ssl_tls13_server.c</FilePath>
+            </File>
+            <File>
+              <FileName>threading.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\threading.c</FilePath>
+            </File>
+            <File>
+              <FileName>timing.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\timing.c</FilePath>
+            </File>
+            <File>
+              <FileName>version.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\version.c</FilePath>
+            </File>
+            <File>
+              <FileName>x509.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\x509.c</FilePath>
+            </File>
+            <File>
+              <FileName>x509_create.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\x509_create.c</FilePath>
+            </File>
+            <File>
+              <FileName>x509_crl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\x509_crl.c</FilePath>
+            </File>
+            <File>
+              <FileName>x509_crt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\x509_crt.c</FilePath>
+            </File>
+            <File>
+              <FileName>x509_csr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\x509_csr.c</FilePath>
+            </File>
+            <File>
+              <FileName>x509write_crt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\x509write_crt.c</FilePath>
+            </File>
+            <File>
+              <FileName>x509write_csr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\x509write_csr.c</FilePath>
             </File>
           </Files>
         </Group>
