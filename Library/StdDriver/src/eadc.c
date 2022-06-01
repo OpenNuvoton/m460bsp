@@ -38,7 +38,7 @@
 int32_t EADC_Open(EADC_T *eadc, uint32_t u32InputMode)
 {
     uint32_t u32Delay = SystemCoreClock >> 4;
-    uint32_t u32ClkSel0Backup, u32ClkDivBackup, u32PclkDivBackup, u32RegLockBackup = 0;
+    uint32_t u32ClkSel0Backup, u32ClkDivBackup, u32PclkDivBackup, u32RegLockBackup = 0, u32Apb1Div;
 
     eadc->CTL &= (~EADC_CTL_DIFFEN_Msk);
 
@@ -123,26 +123,24 @@ int32_t EADC_Open(EADC_T *eadc, uint32_t u32InputMode)
     }
 
     /* Check EADC clock frequency must not faster than PCLK */
+    u32Apb1Div = (CLK->PCLKDIV & CLK_PCLKDIV_APB1DIV_Msk) >> CLK_PCLKDIV_APB1DIV_Pos;
     if (eadc == EADC0)
     {
-        if (((CLK->PCLKDIV & CLK_PCLKDIV_APB1DIV_Msk) >> CLK_PCLKDIV_APB1DIV_Pos) >
-            ((CLK->CLKDIV0 & CLK_CLKDIV0_EADC0DIV_Msk) >> CLK_CLKDIV0_EADC0DIV_Pos))
+        if (u32Apb1Div > ((CLK->CLKDIV0 & CLK_CLKDIV0_EADC0DIV_Msk) >> CLK_CLKDIV0_EADC0DIV_Pos))
         {
             return EADC_CLKDIV_ERR;
         }
     }
     else if (eadc == EADC1)
     {
-        if (((CLK->PCLKDIV & CLK_PCLKDIV_APB1DIV_Msk) >> CLK_PCLKDIV_APB1DIV_Pos) >
-            ((CLK->CLKDIV2 & CLK_CLKDIV2_EADC1DIV_Msk) >> CLK_CLKDIV2_EADC1DIV_Pos))
+        if (u32Apb1Div > ((CLK->CLKDIV2 & CLK_CLKDIV2_EADC1DIV_Msk) >> CLK_CLKDIV2_EADC1DIV_Pos))
         {
             return EADC_CLKDIV_ERR;
         }
     }
     else if (eadc == EADC2)
     {
-        if (((CLK->PCLKDIV & CLK_PCLKDIV_APB1DIV_Msk) >> CLK_PCLKDIV_APB1DIV_Pos) >
-            ((CLK->CLKDIV5 & CLK_CLKDIV5_EADC2DIV_Msk) >> CLK_CLKDIV5_EADC2DIV_Pos))
+        if (u32Apb1Div > ((CLK->CLKDIV5 & CLK_CLKDIV5_EADC2DIV_Msk) >> CLK_CLKDIV5_EADC2DIV_Pos))
         {
             return EADC_CLKDIV_ERR;
         }
