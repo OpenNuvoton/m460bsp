@@ -1302,15 +1302,7 @@ int32_t  ECC_Mutiply(CRPT_T *crpt, E_ECC_CURVE ecc_curve, char x1[], char y1[], 
 
         if(ecc_curve == CURVE_25519)
         {
-            printf("!! Is curve-25519 !!\n");
-            crpt->ECC_CTL |= CRPT_ECC_CTL_SCAP_Msk;
             crpt->ECC_CTL |= CRPT_ECC_CTL_CSEL_Msk;
-
-            /* If SCAP enabled, the curve order must be written to ECC_X2 */
-            if(crpt->ECC_CTL & CRPT_ECC_CTL_SCAP_Msk)
-            {
-                Hex2Reg(pCurve->Eorder, crpt->ECC_X2);
-            }
         }
 
         crpt->ECC_CTL |= ((uint32_t)pCurve->key_len << CRPT_ECC_CTL_CURVEM_Pos) |
@@ -1486,6 +1478,10 @@ static int32_t run_ecc_codec(CRPT_T *crpt, uint32_t mode)
 {
     uint32_t eccop;
     int32_t i32TimeOutCnt;
+#ifdef ECC_SCA_PROTECT
+    uint32_t x1[18], y1[18], ctl;
+    int32_t i;
+#endif
 
     eccop = mode & CRPT_ECC_CTL_ECCOP_Msk;
     if(eccop == ECCOP_MODULE)
@@ -1508,10 +1504,21 @@ static int32_t run_ecc_codec(CRPT_T *crpt, uint32_t mode)
 #ifdef ECC_SCA_PROTECT
         if(eccop == ECCOP_POINT_MUL)
         {
+            /* Backup ctrl */
+            ctl = crpt->ECC_CTL;
+
             /* Enable side-channel protection in some operation */
             crpt->ECC_CTL |= CRPT_ECC_CTL_SCAP_Msk;
             /* If SCAP enabled, the curve order must be written to ECC_X2 */
             Hex2Reg(pCurve->Eorder, crpt->ECC_X2);
+
+            /* Backeup x1, y1 for retry */
+            for(i = 0; i < 18; i++)
+            {
+                x1[i] = crpt->ECC_X1[i];
+                y1[i] = crpt->ECC_Y1[i];
+            }
+
         }
 #endif
 
@@ -1526,7 +1533,7 @@ static int32_t run_ecc_codec(CRPT_T *crpt, uint32_t mode)
     {
         if( (i32TimeOutCnt-- <= 0) || g_ECCERR_done )
         {
-            return -1;
+            goto lexit;
         }
     }
 
@@ -1535,9 +1542,52 @@ static int32_t run_ecc_codec(CRPT_T *crpt, uint32_t mode)
     {
         if( i32TimeOutCnt-- <= 0)
         {
+            goto lexit;
+        }
+    }
+
+lexit:
+#ifdef ECC_SCA_PROTECT
+    if(i32TimeOutCnt <= 0)
+    {
+        /* Retry if ECCOP_POINT_MUL */
+        if(eccop == ECCOP_POINT_MUL)
+        {
+            crpt->ECC_CTL = CRPT_ECC_CTL_STOP_Msk;
+            crpt->ECC_CTL = ctl;
+
+            /* Try again */
+            for(i = 0; i < 18; i++)
+            {
+                x1[i] = crpt->ECC_X1[i];
+                y1[i] = crpt->ECC_Y1[i];
+            }
+
+            g_ECC_done = g_ECCERR_done = 0UL;
+
+            crpt->ECC_CTL |= ((uint32_t)pCurve->key_len << CRPT_ECC_CTL_CURVEM_Pos) | mode | CRPT_ECC_CTL_START_Msk;
+
+            i32TimeOutCnt = TIMEOUT_ECC;
+            while(g_ECC_done == 0UL)
+            {
+                if((i32TimeOutCnt-- <= 0) || g_ECCERR_done)
+                {
+                    return -1;
+                }
+            }
+        }
+        else
+        {
             return -1;
         }
     }
+
+#else
+    if(i32TimeOutCnt <= 0)
+    {
+        return -1;
+    }
+#endif
 
     return 0;
 }
