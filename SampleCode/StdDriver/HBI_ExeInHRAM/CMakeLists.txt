@@ -28,14 +28,7 @@ target_link_options(${PRJ}
     --scatter ${CMAKE_CURRENT_LIST_DIR}/Keil/HBI_ExeInHRAM.sct
 )
 
-set(DOWNLOAD_BOARD FALSE)
-
-# Convert to binary and copy to target device
-if(${DOWNLOAD_BOARD})
-
-    add_custom_command(TARGET ${PRJ} POST_BUILD
-       COMMAND ${ARM_FROMELF} --bin --output y:/${PRJ}.bin ${PRJ}.elf
-       VERBATIM
-    )
-
-endif()
+add_custom_command(TARGET ${PRJ} POST_BUILD
+    COMMAND ${ARM_FROMELF} --bin --output ${PRJ}.bin ${PRJ}.elf
+    VERBATIM
+)

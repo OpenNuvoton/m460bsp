@@ -26,16 +26,9 @@ target_link_options(${PRJ}
     --symbols
 )
 
-# Download to board
-set(DOWNLOAD_BOARD TRUE)
-
-
 # Convert to binary and copy to target device
-if(${DOWNLOAD_BOARD})
+add_custom_command(TARGET ${PRJ}
+    COMMAND ${ARM_FROMELF} --bin --output ${PRJ}.bin ${PRJ}.elf
+    VERBATIM
+)
 
-    add_custom_command(TARGET ${PRJ}
-       COMMAND ${ARM_FROMELF} --bin --output ${PRJ}.bin ${PRJ}.elf
-       VERBATIM
-    )
-
-endif()
