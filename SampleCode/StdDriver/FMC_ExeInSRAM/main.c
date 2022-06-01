@@ -94,12 +94,17 @@ int32_t main(void)
 
     printf("Will branch to address: 0x%x\n", (uint32_t)FlashAccess_OnSRAM);
 
-    FlashAccess_OnSRAM();
+    if(FlashAccess_OnSRAM())
+    {
+        printf("Flash access return error.\n");
+    }
+    else
+    {
+        printf("Flash access return ok.\n");
+    }
 
     printf("\nFMC Sample Code Completed.\n");
 
     while (1);
 
 }
-
-/*** (C) COPYRIGHT 2021 Nuvoton Technology Corp. ***/

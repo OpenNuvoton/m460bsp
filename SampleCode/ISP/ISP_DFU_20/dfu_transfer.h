@@ -118,7 +118,6 @@ typedef enum
     DFU_REQ_MAX
 } dfu_requests_enum;
 
-#pragma pack(1)
 
 #define DFU_DETACH                        0
 #define DFU_DNLOAD                        1
@@ -130,6 +129,7 @@ typedef enum
 
 
 #define APP_LOADED_ADDR 0x1000000
+#pragma pack(1)
 typedef struct
 {
     uint8_t buf[TRANSFER_SIZE];
@@ -137,6 +137,7 @@ typedef struct
     uint16_t block_num;
     uint32_t base_addr;
 } s_prog_struct;
+#pragma POP
 
 /*-------------------------------------------------------------*/
 extern uint8_t gu8DeviceDescriptor[];
@@ -151,5 +152,4 @@ void DFU_Init(void);
 void DFU_ClassRequest(void);
 //void HID_SetInReport(void);
 //void HID_GetOutReport(uint8_t *pu8EpBuf, uint32_t u32Size);
-
 #endif  /* __USBD_DFU_H_ */

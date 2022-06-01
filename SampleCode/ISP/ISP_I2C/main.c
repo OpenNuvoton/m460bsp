@@ -26,7 +26,7 @@ void ProcessHardFault(void) {}
 void SH_Return(void) {}
 void SendChar_ToUART(void) {}
 
-__weak uint32_t CLK_GetPLLClockFreq(void)
+__WEAK uint32_t CLK_GetPLLClockFreq(void)
 {
     return FREQ_192MHZ;
 }

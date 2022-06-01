@@ -82,19 +82,6 @@ static int  set_IAP_boot_mode(void)
     return 0;                          /* success */
 }
 
-
-/*
- *  Set stack base address to SP register.
- */
-#ifdef __ARMCC_VERSION                 /* for Keil compiler */
-__asm __set_SP(uint32_t _sp)
-{
-    MSR MSP, r0
-    BX lr
-}
-#endif
-
-
 /**
   * @brief    Load an image to specified flash address. The flash area must have been enabled by
   *           caller. For example, if caller want to program an image to LDROM, FMC_ENABLE_LD_UPDATE()
@@ -266,12 +253,9 @@ int main()
              *  The stack base address of an executable image is located at offset 0x0.
              *  Thus, this sample get stack base address of LDROM code from FMC_LDROM_BASE + 0x0.
              */
-#ifdef __GNUC__                        /* for GNU C compiler */
-            u32Data = *(uint32_t *)FMC_LDROM_BASE;
-            asm("msr msp, %0" : : "r" (u32Data));
-#else
-            __set_SP(*(uint32_t *)FMC_LDROM_BASE);
-#endif
+            
+            __set_MSP(M32(FMC_LDROM_BASE));
+            
             /*
              *  Branch to the LDROM code's reset handler in way of function call.
              */

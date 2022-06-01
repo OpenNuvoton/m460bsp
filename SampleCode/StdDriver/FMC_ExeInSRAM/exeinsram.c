@@ -48,6 +48,7 @@ int32_t FlashAccess_OnSRAM(void)
     printf("\nISP function demo done.\n");
 
     FMC_DISABLE_AP_UPDATE();
+    
     return 0;
 }
 
