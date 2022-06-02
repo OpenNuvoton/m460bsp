@@ -984,8 +984,8 @@ typedef struct
      * | :----: | :----:   | :---- |
      * |[7:0]   |VERSION   |Chip Series Version (Read Only)
      * |        |          |These bits indicate the series version of chip.
-     * |        |          |0x2 = M460HD.
-     * |        |          |0x3 = M460LD.
+     * |        |          |0x02 = M46xxI/M46xxJ.
+     * |        |          |0x03 = M46xxG.
      * |        |          |Others = Reserved.
      * @var SYS_T::PLCTL
      * Offset: 0x1F8  Power Level Control Register
@@ -1212,7 +1212,7 @@ typedef struct
      * |        |          |11 = ECAP0_IC1
      * |        |          |12 = I2S1_DI
      * |        |          |13 = TM2_EXT
-     * |        |          |15 = SWDH_DAT (for M460HD)
+     * |        |          |15 = SWDH_DAT (for M46xxI/M46xxJ)
      * |        |          |20 = BMC8
      * |[20:16] |PA10MFP   |PA.10 Multi-function Pin Selection
      * |        |          |00 = GPIO
@@ -1230,7 +1230,7 @@ typedef struct
      * |        |          |12 = I2S1_MCLK
      * |        |          |13 = TM1_EXT
      * |        |          |14 = DAC0_ST
-     * |        |          |15 = SWDH_CLK (for M460HD)
+     * |        |          |15 = SWDH_CLK (for M46xxI/M46xxJ)
      * |        |          |18 = KPI_ROW5
      * |        |          |20 = BMC7
      * |[28:24] |PA11MFP   |PA.11 Multi-function Pin Selection
@@ -1264,7 +1264,7 @@ typedef struct
      * |        |          |06 = CAN0_TXD
      * |        |          |07 = SC2_PWR
      * |        |          |08 = SD1_nCD
-     * |        |          |09 = SPI0_SS (for M460LD)
+     * |        |          |09 = SPI0_SS (for M46xxG)
      * |        |          |10 = QSPI1_MISO0
      * |        |          |11 = BPWM1_CH2
      * |        |          |12 = EQEI1_INDEX
@@ -1281,7 +1281,7 @@ typedef struct
      * |        |          |05 = SPI2_CLK
      * |        |          |06 = CAN0_RXD
      * |        |          |07 = SC2_RST
-     * |        |          |09 = SPI0_CLK (for M460LD)
+     * |        |          |09 = SPI0_CLK (for M46xxG)
      * |        |          |10 = QSPI1_MOSI0
      * |        |          |11 = BPWM1_CH3
      * |        |          |12 = EQEI1_A
@@ -1298,12 +1298,12 @@ typedef struct
      * |        |          |05 = SPI2_MISO
      * |        |          |06 = I2C2_SCL
      * |        |          |07 = SC2_DAT
-     * |        |          |09 = SPI0_MISO (for M460LD)
+     * |        |          |09 = SPI0_MISO (for M46xxG)
      * |        |          |11 = BPWM1_CH4
      * |        |          |12 = EQEI1_B
      * |        |          |13 = ECAP3_IC2
      * |        |          |14 = USB_D+
-     * |        |          |16 = I2C0_SCL (for M460LD)
+     * |        |          |16 = I2C0_SCL (for M46xxG)
      * |        |          |17 = PSIO0_CH6
      * |        |          |19 = SPI10_MISO
      * |        |          |20 = BMC14
@@ -1315,12 +1315,12 @@ typedef struct
      * |        |          |05 = SPI2_MOSI
      * |        |          |06 = I2C2_SDA
      * |        |          |07 = SC2_CLK
-     * |        |          |09 = SPI0_MOSI (for M460LD)
+     * |        |          |09 = SPI0_MOSI (for M46xxG)
      * |        |          |11 = BPWM1_CH5
      * |        |          |12 = EPWM0_SYNC_IN
      * |        |          |13 = EQEI3_INDEX
      * |        |          |14 = USB_OTG_ID
-     * |        |          |16 = I2C0_SDA (for M460LD)
+     * |        |          |16 = I2C0_SDA (for M46xxG)
      * |        |          |17 = PSIO0_CH7
      * |        |          |19 = SPI10_MOSI
      * |        |          |20 = BMC15
@@ -1461,7 +1461,7 @@ typedef struct
      * |        |          |13 = INT4
      * |        |          |14 = USB_VBUS_EN
      * |        |          |15 = ACMP1_O
-     * |        |          |16 = SPI3_MOSI (for M460LD)
+     * |        |          |16 = SPI3_MOSI (for M46xxG)
      * |        |          |18 = KPI_COL5
      * |        |          |19 = SPI1_SS
      * |        |          |20 = BMC31
@@ -1480,9 +1480,9 @@ typedef struct
      * |        |          |13 = INT5
      * |        |          |14 = USB_VBUS_ST
      * |        |          |15 = ACMP0_O
-     * |        |          |16 = SPI3_MISO (for M460LD)
+     * |        |          |16 = SPI3_MISO (for M46xxG)
      * |        |          |18 = KPI_COL4
-     * |        |          |19 = SPI1_CLK (for M460LD)
+     * |        |          |19 = SPI1_CLK (for M46xxG)
      * |        |          |20 = BMC30
      * @var SYS_T::GPB_MFP2
      * Offset: 0x518  GPIOB Multiple Function Control Register 2
@@ -1568,10 +1568,10 @@ typedef struct
      * |        |          |09 = SD0_nCD
      * |        |          |10 = CCAP_SCLK
      * |        |          |11 = EPWM1_CH3
-     * |        |          |12 = ETMC_TRACE_DATA3 (for M460HD)
+     * |        |          |12 = ETMC_TRACE_DATA3 (for M46xxI/M46xxJ)
      * |        |          |13 = TM3_EXT
      * |        |          |14 = CAN3_RXD
-     * |        |          |16 = SPI3_SS (for M460LD)
+     * |        |          |16 = SPI3_SS (for M46xxG)
      * |        |          |17 = PSIO0_CH3
      * |        |          |18 = KPI_COL3
      * |        |          |20 = BMC29
@@ -1587,10 +1587,10 @@ typedef struct
      * |        |          |08 = I2C2_SCL
      * |        |          |10 = CCAP_PIXCLK
      * |        |          |11 = EPWM1_CH2
-     * |        |          |12 = ETMC_TRACE_DATA2 (for M460HD)
+     * |        |          |12 = ETMC_TRACE_DATA2 (for M46xxI/M46xxJ)
      * |        |          |13 = TM2_EXT
      * |        |          |14 = CAN3_TXD
-     * |        |          |16 = SPI3_CLK (for M460LD)
+     * |        |          |16 = SPI3_CLK (for M46xxG)
      * |        |          |17 = PSIO0_CH2
      * |        |          |18 = KPI_COL2
      * |        |          |19 = SPI9_MISO
@@ -1607,7 +1607,7 @@ typedef struct
      * |        |          |08 = I2C2_SMBSUS
      * |        |          |09 = CCAP_DATA0
      * |        |          |11 = EPWM1_CH1
-     * |        |          |12 = ETMC_TRACE_DATA1 (for M460HD)
+     * |        |          |12 = ETMC_TRACE_DATA1 (for M46xxI/M46xxJ)
      * |        |          |13 = TM1_EXT
      * |        |          |14 = CLKO
      * |        |          |15 = USB_VBUS_ST
@@ -1627,10 +1627,10 @@ typedef struct
      * |        |          |09 = CCAP_DATA1
      * |        |          |10 = EPWM0_BRAKE1
      * |        |          |11 = EPWM1_CH0
-     * |        |          |12 = ETMC_TRACE_DATA0 (for M460HD)
+     * |        |          |12 = ETMC_TRACE_DATA0 (for M46xxI/M46xxJ)
      * |        |          |13 = TM0_EXT
      * |        |          |14 = USB_VBUS_EN
-     * |        |          |15 = HSUSB_VBUS_EN (for M460HD)
+     * |        |          |15 = HSUSB_VBUS_EN (for M46xxI/M46xxJ)
      * |        |          |17 = PSIO0_CH0
      * |        |          |18 = KPI_COL0
      * |        |          |19 = SPI9_CLK
@@ -1656,7 +1656,7 @@ typedef struct
      * |        |          |14 = ACMP1_O
      * |        |          |15 = EADC1_ST
      * |        |          |16 = HBI_D2
-     * |        |          |17 = QSPI1_CLK (for M460LD)
+     * |        |          |17 = QSPI1_CLK (for M46xxG)
      * |        |          |18 = KPI_ROW5
      * |        |          |19 = SPI7_MOSI
      * |        |          |20 = BMC25
@@ -1676,7 +1676,7 @@ typedef struct
      * |        |          |14 = ACMP0_O
      * |        |          |15 = EADC0_ST
      * |        |          |16 = HBI_RWDS
-     * |        |          |17 = QSPI1_SS (for M460LD)
+     * |        |          |17 = QSPI1_SS (for M46xxG)
      * |        |          |18 = KPI_ROW4
      * |        |          |19 = SPI7_MISO
      * |        |          |20 = BMC24
@@ -1893,10 +1893,10 @@ typedef struct
      * |        |          |06 = QSPI0_CLK
      * |        |          |10 = TRACE_SWO
      * |        |          |11 = EPWM0_SYNC_IN
-     * |        |          |12 = ETMC_TRACE_CLK (for M460HD)
+     * |        |          |12 = ETMC_TRACE_CLK (for M46xxI/M46xxJ)
      * |        |          |13 = TM1
      * |        |          |14 = USB_VBUS_ST
-     * |        |          |15 = HSUSB_VBUS_ST (for M460HD)
+     * |        |          |15 = HSUSB_VBUS_ST (for M46xxI/M46xxJ)
      * |        |          |19 = SPI9_MOSI
      * |        |          |20 = BMC26
      * |[28:24] |PC15MFP   |PC.15 Multi-function Pin Selection
@@ -2072,7 +2072,7 @@ typedef struct
      * |        |          |13 = ECAP2_IC2
      * |        |          |14 = CLKO
      * |        |          |15 = EADC0_ST
-     * |        |          |19 = QSPI1_MOSI1 (for M460LD)
+     * |        |          |19 = QSPI1_MOSI1 (for M46xxG)
      * |[20:16] |PD14MFP   |PD.14 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = EBI_nCS0
@@ -2320,7 +2320,7 @@ typedef struct
      * |        |          |13 = ACMP0_O
      * |        |          |14 = ICE_DAT
      * |        |          |15 = EADC0_ST
-     * |        |          |19 = QSPI1_MISO0 (for M460LD)
+     * |        |          |19 = QSPI1_MISO0 (for M46xxG)
      * |[12:8]  |PF1MFP    |PF.1 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = UART1_RXD
@@ -2336,7 +2336,7 @@ typedef struct
      * |        |          |13 = ACMP1_O
      * |        |          |14 = ICE_CLK
      * |        |          |15 = EADC1_ST
-     * |        |          |19 = QSPI1_MOSI0 (for M460LD)
+     * |        |          |19 = QSPI1_MOSI0 (for M46xxG)
      * |[20:16] |PF2MFP    |PF.2 Multi-function Pin Selection
      * |        |          |00 = GPIO
      * |        |          |02 = EBI_nCS1
@@ -2649,7 +2649,7 @@ typedef struct
      * |        |          |14 = CLKO
      * |        |          |15 = EADC0_ST
      * |        |          |16 = HBI_D7
-     * |        |          |19 = QSPI1_MISO1 (for M460LD)
+     * |        |          |19 = QSPI1_MISO1 (for M46xxG)
      * @var SYS_T::GPH_MFP0
      * Offset: 0x570  GPIOH Multiple Function Control Register 0
      * ---------------------------------------------------------------------------------------------------
