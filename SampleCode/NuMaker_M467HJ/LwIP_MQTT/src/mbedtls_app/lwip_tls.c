@@ -13,7 +13,7 @@
 #include "mbedtls/entropy.h"
 #include "mbedtls/ctr_drbg.h"
 #include "mbedtls/ssl.h"
-#include "mbedtls/ssl_internal.h"//clyu
+#include "ssl_misc.h"//clyu
 #include <string.h>
 
 typedef struct {
@@ -600,6 +600,7 @@ static uint32_t _divide_tick(uint32_t original_value, uint32_t divider)
 	return original_value;
 }
 
+#if 0   //unused, remove for mbedtls-3.1.0
 int lwip_tls_add_private_key(tls_configuration_t * conf, 								
 								const char * pcPrivateKey,
                                	const uint32_t ulPrivateKeyLength)
@@ -624,4 +625,5 @@ int lwip_tls_add_private_key(tls_configuration_t * conf,
     return ret;
     
 }
+#endif
 #endif
