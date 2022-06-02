@@ -347,7 +347,7 @@
                 <option>
                     <name>CCIncludePath2</name>
                     <state>$PROJ_DIR$\..\..\CMSIS\Include</state>
-                    <state>$PROJ_DIR$\..\..\Device\Nuvoton\M2354\Include</state>
+                    <state>$PROJ_DIR$\..\..\Device\Nuvoton\m460\Include</state>
                     <state>$PROJ_DIR$\..\..\StdDriver\inc</state>
                     <state>$PROJ_DIR$\..</state>
                     <state>$PROJ_DIR$\..\..\..\ThirdParty\mbedtls-3.1.0\include</state>

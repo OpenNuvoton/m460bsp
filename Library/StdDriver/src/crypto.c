@@ -1559,8 +1559,8 @@ lexit:
             /* Try again */
             for(i = 0; i < 18; i++)
             {
-                x1[i] = crpt->ECC_X1[i];
-                y1[i] = crpt->ECC_Y1[i];
+                crpt->ECC_X1[i] = x1[i];
+                crpt->ECC_Y1[i] = y1[i];
             }
 
             g_ECC_done = g_ECCERR_done = 0UL;
