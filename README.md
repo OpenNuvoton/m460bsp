@@ -20,8 +20,14 @@ To experience the powerful features of M460 in few minutes, please refer to NuMa
 - CMSIS<br>
 	Cortex® Microcontroller Software Interface Standard (CMSIS) V5.0 definitions by ARM® Corp.
 
+- CryptoAccellerator<br>
+	Library for mbed TLS crypto.
+
 - Device<br>
 	CMSIS compliant device header file.
+
+- NuMaker<br>
+	Specific libraries for M460 NuMaker board.
 
 - SmartcardLib<br>
 	Library for accessing a smartcard.
@@ -43,6 +49,9 @@ To experience the powerful features of M460 in few minutes, please refer to NuMa
 - ISP<br>
 	Sample codes for In-System-Programming.
 
+- NuMaker_M467HJ<br>
+	Sample codes for NuMaker-PFM-M460 board.
+
 - PowerManagement<br>
 	Power management sample code.
 
@@ -52,12 +61,37 @@ To experience the powerful features of M460 in few minutes, please refer to NuMa
 - Template<br>
 	A template project file for M460 series.
 
+- XOM<br>
+	Demonstrate how to create XOM library and use it.
 
 ## .\ThirdParty\
 
 - FatFs<br>
 	An open source FAT/exFAT filesystem library.
 
+- FreeRTOS<br>
+	FreeRTOS porting for M460.
+
+- libjpeg<br>
+	A software implements JPEG baseline, extended-sequential, and progressive compression processes maintained and published by the Independent JPEG Group (IJG).
+
+- LibMAD<br>
+	A MPEG audio decoder library that currently supports MPEG-1 and the MPEG-2 extension to lower sampling frequencies, as well as the de facto MPEG 2.5 format.
+
+- lwIP<br>
+	A widely used open source TCP/IP stack designed for embedded systems.
+
+- mbedtls-2.13.0<br>
+	A portable, easy to use, readable and flexible SSL library.
+
+- mbedtls-3.1.0<br>
+	mbed TLS offers an SSL library with an intuitive API and readable source code, so you can actually understand what the code does.
+
+- paho.mqtt.embedded-c<br>
+	Eclipse Paho MQTT C/C++ client for Embedded platforms.
+
+- shine<br>
+	A blazing fast MP3 encoding library implemented in fixed-point arithmetic.
 
 # Licesne
 
