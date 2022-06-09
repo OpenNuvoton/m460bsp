@@ -361,10 +361,27 @@ typedef struct
 } CANFD_TX_EVNT_ELEM_T;
 
 
-#define CANFD_TIMEOUT        SystemCoreClock    /*!< CANFD time-out counter (1 second time-out) */
-#define CANFD_OK             ( 0L)              /*!< CANFD operation OK */
-#define CANFD_ERR_FAIL       (-1L)              /*!< CANFD operation failed */
-#define CANFD_ERR_TIMEOUT    (-2L)              /*!< CANFD operation abort due to timeout error */
+#define CANFD_TIMEOUT            SystemCoreClock    /*!< CANFD time-out counter (1 second time-out) */
+#define CANFD_OK                 ( 0L)              /*!< CANFD operation OK */
+#define CANFD_ERR_FAIL           (-1L)              /*!< CANFD operation failed */
+#define CANFD_ERR_TIMEOUT        (-2L)              /*!< CANFD operation abort due to timeout error */
+#define CANFD_READ_REG_TIMEOUT   (48UL)             /*!< CANFD read register time-out count */
+
+__STATIC_INLINE uint32_t CANFD_ReadReg(uint32_t u32RegAddr)
+{
+    uint32_t u32ReadReg;
+    uint32_t u32TimeOutCnt = CANFD_READ_REG_TIMEOUT;
+    u32ReadReg = 0UL;
+    do{
+        u32ReadReg = inpw((uint32_t *)u32RegAddr);
+        if(--u32TimeOutCnt == 0UL)
+        {
+            break;
+        }
+    }while(u32ReadReg == 0UL);
+
+    return u32ReadReg;
+}
 
 
 void CANFD_Open(CANFD_T *canfd, CANFD_FD_T *psCanfdStr);

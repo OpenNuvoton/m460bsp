@@ -725,7 +725,7 @@ void CANFD_Close(CANFD_T *psCanfd)
 static uint32_t CANFD_GetTxBufferElementAddress(CANFD_T *psCanfd, uint32_t u32Idx)
 {
     uint32_t u32Size = 0;
-    u32Size = (psCanfd->TXESC & CANFD_TXESC_TBDS_Msk) >> CANFD_TXESC_TBDS_Pos;
+    u32Size = (CANFD_ReadReg((uint32_t)&psCanfd->TXESC) & CANFD_TXESC_TBDS_Msk) >> CANFD_TXESC_TBDS_Pos;
 
     if (u32Size < 5U)
     {
@@ -736,7 +736,7 @@ static uint32_t CANFD_GetTxBufferElementAddress(CANFD_T *psCanfd, uint32_t u32Id
         u32Size = u32Size * 4U - 10U;
     }
 
-    return (psCanfd->TXBC & CANFD_TXBC_TBSA_Msk) + u32Idx * u32Size * 4U;
+    return (CANFD_ReadReg((uint32_t)&psCanfd->TXBC) & CANFD_TXBC_TBSA_Msk) + u32Idx * u32Size * 4U;
 }
 
 
@@ -789,24 +789,24 @@ void CANFD_EnableInt(CANFD_T *psCanfd, uint32_t u32IntLine0, uint32_t u32IntLine
     if (u32IntLine0 != 0)
     {
         /*Setting the CANFD0_IRQ0 Interrupt*/
-        psCanfd->IE |= u32IntLine0;
+        psCanfd->IE = CANFD_ReadReg((uint32_t)&psCanfd->IE) | u32IntLine0;
         /* Enable CAN FD specified interrupt */
-        psCanfd->ILE |= ((uint32_t)1U << 0);
+        psCanfd->ILE = CANFD_ReadReg((uint32_t)&psCanfd->ILE) | ((uint32_t)1U << 0);
     }
 
     if (u32IntLine1 != 0)
     {
         /*Setting the CANFD0_IRQ1 Interrupt*/
-        psCanfd->ILS |= u32IntLine1;
+        psCanfd->ILS = CANFD_ReadReg((uint32_t)&psCanfd->ILS) | u32IntLine1;
         /* Enable CAN FD specified interrupt */
-        psCanfd->ILE |= ((uint32_t)1U << 1);
+        psCanfd->ILE = CANFD_ReadReg((uint32_t)&psCanfd->ILE) | ((uint32_t)1U << 1);
     }
 
     /*Setting the Tx Buffer Transmission Interrupt Enable*/
-    psCanfd->TXBTIE |= u32TXBTIE;
+    psCanfd->TXBTIE = CANFD_ReadReg((uint32_t)&psCanfd->TXBTIE) | u32TXBTIE;
 
     /*Tx Buffer Cancellation Finished Interrupt Enable*/
-    psCanfd->TXBCIE |= u32TXBCIE;
+    psCanfd->TXBCIE = CANFD_ReadReg((uint32_t)&psCanfd->TXBCIE) | u32TXBCIE;
 }
 
 
@@ -858,24 +858,24 @@ void CANFD_DisableInt(CANFD_T *psCanfd, uint32_t u32IntLine0, uint32_t u32IntLin
     if (u32IntLine0 != 0)
     {
         /*Clear the CANFD0_IRQ0 Interrupt*/
-        psCanfd->IE &= ~u32IntLine0;
+        psCanfd->IE = CANFD_ReadReg((uint32_t)&psCanfd->IE) & ~u32IntLine0;
         /* Disable CAN FD specified interrupt */
-        psCanfd->ILE &= ~((uint32_t)1U << 0);
+        psCanfd->ILE = CANFD_ReadReg((uint32_t)&psCanfd->ILE) & ~((uint32_t)1U << 0);
     }
 
     if (u32IntLine1 != 0)
     {
         /*Clear the CANFD0_IRQ1 Interrupt*/
-        psCanfd->ILS &= ~u32IntLine1;
+        psCanfd->ILS = CANFD_ReadReg((uint32_t)&psCanfd->ILS) & ~u32IntLine1;
         /* Disable CAN FD specified interrupt */
-        psCanfd->ILE &= ~((uint32_t)1U << 1);
+        psCanfd->ILE = CANFD_ReadReg((uint32_t)&psCanfd->ILE) & ~((uint32_t)1U << 1);
     }
 
     /*Setting the Tx Buffer Transmission Interrupt Disable*/
-    psCanfd->TXBTIE &= ~u32TXBTIE;
+    psCanfd->TXBTIE = CANFD_ReadReg((uint32_t)&psCanfd->TXBTIE) & ~u32TXBTIE;
 
     /*Tx Buffer Cancellation Finished Interrupt Disable*/
-    psCanfd->TXBCIE &= ~u32TXBCIE;
+    psCanfd->TXBCIE = CANFD_ReadReg((uint32_t)&psCanfd->TXBCIE) & ~u32TXBCIE;
 }
 
 
@@ -902,7 +902,7 @@ uint32_t CANFD_TransmitTxMsg(CANFD_T *psCanfd, uint32_t u32TxBufIdx, CANFD_FD_MS
     if (u32Success == 1)
     {
         /* wait for completion */
-        while (!(psCanfd->TXBRP & (1UL << u32TxBufIdx)))
+        while (!(CANFD_ReadReg((uint32_t)&(psCanfd->TXBRP)) & (1UL << u32TxBufIdx)))
         {
             if(--u32TimeOutCnt == 0)
             {
@@ -940,11 +940,11 @@ uint32_t CANFD_TransmitDMsg(CANFD_T *psCanfd, uint32_t u32TxBufIdx, CANFD_FD_MSG
     if (u32TxBufIdx >= CANFD_MAX_TX_BUF_ELEMS) return 0;
 
     /* transmission is pending in this message buffer */
-    if (psCanfd->TXBRP & (1UL << u32TxBufIdx)) return 0;
+    if (CANFD_ReadReg((uint32_t)&(psCanfd->TXBRP)) & (1UL << u32TxBufIdx)) return 0;
 
     //psTxBuffer = (CANFD_BUF_T *)(CANFD_SRAM_BASE_ADDR + (psCanfd->TXBC & 0xFFFF) + (u32TxBufIdx * sizeof(CANFD_BUF_T)));
 	u32SramBaseAddr = _GetCanfdSramBaseAddr(psCanfd);
-	psTxBuffer = (CANFD_BUF_T *)(u32SramBaseAddr + (psCanfd->TXBC & 0xFFFF) + (u32TxBufIdx * sizeof(CANFD_BUF_T)));
+    psTxBuffer = (CANFD_BUF_T *)(u32SramBaseAddr + (CANFD_ReadReg((uint32_t)&(psCanfd->TXBC)) & 0xFFFF) + (u32TxBufIdx * sizeof(CANFD_BUF_T)));
 
     if (psTxMsg->eIdType == eCANFD_XID)
     {
@@ -1318,9 +1318,9 @@ uint32_t CANFD_ReadRxBufMsg(CANFD_T *psCanfd, uint8_t u8MbIdx, CANFD_FD_MSG_T *p
     if (u8MbIdx < CANFD_MAX_RX_BUF_ELEMS)
     {
         if (u8MbIdx < 32)
-            newData = (psCanfd->NDAT1 >> u8MbIdx) & 1;
+            newData = (CANFD_ReadReg((uint32_t)&psCanfd->NDAT1) >> u8MbIdx) & 1;
         else
-            newData = (psCanfd->NDAT2 >> (u8MbIdx - 32)) & 1;
+            newData = (CANFD_ReadReg((uint32_t)&psCanfd->NDAT2) >> (u8MbIdx - 32)) & 1;
 
         /* new message is waiting to be read */
         if (newData)
@@ -1328,16 +1328,16 @@ uint32_t CANFD_ReadRxBufMsg(CANFD_T *psCanfd, uint8_t u8MbIdx, CANFD_FD_MSG_T *p
             /* get memory location of rx buffer */
             //psRxBuffer = (CANFD_BUF_T *)(CANFD_SRAM_BASE_ADDR + (psCanfd->RXBC & 0xFFFF) + (u8MbIdx * sizeof(CANFD_BUF_T)));
 			u32SramBaseAddr = _GetCanfdSramBaseAddr(psCanfd);
-			psRxBuffer = (CANFD_BUF_T *)(u32SramBaseAddr + (psCanfd->RXBC & 0xFFFF) + (u8MbIdx * sizeof(CANFD_BUF_T)));
+            psRxBuffer = (CANFD_BUF_T *)(u32SramBaseAddr + (CANFD_ReadReg((uint32_t)&psCanfd->RXBC) & 0xFFFF) + (u8MbIdx * sizeof(CANFD_BUF_T)));
 
             /* read the message */
             CANFD_CopyDBufToMsgBuf(psRxBuffer, psMsgBuf);
 
             /* clear 'new data' flag */
             if (u8MbIdx < 32)
-                psCanfd->NDAT1 |= (1UL << u8MbIdx);
+                psCanfd->NDAT1 = CANFD_ReadReg((uint32_t)&psCanfd->NDAT1) | (1UL << u8MbIdx);
             else
-                psCanfd->NDAT2 |= (1UL << (u8MbIdx - 32));
+            psCanfd->NDAT2 = CANFD_ReadReg((uint32_t)&psCanfd->NDAT2) | (1UL << (u8MbIdx - 32));
 
             u32Success = 1;
         }
@@ -1389,19 +1389,19 @@ uint32_t CANFD_ReadRxFifoMsg(CANFD_T *psCanfd, uint8_t u8FifoIdx, CANFD_FD_MSG_T
         }
 
         /* if FIFO is not empty */
-        if ((*pRXFS & 0x7F) > 0)
+        if ((CANFD_ReadReg((uint32_t)&(*pRXFS)) & 0x7F) > 0)
         {
-            GetIndex = (uint8_t)((*pRXFS >> 8) & 0x3F);
+            GetIndex = (uint8_t)((CANFD_ReadReg((uint32_t)&(*pRXFS)) >> 8) & 0x3F);
             //pRxBuffer = (CANFD_BUF_T *)(CANFD_SRAM_BASE_ADDR + (*pRXFC & 0xFFFF) + (GetIndex * sizeof(CANFD_BUF_T)));
 			u32SramBaseAddr = _GetCanfdSramBaseAddr(psCanfd);
-			pRxBuffer = (CANFD_BUF_T *)(u32SramBaseAddr + (*pRXFC & 0xFFFF) + (GetIndex * sizeof(CANFD_BUF_T)));
+            pRxBuffer = (CANFD_BUF_T *)(u32SramBaseAddr + (CANFD_ReadReg((uint32_t)&(*pRXFC)) & 0xFFFF) + (GetIndex * sizeof(CANFD_BUF_T)));
 
             CANFD_CopyRxFifoToMsgBuf(pRxBuffer, psMsgBuf);
             /* we got the message */
             *pRXFA = GetIndex;
 
             /* check for overflow */
-            if (*pRXFS & CANFD_RXFS_RFL)
+            if (CANFD_ReadReg((uint32_t)&(*pRXFS)) & CANFD_RXFS_RFL)
             {
                 /* clear overflow flag */
                 psCanfd->IR = (1UL << msgLostBit);
@@ -1490,9 +1490,9 @@ uint32_t CANFD_GetRxFifoWaterLvl(CANFD_T *psCanfd, uint32_t u32RxFifoNum)
     uint32_t u32WaterLevel = 0;
 
     if (u32RxFifoNum == 0)
-        u32WaterLevel = ((psCanfd->RXF0C & CANFD_RXF0C_F0WM_Msk) >> CANFD_RXF0C_F0WM_Pos);
+        u32WaterLevel = ((CANFD_ReadReg((uint32_t)&psCanfd->RXF0C) & CANFD_RXF0C_F0WM_Msk) >> CANFD_RXF0C_F0WM_Pos);
     else
-        u32WaterLevel = ((psCanfd->RXF1C & CANFD_RXF1C_F1WM_Msk) >> CANFD_RXF1C_F1WM_Pos);
+        u32WaterLevel = ((CANFD_ReadReg((uint32_t)&psCanfd->RXF1C) & CANFD_RXF1C_F1WM_Msk) >> CANFD_RXF1C_F1WM_Pos);
 
     return u32WaterLevel;
 }
@@ -1527,7 +1527,7 @@ void CANFD_CopyRxFifoToMsgBuf(CANFD_BUF_T *psRxBuf, CANFD_FD_MSG_T *psMsgBuf)
  */
 void CANFD_TxBufCancelReq(CANFD_T *psCanfd, uint32_t u32TxBufIdx)
 {
-    psCanfd->TXBCR |= (0x1ul << u32TxBufIdx);
+    psCanfd->TXBCR = CANFD_ReadReg((uint32_t)&psCanfd->TXBCR) | (0x1ul << u32TxBufIdx);
 }
 
 
@@ -1545,7 +1545,7 @@ void CANFD_TxBufCancelReq(CANFD_T *psCanfd, uint32_t u32TxBufIdx)
 uint32_t CANFD_IsTxBufCancelFin(CANFD_T *psCanfd, uint32_t u32TxBufIdx)
 {
     /* wait for completion */
-    return ((psCanfd->TXBCR & (0x1ul << u32TxBufIdx)) >> u32TxBufIdx);
+    return ((CANFD_ReadReg((uint32_t)&psCanfd->TXBCR) & (0x1ul << u32TxBufIdx)) >> u32TxBufIdx);
 }
 
 
@@ -1562,7 +1562,7 @@ uint32_t CANFD_IsTxBufCancelFin(CANFD_T *psCanfd, uint32_t u32TxBufIdx)
  */
 uint32_t CANFD_IsTxBufTransmitOccur(CANFD_T *psCanfd, uint32_t u32TxBufIdx)
 {
-    return ((psCanfd->TXBTO & (0x1ul << u32TxBufIdx)) >> u32TxBufIdx);
+    return ((CANFD_ReadReg((uint32_t)&psCanfd->TXBTO) & (0x1ul << u32TxBufIdx)) >> u32TxBufIdx);
 }
 
 
@@ -1597,7 +1597,7 @@ void CANFD_InitTxEvntFifo(CANFD_T *psCanfd, CANFD_RAM_PART_T *psRamConfig, CANFD
  */
 uint32_t CANFD_GetTxEvntFifoWaterLvl(CANFD_T *psCanfd)
 {
-    return ((psCanfd->TXEFC & CANFD_TXEFC_EFWN_Msk) >> CANFD_TXEFC_EFWN_Pos);
+    return ((CANFD_ReadReg((uint32_t)&psCanfd->TXEFC) & CANFD_TXEFC_EFWN_Msk) >> CANFD_TXEFC_EFWN_Pos);
 }
 
 
@@ -1705,7 +1705,7 @@ void CANFD_CopyTxEvntFifoToUsrBuf(CANFD_T *psCanfd, uint32_t u32TxEvntNum, CANFD
  */
 uint32_t CANFD_GetStatusFlag(CANFD_T *psCanfd, uint32_t u32IntTypeFlag)
 {
-    return (psCanfd->IR & u32IntTypeFlag);
+    return (CANFD_ReadReg((uint32_t)&psCanfd->IR) & u32IntTypeFlag);
 }
 
 
@@ -1750,7 +1750,7 @@ uint32_t CANFD_GetStatusFlag(CANFD_T *psCanfd, uint32_t u32IntTypeFlag)
 void CANFD_ClearStatusFlag(CANFD_T *psCanfd, uint32_t u32InterruptFlag)
 {
     /* Write 1 to clear status flag. */
-    psCanfd->IR |= u32InterruptFlag;
+    psCanfd->IR = CANFD_ReadReg((uint32_t)&psCanfd->IR) | u32InterruptFlag;
 }
 
 
@@ -1770,12 +1770,12 @@ void CANFD_GetBusErrCount(CANFD_T *psCanfd, uint8_t *pu8TxErrBuf, uint8_t *pu8Rx
 {
     if (pu8TxErrBuf)
     {
-        *pu8TxErrBuf = (uint8_t)((psCanfd->ECR >> CANFD_ECR_TEC_Pos) & CANFD_ECR_TEC_Msk);
+        *pu8TxErrBuf = (uint8_t)((CANFD_ReadReg((uint32_t)&psCanfd->ECR) >> CANFD_ECR_TEC_Pos) & CANFD_ECR_TEC_Msk);
     }
 
     if (pu8RxErrBuf)
     {
-        *pu8RxErrBuf = (uint8_t)((psCanfd->ECR >> CANFD_ECR_REC_Pos) & CANFD_ECR_REC_Msk);
+        *pu8RxErrBuf = (uint8_t)((CANFD_ReadReg((uint32_t)&psCanfd->ECR) >> CANFD_ECR_REC_Pos) & CANFD_ECR_REC_Msk);
     }
 }
 
@@ -1799,7 +1799,7 @@ int32_t CANFD_RunToNormal(CANFD_T *psCanfd, uint8_t u8Enable)
     if (u8Enable)
     {
         /* start operation */
-        psCanfd->CCCR &= ~(CANFD_CCCR_CCE_Msk | CANFD_CCCR_INIT_Msk);
+        psCanfd->CCCR = CANFD_ReadReg((uint32_t)&psCanfd->CCCR) & ~(CANFD_CCCR_CCE_Msk | CANFD_CCCR_INIT_Msk);
 
         while (psCanfd->CCCR & CANFD_CCCR_INIT_Msk)
         {
@@ -1809,7 +1809,7 @@ int32_t CANFD_RunToNormal(CANFD_T *psCanfd, uint8_t u8Enable)
     else
     {
         /* init mode */
-        psCanfd->CCCR |= CANFD_CCCR_INIT_Msk;
+        psCanfd->CCCR = CANFD_ReadReg((uint32_t)&psCanfd->CCCR) | CANFD_CCCR_INIT_Msk;
 
         while (!(psCanfd->CCCR & CANFD_CCCR_INIT_Msk))
         {
