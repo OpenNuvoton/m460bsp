@@ -123,7 +123,7 @@ void SYS_Init(void)
 /* Init I2C interface */
 void I2C2_Init(void)
 {
-    /* Open I2C2 and set clock to 100k */
+    /* Open I2C2 and set clock to 400k */
     I2C_Open(I2C2, 400000);
 
     /* Get I2C2 Bus Clock */
