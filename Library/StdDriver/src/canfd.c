@@ -902,7 +902,7 @@ uint32_t CANFD_TransmitTxMsg(CANFD_T *psCanfd, uint32_t u32TxBufIdx, CANFD_FD_MS
     if (u32Success == 1)
     {
         /* wait for completion */
-        while (!(CANFD_ReadReg((uint32_t)&(psCanfd->TXBRP)) & (1UL << u32TxBufIdx)))
+        while(!(psCanfd->TXBRP &(1UL << u32TxBufIdx)))
         {
             if(--u32TimeOutCnt == 0)
             {
@@ -936,6 +936,7 @@ uint32_t CANFD_TransmitDMsg(CANFD_T *psCanfd, uint32_t u32TxBufIdx, CANFD_FD_MSG
     CANFD_BUF_T *psTxBuffer;
     uint32_t u32Idx = 0, u32Success = 1;
 	uint32_t u32SramBaseAddr;
+    uint32_t u32TimeOutCnt = CANFD_TIMEOUT;
 
     if (u32TxBufIdx >= CANFD_MAX_TX_BUF_ELEMS) return 0;
 
@@ -967,6 +968,11 @@ uint32_t CANFD_TransmitDMsg(CANFD_T *psCanfd, uint32_t u32TxBufIdx, CANFD_FD_MSG
     for (u32Idx = 0; u32Idx < (psTxMsg->u32DLC + (4 - 1)) / 4; u32Idx++)
     {
         psTxBuffer->au32Data[u32Idx] = psTxMsg->au32Data[u32Idx];
+    }
+
+    while(CANFD_GET_COMMUNICATION_STATE(psCanfd) != eCANFD_IDLE)
+    {
+        if(--u32TimeOutCnt == 0) return 0;
     }
 
     psCanfd->TXBAR = (1 << u32TxBufIdx);

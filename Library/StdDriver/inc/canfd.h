@@ -91,6 +91,21 @@ extern "C"
 /* CANFD Rx FIFO 1 extended Mask helper macro - high. */
 #define CANFD_RX_FIFO1_EXT_MASK_HIGH(mask)           (2UL << 30) | ((mask & 0x1FFFFFFF))
 
+/**
+ *    @brief        Get the Module¡¦s CAN Communication State Flag
+ *
+ *    @param[in]    canfd    The pointer of the specified CANFD module
+ *
+ *    @retval       0 Synchronizing - node is synchronizing on CANFD communication.
+ *    @retval       1 Idle - node is neither receiver nor transmitter.
+ *    @retval       2 Receiver - node is operating as receiver.
+ *    @retval       3 Transmitter - node is operating as transmitter.
+ *
+ *    @details      This macro get the module¡¦s CANFD communication state.
+ *    \hideinitializer
+ */
+#define CANFD_GET_COMMUNICATION_STATE(canfd)    (((canfd)->PSR  & CANFD_PSR_ACT_Msk) >> CANFD_PSR_ACT_Pos)
+
 
 /* CAN FD frame data field size. */
 typedef enum
@@ -218,6 +233,15 @@ typedef enum
     eCANFD_RX_DBUF = 2
 } E_CANFD_RX_BUF_TYPE;
 
+/* CAN FD communication state.*/
+typedef enum
+{
+    eCANFD_SYNC         = 0,
+    eCANFD_IDLE         = 1,
+    eCANFD_RECEIVER     = 2,
+    eCANFD_TRANSMITTER  = 3
+} E_CANFD_COMMUNICATION_STATE;
+
 /* CAN FD Message receive Information: via which RX Buffers, etc. */
 typedef struct
 {
@@ -318,7 +342,7 @@ typedef enum
 /* Standard ID Filter Element Type */
 typedef enum
 {
-    eCANFD_SID_FLTR_TYPE_RANGE     = 0x0, /*!< Range filter from SFID1 to SFID2 (SFID2 ??SFID1). */
+    eCANFD_SID_FLTR_TYPE_RANGE     = 0x0, /*!< Range filter from SFID1 to SFID2 (SFID2 ? SFID1). */
     eCANFD_SID_FLTR_TYPE_DUAL      = 0x1, /*!< Dual ID filter for SFID1 or SFID2. */
     eCANFD_SID_FLTR_TYPE_CLASSIC   = 0x2, /*!< Classic filter: SFID1 = filter, SFID2 = mask. */
     eCANFD_SID_FLTR_TYPE_DIS       = 0x3  /*!< Filter element disabled */
@@ -327,7 +351,7 @@ typedef enum
 /* Extended ID Filter Element Type */
 typedef enum
 {
-    eCANFD_XID_FLTR_TYPE_RANGE      = 0x0,  /*!< Range filter from EFID1 to EFID2 (EFID2 ??EFID1). */
+    eCANFD_XID_FLTR_TYPE_RANGE      = 0x0,  /*!< Range filter from EFID1 to EFID2 (EFID2 ? EFID1). */
     eCANFD_XID_FLTR_TYPE_DUAL       = 0x1,  /*!< Dual ID filter for EFID1 or EFID2. */
     eCANFD_XID_FLTR_TYPE_CLASSIC    = 0x2,  /*!< Classic filter: EFID1=filter, EFID2=mask */
     eCANFD_XID_FLTR_TYPE_RANGE_XIDAM_NOT_APP     = 0x3   /*!< XID range filter from EFID1 to EFID2(EFID2 > EFID1), XIDAM not applied */
