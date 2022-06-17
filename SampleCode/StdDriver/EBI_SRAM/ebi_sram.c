@@ -323,7 +323,7 @@ int32_t SRAM_BS616LV4017(uint32_t u32MaxSize)
             /*---------------------------------------------------------------------------------------------------------*/
             i32Result = SRAM_CompareFunction(u32DataIdx, u32EBIsize, (uint32_t)&u32Idx, 0); // param3:0, Byte Write
             if(i32Result) return -1;
-            else printf("PASS\n");
+            else printf("PASS\n\n");
         }
         u32DataIdx++;
     }
@@ -374,7 +374,7 @@ int32_t SRAM_BS616LV4017(uint32_t u32MaxSize)
             /*---------------------------------------------------------------------------------------------------------*/
             i32Result = SRAM_CompareFunction(u32DataIdx, u32EBIsize, (uint32_t)&u32Idx, 1); // param3:1, Half Word Write
             if(i32Result) return -1;
-            else printf("PASS\n");
+            else printf("PASS\n\n");
         }
         u32DataIdx++;
     }
@@ -425,7 +425,7 @@ int32_t SRAM_BS616LV4017(uint32_t u32MaxSize)
             /*---------------------------------------------------------------------------------------------------------*/
             i32Result = SRAM_CompareFunction(u32DataIdx, u32EBIsize, (uint32_t)&u32Idx, 2); // param3:2, Word Write
             if(i32Result) return -1;
-            else printf("PASS\n");
+            else printf("PASS\n\n");
         }
         u32DataIdx++;
     }
