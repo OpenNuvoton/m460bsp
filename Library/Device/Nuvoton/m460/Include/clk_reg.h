@@ -27,10 +27,10 @@
 
 /*---------------------- System Clock Controller -------------------------*/
 /**
-    @addtogroup CLK System Clock Controller(CLK)
+    @addtogroup CLK System Clock Controller (CLK)
     Memory Mapped Structure for CLK Controller
 @{ */
- 
+
 typedef struct
 {
 
@@ -903,7 +903,7 @@ typedef struct
  * | :----: | :----:   | :---- |
  * |[0]     |HXTSTB    |HXT Clock Source Stable Flag (Read Only)
  * |        |          |0 = 4~24 MHz external high speed crystal oscillator (HXT) clock is not stable or disabled.
- * |        |          |1 = 4~24 MHz external high speed crystal oscillator (HXT) clock is stable and enabled. 
+ * |        |          |1 = 4~24 MHz external high speed crystal oscillator (HXT) clock is stable and enabled.
  * |[1]     |LXTSTB    |LXT Clock Source Stable Flag (Read Only)
  * |        |          |0 = 32.768 kHz external low speed crystal oscillator (LXT) clock is not stable or disabled.
  * |        |          |1 = 32.768 kHz external low speed crystal oscillator (LXT) clock is stabled and enabled.

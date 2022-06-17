@@ -19,7 +19,7 @@
 */
 
 /**
-    @addtogroup UUART UART Mode of USCI Controller(UUART)
+    @addtogroup UUART UART Mode of USCI Controller (UUART)
     Memory Mapped Structure for UUART Controller
 @{ */
 
@@ -162,7 +162,7 @@ typedef struct
      * |        |          |1 = The control signal will be inverted before its output.
      * |        |          |Note: In UART protocol, the control signal means nRTS signal.
      * |[11:8]  |DWIDTH    |Word Length of Transmission
-     * |        |          |This bit field defines the data word length (amount of bits) for reception and transmission. 
+     * |        |          |This bit field defines the data word length (amount of bits) for reception and transmission.
      * |        |          |The data word is always right-aligned in the data buffer.
      * |        |          |USCI support word length from 4 to 16 bits.
      * |        |          |0000 = The data word contains 16 bits located at bit positions [15:0].
@@ -345,7 +345,7 @@ typedef struct
      * |[30]    |DGE       |Deglitch Enable Bit
      * |        |          |0 = Deglitch Disabled.
      * |        |          |1 = Deglitch Enabled.
-     * |        |          |Note 1: When this bit is set to logic 1, any pulse width less than about 150 ns will be considered a glitch and will be removed in the serial data input (RX). 
+     * |        |          |Note 1: When this bit is set to logic 1, any pulse width less than about 150 ns will be considered a glitch and will be removed in the serial data input (RX).
      * |        |          |This bit acts only on RX line and has no effect on the transmitter logic.
      * |        |          |Note 2: It is recommended to set this bit only when operating at baud rate under 2.5 Mbps.
      * |[31]    |PROTEN    |UART Protocol Enable Bit

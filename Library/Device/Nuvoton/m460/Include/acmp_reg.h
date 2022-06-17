@@ -27,10 +27,10 @@
 
 /*---------------------- Analog Comparator Controller -------------------------*/
 /**
-    @addtogroup ACMP Analog Comparator Controller(ACMP)
+    @addtogroup ACMP Analog Comparator Controller (ACMP)
     Memory Mapped Structure for ACMP Controller
 @{ */
- 
+
 typedef struct
 {
 
@@ -200,7 +200,7 @@ typedef struct
  * |[0]     |ACMPIF0   |Comparator 0 Interrupt Flag
  * |        |          |This bit is set by hardware when the edge condition defined by INTPOL (ACMP_CTL0[9:8]) is detected on comparator 0 output
  * |        |          |This will generate an interrupt if ACMPIE (ACMP_CTL0[1]) is set to 1.
- * |        |          |Note: Write 1 to clear this bit to 0. 
+ * |        |          |Note: Write 1 to clear this bit to 0.
  * |[1]     |ACMPIF1   |Comparator 1 Interrupt Flag
  * |        |          |This bit is set by hardware when the edge condition defined by INTPOL (ACMP_CTL1[9:8]) is detected on comparator 1 output
  * |        |          |This will cause an interrupt if ACMPIE (ACMP_CTL1[1]) is set to 1.
