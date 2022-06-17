@@ -19,7 +19,7 @@
 */
 
 /**
-    @addtogroup SDH SD Card Host Interface(SDH)
+    @addtogroup SDH SD Card Host Interface (SDH)
     Memory Mapped Structure for SDH Controller
 @{ */
 

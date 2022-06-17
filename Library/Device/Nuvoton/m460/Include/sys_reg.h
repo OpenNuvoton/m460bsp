@@ -21,7 +21,7 @@
 
 /*---------------------- System Manger Controller -------------------------*/
 /**
-    @addtogroup SYS System Manger Controller(SYS)
+    @addtogroup SYS System Manger Controller (SYS)
     Memory Mapped Structure for SYS Controller
 @{ */
 

@@ -19,7 +19,7 @@
 */
 
 /**
-    @addtogroup GPIO General Purpose Input/Output Controller(GPIO)
+    @addtogroup GPIO General Purpose Input/Output Controller (GPIO)
     Memory Mapped Structure for GPIO Controller
 @{ */
 
@@ -281,12 +281,12 @@ typedef struct
      * |        |          |1 = De-bounce counter clock source is the 10 kHz internal low speed RC oscillator (LIRC).
      * |[5]     |ICLKON    |Interrupt Clock On Mode
      * |        |          |0 = Edge detection circuit is active only if I/O pin corresponding RHIEN (Px_INTEN[n+16])/FLIEN (Px_INTEN[n]) bit is set to 1.
-     * |        |          |If corresponding RHIEN or FLIEN is 0, the clock of I/O detect circuit is stopped and interrupt source flag(Px_INTSRC) cannot be clear also.     
+     * |        |          |If corresponding RHIEN or FLIEN is 0, the clock of I/O detect circuit is stopped and interrupt source flag(Px_INTSRC) cannot be clear also.
      * |        |          |1 = All I/O pins edge detection circuit is always active after reset.
      * |        |          |Note: It is recommended to disable this bit to save system power if no special application concern.
      * |[31]    |DBCLKBUSY |De-bounce Clock Switching Busy Flag (Read Only)
-     * |        |          |This bit is set when de-bounce clock source is changed by setting DBCLKSRC(Px_DBCTL[4]). 
-     * |        |          |And it is cleared after de-bounce clock source switching is finished. De-bounce function can work normally after de-bounce clock switch done. 
+     * |        |          |This bit is set when de-bounce clock source is changed by setting DBCLKSRC(Px_DBCTL[4]).
+     * |        |          |And it is cleared after de-bounce clock source switching is finished. De-bounce function can work normally after de-bounce clock switch done.
      * |        |          |0 = De-bounce clock switch done.
      * |        |          |1 = De-bounce clock is switching.
      */
@@ -360,7 +360,7 @@ typedef struct
      * |        |          |0 = No Edge Detection happened.
      * |        |          |1 = Rising Edge or Falling edge has been detected.
      * |        |          |Note: This bit is cleared by writing 1 to it.
-     */ 
+     */
 
     __IO uint32_t INT_INNF[8];   /* Offset: 0x450/0x454/0x458/0x45C/0x460/0x464/0x468/0x46C  INT0~7 Input Noise Filter Register */
     __I  uint32_t RESERVE1[8];
