@@ -125,7 +125,7 @@ int32_t main(void)
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for PSIO transfer done time-out!\n");
-            return -1;
+            goto lexit;
         }
     }
 
@@ -139,7 +139,7 @@ int32_t main(void)
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for PSIO transfer done time-out!\n");
-            return -1;
+            goto lexit;
         }
     }
 
@@ -147,6 +147,8 @@ int32_t main(void)
     PSIO_NEC_Close(&sConfig);
 
     printf("Complete!\n");
+
+lexit:
 
     while (1);
 }

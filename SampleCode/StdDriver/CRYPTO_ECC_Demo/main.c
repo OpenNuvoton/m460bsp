@@ -199,7 +199,7 @@ int32_t main(void)
     if(ECC_GeneratePublicKey(CRPT, CURVE_P_SIZE, d, Qx, Qy) < 0)
     {
         printf("ECC key generation failed!!\n");
-        while(1);
+        goto lexit;
     }
     time = 0xffffff - SysTick->VAL;
 
@@ -236,7 +236,7 @@ int32_t main(void)
         {
             /* Invalid key */
             printf("Current k is not valid\n");
-            return -1;
+            goto lexit;
 
         }
 
@@ -244,7 +244,7 @@ int32_t main(void)
         if(ECC_GenerateSignature(CRPT, CURVE_P_SIZE, msg, d, k, R, S) < 0)
         {
             printf("ECC signature generation failed!!\n");
-            return -1;
+            goto lexit;
         }
         time = 0xffffff - SysTick->VAL;
 
@@ -259,7 +259,7 @@ int32_t main(void)
         if(err < 0)
         {
             printf("ECC signature verification failed!!\n");
-            return -1;
+            goto lexit;
         }
         else
         {
@@ -269,6 +269,8 @@ int32_t main(void)
     }
 
     printf("Demo Done.\n");
+
+lexit:
 
     while(1);
 }

@@ -122,7 +122,7 @@ int main()
     if (SPIM_InitFlash(1) != 0)        /* Initialized SPI flash */
     {
         printf("SPIM flash initialize failed!\n");
-        return -1;
+        goto lexit;
     }
 
     SPIM_ReadJedecId(idBuf, sizeof (idBuf), 1);
@@ -141,7 +141,7 @@ int main()
     if (SPIM_Enable_4Bytes_Mode(USE_4_BYTES_MODE, 1) != 0)
     {
         printf("SPIM_Enable_4Bytes_Mode failed!\n");
-        return -1;
+        goto lexit;
     }
 
     SPIM->CTL1 |= SPIM_CTL1_CDINVAL_Msk;        // invalid cache
@@ -157,6 +157,10 @@ int main()
 
         spim_routine();
     }
+
+lexit:
+
+    while(1);
 }
 
 /*** (C) COPYRIGHT 2021 Nuvoton Technology Corp. ***/

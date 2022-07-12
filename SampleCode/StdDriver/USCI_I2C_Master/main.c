@@ -351,15 +351,13 @@ int main()
     /* Access Slave with no address mask */
     printf("\n");
     printf(" == No Mask Address ==\n");
-    if( Read_Write_SLAVE(0x15) < 0)
-        return -1;
+    Read_Write_SLAVE(0x15);
     printf("SLAVE Address test OK.\n");
 
     /* Access Slave with address mask */
     printf("\n");
     printf(" == Mask Address ==\n");
-    if( Read_Write_SLAVE(0x15 & ~0x01) < 0 )
-        return -1;
+    Read_Write_SLAVE(0x15 & ~0x01);
     printf("SLAVE Address Mask test OK.\n");
 
     while(1);

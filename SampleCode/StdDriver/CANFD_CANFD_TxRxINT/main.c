@@ -234,21 +234,12 @@ void CANFD_SendMessage(CANFD_FD_MSG_T *psTxMsg, E_CANFD_ID_TYPE eIdType, uint32_
 void CANFD_RxTest(void)
 {
     uint8_t u8Cnt = 0;
-    uint32_t u32TimeOutCnt = CANFD_TIMEOUT;
 
     printf("Start CAN FD bus reception :\n");
 
     do
     {
-        while (!g_u8RxFifo1CompleteFlag)
-        {
-            if(--u32TimeOutCnt == 0)
-            {
-                printf("Wait for CANFD time-out!\n");
-                return;
-            }
-        }
-
+        while (!g_u8RxFifo1CompleteFlag);
         CANFD_ShowRecvMessage();
         g_u8RxFifo1CompleteFlag = 0;
         memset(&g_sRxMsgFrame, 0, sizeof(g_sRxMsgFrame));

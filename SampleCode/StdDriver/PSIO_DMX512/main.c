@@ -143,11 +143,15 @@ int32_t main(void)
                 if(--u32TimeOutCnt == 0)
                 {
                     printf("Wait for data time-out!\n");
-                    return -1;
+                    goto lexit;
                 }
             }
 
             printf("%u: 0x%02X\n", i, (uint8_t)DMX512_GET_DATA(au16RxBuf[0]));
         }
     }
+
+lexit:
+
+    while(1);
 }

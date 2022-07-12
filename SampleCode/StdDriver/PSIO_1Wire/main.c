@@ -115,20 +115,20 @@ int32_t main(void)
     do
     {
         /* Reset DS18B20 */
-        if( PSIO_DS18B20_Reset(&sConfig) < 0 ) return -1;
+        PSIO_DS18B20_Reset(&sConfig);
             
         /* Write command to DS18B20 */
-        if( PSIO_DS18B20_Write_Command(&sConfig, ONEWIRE_SKIP_ROM) < 0 ) return -1;
-        if( PSIO_DS18B20_Write_Command(&sConfig, ONEWIRE_CONVT) < 0 ) return -1;
+        PSIO_DS18B20_Write_Command(&sConfig, ONEWIRE_SKIP_ROM);
+        PSIO_DS18B20_Write_Command(&sConfig, ONEWIRE_CONVT);
         /* Reset DS18B20 */
         PSIO_DS18B20_Reset(&sConfig);
 
         /* Write command to DS18B20 */
-        if( PSIO_DS18B20_Write_Command(&sConfig, ONEWIRE_SKIP_ROM) < 0 ) return -1;
-        if( PSIO_DS18B20_Write_Command(&sConfig, ONEWIRE_RDSCRATCH_PAD) < 0 ) return -1;
+        PSIO_DS18B20_Write_Command(&sConfig, ONEWIRE_SKIP_ROM);
+        PSIO_DS18B20_Write_Command(&sConfig, ONEWIRE_RDSCRATCH_PAD);
 
         /* Read data from DS18B20 */
-        if( PSIO_DS18B20_Read_Data(&sConfig, &au8Data[0]) < 0 ) return -1;
+        PSIO_DS18B20_Read_Data(&sConfig, &au8Data[0]);
 
         printf("Temperature= %f degrees C\n", (au8Data[0] | ((au8Data[1] & 0x07) << 8)) * 0.0625);
 

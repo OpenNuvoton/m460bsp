@@ -578,16 +578,16 @@ int32_t main(void)
     CheckPowerSource();
 
     /* LVR setting */
-    if( LvrSetting() < 0 ) return -1;
+    if( LvrSetting() < 0 ) goto lexit;
 
     /* POR setting */
     PorSetting();
 
     /* LIRC setting */
-    if( LircSetting() < 0 ) return -1;
+    if( LircSetting() < 0 ) goto lexit;
 
     /* LXT setting */
-    if( LxtSetting() < 0 ) return -1;
+    if( LxtSetting() < 0 ) goto lexit;
 
     printf("+----------------------------------------------------------------+\n");
     printf("|    DPD Power-down Mode and Wake-up Sample Code.                |\n");
@@ -622,6 +622,8 @@ int32_t main(void)
         default:
             break;
     }
+
+lexit:
 
     while(1);
 }

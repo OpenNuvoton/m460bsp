@@ -537,7 +537,7 @@ int main(void)
     str2bin(c_str, g_C, clen);
 
     if( AES_CCM(1, g_key, klen, g_iv, ivlen, g_A, alen, g_P, plen, g_au8Out, &size, &plen_aligned, tlen) < 0 )
-        return -1;
+        goto lexit;
 
 #ifndef _SWAP
     ToLittleEndian(g_au8Out, size);
@@ -555,25 +555,27 @@ int main(void)
         DumpBuffHex(g_C, plen);
         printf("g_au8Out:\n");
         DumpBuffHex(g_au8Out, plen);
-        return -1;
+        goto lexit;
     }
 
     if(memcmp(&g_C[plen], &g_au8Out[plen_aligned], tlen))
     {
         printf("ERR: Encrypted data fail!\n");
-        return -1;
+        goto lexit;
     }
 
     if( AES_CCM(0, g_key, klen, g_iv, ivlen, g_A, alen, g_C, plen, g_au8Out2, &size, &plen_aligned, tlen) < 0 )
-        return -1;
+        goto lexit;
 
     if(memcmp(g_P, g_au8Out2, plen))
     {
         printf("ERR: Encrypted data fail!\n");
-        return -1;
+        goto lexit;
     }
 
     printf("Test PASS!\n");
+
+lexit:
 
     while(1) {}
 

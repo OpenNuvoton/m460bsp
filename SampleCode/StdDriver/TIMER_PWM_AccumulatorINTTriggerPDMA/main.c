@@ -216,15 +216,12 @@ int main(void)
     /* Wait until Timer0 PWM Stop */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     while((TIMER0->PWMCNT & TIMER_PWMCNT_CNT_Msk) != 0)
-    {
-        if(--u32TimeOutCnt == 0)
-        {
-            printf("Wait for Timer PWM stop time-out!\n");
-            return -1;
-        }
-    }
+        if(--u32TimeOutCnt == 0) break;
 
-    printf("Timer0 PWM has STOP.\n");
+    if(u32TimeOutCnt == 0)
+        printf("Wait for Timer PWM stop time-out!\n");        
+    else
+        printf("Timer0 PWM has STOP.\n");
 
     while(1) {}
 }

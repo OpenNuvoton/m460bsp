@@ -140,7 +140,7 @@ int main()
     if (g_FMC_i32ErrCode != 0)
     {
         printf("FMC_SetVectorPageAddr(FMC_APROM_BASE) failed!\n");
-        return -1;
+        goto lexit;
     }
 
     SYS_LockReg();                                /* Lock protected registers */
@@ -162,6 +162,8 @@ int main()
      *  Branch to the LDROM code's reset handler in way of function call.
      */
     func();
+
+lexit:
 
     while (1);
 }
