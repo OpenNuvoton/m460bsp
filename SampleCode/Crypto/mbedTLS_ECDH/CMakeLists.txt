@@ -4,7 +4,7 @@ set(PRJ mbedTLS_ECDH)
 
 add_executable(${PRJ} test_suite_ecdh.c)
 
-target_link_libraries(${PRJ} system_startup standard_driver mbedcrypto crypto_accellerator test_lib)
+target_link_libraries(${PRJ} system_startup standard_driver mbedcrypto crypto_accelerator test_lib)
 target_include_directories(${PRJ}
     PUBLIC
     ${BSP_DIR}/ThirdParty/mbedtls-3.1.0/tests/include

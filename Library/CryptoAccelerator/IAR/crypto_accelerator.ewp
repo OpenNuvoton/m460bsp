@@ -714,7 +714,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>crypto_accellerator.out</state>
+                    <state>crypto_accelerator.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
@@ -1063,7 +1063,7 @@
         </settings>
     </configuration>
     <group>
-        <name>crypto_accellerator</name>
+        <name>crypto_accelerator</name>
         <file>
             <name>$PROJ_DIR$\..\aes_alt.c</name>
         </file>

@@ -81,14 +81,14 @@ include_directories(${TOOLCHAIN_PATH}/include)
 include_directories(${BSP_DIR}/Library/CMSIS/Include)
 include_directories(${BSP_DIR}/Library/Device/Nuvoton/m460/Include)
 include_directories(${BSP_DIR}/Library/StdDriver/inc)
-include_directories(${BSP_DIR}/Library/CryptoAccellerator)
+include_directories(${BSP_DIR}/Library/CryptoAccelerator)
 include_directories(${BSP_DIR}/ThirdParty/mbedtls-3.1.0/include)
 include_directories(${BSP_DIR}/ThirdParty/mbedtls-3.1.0/library)
 
 # Build library
 add_subdirectory(${BSP_DIR}/Library/StdDriver/src)
 add_subdirectory(${BSP_DIR}/Library/Device/Nuvoton/m460/Source)
-add_subdirectory(${BSP_DIR}/Library/CryptoAccellerator)
+add_subdirectory(${BSP_DIR}/Library/CryptoAccelerator)
 add_subdirectory(${BSP_DIR}/ThirdParty/mbedtls-3.1.0/library)
 
 # Library for mbedtls test

@@ -12,7 +12,7 @@ set(CRPT_SRC
     mbedtls_config.h
 )
 
-add_library(crypto_accellerator ${CRPT_SRC})
+add_library(crypto_accelerator ${CRPT_SRC})
 
 
 

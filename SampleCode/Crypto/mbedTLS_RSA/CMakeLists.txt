@@ -3,7 +3,7 @@
 set(PRJ mbedTLS_RSA)
 add_executable(${PRJ} main.c)
 
-target_link_libraries(${PRJ} system_startup standard_driver mbedcrypto crypto_accellerator)
+target_link_libraries(${PRJ} system_startup standard_driver mbedcrypto crypto_accelerator)
 target_include_directories(${PRJ}
     PUBLIC
     ${BSP_DIR}/ThirdParty/mbedtls-3.1.0/tests/include
