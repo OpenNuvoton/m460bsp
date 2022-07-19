@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     hid.c
  * @version  V3.00
- * @brief    Demonstrate how to implement a USB hid class device.
+ * @brief    Demonstrate how to implement a USB HID class device.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
@@ -29,7 +29,9 @@ void GPIO_Init(void)
     PB->DBEN |= 0x1;
     PC->DBEN |= 0x1e00;      // Enable key debounce
     PE->DBEN |= 0x10;
-    GPIO->DBCTL = 0x16; // Debounce time is about 6ms
+    PB->DBCTL = 0x16;
+    PC->DBCTL = 0x16;
+    PE->DBCTL = 0x16; // Debounce time is about 6ms
 //    NVIC_EnableIRQ(GPB_IRQn);
 //    NVIC_EnableIRQ(GPC_IRQn);
 //    NVIC_EnableIRQ(GPE_IRQn);

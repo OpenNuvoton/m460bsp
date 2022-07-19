@@ -17,12 +17,14 @@ uint8_t mouse_idx = 0;
 uint8_t move_len, mouse_mode = 1;
 
 uint8_t volatile g_u8EPAReady = 0;
+uint8_t volatile g_u8Suspend = 0;
 
 static uint8_t volatile g_u8ReportProtocol = HID_REPORT_PROTOCOL;
 
 void USBD20_IRQHandler(void)
 {
     __IO uint32_t IrqStL, IrqSt;
+    uint32_t u32TimeOutCnt;
 
     IrqStL = HSUSBD->GINTSTS & HSUSBD->GINTEN;    /* get interrupt status */
 
@@ -52,18 +54,32 @@ void USBD20_IRQHandler(void)
             HSUSBD_ENABLE_BUS_INT(HSUSBD_BUSINTEN_RSTIEN_Msk | HSUSBD_BUSINTEN_RESUMEIEN_Msk | HSUSBD_BUSINTEN_SUSPENDIEN_Msk);
             HSUSBD_CLR_BUS_INT_FLAG(HSUSBD_BUSINTSTS_RSTIF_Msk);
             HSUSBD_CLR_CEP_INT_FLAG(0x1ffc);
+
+            g_u8Suspend = 0;
         }
 
         if(IrqSt & HSUSBD_BUSINTSTS_RESUMEIF_Msk)
         {
+            HSUSBD_ENABLE_USB();
+            u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+            while(!(HSUSBD->PHYCTL & HSUSBD_PHYCTL_PHYCLKSTB_Msk))
+                if(--u32TimeOutCnt == 0) break;
+
             HSUSBD_ENABLE_BUS_INT(HSUSBD_BUSINTEN_RSTIEN_Msk | HSUSBD_BUSINTEN_SUSPENDIEN_Msk);
             HSUSBD_CLR_BUS_INT_FLAG(HSUSBD_BUSINTSTS_RESUMEIF_Msk);
+
+            g_u8Suspend = 0;
         }
 
         if(IrqSt & HSUSBD_BUSINTSTS_SUSPENDIF_Msk)
         {
+            g_u8Suspend = 1;
+
             HSUSBD_ENABLE_BUS_INT(HSUSBD_BUSINTEN_RSTIEN_Msk | HSUSBD_BUSINTEN_RESUMEIEN_Msk);
             HSUSBD_CLR_BUS_INT_FLAG(HSUSBD_BUSINTSTS_SUSPENDIF_Msk);
+
+            /* Enable USB but disable PHY */
+            HSUSBD_DISABLE_PHY();
         }
 
         if(IrqSt & HSUSBD_BUSINTSTS_HISPDIF_Msk)

@@ -147,7 +147,7 @@ extern uint32_t volatile g_hsusbd_DmaDone;
 extern uint32_t g_hsusbd_CtrlInSize;
 extern S_HSUSBD_INFO_T gsHSInfo;
 extern S_HSUSBD_CMD_T gUsbCmd;
-extern int32_t g_HBI_i32ErrCode;
+extern volatile uint8_t g_hsusbd_RemoteWakeupEn;
 /** @endcond HIDDEN_SYMBOLS */
 
 

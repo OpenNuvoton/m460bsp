@@ -33,8 +33,8 @@ void SYS_Init(void)
     /* Set PCLK0 and PCLK1 to HCLK/2 */
     CLK->PCLKDIV = (CLK_PCLKDIV_APB0DIV_DIV2 | CLK_PCLKDIV_APB1DIV_DIV2);
 
-    /* Set core clock to 192MHz */
-    CLK_SetCoreClock(FREQ_192MHZ);
+    /* Set core clock to 200MHz */
+    CLK_SetCoreClock(FREQ_200MHZ);
 
     /* Enable all GPIO clock */
     CLK->AHBCLK0 |= CLK_AHBCLK0_GPACKEN_Msk | CLK_AHBCLK0_GPBCKEN_Msk | CLK_AHBCLK0_GPCCKEN_Msk | CLK_AHBCLK0_GPDCKEN_Msk |
@@ -70,7 +70,7 @@ void SYS_Init(void)
     SYS_LockReg();
 }
 
-int32_t main (void)
+int32_t main(void)
 {
     uint32_t au32Config[2];
 
@@ -88,20 +88,23 @@ int32_t main (void)
     /* Enable FMC ISP function */
     FMC_Open();
 
+    /* Enable Read/Write flash function */
+    FMC_ENABLE_AP_UPDATE();
+
     /* Check if Data Flash Size is 64K. If not, to re-define Data Flash size and to enable Data Flash function */
-    if (FMC_ReadConfig(au32Config, 2) < 0)
+    if(FMC_ReadConfig(au32Config, 2) < 0)
         return -1;
 
-    if (((au32Config[0] & 0x01) == 1) || (au32Config[1] != DATA_FLASH_BASE) )
+    if(((au32Config[0] & 0x01) == 1) || (au32Config[1] != DATA_FLASH_BASE))
     {
         FMC_ENABLE_CFG_UPDATE();
         au32Config[0] &= ~0x1;
         au32Config[1] = DATA_FLASH_BASE;
-        if (FMC_WriteConfig(au32Config, 2) < 0)
+        if(FMC_WriteConfig(au32Config, 2) < 0)
             return -1;
 
         FMC_ReadConfig(au32Config, 2);
-        if (((au32Config[0] & 0x01) == 1) || (au32Config[1] != DATA_FLASH_BASE))
+        if(((au32Config[0] & 0x01) == 1) || (au32Config[1] != DATA_FLASH_BASE))
         {
             printf("Error: Program Config Failed!\n");
 
@@ -128,7 +131,7 @@ int32_t main (void)
     /* Start transaction */
     while(1)
     {
-        if (HSUSBD_IS_ATTACHED())
+        if(HSUSBD_IS_ATTACHED())
         {
             HSUSBD_Start();
             break;
@@ -137,7 +140,7 @@ int32_t main (void)
 
     while(1)
     {
-        if (g_hsusbd_Configured)
+        if(g_hsusbd_Configured)
             MSC_ProcessCmd();
     }
 }

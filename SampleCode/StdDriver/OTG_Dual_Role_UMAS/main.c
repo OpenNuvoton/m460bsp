@@ -959,7 +959,7 @@ int32_t main(void)
     printf("If acts as a USB host, it can access a mass storage device with a simple file system. ");
     printf("Type '?' on command line to show all supported commands.\n");
     printf("If attempts to switch the USB role as a USB device, press 'Enter' key after unplugging the USB cable to exit the file system. ");
-    printf("Then plug a proper USB connector to switch the USB role as a mass storage device. The internal data flash is used as the storage.\n");
+    printf("Then plug a proper USB connector to switch the USB role as a mass storage device. The internal SRAM is used as the storage.\n");
 
     OTG_ENABLE_PHY();
     /* Enable ID detection function */

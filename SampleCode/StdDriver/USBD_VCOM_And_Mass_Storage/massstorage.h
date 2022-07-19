@@ -33,9 +33,9 @@
 #define UFI_PREVENT_ALLOW_MEDIUM_REMOVAL        0x1E
 #define UFI_READ_FORMAT_CAPACITY                0x23
 #define UFI_READ_CAPACITY                       0x25
+#define UFI_READ_CAPACITY_16                    0x9E
 #define UFI_READ_10                             0x28
 #define UFI_READ_12                             0xA8
-#define UFI_READ_16                             0x9E
 #define UFI_WRITE_10                            0x2A
 #define UFI_WRITE_12                            0xAA
 #define UFI_VERIFY_10                           0x2F

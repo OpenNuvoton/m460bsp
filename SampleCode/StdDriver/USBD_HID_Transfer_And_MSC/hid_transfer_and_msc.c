@@ -1606,7 +1606,7 @@ void MSC_AckCmd(void)
                 int32_t i32Tmp;
 
                 i32Tmp = s_sCBW.dCBWDataTransferLength - STORAGE_BUFFER_SIZE;
-                if (i32Tmp < 0)
+                if(i32Tmp < 0)
                     i32Tmp = 0;
 
                 s_sCSW.dCSWDataResidue = i32Tmp;

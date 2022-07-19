@@ -820,6 +820,8 @@ void UAC_ClassRequest(void)
             }
             case SET_IDLE:
             {
+                u8Idle = (gUsbCmd.wValue >> 8) & 0xff;
+
                 /* Status stage */
                 HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
                 HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);

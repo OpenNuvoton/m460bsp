@@ -142,6 +142,9 @@ void UART0_Init(void)
 
     /* Configure UART and set UART Baudrate */
     UART_Open(UART0, 115200);
+
+    /* Enable Interrupt and install the call back function */
+    UART_ENABLE_INT(UART0, (UART_INTEN_RDAIEN_Msk | UART_INTEN_THREIEN_Msk | UART_INTEN_RXTOIEN_Msk));
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -344,6 +347,9 @@ int32_t main(void)
     /* Enable FMC ISP function */
     FMC_Open();
 
+    /* Enable Read/Write flash function */
+    FMC_ENABLE_AP_UPDATE();
+
     /* Check if Data Flash Size is 64K. If not, to re-define Data Flash size and to enable Data Flash function */
     if(FMC_ReadConfig(au32Config, 2) < 0)
         return -1;
@@ -370,11 +376,11 @@ int32_t main(void)
         SYS->IPRST0 = SYS_IPRST0_CHIPRST_Msk;
     }
 
-    USBD_Open(&gsInfo, VCOM_ClassRequest, NULL);
+    USBD_Open(&gsInfo, VCOM_MSC_ClassRequest, NULL);
     USBD_SetConfigCallback(MSC_SetConfig);
 
     /* Endpoint configuration */
-    VCOM_Init();
+    VCOM_MSC_Init();
     USBD_Start();
 
     NVIC_EnableIRQ(UART0_IRQn);

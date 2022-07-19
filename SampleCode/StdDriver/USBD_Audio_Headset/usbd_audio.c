@@ -646,9 +646,6 @@ void UAC_ClassRequest(void)
 //         }
             case GET_IDLE:
             {
-//            /* Setup error, stall the device */
-//            USBD_SetStall(0);
-//            break;
                 /* Data stage */
                 M8(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0)) = u8Idle;
                 USBD_SET_DATA1(EP0);
@@ -766,6 +763,8 @@ void UAC_ClassRequest(void)
             }
             case SET_IDLE:
             {
+                u8Idle = buf[3];
+
                 /* Status stage */
                 USBD_SET_DATA1(EP0);
                 USBD_SET_PAYLOAD_LEN(EP0, 0);

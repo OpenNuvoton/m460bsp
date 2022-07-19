@@ -60,7 +60,7 @@ uint8_t gu8QualifierDescriptor[] =
 {
     LEN_QUALIFIER,  /* bLength */
     DESC_QUALIFIER, /* bDescriptorType */
-    0x10, 0x02,     /* bcdUSB */
+    0x00, 0x02,     /* bcdUSB */
     0x00,           /* bDeviceClass */
     0x00,           /* bDeviceSubClass */
     0x00,           /* bDeviceProtocol */

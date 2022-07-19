@@ -212,6 +212,14 @@ int32_t main(void)
         if(g_u8Suspend)
             PowerDown();
 
-        HID_UpdateMouseData();
+        {
+            /* Update mouse data per 1 ms */
+            int32_t volatile delay = 192000UL;
+            for(; delay > 0UL; delay--)
+            {
+                __NOP();
+            }
+            HID_UpdateMouseData();
+        }
     }
 }

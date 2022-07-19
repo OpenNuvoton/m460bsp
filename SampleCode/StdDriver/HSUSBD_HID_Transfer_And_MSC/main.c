@@ -32,8 +32,8 @@ void SYS_Init(void)
     /* Set PCLK0 and PCLK1 to HCLK/2 */
     CLK->PCLKDIV = (CLK_PCLKDIV_APB0DIV_DIV2 | CLK_PCLKDIV_APB1DIV_DIV2);
 
-    /* Set core clock to 192MHz */
-    CLK_SetCoreClock(FREQ_192MHZ);
+    /* Set core clock to 200MHz */
+    CLK_SetCoreClock(FREQ_200MHZ);
 
     /* Enable all GPIO clock */
     CLK->AHBCLK0 |= CLK_AHBCLK0_GPACKEN_Msk | CLK_AHBCLK0_GPBCKEN_Msk | CLK_AHBCLK0_GPCCKEN_Msk | CLK_AHBCLK0_GPDCKEN_Msk |
@@ -69,8 +69,6 @@ void SYS_Init(void)
     SYS_LockReg();
 }
 
-extern uint8_t volatile g_u8MscStart;
-
 int32_t main(void)
 {
     /* Init System, peripheral clock and multi-function I/O */
@@ -81,11 +79,11 @@ int32_t main(void)
 
     printf("NuMicro HSUSBD HID and MSC\n");
 
-    HSUSBD_Open(&gsHSInfo, HID_ClassRequest, NULL);
-    HSUSBD_SetVendorRequest(HID_VendorRequest);
+    HSUSBD_Open(&gsHSInfo, HID_MSC_ClassRequest, NULL);
+    HSUSBD_SetVendorRequest(HID_MSC_VendorRequest);
 
     /* Endpoint configuration */
-    HID_Init();
+    HID_MSC_Init();
 
     /* Enable HSUSBD interrupt */
     NVIC_EnableIRQ(USBD20_IRQn);
@@ -102,7 +100,7 @@ int32_t main(void)
 
     while(1)
     {
-        if(g_u8MscStart)
+        if(g_hsusbd_Configured)
             MSC_ProcessCmd();
     }
 }

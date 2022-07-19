@@ -51,7 +51,7 @@ uint8_t gu8DeviceDescriptor[] =
     0x00, 0x00,     /* bcdDevice */
     0x01,           /* iManufacture */
     0x02,           /* iProduct */
-    0x00,           /* iSerialNumber - no serial */
+    0x03,           /* iSerialNumber - is required for BOT device */
     0x01            /* bNumConfigurations */
 };
 
@@ -60,7 +60,7 @@ uint8_t gu8QualifierDescriptor[] =
 {
     LEN_QUALIFIER,  /* bLength */
     DESC_QUALIFIER, /* bDescriptorType */
-    0x10, 0x01,     /* bcdUSB */
+    0x00, 0x02,     /* bcdUSB */
     0x00,           /* bDeviceClass */
     0x00,           /* bDeviceSubClass */
     0x00,           /* bDeviceProtocol */
@@ -81,7 +81,7 @@ uint8_t gu8ConfigDescriptor[] =
     0x01,           /* bConfigurationValue */
     0x00,           /* iConfiguration */
     0x80 | (USBD_SELF_POWERED << 6) | (USBD_REMOTE_WAKEUP << 5),/* bmAttributes */
-    USBD_MAX_POWER,         /* MaxPower */
+    USBD_MAX_POWER, /* MaxPower */
 
     /* I/F descr: HID */
     LEN_INTERFACE,  /* bLength */
@@ -154,14 +154,14 @@ uint8_t gu8ConfigDescriptor[] =
     /* wMaxPacketSize */
     EPD_MAX_PKT_SIZE & 0x00FF,
     ((EPD_MAX_PKT_SIZE & 0xFF00) >> 8),
-    0x00        /* bInterval */
+    0x00            /* bInterval */
 };
 
 /*!<USB Other Speed Configure Descriptor */
 uint8_t gu8OtherConfigDescriptorHS[] =
 {
     LEN_CONFIG,     /* bLength */
-    DESC_OTHERSPEED,    /* bDescriptorType */
+    DESC_OTHERSPEED,/* bDescriptorType */
     /* wTotalLength */
     (LEN_CONFIG + LEN_INTERFACE * 2 + LEN_HID + LEN_ENDPOINT * 4) & 0x00FF,
     (((LEN_CONFIG + LEN_INTERFACE * 2 + LEN_HID + LEN_ENDPOINT * 4) & 0xFF00) >> 8),
@@ -169,7 +169,7 @@ uint8_t gu8OtherConfigDescriptorHS[] =
     0x01,           /* bConfigurationValue */
     0x00,           /* iConfiguration */
     0x80 | (USBD_SELF_POWERED << 6) | (USBD_REMOTE_WAKEUP << 5),/* bmAttributes */
-    USBD_MAX_POWER,         /* MaxPower */
+    USBD_MAX_POWER, /* MaxPower */
 
     /* I/F descr: HID */
     LEN_INTERFACE,  /* bLength */
@@ -228,23 +228,24 @@ uint8_t gu8OtherConfigDescriptorHS[] =
     LEN_ENDPOINT,   /* bLength */
     DESC_ENDPOINT,  /* bDescriptorType */
     (BULK_IN_EP_NUM | EP_INPUT),    /* bEndpointAddress */
-    EP_BULK,            /* bmAttributes */
+    EP_BULK,        /* bmAttributes */
     /* wMaxPacketSize */
     EPC_OTHER_MAX_PKT_SIZE & 0x00FF,
     ((EPC_OTHER_MAX_PKT_SIZE & 0xFF00) >> 8),
-    0x00,       /* bInterval */
+    0x00,           /* bInterval */
 
     /* EP Descriptor: bulk out. */
     LEN_ENDPOINT,   /* bLength */
     DESC_ENDPOINT,  /* bDescriptorType */
     (BULK_OUT_EP_NUM | EP_OUTPUT),  /* bEndpointAddress */
-    EP_BULK,            /* bmAttributes */
+    EP_BULK,        /* bmAttributes */
     /* wMaxPacketSize */
     EPD_OTHER_MAX_PKT_SIZE & 0x00FF,
     ((EPD_OTHER_MAX_PKT_SIZE & 0xFF00) >> 8),
-    0x00        /* bInterval */
+    0x00            /* bInterval */
 };
 
+/*!<USB Configure Descriptor */
 uint8_t gu8ConfigDescriptorFS[] =
 {
     LEN_CONFIG,     /* bLength */
@@ -256,7 +257,7 @@ uint8_t gu8ConfigDescriptorFS[] =
     0x01,           /* bConfigurationValue */
     0x00,           /* iConfiguration */
     0x80 | (USBD_SELF_POWERED << 6) | (USBD_REMOTE_WAKEUP << 5),/* bmAttributes */
-    USBD_MAX_POWER,         /* MaxPower */
+    USBD_MAX_POWER, /* MaxPower */
 
     /* I/F descr: HID */
     LEN_INTERFACE,  /* bLength */
@@ -329,14 +330,14 @@ uint8_t gu8ConfigDescriptorFS[] =
     /* wMaxPacketSize */
     EPD_OTHER_MAX_PKT_SIZE & 0x00FF,
     ((EPD_OTHER_MAX_PKT_SIZE & 0xFF00) >> 8),
-    0x00        /* bInterval */
+    0x00            /* bInterval */
 };
 
 /*!<USB Other Speed Configure Descriptor */
 uint8_t gu8OtherConfigDescriptorFS[] =
 {
     LEN_CONFIG,     /* bLength */
-    DESC_OTHERSPEED,    /* bDescriptorType */
+    DESC_OTHERSPEED,/* bDescriptorType */
     /* wTotalLength */
     (LEN_CONFIG + LEN_INTERFACE + LEN_HID + LEN_ENDPOINT * 2) & 0x00FF,
     (((LEN_CONFIG + LEN_INTERFACE + LEN_HID + LEN_ENDPOINT * 2) & 0xFF00) >> 8),
@@ -344,7 +345,7 @@ uint8_t gu8OtherConfigDescriptorFS[] =
     0x01,           /* bConfigurationValue */
     0x00,           /* iConfiguration */
     0x80 | (USBD_SELF_POWERED << 6) | (USBD_REMOTE_WAKEUP << 5),/* bmAttributes */
-    USBD_MAX_POWER,         /* MaxPower */
+    USBD_MAX_POWER, /* MaxPower */
 
     /* I/F descr: HID */
     LEN_INTERFACE,  /* bLength */
@@ -417,7 +418,7 @@ uint8_t gu8OtherConfigDescriptorFS[] =
     /* wMaxPacketSize */
     EPD_MAX_PKT_SIZE & 0x00FF,
     ((EPD_MAX_PKT_SIZE & 0xFF00) >> 8),
-    0x00        /* bInterval */
+    0x00            /* bInterval */
 };
 
 /*!<USB Language String Descriptor */
@@ -439,9 +440,16 @@ uint8_t gu8VendorStringDesc[] =
 /*!<USB Product String Descriptor */
 uint8_t gu8ProductStringDesc[] =
 {
-    22,                                         /* bLength          */
-    DESC_STRING,                                /* bDescriptorType  */
+    22,             /* bLength          */
+    DESC_STRING,    /* bDescriptorType  */
     'U', 0, 'S', 0, 'B', 0, ' ', 0, 'D', 0, 'e', 0, 'v', 0, 'i', 0, 'c', 0, 'e', 0
+};
+
+uint8_t gu8StringSerial[] =
+{
+    26,             /* bLength          */
+    DESC_STRING,    /* bDescriptorType  */
+    'A', 0, '0', 0, '0', 0, '0', 0, '2', 0, '0', 0, '1', 0, '4', 0, '1', 0, '1', 0, '0', 0, '4', 0
 };
 
 uint8_t *gpu8UsbString[4] =
@@ -449,7 +457,7 @@ uint8_t *gpu8UsbString[4] =
     gu8StringLang,
     gu8VendorStringDesc,
     gu8ProductStringDesc,
-    NULL
+    gu8StringSerial
 };
 
 uint8_t *gu8UsbHidReport[3] =

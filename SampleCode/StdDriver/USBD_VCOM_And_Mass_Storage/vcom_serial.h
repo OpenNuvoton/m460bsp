@@ -90,8 +90,8 @@ extern uint32_t g_u32TxSize;
 extern uint8_t volatile g_u8Suspend;
 
 /*-------------------------------------------------------------*/
-void VCOM_Init(void);
-void VCOM_ClassRequest(void);
+void VCOM_MSC_Init(void);
+void VCOM_MSC_ClassRequest(void);
 
 void EP2_Handler(void);
 void EP3_Handler(void);

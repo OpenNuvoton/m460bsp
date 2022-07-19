@@ -459,10 +459,10 @@ void VCOM_LineCoding(uint8_t port)
         UART0->FIFO = 0x3;
 
         // Set baudrate
-        u32Baud_Div = UART_BAUD_MODE2_DIVIDER(__HXT, gLineCoding.u32DTERate);
+        u32Baud_Div = UART_BAUD_MODE2_DIVIDER(__HIRC, gLineCoding.u32DTERate);
 
         if(u32Baud_Div > 0xFFFF)
-            UART0->BAUD = (UART_BAUD_MODE0 | UART_BAUD_MODE0_DIVIDER(__HXT, gLineCoding.u32DTERate));
+            UART0->BAUD = (UART_BAUD_MODE0 | UART_BAUD_MODE0_DIVIDER(__HIRC, gLineCoding.u32DTERate));
         else
             UART0->BAUD = (UART_BAUD_MODE2 | u32Baud_Div);
 

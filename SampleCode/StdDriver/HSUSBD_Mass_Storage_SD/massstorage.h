@@ -6,8 +6,8 @@
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
-#ifndef __MASSSTORAGE_H_
-#define __MASSSTORAGE_H_
+#ifndef __MASSSTORAGE_H__
+#define __MASSSTORAGE_H__
 
 /* Define the vendor id and product id */
 #define USBD_VID        0x0416
@@ -135,4 +135,4 @@ void MSC_AckCmd(void);
 void MSC_ReadMedia(uint32_t addr, uint32_t size, uint8_t *buffer);
 void MSC_WriteMedia(uint32_t addr, uint32_t size, uint8_t *buffer);
 
-#endif  /* __MASSSTORAGE_H_ */
+#endif  /* __MASSSTORAGE_H__ */

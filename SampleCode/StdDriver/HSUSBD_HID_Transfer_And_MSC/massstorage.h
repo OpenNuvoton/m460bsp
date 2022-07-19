@@ -6,8 +6,8 @@
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
-#ifndef __MASSSTORAGE_H_
-#define __MASSSTORAGE_H_
+#ifndef __MASSSTORAGE_H__
+#define __MASSSTORAGE_H__
 
 /* Define DMA Maximum Transfer length */
 #define USBD_MAX_DMA_LEN    0x1000
@@ -34,7 +34,10 @@
 #define UFI_READ_FORMAT_CAPACITY                0x23
 #define UFI_READ_CAPACITY                       0x25
 #define UFI_READ_10                             0x28
+#define UFI_READ_12                             0xA8
+#define UFI_READ_16                             0x9E
 #define UFI_WRITE_10                            0x2A
+#define UFI_WRITE_12                            0xAA
 #define UFI_VERIFY_10                           0x2F
 #define UFI_MODE_SELECT_10                      0x55
 #define UFI_MODE_SENSE_10                       0x5A
@@ -89,14 +92,14 @@ void MSC_RequestSense(void);
 void MSC_ReadFormatCapacity(void);
 void MSC_ReadCapacity(void);
 void MSC_ModeSense10(void);
-void MSC_ReceiveCBW(uint32_t u32Buf);
+void MSC_ReceiveCBW(uint32_t u32Buf, uint32_t u32Len);
 void MSC_ProcessCmd(void);
 void MSC_ActiveDMA(uint32_t u32Addr, uint32_t u32Len);
 void MSC_BulkOut(uint32_t u32Addr, uint32_t u32Len);
 void MSC_BulkIn(uint32_t u32Addr, uint32_t u32Len);
-void MSC_AckCmd(uint32_t u32Residue);
+void MSC_AckCmd(void);
 
 void MSC_ReadMedia(uint32_t addr, uint32_t size, uint8_t *buffer);
 void MSC_WriteMedia(uint32_t addr, uint32_t size, uint8_t *buffer);
 
-#endif  /* __MASSSTORAGE_H_ */
+#endif  /* __MASSSTORAGE_H__ */

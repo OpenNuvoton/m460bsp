@@ -6,8 +6,8 @@
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
-#ifndef __USBD_HID_H__
-#define __USBD_HID_H__
+#ifndef __HID_MSC_H__
+#define __HID_MSC_H__
 
 /* Define the vendor id and product id */
 #define USBD_VID                0x0416
@@ -73,11 +73,11 @@
 extern uint8_t  g_u8OutBuff[];
 
 /*-------------------------------------------------------------*/
-void HID_Init(void);
-void HID_InitForHighSpeed(void);
-void HID_InitForFullSpeed(void);
-void HID_ClassRequest(void);
-void HID_VendorRequest(void);
+void HID_MSC_Init(void);
+void HID_MSC_InitForHighSpeed(void);
+void HID_MSC_InitForFullSpeed(void);
+void HID_MSC_ClassRequest(void);
+void HID_MSC_VendorRequest(void);
 
 void EPA_Handler(void);
 void EPB_Handler(void);
@@ -85,4 +85,4 @@ void HID_SetInReport(void);
 void HID_GetOutReport(uint8_t *pu8EpBuf, uint32_t u32Size);
 void HID_ActiveDMA(uint32_t u32In, uint32_t u32Addr, uint32_t u32Len);
 
-#endif  /* __USBD_HID_H_ */
+#endif  /* __HID_MSC_H__ */

@@ -17,7 +17,11 @@ static uint8_t s_au8DeviceDescriptor[] =
 {
     LEN_DEVICE,         /* bLength */
     DESC_DEVICE,        /* bDescriptorType */
+#ifdef SUPPORT_LPM
+    0x01, 0x02,         /* bcdUSB >= 0x0201 to support LPM */
+#else
     0x10, 0x01,         /* bcdUSB */
+#endif
     0xEF,               /* bDeviceClass: IAD*/
     0x02,               /* bDeviceSubClass */
     0x01,               /* bDeviceProtocol */
@@ -31,7 +35,7 @@ static uint8_t s_au8DeviceDescriptor[] =
     0x00, 0x01,        /* bcdDevice */
     0x01,              /* iManufacture */
     0x02,              /* iProduct */
-    0x00,              /* iSerialNumber - no serial */
+    0x03,              /* iSerialNumber - is required for BOT device */
     0x01               /* bNumConfigurations */
 };
 
@@ -184,6 +188,13 @@ static uint8_t s_au8ProductStringDesc[] =
     'U', 0, 'S', 0, 'B', 0, ' ', 0, 'D', 0, 'e', 0, 'v', 0, 'i', 0, 'c', 0, 'e', 0
 };
 
+static uint8_t s_au8StringSerial[] =
+{
+    26,             // bLength
+    DESC_STRING,    // bDescriptorType
+    'A', 0, '0', 0, '2', 0, '0', 0, '0', 0, '8', 0, '0', 0, '4', 0, '0', 0, '1', 0, '1', 0, '4', 0
+};
+
 #ifdef SUPPORT_LPM
 /*!<USB BOS Descriptor */
 static uint8_t s_au8BOSDescriptor[] =
@@ -216,7 +227,7 @@ static uint8_t *s_apu8UsbString[4] =
     s_au8StringLang,
     s_au8VendorStringDesc,
     s_au8ProductStringDesc,
-    NULL
+    s_au8StringSerial
 };
 
 static uint8_t *s_apu8UsbHidReport[3] =

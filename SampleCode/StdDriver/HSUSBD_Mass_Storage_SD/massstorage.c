@@ -119,7 +119,7 @@ void USBD20_IRQHandler(void)
 
             if(HSUSBD->OPER & 0x04)   /* high speed */
                 MSC_InitForHighSpeed();
-            else                    /* full speed */
+            else                      /* full speed */
                 MSC_InitForFullSpeed();
             HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_SETUPPKIEN_Msk);
             HSUSBD_SET_ADDR(0);
@@ -761,7 +761,6 @@ void MSC_BulkIn(uint32_t u32Addr, uint32_t u32Len)
 
 void MSC_ReceiveCBW(uint32_t u32Buf, uint32_t u32Len)
 {
-    uint32_t volatile i;
     /* bulk out, dma write, epnum = 2 */
     HSUSBD_SET_DMA_WRITE(BULK_OUT_EP_NUM);
 
@@ -795,7 +794,6 @@ void MSC_ProcessCmd(void)
 
         if(g_u8BulkState == BULK_CBW)
         {
-
             /* Check CBW */
             g_u32CbwSize = HSUSBD->EP[EPB].EPDATCNT & 0xffff;
             MSC_ReceiveCBW(g_u32MassBase, g_u32CbwSize);
@@ -1154,7 +1152,7 @@ void MSC_ActiveDMA(uint32_t u32Addr, uint32_t u32Len)
     }
 }
 
-void MSC_AckCmd()
+void MSC_AckCmd(void)
 {
     g_sCSW.bCSWStatus = g_u8Prevent;
     if(SD0.IsCardInsert == 0)

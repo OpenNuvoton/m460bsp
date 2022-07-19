@@ -100,7 +100,6 @@ void USBD_IRQHandler(void)
     uint32_t u32IntSts = USBD_GET_INT_FLAG();
     uint32_t u32State = USBD_GET_BUS_STATE();
 
-
 //------------------------------------------------------------------
     if(u32IntSts & USBD_INTSTS_FLDET)
     {
@@ -253,20 +252,17 @@ void USBD_IRQHandler(void)
     }
 }
 
-
 void EP2_Handler(void)
 {
     s_u8EP2Ready = 1;
     MSC_AckCmd();
 }
 
-
 void EP3_Handler(void)
 {
     /* Bulk OUT */
     s_u8EP3Ready = 1;
 }
-
 
 void MSC_Init(void)
 {
@@ -402,7 +398,6 @@ void MSC_ClassRequest(void)
     }
 }
 
-
 void MSC_RequestSense(void)
 {
     uint8_t au8Tmp[20];
@@ -468,7 +463,6 @@ void MSC_ReadFormatCapacity(void)
     pu8Desc[17] = 0;
     pu8Desc[18] = 0x02;
     pu8Desc[19] = 0;
-
 }
 
 void MSC_Read(void)
@@ -584,7 +578,6 @@ void MSC_ReadTrig(void)
         USBD_SET_PAYLOAD_LEN(EP2, 0);
 }
 
-
 void MSC_ReadCapacity(void)
 {
     uint32_t u32Tmp;
@@ -616,7 +609,6 @@ void MSC_ReadCapacity16(void)
     *((uint8_t *)(MassCMD_BUF + 7)) = *((uint8_t *)&u32Tmp + 0);
     *((uint8_t *)(MassCMD_BUF + 10)) = 0x02;
 }
-
 
 void MSC_ModeSense10(void)
 {
@@ -785,7 +777,6 @@ void MSC_ProcessCmd(void)
             /* Get the CBW */
             for(i = 0; i < u32Len; i++)
                 *((uint8_t *)(&s_sCBW.dCBWSignature) + i) = *(uint8_t *)((uint32_t)USBD_BUF_BASE + s_u32BulkBuf0 + i);
-
 
             /* Prepare to echo the tag from CBW to CSW */
             s_sCSW.dCSWTag = s_sCBW.dCBWTag;
@@ -1337,11 +1328,11 @@ void MSC_SetConfig(void)
 void DataFlashRead(uint32_t u32Addr, uint32_t u32Size, uint32_t u32Buffer)
 {
     //DataFlashRead(u32Addr, u32Size, (uint32_t)u32Buffer);
-    USBD_MemCopy((uint8_t *)u32Buffer, (uint8_t *)(u32Addr + 0x2000c000), u32Size);
+    USBD_MemCopy((uint8_t *)u32Buffer, (uint8_t *)(u32Addr + 0x20010000), u32Size);
 }
 
 
 void DataFlashWrite(uint32_t u32Addr, uint32_t u32Size, uint32_t u32Buffer)
 {
-    USBD_MemCopy((uint8_t *)(u32Addr + 0x2000c000), (uint8_t *)u32Buffer, u32Size);
+    USBD_MemCopy((uint8_t *)(u32Addr + 0x20010000), (uint8_t *)u32Buffer, u32Size);
 }

@@ -306,14 +306,14 @@ void HID_UpdateMouseData(void)
 {
     uint8_t *pu8Buf;
 
-    if(s_u8EP2Ready)
+    //if(s_u8EP2Ready)
     {
         pu8Buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP2));
         s_u8MouseMode ^= 1;
 
         if(s_u8MouseMode)
         {
-            if(s_u8MoveLen > 14)
+            if(s_u8MoveLen > 6)
             {
                 /* Update new report data */
                 pu8Buf[0] = 0x00;
@@ -323,14 +323,10 @@ void HID_UpdateMouseData(void)
                 s_u8MouseIdx++;
                 s_u8MoveLen = 0;
             }
-        }
-        else
-        {
-            pu8Buf[0] = pu8Buf[1] = pu8Buf[2] = pu8Buf[3] = 0;
+            s_u8EP2Ready = 0;
+            /* Set transfer length and trigger IN transfer */
+            USBD_SET_PAYLOAD_LEN(EP2, 4);
         }
         s_u8MoveLen++;
-        s_u8EP2Ready = 0;
-        /* Set transfer length and trigger IN transfer */
-        USBD_SET_PAYLOAD_LEN(EP2, 4);
     }
 }

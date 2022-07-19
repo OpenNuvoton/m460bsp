@@ -17,7 +17,6 @@
 #include "massstorage.h"
 
 uint8_t bIsBdevice = 0, bIsAdevice = 0;
-extern uint8_t volatile g_u8MscStart;
 
 /* HSOTG interrupt handler */
 void USBOTG20_IRQHandler(void)
@@ -948,7 +947,7 @@ int32_t main(void)
     printf("If acts as a USB host, it can access a mass storage device with a simple file system. ");
     printf("Type '?' on command line to show all supported commands.\n");
     printf("If attempts to switch the USB role as a USB device, press 'Enter' key after unplugging the USB cable to exit the file system. ");
-    printf("Then plug a proper USB connector to switch the USB role as a mass storage device. The internal data flash is used as the storage.\n");
+    printf("Then plug a proper USB connector to switch the USB role as a mass storage device. The internal SRAM is used as the storage.\n");
 
     HSOTG_ENABLE_PHY();
     /* Enable ID detection function */
@@ -983,7 +982,7 @@ int32_t main(void)
                 {
                     if(HSOTG_GET_STATUS(HSOTG_STATUS_BVLD_Msk) == 0)
                         break;
-                    if(g_u8MscStart)
+                    if(g_hsusbd_Configured)
                         MSC_ProcessCmd();
                 }
                 /* Disable B-device session valid state change interrupt */
