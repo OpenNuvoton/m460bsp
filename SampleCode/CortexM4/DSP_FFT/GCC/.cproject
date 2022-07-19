@@ -71,7 +71,8 @@
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.paths.704105533" name="Library search path (-L)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/DSP_FFT/Library/Include/Include}&quot;"/>
 								</option>
-								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.linker.input.591787116" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.linker.input">
+								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.usenewlibnano.177665339" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.usenewlibnano" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+												<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.linker.input.591787116" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
 								</inputType>
