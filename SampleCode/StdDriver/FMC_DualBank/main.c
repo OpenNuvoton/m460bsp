@@ -265,8 +265,8 @@ int main()
 
     if ((SYS->CSERVER & SYS_CSERVER_VERSION_Msk) == 0x3)
     {
-        printf("M460LD does not support dual bank!\n");
-        return -1;
+        printf("M46xxG does not support dual bank!\n");
+        goto lexit;
     }
 
     printf("+------------------------------------------+\n");
@@ -318,16 +318,17 @@ int main()
         if (inpw(addr) != addr)
         {
             printf("Flash address 0x%x verify failed! expect: 0x%x, read: 0x%x.\n", addr, addr, inpw(addr));
-            return -1;
+            goto lexit;
         }
     }
     printf("Verify OK.\n");
+    printf("\nFMC Sample Code Completed.\n");
+
+lexit:
 
     FMC_Close();                       /* Disable FMC ISP function                       */
 
     SYS_LockReg();                     /* Lock protected registers                       */
-
-    printf("\nFMC Sample Code Completed.\n");
 
     while (1);
 }

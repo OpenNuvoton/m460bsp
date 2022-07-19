@@ -1299,26 +1299,26 @@ int main(void)
         {
             printf("klen = %d\n", klen);
             printf("Key size should 128, 192 or 256 bits\n");
-            return -1;
+            goto lexit;
         }
 
         if(alen > GCM_PBLOCK_SIZE)
         {
             printf("alen = %d\n", alen);
             printf("length of A should not larger than defined block size.\n");
-            return -1;
+            goto lexit;
         }
         if(GCM_PBLOCK_SIZE & 0xf)
         {
             printf("block size = %d\n", GCM_PBLOCK_SIZE);
             printf("Defined block size should be 16 bytes alignment.\n");
-            return -1;
+            goto lexit;
         }
         if(ivlen == 0)
         {
             printf("ivlen = %d\n", ivlen);
             printf("IV length should not be 0\n");
-            return -1;
+            goto lexit;
         }
 
 
@@ -1338,7 +1338,7 @@ int main(void)
         if(memcmp(g_C, g_au8Out, plen))
         {
             printf("ERR: Encrypted data fail!\n");
-            return -1;
+            goto lexit;
         }
 
         if(memcmp(g_T, &g_au8Out[plen_aligned], tlen))
@@ -1348,7 +1348,7 @@ int main(void)
             printf("tlen = %d\n", tlen);
             DumpBuffHex(&g_au8Out[plen_aligned], tlen);
 
-            return -1;
+            goto lexit;
         }
 
         AES_GCMDec(g_key, klen, g_iv, ivlen, g_A, alen, g_au8Out, plen, g_au8Out2, &size, &plen_aligned);
@@ -1356,18 +1356,20 @@ int main(void)
         if(memcmp(g_P, g_au8Out2, plen))
         {
             printf("ERR: Encrypted data fail!\n");
-            return -1;
+            goto lexit;
         }
 
         if(memcmp(g_T, &g_au8Out2[plen_aligned], tlen))
         {
             printf("ERR: Tag fail!");
-            return -1;
+            goto lexit;
         }
 
         printf("Test PASS!\n");
 
     }
+
+lexit:
 
     while(1) {}
 

@@ -185,7 +185,7 @@ int main(void)
                 if(au32CAPValue[u32InitCount] != 0)   // First capture event will reset counter value
                 {
                     printf("*** FAIL ***\n");
-                    return -1;
+                    goto lexit;
                 }
             }
             else if(u32InitCount ==  1)
@@ -194,7 +194,7 @@ int main(void)
                 if(au32CAPValue[u32InitCount] != 500)   // Second event gets two capture event duration counts directly
                 {
                     printf("*** FAIL ***\n");
-                    return -1;
+                    goto lexit;
                 }
             }
             else
@@ -204,7 +204,7 @@ int main(void)
                 if(u32CAPDiff != 500)
                 {
                     printf("*** FAIL ***\n");
-                    return -1;
+                    goto lexit;
                 }
             }
             u32InitCount = g_au32TMRINTCount[2];
@@ -254,7 +254,7 @@ int main(void)
                 if(au32CAPValue[u32InitCount] != 0)   // First capture event will reset counter value
                 {
                     printf("*** FAIL ***\n");
-                    return -1;
+                    goto lexit;
                 }
             }
             else if(u32InitCount ==  1)
@@ -263,7 +263,7 @@ int main(void)
                 if(au32CAPValue[u32InitCount] != 250)   // Get low duration counts directly
                 {
                     printf("*** FAIL ***\n");
-                    return -1;
+                    goto lexit;
                 }
             }
             else
@@ -273,19 +273,21 @@ int main(void)
                 if(u32CAPDiff != 500)
                 {
                     printf("*** FAIL ***\n");
-                    return -1;
+                    goto lexit;
                 }
             }
             u32InitCount = g_au32TMRINTCount[2];
         }
     }
 
+    printf("*** PASS ***\n");
+
+lexit:
+
     /* Stop Timer0, Timer2 and Timer3 counting */
     TIMER_Stop(TIMER0);
     TIMER_Stop(TIMER2);
     TIMER_Stop(TIMER3);
-
-    printf("*** PASS ***\n");
 
     while(1) {}
 }

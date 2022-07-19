@@ -226,7 +226,7 @@ int  main(void)
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for HMAC time-out!\n");
-            return -1;
+            goto lexit;
         }
     }
 
@@ -246,6 +246,9 @@ int  main(void)
     }
 
     printf("\nHMAC Demo Done\n");
+
+lexit:
+
     while(1) {}
 }
 

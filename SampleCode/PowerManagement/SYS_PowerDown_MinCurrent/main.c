@@ -311,7 +311,7 @@ int32_t main(void)
             if(--u32TimeOutCnt == 0)
             {
                 printf("Wait for SPD/DPD mode wake-up status is cleared time-out!\n");
-                return -1;
+                goto lexit;
             }
         }
     }
@@ -341,7 +341,9 @@ int32_t main(void)
     printf("+-------------------------------------------------------------------+\n\n");
 
     /* Check if all the debug messages are finished */
-    UART_WAIT_TX_EMPTY(DEBUG_PORT);
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+    UART_WAIT_TX_EMPTY(DEBUG_PORT)
+        if(--u32TimeOutCnt == 0) break;
 
     /* Set function pin to GPIO mode expect UART pin to print message */
     SYS->GPA_MFP0 = 0;
@@ -401,16 +403,16 @@ int32_t main(void)
     SYS_UnlockReg();
 
     /* LVR setting */
-    if( LvrSetting() < 0 ) return -1;
+    if( LvrSetting() < 0 ) goto lexit;
 
     /* POR setting */
     PorSetting();
 
     /* LIRC setting */
-    if( LircSetting() < 0 ) return -1;
+    if( LircSetting() < 0 ) goto lexit;
 
     /* LXT setting */
-    if( LxtSetting() < 0 ) return -1;
+    if( LxtSetting() < 0 ) goto lexit;
 
     /* Select SPD mode SRAM retention size */
     CLK->PMUCTL = (CLK->PMUCTL & (~CLK_PMUCTL_SRETSEL_Msk)) | (SET_SRETSEL<<CLK_PMUCTL_SRETSEL_Pos);
@@ -436,7 +438,7 @@ int32_t main(void)
     else
     {
         printf("Unknown Power-down mode!\n");
-        return -1;
+        goto lexit;
     }
 
     /* Enter to Power-down mode */
@@ -450,6 +452,8 @@ int32_t main(void)
 
     /* Waiting for PB.2 falling-edge interrupt event */
     printf("System waken-up done.\n\n");
+
+lexit:
 
     while(1);
 

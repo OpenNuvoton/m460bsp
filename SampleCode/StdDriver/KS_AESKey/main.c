@@ -182,7 +182,7 @@ int main(void)
         printf("Fail to write key to Key Store!\n");
         printf("KS SRAM remaind size = %d\n", KS_GetRemainSize(KS_SRAM));
 
-        return -1;
+        goto lexit;
     }
 
     printf("KS SRAM remind size: %d\n", KS_GetRemainSize(KS_SRAM));
@@ -194,6 +194,8 @@ int main(void)
     AES_Test(CRPT, KS_SRAM, i32KeyIdx);
 
     printf("Done!\n");
+
+lexit:
 
     while(1) {}
 }

@@ -398,7 +398,7 @@ int main()
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for system or USCI_I2C interrupt time-out!\n");
-            return -1;
+            goto lexit;
         }
     }
 
@@ -406,5 +406,8 @@ int main()
         printf("UI2C0 [A]ddress match Wake-up from Deep Sleep\n");
     else
         printf("UI2C0 [T]oggle Wake-up from Deep Sleep\n");
+
+lexit:
+
     while(1);
 }

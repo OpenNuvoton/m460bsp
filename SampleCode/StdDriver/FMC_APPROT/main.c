@@ -95,7 +95,7 @@ int main()
         if(i32ISPSTS)
         {
             printf("[Erase FAIL at addr 0x%x \n", i);
-            while(1);
+            goto lexit;
         }
     }
 
@@ -109,7 +109,7 @@ int main()
         if(u32ISPFF)
         {
             printf("line(%d)[FAIL]ISP Fail Flag[0x%x] \n",  __LINE__, u32ISPFF);
-            while(1);
+            goto lexit;
         }
 
         u32CPUReadData = M32(i);
@@ -118,14 +118,14 @@ int main()
         if (u32ISPReadData != 0xFFFFFFFF)
         {
             printf("line[%d][ISP verify 0xFFFFFFFF FAIL]addr[0x%x] data[0x%x]\n", __LINE__, i, u32ISPReadData);
-            while(1);
+            goto lexit;
         }
 
         /* Verify testing APROM range, CPU read should be 0xFFFFFFFF */
         if (u32CPUReadData != 0xFFFFFFFF)
         {
             printf("line[%d][CPU verify 0xFFFFFFFF FAIL]addr[0x%x] data[0x%x]\n",  __LINE__, i, u32CPUReadData);
-            while(1);
+            goto lexit;
         }
     }
 
@@ -146,7 +146,7 @@ int main()
         if(u32ISPFF)
         {
             printf("line(%d)[FAIL]ISP Fail Flag[0x%x] \n",  __LINE__, u32ISPFF);
-            while(1);
+            goto lexit;
         }
 
         u32CPUReadData = M32(i);
@@ -155,14 +155,14 @@ int main()
         if (u32ISPReadData != i)
         {
             printf("line[%d][ISP verify FAIL]addr[0x%x] data[0x%x]\n", __LINE__, i, u32ISPReadData);
-            while(1);
+            goto lexit;
         }
 
         /* Verify testing APROM range, CPU read should be its address */
         if (u32CPUReadData != i)
         {
             printf("line[%d][CPU verify FAIL]addr[0x%x] data[0x%x]\n",__LINE__,  i, u32CPUReadData);
-            while(1);
+            goto lexit;
         }
 
     }
@@ -251,7 +251,7 @@ int main()
                 if(u32ISPFF)
                 {
                     printf("line(%d)[FAIL]ISP Fail Flag[0x%x] \n",  __LINE__, u32ISPFF);
-                    while(1);
+                    goto lexit;
                 }
 
                 u32CPUReadData = M32(j);
@@ -260,14 +260,14 @@ int main()
                 if (u32ISPReadData != j)
                 {
                     printf("line[%d][ISP verify protect data FAIL]addr[0x%x] data[0x%x]\n", __LINE__, j, u32ISPReadData);
-                    while(1);
+                    goto lexit;
                 }
 
                 /* Verify testing APROM range, CPU read should be its address */
                 if (u32CPUReadData != j)
                 {
                     printf("line[%d][CPU verify protect data FAIL]addr[0x%x] data[0x%x]\n",  __LINE__, j, u32CPUReadData);
-                    while(1);
+                    goto lexit;
                 }
             }
 
@@ -280,7 +280,7 @@ int main()
                 if(i32ISPSTS == 0)
                 {
                     printf("line(%d)[FAIL]ISP erase shoule be fail, i32ISPSTS = [0x%x] \n", __LINE__, i32ISPSTS);
-                    while(1);
+                    goto lexit;
                 }
             }
 
@@ -293,7 +293,7 @@ int main()
                 if(u32ISPFF)
                 {
                     printf("line(%d)[FAIL]ISP Fail Flag[0x%x] \n",  __LINE__, u32ISPFF);
-                    while(1);
+                    goto lexit;
                 }
 
                 u32CPUReadData = M32(j);
@@ -302,14 +302,14 @@ int main()
                 if (u32ISPReadData != j)
                 {
                     printf("line[%d][ISP verify protect data FAIL]addr[0x%x] data[0x%x]\n", __LINE__, j, u32ISPReadData);
-                    while(1);
+                    goto lexit;
                 }
 
                 /* Verify testing APROM range, CPU read should be its address */
                 if (u32CPUReadData != j)
                 {
                     printf("line[%d][CPU verify protect data FAIL]addr[0x%x] data[0x%x]\n",  __LINE__, j, u32CPUReadData);
-                    while(1);
+                    goto lexit;
                 }
             }
             printf("\n\t=> Erase check OK! All data is not erased\n");
@@ -329,7 +329,7 @@ int main()
                 else
                 {
                     printf("line(%d)[FAIL]ISP Fail Flag should be set \n", __LINE__);
-                    while(1);
+                    goto lexit;
                 }
 
                 u32ISPReadData = FMC_Read(j);
@@ -337,7 +337,7 @@ int main()
                 if(u32ISPFF)
                 {
                     printf("line(%d)[FAIL]ISP Fail Flag[0x%x] \n",  __LINE__, u32ISPFF);
-                    while(1);
+                    goto lexit;
                 }
 
                 u32CPUReadData = M32(j);
@@ -346,14 +346,14 @@ int main()
                 if (u32ISPReadData != j)
                 {
                     printf("line[%d][ISP verify fail]addr[0x%x] data[0x%x]\n", __LINE__, j, u32ISPReadData);
-                    while(1);
+                    goto lexit;
                 }
 
                 /* Verify testing APROM range, CPU read should be its address,  not 0 */
                 if (u32CPUReadData != j)
                 {
                     printf("line[%d][CPU verify fail]addr[0x%x] data[0x%x]\n",__LINE__,  j, u32CPUReadData);
-                    while(1);
+                    goto lexit;
                 }
 
             }
@@ -363,6 +363,8 @@ int main()
 
 
     printf("\nFMC APPROT test PASS.\n");
+
+lexit:
 
     /* Disable FMC ISP function */
     FMC_Close();

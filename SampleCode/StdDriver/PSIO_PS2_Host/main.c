@@ -264,10 +264,14 @@ int32_t main(void)
             g_u32TxData = PSIO_Encode_TxData(&u32Data);
             printf("[Host send to device]0x%x, 0x%x\n", u32Data, g_u32TxData);
             if( PSIO_PS2_HostSend(&g_sConfig) < 0 )
-                return -1;
+                goto lexit;
 
             while (PSIO_PS2_GET_STATUS() == eHOST_WRITE);
         }
     }
+
+lexit:
+
+    while(1);
 
 }

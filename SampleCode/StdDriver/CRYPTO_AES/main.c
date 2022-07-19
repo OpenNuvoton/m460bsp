@@ -179,7 +179,7 @@ int32_t main(void)
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for AES encrypt done time-out!\n");
-            return -1;
+            goto lexit;
         }
     }
 
@@ -205,12 +205,14 @@ int32_t main(void)
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for AES decrypt done time-out!\n");
-            return -1;
+            goto lexit;
         }
     }
 
     printf("AES decrypt done.\n\n");
     DumpBuffHex(au8InputData, sizeof(au8InputData));
+
+lexit:
 
     while(1);
 }

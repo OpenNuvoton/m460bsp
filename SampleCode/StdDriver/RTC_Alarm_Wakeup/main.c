@@ -141,7 +141,7 @@ int main(void)
     {
         printf("\n RTC initial fail!!");
         printf("\n Please check h/w setting!!");
-        return -1;
+        goto lexit;
     }
 
     /* Set RTC alarm date/time */
@@ -207,6 +207,8 @@ int main(void)
     printf("System has been waken-up and current date/time is:\n");
     printf("    %d/%02d/%02d %02d:%02d:%02d\n",
            sReadRTC.u32Year, sReadRTC.u32Month, sReadRTC.u32Day, sReadRTC.u32Hour, sReadRTC.u32Minute, sReadRTC.u32Second);
+
+lexit:
 
     while(1) {}
 }

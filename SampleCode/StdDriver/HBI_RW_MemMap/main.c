@@ -144,7 +144,7 @@ int main()
 
         /* Clear HyperRAM */
         if( ClearHyperRAM(u32StartAddr, u32EndAddr) < 0 )
-            return -1;
+            goto lexit;
 
         /* Fill 4 Byte pattern to HyperRAM */
         printf("4 Byte Write test .....\n");
@@ -160,14 +160,14 @@ int main()
             if(u32Data != u32BitPattern)
             {
                 printf("line(%d) [FAIL] Read address:0x%08x  data::0x%08x  expect:0x%08x \n", __LINE__,i,  u32Data, u32BitPattern);
-                return -1;
+                goto lexit;
             }
         }
         printf("4 Byte Write test Done!!\n");
 
         /* Clear HyperRAM */
         if( ClearHyperRAM(u32StartAddr, u32EndAddr) < 0 )
-            return -1;
+            goto lexit;
 
         /* Fill 2 Byte pattern to HyperRAM */
         printf("2 Byte Write test .....\n");
@@ -184,14 +184,14 @@ int main()
             if(u32Data != u16BitPattern)
             {
                 printf("line(%d) [FAIL] Read address:0x%08x  data::0x%08x  expect:0x%08x \n", __LINE__,i,  u32Data, u16BitPattern);
-                return -1;
+                goto lexit;
             }
         }
         printf("2 Byte Write test Done!!\n");
 
         /* Clear HyperRAM */
         if( ClearHyperRAM(u32StartAddr, u32EndAddr) < 0 )
-            return -1;
+            goto lexit;
 
         /* Fill 1 Byte pattern to HyperRAM */
         printf("1 Byte Write test .....\n");
@@ -207,20 +207,22 @@ int main()
             if(u32Data != u8BitPattern)
             {
                 printf("line(%d) [FAIL] Read address:0x%08x  data::0x%08x  expect:0x%08x \n", __LINE__,i,  u32Data,  (u8BitPattern<<8|u8BitPattern));
-                return -1;
+                goto lexit;
             }
         }
         printf("1 Byte Write test Done!!\n");
 
         /* Clear HyperRAM */
         if( ClearHyperRAM(u32StartAddr, u32EndAddr) < 0 )
-            return -1;
+            goto lexit;
 
         printf("======= Pattern Round[%d] Test Pass! ======= \n", u32PatCnt);
 
     }
 
     printf("\nHyperBus Interface Sample Code Completed.\n");
+
+lexit:
 
     while (1);
 }

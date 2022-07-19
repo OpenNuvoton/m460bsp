@@ -136,7 +136,7 @@ int32_t main(void)
         if(r != 1200)
         {
             printf("XOM ADD fail. It should be 1200 but %d\n", r);
-            while(1);
+            goto lexit;
         }
     }
 
@@ -144,6 +144,8 @@ int32_t main(void)
     {
         printf("[%04x] = 0x%08x\n", 0x10000 + i * 4, M32(0x10000 + i * 4));
     }
+
+lexit:
 
     while(1);
 }

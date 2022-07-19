@@ -137,7 +137,7 @@ int main(void)
     {
         printf("\n RTC initial fail!!");
         printf("\n Please check h/w setting!!");
-        return -1;
+        goto lexit;
     }
 
     /* Enable RTC tick interrupt, one RTC tick is 1 second */
@@ -187,4 +187,8 @@ int main(void)
             }
         }
     }
+
+lexit:
+
+    while(1);
 }
