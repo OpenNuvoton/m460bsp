@@ -190,16 +190,16 @@ void CANFD_CANFD_Loopback(void)
         CANFD_CANFD_TxRx_Test(&g_sTxMsgFrame, eCANFD_SID, 0x110 + u8Loop, u8Loop);
     }
 
-    CANFD_CANFD_TxRx_Test(&g_sTxMsgFrame, eCANFD_SID, 0x2FF, 8);
-    CANFD_CANFD_TxRx_Test(&g_sTxMsgFrame, eCANFD_SID, 0x333, 8);
+    CANFD_CANFD_TxRx_Test(&g_sTxMsgFrame, eCANFD_SID, 0x2FF, 7);
+    CANFD_CANFD_TxRx_Test(&g_sTxMsgFrame, eCANFD_SID, 0x333, 7);
 
     for (u8Loop = 0 ; u8Loop < 8; u8Loop++)
     {
         CANFD_CANFD_TxRx_Test(&g_sTxMsgFrame, eCANFD_XID, 0x220 + u8Loop, u8Loop);
     }
 
-    CANFD_CANFD_TxRx_Test(&g_sTxMsgFrame, eCANFD_XID, 0x3333, 8);
-    CANFD_CANFD_TxRx_Test(&g_sTxMsgFrame, eCANFD_XID, 0x44444, 8);
+    CANFD_CANFD_TxRx_Test(&g_sTxMsgFrame, eCANFD_XID, 0x3333, 7);
+    CANFD_CANFD_TxRx_Test(&g_sTxMsgFrame, eCANFD_XID, 0x44444, 7);
 }
 
 void UART0_Init(void)
