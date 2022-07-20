@@ -386,8 +386,23 @@ static void CANFD_SetTimingConfig(CANFD_T *psCanfd, const CANFD_TIMEING_CONFIG_T
 
     if (psCanfd == (CANFD_T *)CANFD0)
     {
-        /* Get CANF D0 clock divider number */
+        /* Get CANFD0 clock divider number */
         CLK->CLKDIV5 = (CLK->CLKDIV5 & ~CLK_CLKDIV5_CANFD0DIV_Msk) | CLK_CLKDIV5_CANFD0(psConfig->u8PreDivider) ;
+    }
+    else if (psCanfd == (CANFD_T *)CANFD1)
+    {
+        /* Get CANFD1 clock divider number */
+        CLK->CLKDIV5 = (CLK->CLKDIV5 & ~CLK_CLKDIV5_CANFD1DIV_Msk) | CLK_CLKDIV5_CANFD1(psConfig->u8PreDivider) ;
+    }
+    else if (psCanfd == (CANFD_T *)CANFD2)
+    {
+        /* Get CANFD2 clock divider number */
+        CLK->CLKDIV5 = (CLK->CLKDIV5 & ~CLK_CLKDIV5_CANFD2DIV_Msk) | CLK_CLKDIV5_CANFD2(psConfig->u8PreDivider) ;
+    }
+    else if (psCanfd == (CANFD_T *)CANFD3)
+    {
+        /* Get CANFD3 clock divider number */
+        CLK->CLKDIV5 = (CLK->CLKDIV5 & ~CLK_CLKDIV5_CANFD3DIV_Msk) | CLK_CLKDIV5_CANFD3(psConfig->u8PreDivider) ;
     }
 
     /* nominal bit rate */
