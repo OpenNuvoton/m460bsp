@@ -67,7 +67,6 @@
 
 #define GPIO_P0_TO_P15      0xFFFF
 
-void SYS_Disable_AnalogPORCircuit(void);
 void PowerDownFunction(void);
 void GPB_IRQHandler(void);
 int32_t LvrSetting(void);
