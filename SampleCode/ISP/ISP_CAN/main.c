@@ -219,6 +219,7 @@ void CAN_Init(void)
 
     /* Open the CAN feature */
     CANFD_Open(CANFD0, &sCANFD_Config);
+    NVIC_EnableIRQ(CANFD00_IRQn);
 
     /* Set CAN reveive message */
     CANFD_SetSIDFltr(CANFD0, 0, CANFD_RX_FIFO0_STD_MASK(Master_ISP_ID, 0x7FF));
@@ -231,6 +232,15 @@ void CAN_Init(void)
     /* CAN FD0 Run to Normal mode  */
     CANFD_RunToNormal(CANFD0, TRUE);
 
+}
+
+/*---------------------------------------------------------------------------------------------------------*/
+/*                                    Fini CAN FD0                                                         */
+/*---------------------------------------------------------------------------------------------------------*/
+void CANFD_Fini(void)
+{
+    NVIC_DisableIRQ(CANFD00_IRQn);
+    CANFD_Close(CANFD0);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -307,8 +317,10 @@ int main(void)
         }
     }
 
-
 lexit:
+
+    /* CAN FD interface finalization */
+    CANFD_Fini();
 
     /* Trap the CPU */
     while(1);

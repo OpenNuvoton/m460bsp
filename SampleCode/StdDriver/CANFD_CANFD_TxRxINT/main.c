@@ -129,51 +129,52 @@ void CANFD_TxTest(void)
         switch (u8Item)
         {
 
-            case '1':
-                /*Standard ID =0x111,Data lenght 8 bytes*/
-                CANFD_SendMessage(&g_sTxMsgFrame, eCANFD_SID, 0x111, 0);
-                break;
+        case '1':
+            /*Standard ID =0x111,Data lenght 8 bytes*/
+            CANFD_SendMessage(&g_sTxMsgFrame, eCANFD_SID, 0x111, 0);
+            break;
 
-            case '2':
-                /*Standard ID =0x111,Data lenght 12 bytes*/
-                CANFD_SendMessage(&g_sTxMsgFrame, eCANFD_SID, 0x113, 1);
-                break;
+        case '2':
+            /*Standard ID =0x111,Data lenght 12 bytes*/
+            CANFD_SendMessage(&g_sTxMsgFrame, eCANFD_SID, 0x113, 1);
+            break;
 
-            case '3':
-                /*Standard ID =0x22F,Data lenght 16 bytes*/
-                CANFD_SendMessage(&g_sTxMsgFrame, eCANFD_SID, 0x22F, 2);
-                break;
+        case '3':
+            /*Standard ID =0x22F,Data lenght 16 bytes*/
+            CANFD_SendMessage(&g_sTxMsgFrame, eCANFD_SID, 0x22F, 2);
+            break;
 
-            case '4':
-                /*Standard ID =0x333,Data lenght 20 bytes*/
-                CANFD_SendMessage(&g_sTxMsgFrame, eCANFD_SID, 0x333, 3);
-                break;
+        case '4':
+            /*Standard ID =0x333,Data lenght 20 bytes*/
+            CANFD_SendMessage(&g_sTxMsgFrame, eCANFD_SID, 0x333, 3);
+            break;
 
-            case '5':
-                /*Extend ID =0x111,Data lenght 24 bytes*/
-                CANFD_SendMessage(&g_sTxMsgFrame, eCANFD_XID, 0x220, 4);
-                break;
+        case '5':
+            /*Extend ID =0x111,Data lenght 24 bytes*/
+            CANFD_SendMessage(&g_sTxMsgFrame, eCANFD_XID, 0x220, 4);
+            break;
 
-            case '6':
-                /*Extend ID =0x111,Data lenght 32 bytes*/
-                CANFD_SendMessage(&g_sTxMsgFrame, eCANFD_XID, 0x227, 5);
-                break;
+        case '6':
+            /*Extend ID =0x111,Data lenght 32 bytes*/
+            CANFD_SendMessage(&g_sTxMsgFrame, eCANFD_XID, 0x227, 5);
+            break;
 
-            case '7':
-                /*Extend ID =0x3333,Data lenght 48 bytes*/
-                CANFD_SendMessage(&g_sTxMsgFrame, eCANFD_XID, 0x3333, 6);
-                break;
+        case '7':
+            /*Extend ID =0x3333,Data lenght 48 bytes*/
+            CANFD_SendMessage(&g_sTxMsgFrame, eCANFD_XID, 0x3333, 6);
+            break;
 
-            case '8':
-                /*Extend ID =0x44444,Data lenght 64 bytes*/
-                CANFD_SendMessage(&g_sTxMsgFrame, eCANFD_XID, 0x44444, 7);
-                break;
+        case '8':
+            /*Extend ID =0x44444,Data lenght 64 bytes*/
+            CANFD_SendMessage(&g_sTxMsgFrame, eCANFD_XID, 0x44444, 7);
+            break;
 
-            default:
-                break;
+        default:
+            break;
 
         }
-    } while (u8Item != 27);
+    }
+    while (u8Item != 27);
 }
 
 
@@ -244,7 +245,8 @@ void CANFD_RxTest(void)
         g_u8RxFifo1CompleteFlag = 0;
         memset(&g_sRxMsgFrame, 0, sizeof(g_sRxMsgFrame));
         u8Cnt++;
-    } while (u8Cnt < 8);
+    }
+    while (u8Cnt < 8);
 }
 
 
@@ -300,6 +302,7 @@ void CANFD_Init(void)
 
     /*Open the CAN FD feature*/
     CANFD_Open(CANFD0, &sCANFD_Config);
+    NVIC_EnableIRQ(CANFD00_IRQn);
 
     /* receive 0x110~0x11F in CAN FD0 rx fifo1 buffer by setting mask 0 */
     CANFD_SetSIDFltr(CANFD0, 0, CANFD_RX_FIFO1_STD_MASK(0x110, 0x7F0));
@@ -322,6 +325,14 @@ void CANFD_Init(void)
     CANFD_RunToNormal(CANFD0, TRUE);
 }
 
+/*---------------------------------------------------------------------------------------------------------*/
+/*                                    Fini CAN FD0                                                         */
+/*---------------------------------------------------------------------------------------------------------*/
+void CANFD_Fini(void)
+{
+    NVIC_DisableIRQ(CANFD00_IRQn);
+    CANFD_Close(CANFD0);
+}
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*                           CAN FD Tx Rx Interrupt Function Test                                          */
@@ -355,6 +366,9 @@ void CANFD_TxRxINTTest(void)
     {
         CANFD_RxTest();
     }
+
+    /* CAN FD interface finalization */
+    CANFD_Fini();
 
     printf("CAN FD Sample Code End.\n");
 }
