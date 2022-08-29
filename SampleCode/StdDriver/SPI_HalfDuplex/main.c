@@ -145,7 +145,7 @@ int main(void)
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for SPI time-out!\n");
-            return -1;
+            goto lexit;
         }
     }
     /* Set slave SPI1 data direction to output */
@@ -166,7 +166,7 @@ int main(void)
         if(--u32TimeOutCnt == 0)
         {
             printf("Wait for SPI time-out!\n");
-            return -1;
+            goto lexit;
         }
     }
     /* Set master SPI0 data direction to input */
@@ -220,6 +220,8 @@ int main(void)
     }
 
     printf("The data transfer was done.\n");
+
+lexit:
 
     printf("\n\nExit SPI driver sample code.\n");
 

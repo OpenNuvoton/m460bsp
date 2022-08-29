@@ -344,7 +344,7 @@ int32_t main(void)
     UART_WAIT_TX_EMPTY(DEBUG_PORT)
         if(--u32TimeOutCnt == 0) break;
 
-    /* Set function pin to GPIO mode expect UART pin to print message */
+    /* Set function pin to GPIO mode except UART pin to print message */
     SYS->GPA_MFP0 = 0;
     SYS->GPA_MFP1 = 0;
     SYS->GPA_MFP2 = 0;

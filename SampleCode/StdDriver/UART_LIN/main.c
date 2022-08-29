@@ -237,7 +237,7 @@ void UART_FunctionTest(void)
         switch(u32Item)
         {
             case '1':
-                if( LIN_Tx_FunctionTest() <0 )
+                if( LIN_Tx_FunctionTest() < 0 )
                     u32Item = 27;
                 break;
 

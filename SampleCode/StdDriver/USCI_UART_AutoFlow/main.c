@@ -16,7 +16,7 @@
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
 static volatile int32_t g_i32Pointer = 0;
-static uint8_t g_u8RecData[RXBUFSIZE] = {0};
+static uint8_t g_au8RecData[RXBUFSIZE] = {0};
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
@@ -220,7 +220,7 @@ void USCI_AutoFlow_FunctionRxTest(void)
     /* Compare Data */
     for(u32Idx = 0; u32Idx < RXBUFSIZE; u32Idx++)
     {
-        if(g_u8RecData[u32Idx] != (u32Idx & 0xFF))
+        if(g_au8RecData[u32Idx] != (u32Idx & 0xFF))
         {
             u32Err = 1;
             break;
@@ -252,7 +252,7 @@ void USCI0_IRQHandler(void)
         /* Handle received data */
         UUART_CLR_PROT_INT_FLAG(UUART0, UUART_PROTSTS_RXENDIF_Msk);
         u8InChar = (uint8_t)UUART_READ(UUART0);
-        g_u8RecData[g_i32Pointer++] = u8InChar;
+        g_au8RecData[g_i32Pointer++] = u8InChar;
     }
     else if(u32BufSts & UUART_BUFSTS_RXOVIF_Msk)      /* Receive buffer over-run error interrupt */
     {

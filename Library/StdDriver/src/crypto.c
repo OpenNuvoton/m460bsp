@@ -13,7 +13,7 @@
 
 #define ENABLE_DEBUG    0
 
-#define ECC_SCA_PROTECT 1       // Enable Side-Channel Protecton
+#define ECC_SCA_PROTECT 1       // Enable Side-Channel Protection
 
 #if ENABLE_DEBUG
 #define CRPT_DBGMSG   printf
@@ -1990,7 +1990,7 @@ int32_t  ECC_GenerateSignature_KS(CRPT_T *crpt, E_ECC_CURVE ecc_curve, char *mes
 
 
 /**
-  * @brief  ECDSA dogotal signature verification.
+  * @brief  ECDSA digital signature verification.
   * @param[in]  crpt        The pointer of CRYPTO module
   * @param[in]  ecc_curve   The pre-defined ECC curve.
   * @param[in]  message     The hash value of source context.

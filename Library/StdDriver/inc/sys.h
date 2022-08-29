@@ -7049,7 +7049,7 @@ extern int32_t g_SYS_i32ErrCode;
   *             - \ref SYS_BODCTL_BODVL_1_6V
   * @return     None
   * @details    This macro set Brown-out detector voltage level.
-  *             The write-protection function should be disabled before using this macro.
+  *             The register write-protection function should be disabled before using this macro.
   * \hideinitializer
   */
 #define SYS_SET_BOD_LEVEL(u32Level)     (SYS->BODCTL = (SYS->BODCTL & ~SYS_BODCTL_BODVL_Msk) | (u32Level))

@@ -312,7 +312,7 @@ void SYS_Init(void)
     SET_UART0_RXD_PB12();
     SET_UART0_TXD_PB13();
 
-    /* Set PA multi-function pins for USCI0_DAT0(PA.10) and USCI0_DAT1(PA.9) and USCI0_CTL1(PA.8) */
+    /* Set PA multi-function pins for USCI0_DAT0(PA.10), USCI0_DAT1(PA.9) and USCI0_CTL1(PA.8) */
     SET_USCI0_DAT0_PA10();
     SET_USCI0_DAT1_PA9();
     SET_USCI0_CTL1_PA8();

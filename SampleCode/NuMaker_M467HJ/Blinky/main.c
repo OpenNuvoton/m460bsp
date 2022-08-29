@@ -14,7 +14,7 @@
 #include "sys.h"
 
 
-#define LED_INIT()  (PH->MODE = (PH->MODE &(~(0x3ful << 4*2)) | (0x15ul << 4 *2)))
+#define LED_INIT()  (PH->MODE = ((PH->MODE &(~(0x3ful << 4*2))) | (0x15ul << 4 *2)))
 #define LED_RED     PH4
 #define LED_YELLOW  PH5
 #define LED_GREEN   PH6
