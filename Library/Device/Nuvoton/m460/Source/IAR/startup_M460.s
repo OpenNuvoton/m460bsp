@@ -102,7 +102,7 @@ __vector_table_0x1c
         DCD     USBD_IRQHandler           ; 53: USB device
         DCD     OHCI_IRQHandler           ; 54: OHCI
         DCD     USBOTG_IRQHandler         ; 55: USB OTG
-        DCD     BMC_Handler               ; 56: BMC
+        DCD     BMC_IRQHandler            ; 56: BMC
         DCD     SPI5_IRQHandler           ; 57: SPI5
         DCD     SC0_IRQHandler            ; 58: SC0
         DCD     SC1_IRQHandler            ; 59: SC1
@@ -305,7 +305,7 @@ SysTick_Handler
         PUBWEAK  USBD_IRQHandler
         PUBWEAK  OHCI_IRQHandler
         PUBWEAK  USBOTG_IRQHandler
-        PUBWEAK  BMC_Handler
+        PUBWEAK  BMC_IRQHandler
         PUBWEAK  SPI5_IRQHandler
         PUBWEAK  SC0_IRQHandler
         PUBWEAK  SC1_IRQHandler
@@ -433,7 +433,7 @@ SPI2_IRQHandler
 USBD_IRQHandler
 OHCI_IRQHandler
 USBOTG_IRQHandler
-BMC_Handler
+BMC_IRQHandler
 SPI5_IRQHandler
 SC0_IRQHandler
 SC1_IRQHandler
