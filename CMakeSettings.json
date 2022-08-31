@@ -5,8 +5,8 @@
       "generator": "Unix Makefiles",
       "configurationType": "Debug",
       "inheritEnvironments": [ "gcc-arm" ],
-      "buildRoot": "${projectDir}\\out\\build\\${name}",
-      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "buildRoot": "${projectDir}\\out\\${name}",
+      "installRoot": "${projectDir}\\out\\${name}",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
@@ -15,8 +15,7 @@
       "variables": [
         {
           "name": "CMAKE_MAKE_PROGRAM",
-          "value": "C:\\cygwin64\\bin\\make.exe",
-          "type": "UNINITIALIZED"
+          "value": "C:\\cygwin64\\bin\\make.exe"
         }
       ]
     }

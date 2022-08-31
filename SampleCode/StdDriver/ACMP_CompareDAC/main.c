@@ -42,8 +42,11 @@ void SYS_Init(void)
     /* Wait for HIRC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
-    /* Set core clock to 96MHz */
-    CLK_SetCoreClock(96000000);
+    /* Set PCLK0 and PCLK1 to HCLK/2 */
+    CLK->PCLKDIV = (CLK_PCLKDIV_APB0DIV_DIV2 | CLK_PCLKDIV_APB1DIV_DIV2);
+    
+    /* Set core clock */
+    CLK_SetCoreClock(FREQ_192MHZ);
 
     /* Enable UART0 module clock */
     CLK_EnableModuleClock(UART0_MODULE);
@@ -98,7 +101,7 @@ int32_t main(void)
     printf("The compare result reflects on ACMP1_O (PB6).\n");
 
     printf("Press any key to start ...");
-    getchar();
+    //getchar();
     printf("\n");
 
     /* Set the software trigger, enable DAC even trigger mode and enable D/A converter */

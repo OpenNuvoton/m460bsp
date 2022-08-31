@@ -17,6 +17,9 @@
   @{
 */
 
+#define WAIT_WHILE_RETURN(x, timeout, ret)   while(x){if((timeout)-- <= 0) return (ret);}
+#define WAIT_WHILE_BREAK(x, timeout, err)   while(x){if((timeout)-- <= 0){g_HBI_i32ErrCode = (err); break;}}
+
 int32_t g_HBI_i32ErrCode = 0;       /*!< HBI global error code */
 
 /** @addtogroup HBI_EXPORTED_FUNCTIONS HBI Exported Functions
@@ -25,25 +28,16 @@ int32_t g_HBI_i32ErrCode = 0;       /*!< HBI global error code */
 
 
 /**
-  * @brief      Reset HBI function
+  * @brief      Reset HBI Device
   * @return     None
   * @note       This function sets g_HBI_i32ErrCode to HBI_ERR_TIMEOUT if waiting Hyper RAM time-out.
   */
-void HBI_ResetHyperRAM(void)
+void HBI_Reset(void)
 {
     int32_t i32TimeOutCnt = HBI_TIMEOUT;
 
     HBI->CMD = HBI_CMD_RESET_HRAM;
-
-    g_HBI_i32ErrCode = 0;
-    while(HBI->CMD != HBI_CMD_HRAM_IDLE)
-    {
-        if( i32TimeOutCnt-- <= 0)
-        {
-            g_HBI_i32ErrCode = HBI_ERR_TIMEOUT;
-            break;
-        }
-    }
+    WAIT_WHILE_BREAK(HBI->CMD != HBI_CMD_HRAM_IDLE, i32TimeOutCnt, HBI_ERR_TIMEOUT);
 }
 
 /**
@@ -56,16 +50,7 @@ void HBI_ExitHSAndDPD(void)
     int32_t i32TimeOutCnt = HBI_TIMEOUT;
 
     HBI->CMD = HBI_CMD_EXIT_HS_PD;
-
-    g_HBI_i32ErrCode = 0;
-    while(HBI->CMD != HBI_CMD_HRAM_IDLE)
-    {
-        if( i32TimeOutCnt-- <= 0)
-        {
-            g_HBI_i32ErrCode = HBI_ERR_TIMEOUT;
-            break;
-        }
-    }
+    WAIT_WHILE_BREAK(HBI->CMD != HBI_CMD_HRAM_IDLE, i32TimeOutCnt, HBI_ERR_TIMEOUT);
 }
 
 /**
@@ -87,15 +72,8 @@ int32_t HBI_ReadHyperRAMReg(uint32_t u32Addr)
     {
         HBI->ADR = u32Addr;
         HBI->CMD = HBI_CMD_READ_HRAM_REGISTER;
-
-        while(HBI->CMD != HBI_CMD_HRAM_IDLE)
-        {
-            if( i32TimeOutCnt-- <= 0)
-            {
-                return HBI_ERR_TIMEOUT;
-            }
-        }
-        return HBI->RDATA;
+        WAIT_WHILE_RETURN(HBI->CMD != HBI_CMD_HRAM_IDLE, i32TimeOutCnt, HBI_ERR_TIMEOUT);
+        return *((uint16_t *)&HBI->RDATA);
     }
     else
     {
@@ -124,14 +102,7 @@ int32_t HBI_WriteHyperRAMReg(uint32_t u32Addr, uint32_t u32Value)
         HBI->ADR = u32Addr;
         HBI->WDATA = u32Value;
         HBI->CMD = HBI_CMD_WRITE_HRAM_REGISTER;
-
-        while(HBI->CMD != HBI_CMD_HRAM_IDLE)
-        {
-            if( i32TimeOutCnt-- <= 0)
-            {
-                return HBI_ERR_TIMEOUT;
-            }
-        }
+        WAIT_WHILE_RETURN(HBI->CMD != HBI_CMD_HRAM_IDLE, i32TimeOutCnt, HBI_ERR_TIMEOUT);
         return 0;
     }
     else
@@ -141,51 +112,43 @@ int32_t HBI_WriteHyperRAMReg(uint32_t u32Addr, uint32_t u32Value)
 }
 
 /**
-  * @brief      Read 1 word from HyperRAM space
+  * @brief      Read 2 Bytes from HyperRAM space
   * @param[in]  u32Addr  Address of HyperRAM space
   * @return     The 16 bit data of HyperRAM space.
   * @note       This function sets g_HBI_i32ErrCode to HBI_ERR_TIMEOUT if waiting Hyper RAM time-out.
   */
-uint32_t HBI_Read1Word(uint32_t u32Addr)
+uint32_t HBI_Read2Byte(uint32_t u32Addr)
 {
     int32_t i32TimeOutCnt = HBI_TIMEOUT;
 
-    HBI->ADR = u32Addr;
-    HBI->CMD = HBI_CMD_READ_HRAM_1_WORD;
-
-    g_HBI_i32ErrCode = 0;
-    while(HBI->CMD != HBI_CMD_HRAM_IDLE)
+    if(u32Addr & 0x1)
     {
-        if( i32TimeOutCnt-- <= 0)
-        {
-            g_HBI_i32ErrCode = HBI_ERR_TIMEOUT;
-            break;
-        }
+        g_HBI_i32ErrCode = HBI_ERR_ALIGN;
     }
-    return HBI->RDATA;
+
+    HBI->ADR = u32Addr;
+    HBI->CMD = HBI_CMD_READ_HRAM_2_BYTE;
+    WAIT_WHILE_BREAK(HBI->CMD != HBI_CMD_HRAM_IDLE, i32TimeOutCnt, HBI_ERR_TIMEOUT);
+    return *((uint16_t *)&HBI->RDATA);
 }
 
 /**
-  * @brief      Read 2 word from HyperRAM space
+  * @brief      Read 4 bytes from HyperRAM space
   * @param[in]  u32Addr  Address of HyperRAM space
   * @return     The 32bit data of HyperRAM space.
   */
-uint32_t HBI_Read2Word(uint32_t u32Addr)
+uint32_t HBI_Read4Byte(uint32_t u32Addr)
 {
     int32_t i32TimeOutCnt = HBI_TIMEOUT;
 
-    HBI->ADR = u32Addr;
-    HBI->CMD = HBI_CMD_READ_HRAM_2_WORD;
-
-    g_HBI_i32ErrCode = 0;
-    while(HBI->CMD != HBI_CMD_HRAM_IDLE)
+    if(u32Addr & 0x3)
     {
-        if( i32TimeOutCnt-- <= 0)
-        {
-            g_HBI_i32ErrCode = HBI_ERR_TIMEOUT;
-            break;
-        }
+        g_HBI_i32ErrCode = HBI_ERR_ALIGN;
     }
+
+    HBI->ADR = u32Addr;
+    HBI->CMD = HBI_CMD_READ_HRAM_4_BYTE;
+    WAIT_WHILE_BREAK(HBI->CMD != HBI_CMD_HRAM_IDLE, i32TimeOutCnt, HBI_ERR_TIMEOUT);
     return HBI->RDATA;
 }
 
@@ -203,16 +166,7 @@ void HBI_Write1Byte(uint32_t u32Addr, uint8_t u8Data)
     HBI->ADR = u32Addr;
     HBI->WDATA = u8Data;
     HBI->CMD = HBI_CMD_WRITE_HRAM_1_BYTE;
-
-    g_HBI_i32ErrCode = 0;
-    while(HBI->CMD != HBI_CMD_HRAM_IDLE)
-    {
-        if( i32TimeOutCnt-- <= 0)
-        {
-            g_HBI_i32ErrCode = HBI_ERR_TIMEOUT;
-            break;
-        }
-    }
+    WAIT_WHILE_BREAK(HBI->CMD != HBI_CMD_HRAM_IDLE, i32TimeOutCnt, HBI_ERR_TIMEOUT);
 }
 
 /**
@@ -226,19 +180,15 @@ void HBI_Write2Byte(uint32_t u32Addr, uint16_t u16Data)
 {
     int32_t i32TimeOutCnt = HBI_TIMEOUT;
 
+    if(u32Addr & 0x1)
+    {
+        g_HBI_i32ErrCode = HBI_ERR_ALIGN;
+    }
+
     HBI->ADR = u32Addr;
     HBI->WDATA = u16Data;
     HBI->CMD = HBI_CMD_WRITE_HRAM_2_BYTE;
-
-    g_HBI_i32ErrCode = 0;
-    while(HBI->CMD != HBI_CMD_HRAM_IDLE)
-    {
-        if( i32TimeOutCnt-- <= 0)
-        {
-            g_HBI_i32ErrCode = HBI_ERR_TIMEOUT;
-            break;
-        }
-    }
+    WAIT_WHILE_BREAK(HBI->CMD != HBI_CMD_HRAM_IDLE, i32TimeOutCnt, HBI_ERR_TIMEOUT);
 }
 
 /**
@@ -255,16 +205,7 @@ void HBI_Write3Byte(uint32_t u32Addr, uint32_t u32Data)
     HBI->ADR = u32Addr;
     HBI->WDATA = u32Data;
     HBI->CMD = HBI_CMD_WRITE_HRAM_3_BYTE;
-
-    g_HBI_i32ErrCode = 0;
-    while(HBI->CMD != HBI_CMD_HRAM_IDLE)
-    {
-        if( i32TimeOutCnt-- <= 0)
-        {
-            g_HBI_i32ErrCode = HBI_ERR_TIMEOUT;
-            break;
-        }
-    }
+    WAIT_WHILE_BREAK(HBI->CMD != HBI_CMD_HRAM_IDLE, i32TimeOutCnt, HBI_ERR_TIMEOUT);
 }
 
 /**
@@ -277,20 +218,15 @@ void HBI_Write3Byte(uint32_t u32Addr, uint32_t u32Data)
 void HBI_Write4Byte(uint32_t u32Addr, uint32_t u32Data)
 {
     int32_t i32TimeOutCnt = HBI_TIMEOUT;
+    if(u32Addr & 0x3)
+    {
+        g_HBI_i32ErrCode = HBI_ERR_ALIGN;
+    }
 
     HBI->ADR = u32Addr;
     HBI->WDATA = u32Data;
     HBI->CMD = HBI_CMD_WRITE_HRAM_4_BYTE;
-
-    g_HBI_i32ErrCode = 0;
-    while(HBI->CMD != HBI_CMD_HRAM_IDLE)
-    {
-        if( i32TimeOutCnt-- <= 0)
-        {
-            g_HBI_i32ErrCode = HBI_ERR_TIMEOUT;
-            break;
-        }
-    }
+    WAIT_WHILE_BREAK(HBI->CMD != HBI_CMD_HRAM_IDLE, i32TimeOutCnt, HBI_ERR_TIMEOUT);
 }
 
 

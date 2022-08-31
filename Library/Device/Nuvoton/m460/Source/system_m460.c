@@ -110,6 +110,8 @@ void SystemInit (void)
     SET_HBI_nCK_PC5();
 
     /* Slew rate control. PC0-5, PG9-15 */
+    CLK->AHBCLK0 |= CLK_AHBCLK0_GPCCKEN_Msk | CLK_AHBCLK0_GPGCKEN_Msk;
+    
     PC->SLEWCTL = 0xaaa;
     PG->SLEWCTL = 0xaaa80000;
 
@@ -131,6 +133,9 @@ void SystemInit (void)
     SET_HBI_nCK_PH12();
 
     /* Slew rate control. PD5-7, PJ2-7, PH12-15 */
+    CLK->AHBCLK0 |= CLK_AHBCLK0_GPDCKEN_Msk | CLK_AHBCLK0_GPHCKEN_Msk;
+    CLK->AHBCLK1 |= CLK_AHBCLK1_GPJCKEN_Msk;
+    
     PD->SLEWCTL = 0xa800;
     PJ->SLEWCTL = 0xaaa0;
     PH->SLEWCTL = 0xaa000000;

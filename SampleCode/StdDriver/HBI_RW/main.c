@@ -101,7 +101,7 @@ static int32_t ClearHyperRAM(uint32_t u32StartAddr, uint32_t u32EndAddr)
         {
             return -1;
         }
-        u32Data = HBI_Read2Word(i);
+        u32Data = HBI_Read4Byte(i);
         if(u32Data != 0)
         {
             printf("ClearHyperRAM fail!! Read address:0x%08x  data::0x%08x  expect: 0\n",  i, u32Data);
@@ -167,7 +167,7 @@ int main()
         /* Read 4 Byte pattern to check */
         for(i = u32StartAddr; i < u32EndAddr; i+=4)
         {
-            u32Data = HBI_Read2Word(i);
+            u32Data = HBI_Read4Byte(i);
             if(u32Data != u32BitPattern)
             {
                 printf("line(%d) [FAIL] Read address:0x%08x  data::0x%08x  expect:0x%08x \n", __LINE__,i,  u32Data, u32BitPattern);
@@ -190,7 +190,7 @@ int main()
         /* Read 3 Byte pattern to check */
         for(i = u32StartAddr; i < u32EndAddr; i+=4)
         {
-            u32Data = HBI_Read2Word(i);
+            u32Data = HBI_Read4Byte(i);
 
             if(u32Data != u24BitPattern)
             {
@@ -214,7 +214,7 @@ int main()
         /* Read 2 Byte pattern to check */
         for(i = u32StartAddr; i < u32EndAddr; i+=2)
         {
-            u32Data = HBI_Read1Word(i);
+            u32Data = HBI_Read2Byte(i);
 
             if(u32Data != u16BitPattern)
             {
@@ -238,7 +238,7 @@ int main()
         /* Read 1 Byte pattern to check */
         for(i = u32StartAddr; i < u32EndAddr; i+=2)
         {
-            u32Data = HBI_Read1Word(i);
+            u32Data = HBI_Read2Byte(i);
             if(u32Data != (u8BitPattern<<8|u8BitPattern))
             {
                 printf("line(%d) [FAIL] Read address:0x%08x  data::0x%08x  expect:0x%08x \n", __LINE__,i,  u32Data,  (u8BitPattern<<8|u8BitPattern));
