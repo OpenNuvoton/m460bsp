@@ -122,7 +122,7 @@ __Vectors:
 	.long	USBD_IRQHandler       /* 53: USBD                       */
 	.long	OHCI_IRQHandler       /* 54: OHCI                       */
 	.long	USBOTG_IRQHandler     /* 55: OTG                        */
-	.long	BMC_Handler           /* 56: BMC                        */
+	.long	BMC_IRQHandler        /* 56: BMC                        */
 	.long	SPI5_IRQHandler       /* 57: SPI5                       */
 	.long	SC0_IRQHandler        /* 58: SC0                        */
 	.long	SC1_IRQHandler        /* 59: SC1                        */
@@ -479,7 +479,7 @@ Default_Handler:
 	def_irq_handler	USBD_IRQHandler
 	def_irq_handler	OHCI_IRQHandler
 	def_irq_handler	USBOTG_IRQHandler
-	def_irq_handler	BMC_Handler
+	def_irq_handler	BMC_IRQHandler
 	def_irq_handler	SPI5_IRQHandler
 	def_irq_handler	SC0_IRQHandler
 	def_irq_handler	SC1_IRQHandler
