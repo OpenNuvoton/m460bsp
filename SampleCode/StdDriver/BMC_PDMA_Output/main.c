@@ -67,9 +67,6 @@ void SYS_Init(void)
 
     /* Enable BMC I/O schmitt trigger */
     PB->SMTEN |= GPIO_SMTEN_SMTEN2_Msk | GPIO_SMTEN_SMTEN3_Msk | GPIO_SMTEN_SMTEN4_Msk | GPIO_SMTEN_SMTEN5_Msk;
-
-    /* Enable BMC I/O high slew rate */
-    GPIO_SetSlewCtl(PB, 0x3C, GPIO_SLEWCTL_HIGH);
 }
 
 void BMC_Init(void)

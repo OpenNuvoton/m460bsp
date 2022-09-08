@@ -11,7 +11,6 @@
 #include "hid_mouse.h"
 
 static uint8_t volatile s_u8RemouteWakeup = 0;
-int IsDebugFifoEmpty(void);
 
 /*--------------------------------------------------------------------------*/
 void SYS_Init(void)
@@ -96,11 +95,6 @@ void PowerDown(void)
     /* Unlock protected registers */
     SYS_UnlockReg();
 
-    printf("Enter power down ...\n");
-    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while(!IsDebugFifoEmpty())
-        if(--u32TimeOutCnt == 0) break;
-
     /* Wakeup Enable */
     HSUSBD->PHYCTL |= HSUSBD_PHYCTL_VBUSWKEN_Msk | HSUSBD_PHYCTL_LINESTATEWKEN_Msk;
 
@@ -122,10 +116,7 @@ void PowerDown(void)
         /* Generate resume */
         HSUSBD->OPER |= HSUSBD_OPER_RESUMEEN_Msk;
         s_u8RemouteWakeup = 0;
-        printf("Remote Wakeup!!\n");
     }
-
-    printf("device wakeup!\n");
 
     /* Lock protected registers */
     SYS_LockReg();
