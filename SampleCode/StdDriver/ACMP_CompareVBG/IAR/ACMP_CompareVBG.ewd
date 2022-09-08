@@ -44,7 +44,7 @@
                 </option>
                 <option>
                     <name>MemFile</name>
-                    <state>$TOOLKIT_DIR$\CONFIG\debugger\Nuvoton\iom2354ae.ddf</state>
+                    <state>$TOOLKIT_DIR$\CONFIG\debugger\Nuvoton\iom460.ddf</state>
                 </option>
                 <option>
                     <name>RunToEnable</name>
@@ -112,7 +112,7 @@
                 </option>
                 <option>
                     <name>FlashLoadersV3</name>
-                    <state>D:\Software\UART\ttpro313\ttermpro.exe /c=1 /baud=115200</state>
+                    <state>$TOOLKIT_DIR$\config\flashloader\Nuvoton\M460_APROM_1M.board</state>
                 </option>
                 <option>
                     <name>OCImagesSuppressCheck1</name>
