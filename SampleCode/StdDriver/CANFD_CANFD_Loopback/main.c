@@ -132,7 +132,7 @@ void CANFD_CANFD_TxRx_Test(CANFD_FD_MSG_T *psTxMsg, E_CANFD_ID_TYPE eFrameIdType
     /* Wait the Rx FIFO1 received message */
     while (!g_u8RxFIFO1CompleteFlag)
     {
-        if(--u32TimeOutCnt == 0)
+        if (--u32TimeOutCnt == 0)
         {
             printf("Wait for CANFD Rx FIFO1 received message time-out!\n");
             return;
@@ -164,6 +164,7 @@ void CANFD_CANFD_Loopback(void)
     sCANFD_Config.sBtConfig.sNormBitRate.u32BitRate = 1000000;
     sCANFD_Config.sBtConfig.sDataBitRate.u32BitRate = 4000000;
     CANFD_Open(CANFD0, &sCANFD_Config);
+    NVIC_EnableIRQ(CANFD00_IRQn);
 
     /* receive 0x110~0x11F in CAN FD0 rx fifo1 buffer by setting mask 0 */
     CANFD_SetSIDFltr(CANFD0, 0, CANFD_RX_FIFO1_STD_MASK(0x110, 0x7F0));
@@ -200,6 +201,9 @@ void CANFD_CANFD_Loopback(void)
 
     CANFD_CANFD_TxRx_Test(&g_sTxMsgFrame, eCANFD_XID, 0x3333, 7);
     CANFD_CANFD_TxRx_Test(&g_sTxMsgFrame, eCANFD_XID, 0x44444, 7);
+
+    NVIC_DisableIRQ(CANFD00_IRQn);
+    CANFD_Close(CANFD0);
 }
 
 void UART0_Init(void)

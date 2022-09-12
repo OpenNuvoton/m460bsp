@@ -98,6 +98,7 @@ void CANFD_Init(void)
     sCANFD_Config.sBtConfig.sDataBitRate.u32BitRate = 4000000;
     /*Open the CAN FD0 feature*/
     CANFD_Open(CANFD0, &sCANFD_Config);
+    NVIC_EnableIRQ(CANFD00_IRQn);
 
     /* receive 0x110 in CAN FD0 rx message buffer 0 by setting mask 0 */
     CANFD_SetSIDFltr(CANFD0, 0, CANFD_RX_BUFFER_STD(0x111, 0));
@@ -116,6 +117,14 @@ void CANFD_Init(void)
     CANFD_RunToNormal(CANFD0, TRUE);
 }
 
+/*---------------------------------------------------------------------------------------------------------*/
+/*                                    Fini CAN FD0                                                         */
+/*---------------------------------------------------------------------------------------------------------*/
+void CANFD_Fini(void)
+{
+    NVIC_DisableIRQ(CANFD00_IRQn);
+    CANFD_Close(CANFD0);
+}
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  CAN FD Function Test                                                                                    */
@@ -300,10 +309,14 @@ void CANFD_TxRxTest(void)
                 u8RxTestNum++;
 
             }
-        } while (u8RxTestNum < 6);
+        }
+        while (u8RxTestNum < 6);
 
         printf("\n Receive OK & Check OK\n");
     }
+
+    /* CAN FD interface finalization */
+    CANFD_Fini();
 }
 
 void UART0_Init(void)
