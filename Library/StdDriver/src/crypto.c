@@ -100,6 +100,7 @@ int32_t PRNG_Start(CRPT_T *crpt)
 {
     int32_t i32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
 
+    crpt->PRNG_CTL = (crpt->PRNG_CTL & (~CRPT_PRNG_CTL_SEEDRLD_Msk));
     crpt->PRNG_CTL |= CRPT_PRNG_CTL_START_Msk;
 
     /* Waiting for PRNG Busy */
