@@ -16,7 +16,7 @@
 
 
 #define PLL_CLOCK               200000000
-#define nRTSPin                 (PE12)
+#define nRTSPin                 (PA0)
 #define REVEIVE_MODE            (0)
 #define TRANSMIT_MODE           (1)
 
@@ -91,24 +91,24 @@ int32_t SYS_Init(void)
     SystemCoreClock = 200000000;
     CyclesPerUs     = SystemCoreClock / 1000000;  /* For CLK_SysTickDelay() */
 
-    /* Enable GPIO port E module clock */
-    CLK->AHBCLK0 |= CLK_AHBCLK0_GPECKEN_Msk;
+    /* Enable GPIO port A module clock */
+    CLK->AHBCLK0 |= CLK_AHBCLK0_GPACKEN_Msk;
 
     /* Enable UART1 module clock */
     CLK->APBCLK0 |= CLK_APBCLK0_UART1CKEN_Msk;
 
     /* Select UART1 module clock source as HIRC */
-    CLK->CLKSEL2 = (CLK->CLKSEL2 & (~CLK_CLKSEL1_UART1SEL_Msk)) | CLK_CLKSEL1_UART1SEL_HIRC;
+    CLK->CLKSEL1 = (CLK->CLKSEL1 & (~CLK_CLKSEL1_UART1SEL_Msk)) | CLK_CLKSEL1_UART1SEL_HIRC;
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
 
     /* Set multi-function pins for UART1 RXD and TXD */
-    PE->MODE = (PE->MODE & (~GPIO_MODE_MODE12_Msk)) | (GPIO_MODE_OUTPUT << GPIO_MODE_MODE12_Pos);
+    PA->MODE = (PA->MODE & (~GPIO_MODE_MODE0_Msk)) | (GPIO_MODE_OUTPUT << GPIO_MODE_MODE0_Pos);
     nRTSPin = REVEIVE_MODE;
-    SET_UART1_RXD_PC8();
-    SET_UART1_TXD_PE13();
+    SET_UART1_RXD_PA2();
+    SET_UART1_TXD_PA3();
 
     return 0;
 }

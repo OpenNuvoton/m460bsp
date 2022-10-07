@@ -143,7 +143,7 @@ void USCI_AutoBaudRate_Test(void)
     printf("|  ______                                             _____  |\n");
     printf("| |      |                                           |     | |\n");
     printf("| |Master|                                           |Slave| |\n");
-    printf("| |    TX|--USCI0_DAT1(PA.10) <==> USCI0_DAT0(PA.9)--|RX   | |\n");
+    printf("| |    TX|--USCI0_DAT1(PA.9) <==> USCI0_DAT0(PA.10)--|RX   | |\n");
     printf("| |______|                                           |_____| |\n");
     printf("|                                                            |\n");
     printf("+------------------------------------------------------------+\n");
