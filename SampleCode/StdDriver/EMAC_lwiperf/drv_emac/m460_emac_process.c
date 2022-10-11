@@ -43,29 +43,32 @@ void EMAC0_IRQHandler(void)
 }
 
 uint32_t EMAC_ReceivePkt(struct sk_buff *prskb)
-{
-    prskb->rdy = 0;
+{    
+    synopGMAC0_intr_handler(prskb);
     
-    synopGMAC0_intr_handler();
-    
-    return prskb->rdy;
+    return prskb->len;
 }
 
 int32_t EMAC_TransmitPkt(struct sk_buff *ptskb, uint8_t *pbuf, uint32_t len)
 {
     struct sk_buff *tskb;
+#if (LWIP_USING_HW_CHECKSUM == 1)
+    u32 offload_needed = 1;
+#else
+    u32 offload_needed = 0;
+#endif    
 
     if(ptskb == NULL)
     {
         tskb = &txbuf[0];
 
         tskb->len = len;
-        memcpy((uint8_t *)((u64)(tskb->data)), pbuf, len);
-        return synopGMAC_xmit_frames(tskb, 0, 0, 0);
+        memcpy((uint8_t *)((u32)(tskb->data)), pbuf, len);
+        return synopGMAC_xmit_frames(tskb, 0, offload_needed, 0);
     }
     else
     {
         ptskb->len = len;
-        return synopGMAC_xmit_frames(ptskb, 0, 0, 0);
+        return synopGMAC_xmit_frames(ptskb, 0, offload_needed, 0);
     }
 }
