@@ -72,7 +72,7 @@ void TIMER0_Init(void)
     CLK_EnableModuleClock(TMR0_MODULE);
 
     // Select module clock source
-    CLK_SetModuleClock(TMR0_MODULE, CLK_CLKSEL1_TMR0SEL_HXT, 0);
+    CLK_SetModuleClock(TMR0_MODULE, CLK_CLKSEL1_TMR0SEL_HIRC, 0);
 
     // Set timer frequency to 100HZ
     TIMER_Open(TIMER0, TIMER_PERIODIC_MODE, 100);
@@ -83,6 +83,20 @@ void TIMER0_Init(void)
 
     // Start Timer 0
     TIMER_Start(TIMER0);
+}
+
+void TIMER1_Init(void)
+{
+    CLK_EnableModuleClock(TMR1_MODULE);
+
+    // Select module clock source
+    CLK_SetModuleClock(TMR1_MODULE, CLK_CLKSEL1_TMR1SEL_HIRC, 0);
+
+    // Set timer frequency to 1HZ
+    TIMER_Open(TIMER1, TIMER_PERIODIC_MODE, 1);
+
+    // Start Timer 1
+    TIMER_Start(TIMER1);
 }
 
 void SYS_Init(void)
@@ -143,8 +157,11 @@ int main(void)
     /* Init UART for printf */
     UART_Init();
     
-    /* Timer interrupt interval is 10ms */
+    /* Timer0 interrupt interval is 10ms */
     TIMER0_Init();
+    
+    /* Timer1 interval is 1000ms */
+    TIMER1_Init();
 
     printf("M460 LwIP sample code start (HCLK %d Hz)\n", SystemCoreClock);
     
@@ -169,8 +186,13 @@ int main(void)
     {
         struct pbuf* p;
         
-        /* Only enable under the circumstance cable may be plug/unplug */
-        mii_link_monitor(g_gmacdev);        
+        /* Check mii link status per second */
+        if (TIMER1->INTSTS != 0)
+        {
+            TIMER1->INTSTS = TIMER1->INTSTS;            
+            /* Only enable under the circumstance cable may be plug/unplug */
+            mii_link_monitor(g_gmacdev);        
+        }
 
         /* Check for received frames, feed them to lwIP */
         __disable_irq();
@@ -183,6 +205,7 @@ int main(void)
                 pbuf_free(p);
             }
         }
+        
         /* Cyclic lwIP timers check */
         sys_check_timeouts();
     }

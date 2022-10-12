@@ -54,8 +54,7 @@ typedef unsigned char   u8;         ///< Define 8-bit unsigned data type
 typedef unsigned short  u16;        ///< Define 16-bit unsigned data type
 typedef unsigned int    u32;        ///< Define 32-bit unsigned data type
 typedef signed   int    s32;        ///< Define 32-bit signed data type
-//typedef unsigned long long u64;
-typedef unsigned int    u64;
+
 
 
 typedef int bool;
@@ -71,10 +70,6 @@ enum synopGMAC_boolean {
  *
  */
 
-#define LE32_TO_CPU __le32_to_cpu
-#define BE32_TO_CPU __be32_to_cpu
-#define CPU_TO_LE32 __cpu_to_le32
-
 /* Error Codes */
 #define ESYNOPGMACNOERR   0
 #define ESYNOPGMACNOMEM   1
@@ -88,7 +83,6 @@ enum synopGMAC_boolean {
 
 extern void   plat_delay(uint32_t ticks);
 
-
 /**
  * The Low level function to read register contents from Hardware.
  *
@@ -98,11 +92,9 @@ extern void   plat_delay(uint32_t ticks);
  */
 static u32 __INLINE synopGMACReadReg(u32 *RegBase, u32 RegOffset)
 {
-
-    u64 addr = (u64)RegBase + RegOffset;
+    u32 addr = (u32)RegBase + RegOffset;
     u32 data = inp32((void *)addr);
     return data;
-
 }
 
 /**
@@ -115,10 +107,10 @@ static u32 __INLINE synopGMACReadReg(u32 *RegBase, u32 RegOffset)
  */
 static void  __INLINE synopGMACWriteReg(u32 *RegBase, u32 RegOffset, u32 RegData)
 {
-
-    u64 addr = (u64)RegBase + RegOffset;
+    u32 addr = (u32)RegBase + RegOffset;
     if(RegOffset == 0) // add 1us delay if minimum ECLK is 2.5MHz for write MAC configuration register
         plat_delay(1);
+    
     outp32((void *)addr, RegData);
     return;
 }
@@ -133,15 +125,13 @@ static void  __INLINE synopGMACWriteReg(u32 *RegBase, u32 RegOffset, u32 RegData
  */
 static void __INLINE synopGMACSetBits(u32 *RegBase, u32 RegOffset, u32 BitPos)
 {
-    u64 addr = (u64)RegBase + RegOffset;
+    u32 addr = (u32)RegBase + RegOffset;
     u32 data = inp32((void *)addr);
     data |= BitPos;
 
     outp32((void *)addr, data);
-
     return;
 }
-
 
 /**
  * The Low level function to clear bits of a register in Hardware.
@@ -153,7 +143,7 @@ static void __INLINE synopGMACSetBits(u32 *RegBase, u32 RegOffset, u32 BitPos)
  */
 static void __INLINE synopGMACClearBits(u32 *RegBase, u32 RegOffset, u32 BitPos)
 {
-    u64 addr = (u64)RegBase + RegOffset;
+    u32 addr = (u32)RegBase + RegOffset;
     u32 data = inp32((void *)addr);
     data &= (~BitPos);
 
@@ -172,13 +162,13 @@ static void __INLINE synopGMACClearBits(u32 *RegBase, u32 RegOffset, u32 BitPos)
  */
 static bool __INLINE synopGMACCheckBits(u32 *RegBase, u32 RegOffset, u32 BitPos)
 {
-    u64 addr = (u64)RegBase + RegOffset;
+    u32 addr = (u32)RegBase + RegOffset;
     u32 data = inp32((void *)addr);
     data &= BitPos;
-    if(data)  return true;
-    else        return false;
-
+    if(data)  
+        return true;
+    else
+        return false;
 }
-
 
 #endif

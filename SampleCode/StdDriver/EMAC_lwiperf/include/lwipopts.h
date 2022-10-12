@@ -49,6 +49,32 @@
 #define LWIP_SOCKET_SET_ERRNO           0
 #define LWIP_NETCONN                    0
 #define LWIP_SOCKET                     0
+    
 
+/* TCP Maximum segment size. */
+#define TCP_MSS                         1460
+
+#define MEMP_NUM_NETCONN                8
+#define MEM_SIZE                        1600
+#define MEMP_NUM_PBUF                   32
+#define PBUF_POOL_SIZE                  64
+#define TCP_WND                         40960 //Max: 65535
+#define TCP_SND_BUF                     8192
+#define TCP_SND_QUEUELEN                (4 * TCP_SND_BUF/TCP_MSS)
+#define MEMP_NUM_TCP_SEG                64
+
+
+#define LWIP_USING_HW_CHECKSUM          1
+/* ---------- Checksum options ---------- */
+#if (LWIP_USING_HW_CHECKSUM == 1)
+#define CHECKSUM_GEN_IP                 0
+#define CHECKSUM_GEN_UDP                0
+#define CHECKSUM_GEN_TCP                0
+#define CHECKSUM_GEN_ICMP               0
+#define CHECKSUM_CHECK_IP               0
+#define CHECKSUM_CHECK_UDP              0
+#define CHECKSUM_CHECK_TCP              0
+#define CHECKSUM_CHECK_ICMP             0
+#endif
 
 #endif /* __LWIPOPTS_H__ */

@@ -49,12 +49,12 @@ s32 synopGMAC_close(int intf);
 s32 synopGMAC_xmit_frames(struct sk_buff *, int intf, u32 offload_needed, u32 ts);
 void synopGMAC_set_multicast_list(int intf);
 s32 synopGMAC_set_mac_address(int intf, u8*);
-s32 synopGMAC_change_mtu(int intf,s32);
+s32 synopGMAC_change_mtu(int intf, s32);
 void synop_handle_transmit_over(int intf);
-void synop_handle_received_data(int intf);
+void synop_handle_received_data(int intf, struct sk_buff *prskb);
 void synopGMAC_set_mode(int intf, int mode);
-void synopGMAC0_intr_handler(void);
-s32 synopGMAC_setup_tx_desc_queue(synopGMACdevice * gmacdev,u32 no_of_desc, u32 desc_mode);
-s32 synopGMAC_setup_rx_desc_queue(synopGMACdevice * gmacdev,u32 no_of_desc, u32 desc_mode);
+void synopGMAC0_intr_handler(struct sk_buff *prskb);
+s32 synopGMAC_setup_tx_desc_queue(synopGMACdevice *gmacdev, u32 no_of_desc, u32 desc_mode);
+s32 synopGMAC_setup_rx_desc_queue(synopGMACdevice *gmacdev, u32 no_of_desc, u32 desc_mode);
 
 #endif /* End of file */

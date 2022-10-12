@@ -9,6 +9,8 @@
 #include "m460_emac.h"
 #include "m460_mii.h"
 
+#include "lwip/apps/lwiperf.h"
+
 #define printf(...)     do { }while(0)
 
 
@@ -104,14 +106,16 @@ static int32_t M460_EMAC_open(int intf, uint8_t *macaddr)
 
     synopGMAC_pause_control(g_gmacdev); // This enables the pause control in Full duplex mode of operation
 
-    /* IPC Checksum offloading is enabled for this driver. Should only be used if Full Ip checksumm offload engine is configured in the hardware */
-    synopGMAC_enable_rx_chksum_offload(g_gmacdev);    // Enable the offload engine in the receive path
+#if (LWIP_USING_HW_CHECKSUM == 1)
+    /*IPC Checksum offloading is enabled for this driver. Should only be used if Full Ip checksumm offload engine is configured in the hardware*/
+    synopGMAC_enable_rx_chksum_offload(g_gmacdev);    //Enable the offload engine in the receive path
     synopGMAC_rx_tcpip_chksum_drop_enable(g_gmacdev); // This is default configuration, DMA drops the packets if error in encapsulated ethernet payload
+#endif
 
     for(i=0; i<RECEIVE_DESC_SIZE; i ++) 
     {
         skb = &sRxBuf[intf][i];
-        synopGMAC_set_rx_qptr(g_gmacdev, (u32)((u64)(skb->data) & 0xFFFFFFFF), sizeof(skb->data), (u32)((u64)skb & 0xFFFFFFFF));
+        synopGMAC_set_rx_qptr(g_gmacdev, (u32)((u32)(skb->data) & 0xFFFFFFFF), sizeof(skb->data), (u32)((u32)skb & 0xFFFFFFFF));
     }
 
     /* Enable interrupt */
