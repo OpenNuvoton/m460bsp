@@ -57,7 +57,7 @@
 		<link>
 			<name>Library/Library/i2c.c</name>
 			<type>1</type>
-			<location>D:/MCU/M460/m460bsp/Library/StdDriver/src/i2c.c</location>
+			<location>PARENT-4-PROJECT_LOC/Library/StdDriver/src/i2c.c</location>
 		</link>
 	</linkedResources>
 	<filteredResources>
