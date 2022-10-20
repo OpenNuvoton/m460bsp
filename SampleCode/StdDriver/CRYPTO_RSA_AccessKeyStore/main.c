@@ -141,7 +141,7 @@ void EraseAllFlashKey(void)
 
     /* Erase all keys in FLASH of key store */
     i32Ret = KS_EraseAll(KS_FLASH);
-    if(i32Ret == -1)
+    if(i32Ret < 0)
     {
         printf("\nErase all keys in FLASH of key store is failed!\n");
     }
