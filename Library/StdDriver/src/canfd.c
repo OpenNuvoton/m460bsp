@@ -563,7 +563,7 @@ static uint32_t CANFD_CalculateTimingValues(CANFD_T *psCanfd, uint32_t u32Nomina
                 else
                 {
                     psConfig->u8DataPrescaler = 0;
-                    CANFD_GetSegments(u32NominalBaudRate, 0, 0, 0, psConfig);
+                    CANFD_GetSegments(u32NominalBaudRate, 0, i32Ntq, 0, psConfig);
                     return TRUE;
                 }
             }
