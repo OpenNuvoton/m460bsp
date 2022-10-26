@@ -159,13 +159,8 @@ int32_t main(void)
     /* Init I2C2 to access codec */
     I2C2_Init();
 
-#ifdef INPUT_IS_LIN
     /* Open I2S0 interface and set to slave mode, stereo channel, I2S format */
     I2S_Open(I2S0, I2S_MODE_SLAVE, 48000, I2S_DATABIT_16, I2S_STEREO, I2S_FORMAT_I2S);
-#else
-    /* Open I2S0 interface and set to slave mode, mono channel, I2S format */
-    I2S_Open(I2S0, I2S_MODE_SLAVE, 48000, I2S_DATABIT_16, I2S_MONO, I2S_FORMAT_I2S);
-#endif
 
     /* Select source from HIRC(12MHz) */
     CLK_SetModuleClock(I2S0_MODULE, CLK_CLKSEL3_I2S0SEL_HIRC, 0);
@@ -177,11 +172,6 @@ int32_t main(void)
 
     /* Set MCLK and enable MCLK */
     I2S_EnableMCLK(I2S0, 12000000);
-
-#ifndef INPUT_IS_LIN
-    /* NAU8822 will store data in left channel */
-    I2S_SET_MONO_RX_CHANNEL(I2S0, I2S_MONO_LEFT);
-#endif
 
 #if NAU8822
     NAU8822_Setup();

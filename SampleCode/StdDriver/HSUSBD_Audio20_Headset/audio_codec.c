@@ -132,7 +132,7 @@ void NAU8822_ConfigSampleRate(uint32_t u32SampleRate)
 
         case 96000:
             I2C_WriteNAU8822(6, 0x109);    /* Divide by 1, 96K */
-            I2C_WriteNAU8822(72, 0x027);
+            I2C_WriteNAU8822(72, 0x013);
             HSUSBD_SET_MAX_PAYLOAD(EPA, 48);
             u32PacketSize = 12;
             u32BuffLen = 768;
@@ -141,7 +141,7 @@ void NAU8822_ConfigSampleRate(uint32_t u32SampleRate)
 
         case 192000:
             I2C_WriteNAU8822(6, 0x109);    /* Divide by 1, 192K */
-            I2C_WriteNAU8822(72, 0x027);
+            I2C_WriteNAU8822(72, 0x017);
             HSUSBD_SET_MAX_PAYLOAD(EPA, 96);
             u32PacketSize = 48;
             u32BuffLen = 768;

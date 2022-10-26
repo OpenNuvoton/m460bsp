@@ -133,13 +133,8 @@ int32_t main(void)
     /* Select source from PLL/2 */
     CLK_SetModuleClock(I2S0_MODULE, CLK_CLKSEL3_I2S0SEL_PLL_DIV2, 0);
 
-#ifdef INPUT_IS_LIN
     /* Open I2S0 interface and set to slave mode, stereo channel, I2S format */
     I2S_Open(I2S0, I2S_MODE_SLAVE, 192000, I2S_DATABIT_16, I2S_STEREO, I2S_FORMAT_I2S);
-#else
-    /* Open I2S0 interface and set to slave mode, mono channel, I2S format */
-    I2S_Open(I2S0, I2S_MODE_SLAVE, 192000, I2S_DATABIT_16, I2S_MONO, I2S_FORMAT_I2S);
-#endif
 
     /* Set PD3 low to enable phone jack on NuMaker board. */
     SYS->GPD_MFP0 &= ~(SYS_GPD_MFP0_PD3MFP_Msk);
@@ -148,11 +143,6 @@ int32_t main(void)
 
     /* Set MCLK and enable MCLK */
     I2S_EnableMCLK(I2S0, 12000000);
-
-#ifndef INPUT_IS_LIN
-    /* NAU8822 will store data in left channel */
-    I2S_SET_MONO_RX_CHANNEL(I2S0, I2S_MONO_LEFT);
-#endif
 
 #if NAU8822
     NAU8822_Setup();
