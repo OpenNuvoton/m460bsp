@@ -129,5 +129,6 @@ int main()
     }
 
     printf("Done.\n");
+    printf("Please press reset to check if XOM0 empty.\n");
     while(1);
 }
