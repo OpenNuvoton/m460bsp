@@ -110,7 +110,11 @@ information. */
 static void prvSetupHardware( void );
 /*-----------------------------------------------------------*/
 
+#if defined (__GNUC__)
+extern int errno;
+#else
 int errno;
+#endif
 volatile int  g_Crypto_Int_done = 0;
 
 unsigned char my_mac_addr[6] = DEFAULT_MAC0_ADDRESS;

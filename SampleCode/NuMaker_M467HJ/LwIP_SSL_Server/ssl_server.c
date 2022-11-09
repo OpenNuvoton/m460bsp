@@ -194,7 +194,7 @@ static void ssl_main(void *arg)
     mbedtls_printf( "  . Bind on https://%s/%s...", SERVER_NAME, SERVER_PORT );
     fflush( stdout );
 
-    if( ( ret = mbedtls_net_bind( &listen_fd, NULL, "4433", MBEDTLS_NET_PROTO_TCP ) ) != 0 )
+    if( ( ret = mbedtls_net_bind( &listen_fd, NULL, SERVER_PORT, MBEDTLS_NET_PROTO_TCP ) ) != 0 )
     {
         mbedtls_printf( " failed\n  ! mbedtls_net_bind returned %d\n\n", ret );
         goto exit;
