@@ -159,7 +159,7 @@ int main(void)
     Configure_EBI_16BIT_Pins();
 
     /* Initialize EBI bank1 to access external nor */
-    EBI_Open(EBI_BANK1, EBI_BUSWIDTH_16BIT, EBI_TIMING_NORMAL, 0, EBI_CS_ACTIVE_LOW);
+    EBI_Open(EBI_BANK1, EBI_BUSWIDTH_16BIT, EBI_TIMING_SLOW, 0, EBI_CS_ACTIVE_LOW);
 
 
     /* Step 1, check ID */

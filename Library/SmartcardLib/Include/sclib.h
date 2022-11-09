@@ -4,7 +4,7 @@
  * @brief    Smartcard library header file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #ifndef __SCLIB_H__
 #define __SCLIB_H__
@@ -258,6 +258,27 @@ uint32_t SCLIB_CheckTxRxEvent(uint32_t num);
   * @note Smartcard IRQ handler shall call this function with correct interface number as parameter
   */
 uint32_t SCLIB_CheckErrorEvent(uint32_t num);
+
+/**
+  * @brief Activate a smartcard without historical bytes check, this function can be called if
+  *        \ref SCLIB_Activate or \ref SCLIB_ActivateDelay return an error
+  * @param[in] num Smartcard interface number. From 0 ~ ( \ref SC_INTERFACE_NUM - 1)
+  * @return Smartcard reset success or not
+  * @retval SCLIB_SUCCESS Smartcard reset success
+  * @retval Others Smartcard reset failed
+  */
+int32_t SCLIB_ResetAnyway(uint32_t num);
+
+/**
+  * @brief Set a specific baud rate to catch ATR for a card which is not compatible with ISO-7816, 
+  *        this function should be called before \ref SCLIB_Activate or \ref SCLIB_ActivateDelay
+  * @param[in] num Smartcard interface number. From 0 ~ ( \ref SC_INTERFACE_NUM - 1)
+  * @param[in] br ATR default baud rate should be 9600 according to ISO-7816
+  * @return Baud rate set success or not
+  * @retval SCLIB_SUCCESS set ATR baud rate success
+  * @retval Others set ATR baud rate failed
+  */
+int32_t SCLIB_SetSpecificAtrBR(uint32_t num, uint32_t br);
 
 /*@}*/ /* end of group SCLIB_EXPORTED_FUNCTIONS */
 

@@ -110,7 +110,11 @@ information. */
 static void prvSetupHardware( void );
 /*-----------------------------------------------------------*/
 
+#if defined (__GNUC__)
+extern int errno;
+#else
 int errno;
+#endif
 volatile int  g_Crypto_Int_done = 0;
 
 unsigned char my_mac_addr[6] = DEFAULT_MAC1_ADDRESS;
@@ -260,9 +264,9 @@ static void vSslTask( void *pvParameters )
     ip_addr_t netmask;
     ip_addr_t gw;
 
-    IP4_ADDR(&gw, 192,168,1,1);
-    IP4_ADDR(&ipaddr, 192,168,1,3);
-    IP4_ADDR(&netmask, 255,255,255,0);
+    IP4_ADDR(&gw, 192, 168, 1, 1);
+    IP4_ADDR(&ipaddr, 192, 168, 1, 3);
+    IP4_ADDR(&netmask, 255, 255, 255, 0);
 
     printf("SSL_Client. IP:192.168.1.3\n");
     
