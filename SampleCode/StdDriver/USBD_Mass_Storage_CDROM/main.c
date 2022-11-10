@@ -8,7 +8,7 @@
  *           User can change file within CDROM, follow steps below:
  *
  *           (1) Generate an ISO file via ISO Workshop.
- *               http://www.glorylogic.com/iso-workshop/
+ *               http://www.glorylogic.com/iso-workshop.html/
  *               -> Option : Select ISO9660 Level1
  *
  *           (2) Convert the .iso file into C code file via SRecord tool
@@ -17,10 +17,10 @@
  *               -> srec_cat InputFile.iso -binary -o OutputFile.c -C-Array
  *
  *           (3) The System Area, the first 32768 data bytes is unused by ISO 9660.
- *               Therefore, user need to delete the first 32768 bytes on the DiskImg.c
- *               manually to save space. Finally, replace DiskImg.c in this project.
+ *               Therefore, user need to delete the first 32768 bytes on the diskimage.c
+ *               manually to save space. Finally, replace diskimage.c in this project.
  *
- *               -> EPROM_LENGTH in DiskImg.c is the size of your .iso image.
+ *               -> EPROM_LENGTH in diskimage.c is the size of your .iso image.
  *                  Define MSC_ImageSize value in massstorage.h in this project.
  *                  Modify MSC_ImageSize value to hold the file size.
  *
