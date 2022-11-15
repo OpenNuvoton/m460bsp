@@ -51,6 +51,7 @@ void I2C0_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 void I2C_SlaveTRx(uint32_t u32Status)
 {
+    uint8_t u8data;
     if (u32Status == 0x60)                      /* Own SLA+W has been receive; ACK has been return */
     {
         g_u8SlvDataLen = 0;
@@ -59,17 +60,19 @@ void I2C_SlaveTRx(uint32_t u32Status)
     else if (u32Status == 0x80)                 /* Previously address with own SLA address
                                                    Data has been received; ACK has been returned*/
     {
-        g_au8SlvRxData[g_u8SlvDataLen] = I2C_GET_DATA(I2C0);;
-        g_u8SlvDataLen++;
-
-        if (g_u8SlvDataLen == 2)
+        u8data = (unsigned char) I2C_GET_DATA(I2C0);
+        if(g_u8SlvDataLen < 2)
         {
+            g_au8SlvRxData[g_u8SlvDataLen++] = u8data;
             slave_buff_addr = (g_au8SlvRxData[0] << 8) + g_au8SlvRxData[1];
         }
-        if (g_u8SlvDataLen == 3)
+        else
         {
-            g_au8SlvData[slave_buff_addr] = g_au8SlvRxData[2];
-            g_u8SlvDataLen = 0;
+            g_au8SlvData[slave_buff_addr++] = u8data;
+            if(slave_buff_addr == 256)
+            {
+                slave_buff_addr = 0;
+            }
         }
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI | I2C_CTL_AA);
     }
@@ -79,6 +82,12 @@ void I2C_SlaveTRx(uint32_t u32Status)
         I2C_SET_DATA(I2C0, g_au8SlvData[slave_buff_addr]);
         slave_buff_addr++;
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI | I2C_CTL_AA);
+    }
+    else if(u32Status == 0xB8)                  /* Data byte in I2CDAT has been transmitted ACK has been received */
+    {
+        I2C_SET_DATA(I2C0, g_au8SlvData[slave_buff_addr]);
+        slave_buff_addr++;
+        I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
     }
     else if (u32Status == 0xC0)                 /* Data byte or last data in I2CDAT has been transmitted
                                                    Not ACK has been received */
@@ -201,9 +210,16 @@ int32_t main (void)
         and Byte Read operations, and check if the read data is equal to the programmed data.
     */
 
-    printf("+-------------------------------------------------------+\n");
-    printf("|               I2C Driver Sample Code(Slave)           |\n");
-    printf("+-------------------------------------------------------+\n");
+    printf("+----------------------------------------------------+\n");
+    printf("| I2C Driver Sample Code(Slave) for access Slave     |\n");
+    printf("| Needs to work with I2C_Master sample code          |\n");
+    printf("| I2C Master (I2C0) <---> I2C Slave(I2C0)            |\n");
+    printf("| !! This sample code requires two boards to test !! |\n");
+    printf("+----------------------------------------------------+\n");
+
+    printf("Configure I2C0 as a slave.\n");
+    printf("The I/O connection for I2C0:\n");
+    printf("I2C0_SDA(PA.4), I2C0_SCL(PA.5)\n");
 
     /* Init I2C0 */
     I2C0_Init();
