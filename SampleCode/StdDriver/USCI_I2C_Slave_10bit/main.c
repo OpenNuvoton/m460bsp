@@ -75,6 +75,7 @@ void UI2C_SlaveTRx(uint32_t u32Status)
         else if(s_Event == SLAVE_H_RD_ADDRESS_ACK)
         {
             g_u8SlvDataLen = 0;
+            s_Event = SLAVE_L_RD_ADDRESS_ACK;
 
             UI2C_SET_DATA(UI2C0, g_u8SlvData[slave_buff_addr]);
             slave_buff_addr++;
@@ -97,6 +98,10 @@ void UI2C_SlaveTRx(uint32_t u32Status)
         {
             UI2C_SET_DATA(UI2C0, g_u8SlvData[slave_buff_addr]);
             slave_buff_addr++;
+            if(slave_buff_addr == 256)
+            {
+                slave_buff_addr = 0;
+            }
         }
         else if(s_Event == SLAVE_GET_DATA)
         {

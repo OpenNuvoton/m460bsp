@@ -172,7 +172,7 @@ void UI2C_MasterTx(uint32_t u32Status)
         }
         else if(m_Event == MASTER_SEND_DATA)
         {
-            if(g_u8MstDataLen != 3)
+            if(g_u8MstDataLen != 4)
             {
                 UI2C_SET_DATA(UI2C0, g_au8MstTxData[g_u8MstDataLen++]);  /* ADDRESS has been transmitted and write DATA to Register TXDAT */
                 UI2C_SET_CONTROL_REG(UI2C0, UI2C_CTL_PTRG);
