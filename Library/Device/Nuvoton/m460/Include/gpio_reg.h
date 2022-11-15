@@ -152,7 +152,7 @@ typedef struct
      * |        |          |n=6~15 for port I.
      * |        |          |Max. n=13 for port J.
      * @var GPIO_T::INTEN
-     * Offset: 0x1C/0x5C/0x9C/0xDC/0x11C/0x15C/0x19C/0x1DC/0x21C  Port A-J Interrupt Enable Control Register
+     * Offset: 0x1C/0x5C/0x9C/0xDC/0x11C/0x15C/0x19C/0x1DC/0x21C/0x25C  Port A-J Interrupt Enable Control Register
      * ---------------------------------------------------------------------------------------------------
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |

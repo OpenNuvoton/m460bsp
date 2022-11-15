@@ -1655,7 +1655,7 @@ uint32_t CLK_EnablePLLFN(uint32_t u32PllClkSrc, uint32_t u32PllFreq)
         /* Wait for HIRC clock ready */
         CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
-        /* Select PLL source clock from HIRC */
+        /* Select PLLFN source clock from HIRC */
         u32FIN = __HIRC;
     }
 
@@ -1701,7 +1701,7 @@ uint32_t CLK_EnablePLLFN(uint32_t u32PllClkSrc, uint32_t u32PllFreq)
             }
         }
 
-        /* Enable and apply new PLL setting. */
+        /* Enable and apply new PLLFN setting. */
         CLK->PLLFNCTL0 = (u32X << CLK_PLLFNCTL0_FRDIV_Pos) |
                          (u32NO << CLK_PLLFNCTL0_OUTDIV_Pos) |
                          ((u32NR - 1UL) << CLK_PLLFNCTL0_INDIV_Pos) |
@@ -1714,17 +1714,18 @@ uint32_t CLK_EnablePLLFN(uint32_t u32PllClkSrc, uint32_t u32PllFreq)
 
     if((u32PllFreq > FREQ_500MHZ) || (u32PllFreq < FREQ_50MHZ) || (u32NR==33) )
     {
-        /* Apply default PLL setting and return */
-        CLK->PLLCTL = u32PllClkSrc | CLK_PLLCTL_192MHz_HXT;
+        /* Apply default PLLFN setting and return */
+        CLK->PLLFNCTL0 = CLK_PLLCTL_192MHz_HXT;
+        CLK->PLLFNCTL1 = u32PllClkSrc;
 
-        /* Actual PLL output clock frequency */
+        /* Actual PLLFN output clock frequency */
         u32PllClk = FREQ_192MHZ;
     }
 
-    /* Wait for PLL clock stable */
+    /* Wait for PLLFN clock stable */
     CLK_WaitClockReady(CLK_STATUS_PLLFNSTB_Msk);
 
-    /* Return actual PLL output clock frequency */
+    /* Return actual PLLFN output clock frequency */
     return u32PllClk;
 }
 
@@ -1732,7 +1733,7 @@ uint32_t CLK_EnablePLLFN(uint32_t u32PllClkSrc, uint32_t u32PllFreq)
 /**
   * @brief      Get PLLFN clock frequency
   * @param      None
-  * @return     PLL frequency
+  * @return     PLLFN frequency
   * @details    This function get PLLFN frequency. The frequency unit is Hz.
   */
 uint32_t CLK_GetPLLFNClockFreq(void)
