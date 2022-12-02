@@ -43,6 +43,12 @@ To experience the powerful features of M460 in few minutes, please refer to NuMa
 - CortexM4<br>
 	Cortex®-M4 sample code.
 
+- Crypto<br>
+	Crypto sample code using MbedTLS library.
+
+- FreeRTOS<br>
+	Simple FreeRTOS™ demo code.
+
 - Hard\_Fault\_Sample<br>
 	Show hard fault information when hard fault happened. The hard fault handler show some information included program counter, which is the address where the processor was executing when the hard fault occur. The listing file (or map file) can show what function and instruction that was. It also shows the Link Register (LR), which contains the return address of the last function call. It can show the status where CPU comes from to get to this point.
 
