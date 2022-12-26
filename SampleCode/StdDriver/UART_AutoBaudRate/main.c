@@ -272,9 +272,9 @@ uint32_t GetUartBaudrate(UART_T* uart)
             return 0;
     }
 
-    /* Get PLL clock frequency if UART clock source selection is PLL */
+    /* Get PLL/2 clock frequency if UART clock source selection is PLL/2 */
     if(u8UartClkSrcSel == 1)
-        au32ClkTbl[u8UartClkSrcSel] = CLK_GetPLLClockFreq();
+        au32ClkTbl[u8UartClkSrcSel] = CLK_GetPLLClockFreq()>>1;
 
     /* Get UART baud rate divider */
     u32BaudDiv = (uart->BAUD & UART_BAUD_BRD_Msk) >> UART_BAUD_BRD_Pos;
