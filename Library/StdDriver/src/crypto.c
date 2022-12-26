@@ -313,7 +313,7 @@ void SHA_Open(CRPT_T *crpt, uint32_t u32OpMode, uint32_t u32SwapType, uint32_t h
 /**
   * @brief  Start SHA encrypt
   * @param[in]  crpt        The pointer of CRYPTO module
-  * @param[in]  u32DMAMode  TDES DMA control, including:
+  * @param[in]  u32DMAMode  DMA control, including:
   *         - \ref CRYPTO_DMA_ONE_SHOT   One shop SHA encrypt.
   *         - \ref CRYPTO_DMA_CONTINUE   Continuous SHA encrypt.
   *         - \ref CRYPTO_DMA_LAST       Last SHA encrypt of a series of SHA_Start.
