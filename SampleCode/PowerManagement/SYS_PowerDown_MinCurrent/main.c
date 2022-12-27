@@ -339,6 +339,11 @@ int32_t main(void)
     printf("|  8. Wait for PB.2 falling-edge interrupt event to wake-up the MCU |\n");
     printf("+-------------------------------------------------------------------+\n\n");
 
+    /*
+        To measure Power-down current on NuMaker-M467HJ board, remove component, e.g.
+        Nu-Link2-Me, UP1 LDO, UP2 LDO, U2 HyperRAM, U7 Ethernet PHY and U9 Audio codec.
+    */
+
     /* Check if all the debug messages are finished */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     UART_WAIT_TX_EMPTY(DEBUG_PORT)

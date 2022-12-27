@@ -401,13 +401,13 @@ typedef struct
      * |        |          |0 = Brown-out "INTERRUPT" function Enabled.
      * |        |          |1 = Brown-out "RESET" function Enabled.
      * |        |          |Note 1: While the Brown-out Detector function is enabled (BODEN high) and BOD reset function is enabled (BODRSTEN high), BOD will assert a signal to reset chip when the detected voltage is lower than the threshold (BODOUT high).
-     * |        |          |While the BOD function is enabled (BODEN high) and BOD interrupt function is enabled (BODRSTEN low), BOD will assert an interrupt if BODOUT is high
-     * |        |          |BOD interrupt will keep till to the BODEN set to 0.
+     * |        |          |While the BOD function is enabled (BODEN high) and BOD interrupt function is enabled (BODRSTEN low), BOD will assert an interrupt if BODIF is high.
+     * |        |          |BOD interrupt will keep till the BODIF set to 0.
      * |        |          |BOD interrupt can be blocked by disabling the NVIC BOD interrupt or disabling BOD function (set BODEN low).
      * |        |          |Note 2: This bit is write protected. Refer to the SYS_REGLCTL register.
      * |[4]     |BODIF     |Brown-out Detector Interrupt Flag
-     * |        |          |0 = Brown-out Detector does not detect any voltage draft at VDD down through or up through the voltage of BODVL setting.
-     * |        |          |1 = When Brown-out Detector detects the VDD is dropped down through the voltage of BODVL setting or the VDD is raised up through the voltage of BODVL setting, this bit is set to 1 and the brown-out interrupt is requested if brown-out interrupt is enabled.
+     * |        |          |0 = Brown-out Detector does not detect any voltage draft at AVDD down through or up through the voltage of BODVL setting.
+     * |        |          |1 = When Brown-out Detector detects the AVDD is dropped down through the voltage of BODVL setting or the AVDD is raised up through the voltage of BODVL setting, this bit is set to 1 and the brown-out interrupt is requested if brown-out interrupt is enabled.
      * |        |          |Note: Write 1 to clear this bit to 0.
      * |[5]     |BODLPM    |Brown-out Detector Low Power Mode (Write Protect)
      * |        |          |0 = BOD operate in normal mode (default).
@@ -421,11 +421,11 @@ typedef struct
      * |        |          |It means the detected voltage is lower than BODVL setting
      * |        |          |If the BODEN is 0, BOD function disabled, this bit always responds 0.
      * |[7]     |LVREN     |Low Voltage Reset Enable Bit (Write Protect)
-     * |        |          |The LVR function resets the chip when the input power voltage is lower than LVR circuit setting
-     * |        |          |LVR function is enabled by default.
-     * |        |          |0 = Low Voltage Reset function Disabled.
+     * |        |          |The LVR function resets the chip when the input power voltage is lower than LVR circuit setting.
+     * |        |          |0 = Low Voltage Reset function Disabled (default).
      * |        |          |1 = Low Voltage Reset function Enabled.
-     * |        |          |Note 1: After enabling the bit, the LVR function will be active with 100us delay for LVR output stable (default).
+     * |        |          |Note 1: After enabling the bit, the LVR function will be active with 100us ~ 200us delay for LVR output stable.
+     * |        |          |LVRRDY(SYS_BODCTL[15]) is used to indicate LVR ready status.
      * |        |          |Note 2: This bit is write protected. Refer to the SYS_REGLCTL register.
      * |[10:8]  |BODDGSEL  |Brown-out Detector Output De-glitch Time Select (Write Protect)
      * |        |          |000 = BOD output is sampled by LIRC clock.
@@ -524,7 +524,8 @@ typedef struct
      * |        |          |User can disable internal POR circuit to avoid unpredictable noise to cause chip reset by writing 0x5AA5 to this field.
      * |        |          |The POR function will be active again when this field is set to another value or chip is reset by other reset source, including:
      * |        |          |nRESET, Watchdog, LVR reset, BOD reset, ICE reset command and the software-chip reset function.
-     * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
+     * |        |          |Note 1: Need to disable LVR by setting LVREN(SYS_BODCTL[7]) to 0 when setting POROFF(SYS_PORCTL[15:0]) to 0x5AA5.
+     * |        |          |Note 2: These bits are write protected. Refer to the SYS_REGLCTL register.
      * @var SYS_T::VREFCTL
      * Offset: 0x28  VREF Control Register
      * ---------------------------------------------------------------------------------------------------
@@ -993,7 +994,7 @@ typedef struct
      * |Bits    |Field     |Descriptions
      * | :----: | :----:   | :---- |
      * |[1:0]   |PLSEL     |Power Level Select (Write Protect)
-     * |        |          |These bits indicate the status of power level.
+     * |        |          |These bits set power level status.
      * |        |          |00 = Power level is PL0.
      * |        |          |01 = Power level is PL1.
      * |        |          |Others = Reserved.
@@ -1014,10 +1015,10 @@ typedef struct
      * |[0]     |PLCBUSY   |Power Level Change Busy Bit (Read Only)
      * |        |          |This bit is set by hardware when power level is changing.
      * |        |          |After power level change is completed, this bit will be cleared automatically by hardware.
-     * |        |          |0 = Core voltage change is completed.
-     * |        |          |1 = Core voltage change is ongoing.
+     * |        |          |0 = Power level change is completed.
+     * |        |          |1 = Power level change is ongoing.
      * |[9:8]   |PLSTATUS  |Power Level Status (Read Only)
-     * |        |          |This bit indicates the status of power level.
+     * |        |          |These bits indicate the status of power level.
      * |        |          |00 = Power level is PL0.
      * |        |          |01 = Power level is PL1.
      * |        |          |Others = Reserved.

@@ -82,7 +82,8 @@ typedef struct
  * |        |          |The clocks of peripheral are not controlled by Power-down mode, if the peripheral clock source is from LXT or LIRC.
  * |        |          |0 = Chip will not enter Power-down mode after CPU sleep command WFI.
  * |        |          |1 = Chip enters Power-down mode after CPU sleep command WFI.
- * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
+ * |        |          |Note 1: This bit is write protected. Refer to the SYS_REGLCTL register.
+ * |        |          |Note 2: System tick interrupt TICKINT(SYS_CTRL[1]) has to be disabled before entering to Power-down mode, to avoid system tick interrupt may influence system not entering power-down mode and keep operation.
  * |[11:10] |HXTGAIN   |HXT Gain Control Bit (Write Protect)
  * |        |          |Gain control is used to enlarge the gain of crystal to make sure crystal work normally.
  * |        |          |00 = HXT frequency is lower than from 8 MHz.
@@ -1227,7 +1228,8 @@ typedef struct
  * |        |          |10 = Wake-up pin falling edge enabled at Deep Power-down mode.
  * |        |          |11 = Wake-up pin both edge enabled at Deep Power-down mode.
  * |        |          |Note 1: These bits are write protected. Refer to the SYS_REGLCTL register.
- * |        |          |Note 2: Setting IOCTLSEL(RTC_LXTCTL[8]) to avoid GPF.6 unexpected falling edge.
+ * |        |          |Note 2: To use GPF.6 wake-up pin function at Deep Power-down mode, user has to set IOCTLSEL(RTC_LXTCTL[8])=1 to control GPF.6 in VBAT power domain by RTC_GPIOCTL0.
+ * |        |          |Otherwise, GPF.6 will be digital off (digital input tied to low) in DPD mode and cause unexpected falling edge to wake-up system.
  * @var CLK_T::PMUSTS
  * Offset: 0x94  Power Manager Status Register
  * ---------------------------------------------------------------------------------------------------
