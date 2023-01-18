@@ -11,6 +11,7 @@
 #include "string.h"
 #include "NuMicro.h"
 
+CANFD_T * g_pCanfd = ((CANFD_MODULE == 0)?CANFD0:(CANFD_MODULE == 1)?CANFD1:(CANFD_MODULE == 2)?CANFD2:CANFD3);
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
@@ -49,12 +50,43 @@ void SYS_Init(void)
     /* Select UART0 module clock source as HIRC and UART0 module clock divider as 1 */
     CLK_SetModuleClock(UART0_MODULE, CLK_CLKSEL1_UART0SEL_HIRC, CLK_CLKDIV0_UART0(1));
 
+#if (CANFD_MODULE == 0)
     /* Select CAN FD0 clock source is HCLK */
     CLK_SetModuleClock(CANFD0_MODULE, CLK_CLKSEL0_CANFD0SEL_HCLK, CLK_CLKDIV5_CANFD0(1));
 
     /* Enable CAN FD0 peripheral clock */
     CLK_EnableModuleClock(CANFD0_MODULE);
+#elif (CANFD_MODULE == 1)
+    /* Select CAN FD1 clock source is HCLK */
+    CLK_SetModuleClock(CANFD1_MODULE, CLK_CLKSEL0_CANFD1SEL_HCLK, CLK_CLKDIV5_CANFD1(1));
 
+    /* Enable CAN FD1 peripheral clock */
+    CLK_EnableModuleClock(CANFD1_MODULE);
+#elif (CANFD_MODULE == 2)
+    /* Select CAN FD2 clock source is HCLK */
+    CLK_SetModuleClock(CANFD2_MODULE, CLK_CLKSEL0_CANFD2SEL_HCLK, CLK_CLKDIV5_CANFD2(1));
+
+    /* Enable CAN FD2 peripheral clock */
+    CLK_EnableModuleClock(CANFD2_MODULE);
+
+    /* Select CAN FD0 clock source is HCLK */
+    CLK_SetModuleClock(CANFD0_MODULE, CLK_CLKSEL0_CANFD0SEL_HCLK, CLK_CLKDIV5_CANFD0(1));
+
+    /* Enable CAN FD0 peripheral clock */
+    CLK_EnableModuleClock(CANFD0_MODULE);
+#elif (CANFD_MODULE == 3)
+    /* Select CAN FD3 clock source is HCLK */
+    CLK_SetModuleClock(CANFD3_MODULE, CLK_CLKSEL0_CANFD3SEL_HCLK, CLK_CLKDIV5_CANFD3(1));
+
+    /* Enable CAN FD3 peripheral clock */
+    CLK_EnableModuleClock(CANFD3_MODULE);
+#else
+    /* Select CAN FD3 clock source is HCLK */
+    CLK_SetModuleClock(CANFD3_MODULE, CLK_CLKSEL0_CANFD3SEL_HCLK, CLK_CLKDIV5_CANFD3(1));
+
+    /* Enable CAN FD3 peripheral clock */
+    CLK_EnableModuleClock(CANFD3_MODULE);
+#endif
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -63,10 +95,27 @@ void SYS_Init(void)
     SET_UART0_RXD_PB12();
     SET_UART0_TXD_PB13();
 
+#if (CANFD_MODULE == 0)
     /* Set PC multi-function pins for CAN FD0 RXD and TXD */
     SET_CAN0_RXD_PC4();
     SET_CAN0_TXD_PC5();
-
+#elif (CANFD_MODULE == 1)
+    /* Set PC multi-function pins for CAN FD1 RXD and TXD */
+    SET_CAN1_RXD_PC2();
+    SET_CAN1_TXD_PC3();
+#elif (CANFD_MODULE == 2)
+    /* Set PC multi-function pins for CAN FD2 RXD and TXD */
+    SET_CAN2_RXD_PC0();
+    SET_CAN2_TXD_PC1();
+#elif (CANFD_MODULE == 3)
+    /* Set PC multi-function pins for CAN FD3 RXD and TXD */
+    SET_CAN3_RXD_PC6();
+    SET_CAN3_TXD_PC7();
+#else
+    /* Set PC multi-function pins for CAN FD3 RXD and TXD */
+    SET_CAN3_RXD_PC6();
+    SET_CAN3_TXD_PC7();
+#endif
 }
 
 
@@ -80,14 +129,14 @@ void CANFD_Init(void)
     printf("+---------------------------------------------------------------+\n");
     printf("|     Pin Configure                                             |\n");
     printf("+---------------------------------------------------------------+\n");
-    printf("|  CAN0_TXD(PC5)                         CAN_TXD(Any board)     |\n");
-    printf("|  CAN0_RXD(PC4)                         CAN_RXD(Any board      |\n");
+    printf("|   CAN_TXD                              CAN_TXD(Any board)     |\n");
+    printf("|   CAN_RXD                              CAN_RXD(Any board      |\n");
     printf("|          |-----------| CANBUS  |-----------|                  |\n");
     printf("|  ------> |           |<------->|           |<------           |\n");
-    printf("|   CAN0_TX|   CANFD   |  CAN_H  |   CANFD   |CAN_TX            |\n");
+    printf("|    CAN_TX|   CANFD   |  CAN_H  |   CANFD   |CAN_TX            |\n");
     printf("|          |Transceiver|         |Transceiver|                  |\n");
     printf("|  <------ |           |<------->|           |------>           |\n");
-    printf("|   CAN0_RX|           |  CAN_L  |           |CAN_RX            |\n");
+    printf("|    CAN_RX|           |  CAN_L  |           |CAN_RX            |\n");
     printf("|          |-----------|         |-----------|                  |\n");
     printf("|                                                               |\n");
     printf("+---------------------------------------------------------------+\n\n");
@@ -97,24 +146,35 @@ void CANFD_Init(void)
     sCANFD_Config.sBtConfig.sNormBitRate.u32BitRate = 1000000;
     sCANFD_Config.sBtConfig.sDataBitRate.u32BitRate = 4000000;
     /*Open the CAN FD0 feature*/
-    CANFD_Open(CANFD0, &sCANFD_Config);
+    CANFD_Open(g_pCanfd, &sCANFD_Config);
+
+#if (CANFD_MODULE == 0)
     NVIC_EnableIRQ(CANFD00_IRQn);
+#elif (CANFD_MODULE == 1)
+    NVIC_EnableIRQ(CANFD10_IRQn);
+#elif (CANFD_MODULE == 2)
+    NVIC_EnableIRQ(CANFD20_IRQn);
+#elif (CANFD_MODULE == 3)
+    NVIC_EnableIRQ(CANFD30_IRQn);
+#else
+    NVIC_EnableIRQ(CANFD30_IRQn);
+#endif
 
     /* receive 0x110 in CAN FD0 rx message buffer 0 by setting mask 0 */
-    CANFD_SetSIDFltr(CANFD0, 0, CANFD_RX_BUFFER_STD(0x111, 0));
+    CANFD_SetSIDFltr(g_pCanfd, 0, CANFD_RX_BUFFER_STD(0x111, 0));
     /* receive 0x220 in CAN FD0 rx message buffer 0 by setting mask 1 */
-    CANFD_SetSIDFltr(CANFD0, 1, CANFD_RX_BUFFER_STD(0x22F, 0));
+    CANFD_SetSIDFltr(g_pCanfd, 1, CANFD_RX_BUFFER_STD(0x22F, 0));
     /* receive 0x333 in CAN FD0 rx message buffer 0 by setting mask 2 */
-    CANFD_SetSIDFltr(CANFD0, 2, CANFD_RX_BUFFER_STD(0x333, 0));
+    CANFD_SetSIDFltr(g_pCanfd, 2, CANFD_RX_BUFFER_STD(0x333, 0));
 
     /* receive 0x222 (29-bit id) in CAN FD0 rx message buffer 1 by setting mask 3 */
-    CANFD_SetXIDFltr(CANFD0, 0, CANFD_RX_BUFFER_EXT_LOW(0x222, 1), CANFD_RX_BUFFER_EXT_HIGH(0x222, 1));
+    CANFD_SetXIDFltr(g_pCanfd, 0, CANFD_RX_BUFFER_EXT_LOW(0x222, 1), CANFD_RX_BUFFER_EXT_HIGH(0x222, 1));
     /* receive 0x3333 (29-bit id) in CAN FD0 rx message buffer 1 by setting mask 3 */
-    CANFD_SetXIDFltr(CANFD0, 1, CANFD_RX_BUFFER_EXT_LOW(0x3333, 1), CANFD_RX_BUFFER_EXT_HIGH(0x3333, 1));
+    CANFD_SetXIDFltr(g_pCanfd, 1, CANFD_RX_BUFFER_EXT_LOW(0x3333, 1), CANFD_RX_BUFFER_EXT_HIGH(0x3333, 1));
     /* receive 0x44444 (29-bit id) in CAN FD0 rx message buffer 1 by setting mask 3 */
-    CANFD_SetXIDFltr(CANFD0, 2, CANFD_RX_BUFFER_EXT_LOW(0x44444, 1), CANFD_RX_BUFFER_EXT_HIGH(0x44444, 1));
+    CANFD_SetXIDFltr(g_pCanfd, 2, CANFD_RX_BUFFER_EXT_LOW(0x44444, 1), CANFD_RX_BUFFER_EXT_HIGH(0x44444, 1));
     /* CAN FD0 Run to Normal mode  */
-    CANFD_RunToNormal(CANFD0, TRUE);
+    CANFD_RunToNormal(g_pCanfd, TRUE);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -122,8 +182,19 @@ void CANFD_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 void CANFD_Fini(void)
 {
+
+#if (CANFD_MODULE == 0)
     NVIC_DisableIRQ(CANFD00_IRQn);
-    CANFD_Close(CANFD0);
+#elif (CANFD_MODULE == 1)
+    NVIC_DisableIRQ(CANFD10_IRQn);
+#elif (CANFD_MODULE == 2)
+    NVIC_DisableIRQ(CANFD20_IRQn);
+#elif (CANFD_MODULE == 3)
+    NVIC_DisableIRQ(CANFD30_IRQn);
+#else
+    NVIC_DisableIRQ(CANFD30_IRQn);
+#endif
+    CANFD_Close(g_pCanfd);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -206,7 +277,7 @@ void CANFD_TxRxTest(void)
             printf("\n\n");
 
             /* use message buffer 0 */
-            if (CANFD_TransmitTxMsg(CANFD0, 0, &sTxMsgFrame) != 1)
+            if (CANFD_TransmitTxMsg(g_pCanfd, 0, &sTxMsgFrame) != 1)
             {
                 printf("Failed to transmit message\n");
             }
@@ -223,7 +294,7 @@ void CANFD_TxRxTest(void)
         do
         {
             /* check for any received messages on CAN FD0 message buffer 0 */
-            if (CANFD_ReadRxBufMsg(CANFD0, 0, &sRxMsgFrame) == 1)
+            if (CANFD_ReadRxBufMsg(g_pCanfd, 0, &sRxMsgFrame) == 1)
             {
                 printf("Rx buf 0: Received message 0x%08X\n", sRxMsgFrame.u32Id);
                 printf("Message Data : ");
@@ -266,7 +337,7 @@ void CANFD_TxRxTest(void)
             }
 
             /* check for any received messages on CAN FD0 message buffer 1 */
-            if (CANFD_ReadRxBufMsg(CANFD0, 1, &sRxMsgFrame) == 1)
+            if (CANFD_ReadRxBufMsg(g_pCanfd, 1, &sRxMsgFrame) == 1)
             {
 
                 printf("Rx buf 1: Received message 0x%08X (29-bit)\r\n", sRxMsgFrame.u32Id);
@@ -351,7 +422,7 @@ int32_t main(void)
     /*---------------------------------------------------------------------------------------------------------*/
     printf("\n\nCPU @ %dHz\n", SystemCoreClock);
     printf("+----------------------------------------+\n");
-    printf("|      CAN FD mode transmission test     |\n");
+    printf("|    CANFD%d FD mode transmission test    |\n", ((CANFD_MODULE == 0)?0:(CANFD_MODULE == 1)?1:(CANFD_MODULE == 2)?2:3));
     printf("+----------------------------------------+\n");
 
     /* CANFD sample function */
