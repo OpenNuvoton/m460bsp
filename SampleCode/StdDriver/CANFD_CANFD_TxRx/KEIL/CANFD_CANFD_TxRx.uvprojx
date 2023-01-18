@@ -336,7 +336,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>CANFD_MODULE=0</Define>
+              <Define></Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\..\Library\CMSIS\Include;..\..\..\..\Library\Device\Nuvoton\m460\Include;..\..\..\..\Library\StdDriver\inc</IncludePath>
             </VariousControls>

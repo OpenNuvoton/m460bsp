@@ -11,6 +11,21 @@
 #include "string.h"
 #include "NuMicro.h"
 
+/*
+//-------- <<< Use Configuration Wizard in Context Menu >>> -----------------
+*/
+
+/*
+// <o0> CANFD Module Selection 
+//      <0=> CANFD Module 0
+//      <1=> CANFD Module 1
+//      <2=> CANFD Module 2
+//      <3=> CANFD Module 3
+//      <i> Specify a CANFD module to transmit or receive messages by selected in the Master or Slave selection menu
+*/
+#define CANFD_MODULE       0
+
+
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/

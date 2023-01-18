@@ -224,7 +224,7 @@
                 </option>
                 <option>
                     <name>CCDefines</name>
-                    <state>CANFD_MODULE=0</state>
+                    <state></state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
