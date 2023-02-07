@@ -66,7 +66,7 @@ int main()
 
     FMC_Open();                        /* Enable FMC ISP function */
 
-    u32Data = FMC_ReadCID();           /* Read company ID. Should be 0xDA. */
+    u32Data = FMC_ReadCID();           /* Read company ID. Should be 0x530000DA. */
     if (g_FMC_i32ErrCode != 0)
     {
         printf("FMC_ReadCID failed!\n");
