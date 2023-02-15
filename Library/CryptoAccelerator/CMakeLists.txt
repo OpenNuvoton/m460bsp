@@ -13,6 +13,13 @@ set(CRPT_SRC
 )
 
 add_library(crypto_accelerator ${CRPT_SRC})
+target_include_directories(crypto_accelerator
+  PUBLIC
+    ${TOOLCHAIN_PATH}/include
+    ${BSP_DIR}/Library/CMSIS/Include
+    ${BSP_DIR}/Library/StdDriver/inc
+)
+
 
 
 

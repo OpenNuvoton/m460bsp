@@ -20,16 +20,6 @@
  *  This file is part of mbed TLS (https://tls.mbed.org)
  */
 
-/*
- * http://csrc.nist.gov/publications/nistpubs/800-38D/SP-800-38D.pdf
- *
- * See also:
- * [MGV] http://csrc.nist.gov/groups/ST/toolkit/BCM/documents/proposedmodes/gcm/gcm-revised-spec.pdf
- *
- * We use the algorithm described as Shoup's method with 4-bit tables in
- * [MGV] 4.1, pp. 12-13, to enhance speed without using too much memory.
- */
-
 
 #include "common.h"
 
@@ -233,6 +223,7 @@ int32_t AES_GCMPacker(const uint8_t *iv, uint32_t iv_len, const uint8_t *A, uint
         /* fill iv len to putput */
         if(iv_len == 12)
         {
+            /* This is 32'b01 in big endian */
             pbuf[15] = 1;
             u32Offset += iv_len_aligned;
         }
@@ -244,7 +235,11 @@ int32_t AES_GCMPacker(const uint8_t *iv, uint32_t iv_len, const uint8_t *A, uint
             /* 64'bitlen(IV) */
             pu8 = &pbuf[iv_len_aligned + 8];
             *((uint64_t *)pu8) = iv_len * 8;
+
+            /* Convert to 64 bits integer big endian */
             swap64(pu8);
+
+
             u32Offset += iv_len_aligned + 16;
         }
     }
@@ -307,231 +302,6 @@ static int32_t AES_Run(uint32_t u32Option)
     return 0;
 }
 
-
-/*
-    AES_GCMTag is only used by AES_GCMEnc to calculate tag.
-*/
-static int32_t _GCMTag(mbedtls_gcm_context *ctx, const uint8_t *iv, uint32_t ivlen, const uint8_t *A, uint32_t alen, const uint8_t *P, uint32_t plen, uint8_t *tagbuf)
-{
-    int32_t ret;
-    int32_t i, len, plen_cur;
-    const uint8_t *pin;
-    uint8_t *pout;
-    uint32_t inputblock[MAX_GCM_BUF * 2] = {0}; /* 2 block buffer, 1 for A, 1 for P */
-    uint32_t ghashbuf[MAX_GCM_BUF + 16] = {0};
-    uint8_t *pblock;
-    uint32_t u32OptBasic;
-    uint32_t u32OptKeySize;
-    uint32_t tag[4];
-
-    /* Prepare key size option */
-    i = ctx->keySize >> 3;
-    u32OptKeySize = (((i >> 2) << 1) | (i & 1)) << CRPT_AES_CTL_KEYSZ_Pos;
-
-    /* Basic options for AES */
-    u32OptBasic = CRPT_AES_CTL_ENCRPT_Msk | CRPT_AES_CTL_INSWAP_Msk | CRPT_AES_CTL_OUTSWAP_Msk | u32OptKeySize;
-
-    /* Set byte count of IV */
-    CRPT->AES_GCM_IVCNT[0] = ivlen;
-    CRPT->AES_GCM_IVCNT[1] = 0;
-    /* Set bytes count of A */
-    CRPT->AES_GCM_ACNT[0] = alen;
-    CRPT->AES_GCM_ACNT[1] = 0;
-    /* Set bytes count of P */
-    CRPT->AES_GCM_PCNT[0] = plen;
-    CRPT->AES_GCM_PCNT[1] = 0;
-
-
-    // GHASH(128'align(A) || 128'align(C) || 64'bitlen(A) || 64'bitlen(C))
-    // GHASH Calculation
-    if(plen <= GCM_PBLOCK_SIZE)
-    {
-        /* Just one shot if plen < maximum block size */
-
-        pblock = (uint8_t *)&inputblock[0];
-        AES_GCMPacker(0, 0, A, alen, P, plen, pblock, (uint32_t *)&len);
-
-        /* append 64'bitlen(A) || 64'bitlen(C) */
-        pblock += len;
-        *((uint64_t *)pblock) = alen * 8;
-        swap64(pblock);
-        pblock += 8;
-
-        *((uint64_t *)pblock) = plen * 8;
-        swap64(pblock);
-        pblock += 8;
-
-        /* adding the length of 64'bitlen(A) and 64'bitlen(C) */
-        len += 16;
-
-        pblock = (uint8_t *)&inputblock[0];
-
-        CRPT->AES_SADDR = (uint32_t)pblock;
-        CRPT->AES_DADDR = (uint32_t)&ghashbuf[0];
-        CRPT->AES_CNT = len;
-
-
-        AES_Run(u32OptBasic | GHASH_MODE | DMAEN /*| DMALAST*/);
-
-
-    }
-    else
-    {
-        /* Calculate GHASH block by block, DMA casecade mode */
-
-        /* feedback buffer is necessary for casecade mode */
-        CRPT->AES_FBADDR = (uint32_t)ctx->fb_buf;
-        memset(ctx->fb_buf, 0, sizeof(ctx->fb_buf));
-
-        /* inital DMA for GHASH casecade */
-        if(alen)
-        {
-            /* Prepare the blocked buffer for GCM */
-            AES_GCMPacker(0, 0, A, alen, 0, 0, ctx->gcm_buf, (uint32_t *)&len);
-
-            CRPT->AES_SADDR = (uint32_t)ctx->gcm_buf;
-            CRPT->AES_DADDR = (uint32_t)&ghashbuf[0];
-            CRPT->AES_CNT = len;
-
-            AES_Run(u32OptBasic | GHASH_MODE | FBOUT | DMAEN);
-        }
-
-        /* Caculate GHASH block by block */
-        pin = P;
-        pout = (uint8_t *)&ghashbuf[0];
-        plen_cur = plen;
-        len = GCM_PBLOCK_SIZE;
-        while(plen_cur)
-        {
-
-            len = plen_cur;
-            if(len > GCM_PBLOCK_SIZE)
-                len = GCM_PBLOCK_SIZE;
-            plen_cur -= len;
-
-            if(plen_cur)
-            {
-                /* Sill has data for next block, it means current block size is full size */
-
-                /* len should be alway 16 bytes alignment in here */
-                CRPT->AES_SADDR = (uint32_t)pin;
-                CRPT->AES_DADDR = (uint32_t)pout;
-                CRPT->AES_CNT = len;
-
-                AES_Run(u32OptBasic | GHASH_MODE | FBIN | FBOUT | DMAEN | DMACC);
-            }
-            else
-            {
-                /* Next block data size is 0, it means current block size is not full size and this is last block */
-
-                /* copy last C data to inputblock for zero padding */
-                memcpy((uint8_t *)&inputblock[0], pin, len);
-                pin = (uint8_t *)&inputblock[0];
-
-                /* 16 bytes alignment check */
-                if(len & 0xf)
-                {
-                    /* zero padding */
-                    memset((void *)(pin + len), 0, 16 - (len & 0xf));
-
-                    /* len must be 16 bytes alignment */
-                    len = ((len + 16) >> 4) << 4;
-                }
-
-                /* append 64'bitlen(A) || 64'bitlen(C) */
-                pblock = (uint8_t *)pin + len;
-                *((uint64_t *)pblock) = alen * 8;
-                swap64(pblock);
-                pblock += 8;
-
-                *((uint64_t *)pblock) = plen * 8;
-                swap64(pblock);
-                pblock += 8;
-
-                /* adding the length of 64'bitlen(A) and 64'bitlen(C) */
-                len += 16;
-
-                CRPT->AES_SADDR = (uint32_t)pin;
-                CRPT->AES_DADDR = (uint32_t)pout;
-                CRPT->AES_CNT = len;
-
-                AES_Run(u32OptBasic | GHASH_MODE | FBIN | FBOUT | DMAEN | DMACC | DMALAST);
-
-            }
-
-            pin += len;
-        }
-    }
-
-    // CTR(IV, GHASH(128'align(A) || 128'align(C) || 64'bitlen(A) || 64'bitlen(C)))
-    // CTR calculation
-
-    /* Prepare IV */
-    if(ivlen != 12)
-    {
-        uint32_t u32ivbuf[4] = {0};
-        uint8_t *piv;
-
-        // IV = GHASH(128'align(IV) || 64'bitlen(0) || 64'bitlen(IV))
-
-        piv = (uint8_t *)&u32ivbuf[0];
-        AES_GCMPacker(iv, ivlen, 0, 0, 0, 0, ctx->gcm_buf, (uint32_t *)&len);
-
-        CRPT->AES_SADDR = (uint32_t)ctx->gcm_buf;
-        CRPT->AES_DADDR = (uint32_t)piv;
-        CRPT->AES_CNT = len;
-
-        if((ret = AES_Run(u32OptBasic | GHASH_MODE | DMAEN/* | DMALAST*/)))
-        {
-            return ret;
-        }
-
-        /* SET CTR IV */
-        for(i = 0; i < 4; i++)
-        {
-            CRPT->AES_IV[i] = (piv[i * 4 + 0] << 24) | (piv[i * 4 + 1] << 16) |
-                              (piv[i * 4 + 2] << 8) | piv[i * 4 + 3];
-        }
-    }
-    else
-    {
-        // IV = 128'align(IV) || 31'bitlen(0) || 1
-
-        /* SET CTR IV */
-        for(i = 0; i < 3; i++)
-        {
-            CRPT->AES_IV[i] = (iv[i * 4 + 0] << 24) | (iv[i * 4 + 1] << 16) |
-                              (iv[i * 4 + 2] << 8) | iv[i * 4 + 3];
-        }
-        CRPT->AES_IV[3] = 0x00000001;
-    }
-
-    CRPT->AES_SADDR = (uint32_t)&ghashbuf[0];
-    CRPT->AES_DADDR = (uint32_t)&tag[0];
-    CRPT->AES_CNT = 16;
-
-    ret = AES_Run(u32OptBasic | CTR_MODE | DMAEN /*| DMALAST*/);
-
-    memcpy(tagbuf, tag, 16);
-
-    return ret;
-}
-
-#if 0
-static void dump(char* buf, int size, char* str)
-{
-    int i;
-    printf("\r\n%s:", str);
-    for(i = 0; i < size; i++)
-    {
-        if((i % 16) == 0)
-            printf("\r\n");
-        printf("%02x ", buf[i]);
-    }
-    printf("\r\n");
-
-}
-#endif
 
 static int32_t _GCM(mbedtls_gcm_context *ctx, const uint8_t *iv, uint32_t ivlen, const uint8_t *A, uint32_t alen, const uint8_t *P, uint32_t plen, uint8_t *buf, uint8_t *tag, uint32_t tag_len)
 {
@@ -663,18 +433,6 @@ static int32_t _GCM(mbedtls_gcm_context *ctx, const uint8_t *iv, uint32_t ivlen,
         }
 
         memcpy(tag, ctx->out_buf+len_aligned, tag_len);
-    }
-
-    if(ctx->mode)
-    {
-        /* Need to calculate Tag when plen % 16 == 1 or 15 */
-        if(((plen & 0xf) == 1) || ((plen & 0xf) == 15))
-        {
-            if((ret = _GCMTag(ctx, iv, ivlen, A, alen, ctx->out_buf, plen, tag)))
-            {
-                return ret;
-            }
-        }
     }
 
     return 0;
