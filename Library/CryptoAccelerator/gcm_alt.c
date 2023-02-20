@@ -69,6 +69,7 @@
 #define CTR_MODE    (AES_MODE_CTR << CRPT_AES_CTL_OPMODE_Pos)
 
 
+
 /*
  * Initialize a context
  */
@@ -149,6 +150,7 @@ int mbedtls_gcm_setkey( mbedtls_gcm_context *ctx,
     for(i = 0; i < klen / 4; i++)
     {
         CRPT->AES_KEY[i] = au32Buf[i];
+        ctx->keys[i] = au32Buf[i];
     }
 
     /* Prepare key size option */
@@ -288,7 +290,7 @@ int32_t AES_GCMPacker(const uint8_t *iv, uint32_t iv_len, const uint8_t *A, uint
 
 static int32_t AES_Run(uint32_t u32Option)
 {
-    int32_t timeout = 0x1000000;
+    volatile int32_t timeout = 0x1000000;
 
     CRPT->AES_CTL = u32Option | START;
     /* Waiting for AES calculation */
@@ -316,17 +318,12 @@ static int32_t _GCM(mbedtls_gcm_context *ctx, const uint8_t *iv, uint32_t ivlen,
     uint32_t size;
     uint32_t key[8];
 
-    for(i = 0; i < 8; i++)
-    {
-        key[i] = CRPT->AES_KEY[i];
-    }
-
     SYS->IPRST0 = SYS_IPRST0_CRPTRST_Msk;
     SYS->IPRST0 = 0;
 
     for(i = 0; i < 8; i++)
     {
-        CRPT->AES_KEY[i] = key[i];
+        CRPT->AES_KEY[i] = ctx->keys[i];
     }
 
     u32OptBasic = ctx->basicOpt;
@@ -680,6 +677,7 @@ int mbedtls_gcm_finish( mbedtls_gcm_context *ctx,
 
     return( 0 );
 }
+
 
 int mbedtls_gcm_crypt_and_tag( mbedtls_gcm_context *ctx,
                                int mode,
