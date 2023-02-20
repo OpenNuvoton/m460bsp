@@ -91,6 +91,12 @@ add_subdirectory(${BSP_DIR}/Library/Device/Nuvoton/m460/Source)
 add_subdirectory(${BSP_DIR}/Library/CryptoAccelerator)
 add_subdirectory(${BSP_DIR}/ThirdParty/mbedtls-3.1.0/library)
 
+target_include_directories(mbedcrypto
+  PUBLIC
+    ${TOOLCHAIN_PATH}/include
+)
+
+
 # Library for mbedtls test
 add_library(test_lib
     ${BSP_DIR}/ThirdParty/mbedtls-3.1.0/tests/src/helpers.c
@@ -143,7 +149,10 @@ target_include_directories(test_lib
 #add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/HBI_ExeInHRAM)
 #add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/HBI_RW)
 #add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/HBI_RW_MemMap)
-add_subdirectory(${BSP_DIR}/SampleCode/NuMaker_M467HJ/TemperatureSensor)
+#add_subdirectory(${BSP_DIR}/SampleCode/NuMaker_M467HJ/TemperatureSensor)
+
+#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/CRYPTO_ECC_Demo)
+add_subdirectory(${BSP_DIR}/SampleCode/Crypto/mbedTLS_AES)
 
 
 

@@ -14,6 +14,11 @@
       "cmakeToolchain": "",
       "variables": [
         {
+          "name": "CMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES",
+          "value": "C:\\Keil_v5\\ARM\\ARMCLANG\\include",
+          "type": "PATH"
+        },
+        {
           "name": "CMAKE_MAKE_PROGRAM",
           "value": "C:\\cygwin64\\bin\\make.exe"
         }

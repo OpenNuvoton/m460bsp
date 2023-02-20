@@ -11,6 +11,20 @@
 #include "NuMicro.h"
 #include "common.h"
 #include "mbedtls/aes.h"
+//*** <<< Use Configuration Wizard in Context Menu >>> ***
+// <c0> Enable AES Test
+#define TEST_AES
+// </c>
+// <c0> Enable CCM Test
+#define TEST_CCM
+// </c>
+// <c0> Enable GCM Test
+#define TEST_GCM
+// </c>
+
+
+//*** <<< end of configuration section >>>    ***
+
 
 
 #define MBEDTLS_EXIT_SUCCESS    0
@@ -104,16 +118,22 @@ int32_t main(void)
     printf("Pure software crypto running.\n");
 #endif
 
+#ifdef TEST_AES
     g_u32Ticks = 0;
     i32Ret = mbedtls_aes_self_test(1);
     printf("Total elapsed time is %d ms\n", g_u32Ticks);
+#endif    
 
-#ifdef GCM_TEST
-    i32Ret = mbedtls_gcm_self_test(1);
+#ifdef TEST_GCM
+    g_u32Ticks = 0;
+    i32Ret |= mbedtls_gcm_self_test(1);
+    printf("Total elapsed time is %d ms\n", g_u32Ticks);
 #endif
 
-#ifdef CCM_TEST
-    i32Ret = mbedtls_ccm_self_test(1);
+#ifdef TEST_CCM
+    g_u32Ticks = 0;
+    i32Ret |= mbedtls_ccm_self_test(1);
+    printf("Total elapsed time is %d ms\n", g_u32Ticks);
 #endif
 
     if(i32Ret < 0)
