@@ -319,7 +319,7 @@ typedef struct
      * |        |          |0 = Auto-baud rate detect function Disabled.
      * |        |          |1 = Auto-baud rate detect function Enabled.
      * |        |          |Note: When the auto-baud rate detect operation finishes, hardware will clear this bit.
-     * |        |          |The associated interrupt ABRDETIF (UUART_PROTST[9]) will be generated (If ARBIEN (UUART_PROTIEN [1]) is enabled).
+     * |        |          |The associated interrupt ABRDETIF (UUART_PROTSTS[9]) will be generated (If ARBIEN (UUART_PROTIEN [1]) is enabled).
      * |[9]     |DATWKEN   |Data Wake-up Mode Enable Bit
      * |        |          |0 = Data wake-up mode Disabled.
      * |        |          |1 = Data wake-up mode Enabled.
@@ -331,7 +331,7 @@ typedef struct
      * |[24:16] |BRDETITV  |Baud Rate Detection Interval
      * |        |          |This bit fields indicate how many clock cycle selected by TMCNTSRC (UUART_BRGEN [5]) does the slave calculates the baud rate in one bits.
      * |        |          |The order of the bus shall be 1 and 0 step by step (e.g. the input data pattern shall be 0x55).
-     * |        |          |The user can read the value to know the current input baud rate of the bus whenever the ABRDETIF (UUART_PROTCTL[9]) is set.
+     * |        |          |The user can read the value to know the current input baud rate of the bus whenever the ABRDETIF (UUART_PROTSTS[9]) is set.
      * |        |          |Note: This bit can be cleared to 0 by software writing '0' to the BRDETITV.
      * |[26]    |STICKEN   |Stick Parity Enable Bit
      * |        |          |0 = Stick parity Disabled.
@@ -403,7 +403,7 @@ typedef struct
      * |        |          |Note: This bit can be cleared by write '1' among the BREAK, FRMERR and PARITYERR bits.
      * |[9]     |ABRDETIF  |Auto-baud Rate Interrupt Flag
      * |        |          |This bit is set when auto-baud rate detection is done among the falling edge of the input data.
-     * |        |          |If the ABRIEN (UUART_PROTCTL[6]) is set, the auto-baud rate interrupt will be generated.
+     * |        |          |If the ABRIEN (UUART_PROTIEN[1]) is set, the auto-baud rate interrupt will be generated.
      * |        |          |This bit can be set 4 times when the input data pattern is 0x55 and it is cleared before the next falling edge of the input bus.
      * |        |          |0 = Auto-baud rate detect function is not done.
      * |        |          |1 = One Bit auto-baud rate detect function is done.

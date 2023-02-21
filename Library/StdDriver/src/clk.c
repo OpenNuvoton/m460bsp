@@ -596,8 +596,8 @@ void CLK_SetHCLK(uint32_t u32ClkSrc, uint32_t u32ClkDiv)
   * |\ref SC2_MODULE     |\ref CLK_CLKSEL3_SC2SEL_PCLK0          |\ref CLK_CLKDIV1_SC2(x)        |
   * |\ref SC2_MODULE     |\ref CLK_CLKSEL3_SC2SEL_HIRC           |\ref CLK_CLKDIV1_SC2(x)        |
   * |\ref KPI_MODULE     |\ref CLK_CLKSEL3_KPISEL_HXT            |\ref CLK_CLKDIV2_KPI(x)        |
-  * |\ref KPI_MODULE     |\ref CLK_CLKSEL3_KPISEL_LIRC           |\ref CLK_CLKDIV1_KPI(x)        |
-  * |\ref KPI_MODULE     |\ref CLK_CLKSEL3_KPISEL_HIRC           |\ref CLK_CLKDIV1_KPI(x)        |
+  * |\ref KPI_MODULE     |\ref CLK_CLKSEL3_KPISEL_LIRC           |\ref CLK_CLKDIV2_KPI(x)        |
+  * |\ref KPI_MODULE     |\ref CLK_CLKSEL3_KPISEL_HIRC           |\ref CLK_CLKDIV2_KPI(x)        |
   * |\ref SPI2_MODULE    |\ref CLK_CLKSEL3_SPI2SEL_HXT           | x                             |
   * |\ref SPI2_MODULE    |\ref CLK_CLKSEL3_SPI2SEL_PLL_DIV2      | x                             |
   * |\ref SPI2_MODULE    |\ref CLK_CLKSEL3_SPI2SEL_PCLK1         | x                             |
@@ -1035,7 +1035,7 @@ void CLK_DisableModuleClock(uint32_t u32ModuleIdx)
   *             - \ref CLK_PLLCTL_PLLSRC_HIRC
   * @param[in]  u32PllFreq is PLL frequency. The range of u32PllFreq is 50 MHz ~ 500 MHz.
   * @return     PLL frequency
-  * @details    This function is used to configure PLLCTL register to set specified PLL frequency. \n
+  * @details    This function is used to configure CLK_PLLCTL register to set specified PLL frequency. \n
   *             The register write-protection function should be disabled before using this function.
   */
 uint32_t CLK_EnablePLL(uint32_t u32PllClkSrc, uint32_t u32PllFreq)
@@ -1043,8 +1043,17 @@ uint32_t CLK_EnablePLL(uint32_t u32PllClkSrc, uint32_t u32PllFreq)
     uint32_t u32PllSrcClk, u32NR, u32NF, u32NO, u32PllClk;
     uint32_t u32Tmp, u32Tmp2, u32Tmp3, u32Min, u32MinNF, u32MinNR;
 
-    /* Disable PLL first to avoid unstable when setting PLL */
-    CLK->PLLCTL |= CLK_PLLCTL_PD_Msk;
+    /* Check if HCLK is PLL before configure PLL */
+    if( (CLK->CLKSEL0 & CLK_CLKSEL0_HCLKSEL_Msk) == CLK_CLKSEL0_HCLKSEL_PLL )
+    {
+        /* Return PLL frequency directly if HCLK is PLL */
+        return CLK_GetPLLClockFreq();
+    }
+    else
+    {
+        /* Disable PLL first to avoid unstable when setting PLL */
+        CLK->PLLCTL |= CLK_PLLCTL_PD_Msk;
+    }
 
     /* PLL source clock is from HXT */
     if(u32PllClkSrc == CLK_PLLCTL_PLLSRC_HXT)

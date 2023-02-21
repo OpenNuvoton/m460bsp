@@ -175,7 +175,7 @@ int main()
     printf("+---------------------------+\n");
 
     printf("+---------------------------+\n");
-    printf("|   Dump APPROT Seetings    |\n");
+    printf("|   Dump APPROT Settings    |\n");
     printf("+---------------------------+\n");
     for(i = 0; i < 32; i++)
     {
@@ -279,7 +279,7 @@ int main()
 
                 if(i32ISPSTS == 0)
                 {
-                    printf("line(%d)[FAIL]ISP erase shoule be fail, i32ISPSTS = [0x%x] \n", __LINE__, i32ISPSTS);
+                    printf("line(%d)[FAIL]ISP erase should be fail, i32ISPSTS = [0x%x] \n", __LINE__, i32ISPSTS);
                     goto lexit;
                 }
             }

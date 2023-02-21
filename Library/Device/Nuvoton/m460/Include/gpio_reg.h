@@ -1021,77 +1021,77 @@ typedef struct
 #define GPIO_INT_INNF_NFCNT_Pos          (8)                                               /*!< GPIO_T::INT_INNF: NFCNT Position       */
 #define GPIO_INT_INNF_NFCNT_Msk          (0x7ul << GPIO_INT_INNF_NFCNT_Pos)                /*!< GPIO_T::INT_INNF: NFCNT Mask           */
 
-#define GPIO_INT_EDETCTL_EDETCTL0_Pos    (0)                                               /*!< GPIO_T::INT_EDETCTL: EDETCTL0 Position */
-#define GPIO_INT_EDETCTL_EDETCTL0_Msk    (0x3ul << GPIO_INT_EDETCTL_EDETCTL0_Pos)          /*!< GPIO_T::INT_EDETCTL: EDETCTL0 Mask     */
+#define GPIO_INT_EDETCTL_EDETCTL0_Pos    (0)                                               /*!< GPIO_INT_T::INT_EDETCTL: EDETCTL0 Position */
+#define GPIO_INT_EDETCTL_EDETCTL0_Msk    (0x3ul << GPIO_INT_EDETCTL_EDETCTL0_Pos)          /*!< GPIO_INT_T::INT_EDETCTL: EDETCTL0 Mask     */
 
-#define GPIO_INT_EDETCTL_EDETCTL1_Pos    (2)                                               /*!< GPIO_T::INT_EDETCTL: EDETCTL1 Position */
-#define GPIO_INT_EDETCTL_EDETCTL1_Msk    (0x3ul << GPIO_INT_EDETCTL_EDETCTL1_Pos)          /*!< GPIO_T::INT_EDETCTL: EDETCTL1 Mask     */
+#define GPIO_INT_EDETCTL_EDETCTL1_Pos    (2)                                               /*!< GPIO_INT_T::INT_EDETCTL: EDETCTL1 Position */
+#define GPIO_INT_EDETCTL_EDETCTL1_Msk    (0x3ul << GPIO_INT_EDETCTL_EDETCTL1_Pos)          /*!< GPIO_INT_T::INT_EDETCTL: EDETCTL1 Mask     */
 
-#define GPIO_INT_EDETCTL_EDETCTL2_Pos    (4)                                               /*!< GPIO_T::INT_EDETCTL: EDETCTL2 Position */
-#define GPIO_INT_EDETCTL_EDETCTL2_Msk    (0x3ul << GPIO_INT_EDETCTL_EDETCTL2_Pos)          /*!< GPIO_T::INT_EDETCTL: EDETCTL2 Mask     */
+#define GPIO_INT_EDETCTL_EDETCTL2_Pos    (4)                                               /*!< GPIO_INT_T::INT_EDETCTL: EDETCTL2 Position */
+#define GPIO_INT_EDETCTL_EDETCTL2_Msk    (0x3ul << GPIO_INT_EDETCTL_EDETCTL2_Pos)          /*!< GPIO_INT_T::INT_EDETCTL: EDETCTL2 Mask     */
 
-#define GPIO_INT_EDETCTL_EDETCTL3_Pos    (6)                                               /*!< GPIO_T::INT_EDETCTL: EDETCTL3 Position */
-#define GPIO_INT_EDETCTL_EDETCTL3_Msk    (0x3ul << GPIO_INT_EDETCTL_EDETCTL3_Pos)          /*!< GPIO_T::INT_EDETCTL: EDETCTL3 Mask     */
+#define GPIO_INT_EDETCTL_EDETCTL3_Pos    (6)                                               /*!< GPIO_INT_T::INT_EDETCTL: EDETCTL3 Position */
+#define GPIO_INT_EDETCTL_EDETCTL3_Msk    (0x3ul << GPIO_INT_EDETCTL_EDETCTL3_Pos)          /*!< GPIO_INT_T::INT_EDETCTL: EDETCTL3 Mask     */
 
-#define GPIO_INT_EDETCTL_EDETCTL4_Pos    (8)                                               /*!< GPIO_T::INT_EDETCTL: EDETCTL4 Position */
-#define GPIO_INT_EDETCTL_EDETCTL4_Msk    (0x3ul << GPIO_INT_EDETCTL_EDETCTL4_Pos)          /*!< GPIO_T::INT_EDETCTL: EDETCTL4 Mask     */
+#define GPIO_INT_EDETCTL_EDETCTL4_Pos    (8)                                               /*!< GPIO_INT_T::INT_EDETCTL: EDETCTL4 Position */
+#define GPIO_INT_EDETCTL_EDETCTL4_Msk    (0x3ul << GPIO_INT_EDETCTL_EDETCTL4_Pos)          /*!< GPIO_INT_T::INT_EDETCTL: EDETCTL4 Mask     */
 
-#define GPIO_INT_EDETCTL_EDETCTL5_Pos    (10)                                              /*!< GPIO_T::INT_EDETCTL: EDETCTL5 Position */
-#define GPIO_INT_EDETCTL_EDETCTL5_Msk    (0x3ul << GPIO_INT_EDETCTL_EDETCTL5_Pos)          /*!< GPIO_T::INT_EDETCTL: EDETCTL5 Mask     */
+#define GPIO_INT_EDETCTL_EDETCTL5_Pos    (10)                                              /*!< GPIO_INT_T::INT_EDETCTL: EDETCTL5 Position */
+#define GPIO_INT_EDETCTL_EDETCTL5_Msk    (0x3ul << GPIO_INT_EDETCTL_EDETCTL5_Pos)          /*!< GPIO_INT_T::INT_EDETCTL: EDETCTL5 Mask     */
 
-#define GPIO_INT_EDETCTL_EDETCTL6_Pos    (12)                                              /*!< GPIO_T::INT_EDETCTL: EDETCTL6 Position */
-#define GPIO_INT_EDETCTL_EDETCTL6_Msk    (0x3ul << GPIO_INT_EDETCTL_EDETCTL6_Pos)          /*!< GPIO_T::INT_EDETCTL: EDETCTL6 Mask     */
+#define GPIO_INT_EDETCTL_EDETCTL6_Pos    (12)                                              /*!< GPIO_INT_T::INT_EDETCTL: EDETCTL6 Position */
+#define GPIO_INT_EDETCTL_EDETCTL6_Msk    (0x3ul << GPIO_INT_EDETCTL_EDETCTL6_Pos)          /*!< GPIO_INT_T::INT_EDETCTL: EDETCTL6 Mask     */
 
-#define GPIO_INT_EDETCTL_EDETCTL7_Pos    (14)                                              /*!< GPIO_T::INT_EDETCTL: EDETCTL7 Position */
-#define GPIO_INT_EDETCTL_EDETCTL7_Msk    (0x3ul << GPIO_INT_EDETCTL_EDETCTL7_Pos)          /*!< GPIO_T::INT_EDETCTL: EDETCTL7 Mask     */
+#define GPIO_INT_EDETCTL_EDETCTL7_Pos    (14)                                              /*!< GPIO_INT_T::INT_EDETCTL: EDETCTL7 Position */
+#define GPIO_INT_EDETCTL_EDETCTL7_Msk    (0x3ul << GPIO_INT_EDETCTL_EDETCTL7_Pos)          /*!< GPIO_INT_T::INT_EDETCTL: EDETCTL7 Mask     */
 
-#define GPIO_INT_EDINTEN_EDIEN0_Pos      (0)                                               /*!< GPIO_T::INT_EDINTEN: EDIEN0 Position   */
-#define GPIO_INT_EDINTEN_EDIEN0_Msk      (0x1ul << GPIO_INT_EDINTEN_EDIEN0_Pos)            /*!< GPIO_T::INT_EDINTEN: EDIEN0 Mask       */
+#define GPIO_INT_EDINTEN_EDIEN0_Pos      (0)                                               /*!< GPIO_INT_T::INT_EDINTEN: EDIEN0 Position   */
+#define GPIO_INT_EDINTEN_EDIEN0_Msk      (0x1ul << GPIO_INT_EDINTEN_EDIEN0_Pos)            /*!< GPIO_INT_T::INT_EDINTEN: EDIEN0 Mask       */
 
-#define GPIO_INT_EDINTEN_EDIEN1_Pos      (1)                                               /*!< GPIO_T::INT_EDINTEN: EDIEN1 Position   */
-#define GPIO_INT_EDINTEN_EDIEN1_Msk      (0x1ul << GPIO_INT_EDINTEN_EDIEN1_Pos)            /*!< GPIO_T::INT_EDINTEN: EDIEN1 Mask       */
+#define GPIO_INT_EDINTEN_EDIEN1_Pos      (1)                                               /*!< GPIO_INT_T::INT_EDINTEN: EDIEN1 Position   */
+#define GPIO_INT_EDINTEN_EDIEN1_Msk      (0x1ul << GPIO_INT_EDINTEN_EDIEN1_Pos)            /*!< GPIO_INT_T::INT_EDINTEN: EDIEN1 Mask       */
 
-#define GPIO_INT_EDINTEN_EDIEN2_Pos      (2)                                               /*!< GPIO_T::INT_EDINTEN: EDIEN2 Position   */
-#define GPIO_INT_EDINTEN_EDIEN2_Msk      (0x1ul << GPIO_INT_EDINTEN_EDIEN2_Pos)            /*!< GPIO_T::INT_EDINTEN: EDIEN2 Mask       */
+#define GPIO_INT_EDINTEN_EDIEN2_Pos      (2)                                               /*!< GPIO_INT_T::INT_EDINTEN: EDIEN2 Position   */
+#define GPIO_INT_EDINTEN_EDIEN2_Msk      (0x1ul << GPIO_INT_EDINTEN_EDIEN2_Pos)            /*!< GPIO_INT_T::INT_EDINTEN: EDIEN2 Mask       */
 
-#define GPIO_INT_EDINTEN_EDIEN3_Pos      (3)                                               /*!< GPIO_T::INT_EDINTEN: EDIEN3 Position   */
-#define GPIO_INT_EDINTEN_EDIEN3_Msk      (0x1ul << GPIO_INT_EDINTEN_EDIEN3_Pos)            /*!< GPIO_T::INT_EDINTEN: EDIEN3 Mask       */
+#define GPIO_INT_EDINTEN_EDIEN3_Pos      (3)                                               /*!< GPIO_INT_T::INT_EDINTEN: EDIEN3 Position   */
+#define GPIO_INT_EDINTEN_EDIEN3_Msk      (0x1ul << GPIO_INT_EDINTEN_EDIEN3_Pos)            /*!< GPIO_INT_T::INT_EDINTEN: EDIEN3 Mask       */
 
-#define GPIO_INT_EDINTEN_EDIEN4_Pos      (4)                                               /*!< GPIO_T::INT_EDINTEN: EDIEN4 Position   */
-#define GPIO_INT_EDINTEN_EDIEN4_Msk      (0x1ul << GPIO_INT_EDINTEN_EDIEN4_Pos)            /*!< GPIO_T::INT_EDINTEN: EDIEN4 Mask       */
+#define GPIO_INT_EDINTEN_EDIEN4_Pos      (4)                                               /*!< GPIO_INT_T::INT_EDINTEN: EDIEN4 Position   */
+#define GPIO_INT_EDINTEN_EDIEN4_Msk      (0x1ul << GPIO_INT_EDINTEN_EDIEN4_Pos)            /*!< GPIO_INT_T::INT_EDINTEN: EDIEN4 Mask       */
 
-#define GPIO_INT_EDINTEN_EDIEN5_Pos      (5)                                               /*!< GPIO_T::INT_EDINTEN: EDIEN5 Position   */
-#define GPIO_INT_EDINTEN_EDIEN5_Msk      (0x1ul << GPIO_INT_EDINTEN_EDIEN5_Pos)            /*!< GPIO_T::INT_EDINTEN: EDIEN5 Mask       */
+#define GPIO_INT_EDINTEN_EDIEN5_Pos      (5)                                               /*!< GPIO_INT_T::INT_EDINTEN: EDIEN5 Position   */
+#define GPIO_INT_EDINTEN_EDIEN5_Msk      (0x1ul << GPIO_INT_EDINTEN_EDIEN5_Pos)            /*!< GPIO_INT_T::INT_EDINTEN: EDIEN5 Mask       */
 
-#define GPIO_INT_EDINTEN_EDIEN6_Pos      (6)                                               /*!< GPIO_T::INT_EDINTEN: EDIEN6 Position   */
-#define GPIO_INT_EDINTEN_EDIEN6_Msk      (0x1ul << GPIO_INT_EDINTEN_EDIEN6_Pos)            /*!< GPIO_T::INT_EDINTEN: EDIEN6 Mask       */
+#define GPIO_INT_EDINTEN_EDIEN6_Pos      (6)                                               /*!< GPIO_INT_T::INT_EDINTEN: EDIEN6 Position   */
+#define GPIO_INT_EDINTEN_EDIEN6_Msk      (0x1ul << GPIO_INT_EDINTEN_EDIEN6_Pos)            /*!< GPIO_INT_T::INT_EDINTEN: EDIEN6 Mask       */
 
-#define GPIO_INT_EDINTEN_EDIEN7_Pos      (7)                                               /*!< GPIO_T::INT_EDINTEN: EDIEN7 Position   */
-#define GPIO_INT_EDINTEN_EDIEN7_Msk      (0x1ul << GPIO_INT_EDINTEN_EDIEN7_Pos)            /*!< GPIO_T::INT_EDINTEN: EDIEN7 Mask       */
+#define GPIO_INT_EDINTEN_EDIEN7_Pos      (7)                                               /*!< GPIO_INT_T::INT_EDINTEN: EDIEN7 Position   */
+#define GPIO_INT_EDINTEN_EDIEN7_Msk      (0x1ul << GPIO_INT_EDINTEN_EDIEN7_Pos)            /*!< GPIO_INT_T::INT_EDINTEN: EDIEN7 Mask       */
 
-#define GPIO_INT_EDSTS_EDIF0_Pos         (0)                                               /*!< GPIO_T::INT_EDSTS: EDIF0 Position      */
-#define GPIO_INT_EDSTS_EDIF0_Msk         (0x1ul << GPIO_INT_EDSTS_EDIF0_Pos)               /*!< GPIO_T::INT_EDSTS: EDIF0 Mask          */
+#define GPIO_INT_EDSTS_EDIF0_Pos         (0)                                               /*!< GPIO_INT_T::INT_EDSTS: EDIF0 Position      */
+#define GPIO_INT_EDSTS_EDIF0_Msk         (0x1ul << GPIO_INT_EDSTS_EDIF0_Pos)               /*!< GPIO_INT_T::INT_EDSTS: EDIF0 Mask          */
 
-#define GPIO_INT_EDSTS_EDIF1_Pos         (1)                                               /*!< GPIO_T::INT_EDSTS: EDIF1 Position      */
-#define GPIO_INT_EDSTS_EDIF1_Msk         (0x1ul << GPIO_INT_EDSTS_EDIF1_Pos)               /*!< GPIO_T::INT_EDSTS: EDIF1 Mask          */
+#define GPIO_INT_EDSTS_EDIF1_Pos         (1)                                               /*!< GPIO_INT_T::INT_EDSTS: EDIF1 Position      */
+#define GPIO_INT_EDSTS_EDIF1_Msk         (0x1ul << GPIO_INT_EDSTS_EDIF1_Pos)               /*!< GPIO_INT_T::INT_EDSTS: EDIF1 Mask          */
 
-#define GPIO_INT_EDSTS_EDIF2_Pos         (2)                                               /*!< GPIO_T::INT_EDSTS: EDIF2 Position      */
-#define GPIO_INT_EDSTS_EDIF2_Msk         (0x1ul << GPIO_INT_EDSTS_EDIF2_Pos)               /*!< GPIO_T::INT_EDSTS: EDIF2 Mask          */
+#define GPIO_INT_EDSTS_EDIF2_Pos         (2)                                               /*!< GPIO_INT_T::INT_EDSTS: EDIF2 Position      */
+#define GPIO_INT_EDSTS_EDIF2_Msk         (0x1ul << GPIO_INT_EDSTS_EDIF2_Pos)               /*!< GPIO_INT_T::INT_EDSTS: EDIF2 Mask          */
 
-#define GPIO_INT_EDSTS_EDIF3_Pos         (3)                                               /*!< GPIO_T::INT_EDSTS: EDIF3 Position      */
-#define GPIO_INT_EDSTS_EDIF3_Msk         (0x1ul << GPIO_INT_EDSTS_EDIF3_Pos)               /*!< GPIO_T::INT_EDSTS: EDIF3 Mask          */
+#define GPIO_INT_EDSTS_EDIF3_Pos         (3)                                               /*!< GPIO_INT_T::INT_EDSTS: EDIF3 Position      */
+#define GPIO_INT_EDSTS_EDIF3_Msk         (0x1ul << GPIO_INT_EDSTS_EDIF3_Pos)               /*!< GPIO_INT_T::INT_EDSTS: EDIF3 Mask          */
 
-#define GPIO_INT_EDSTS_EDIF4_Pos         (4)                                               /*!< GPIO_T::INT_EDSTS: EDIF4 Position      */
-#define GPIO_INT_EDSTS_EDIF4_Msk         (0x1ul << GPIO_INT_EDSTS_EDIF4_Pos)               /*!< GPIO_T::INT_EDSTS: EDIF4 Mask          */
+#define GPIO_INT_EDSTS_EDIF4_Pos         (4)                                               /*!< GPIO_INT_T::INT_EDSTS: EDIF4 Position      */
+#define GPIO_INT_EDSTS_EDIF4_Msk         (0x1ul << GPIO_INT_EDSTS_EDIF4_Pos)               /*!< GPIO_INT_T::INT_EDSTS: EDIF4 Mask          */
 
-#define GPIO_INT_EDSTS_EDIF5_Pos         (5)                                               /*!< GPIO_T::INT_EDSTS: EDIF5 Position      */
-#define GPIO_INT_EDSTS_EDIF5_Msk         (0x1ul << GPIO_INT_EDSTS_EDIF5_Pos)               /*!< GPIO_T::INT_EDSTS: EDIF5 Mask          */
+#define GPIO_INT_EDSTS_EDIF5_Pos         (5)                                               /*!< GPIO_INT_T::INT_EDSTS: EDIF5 Position      */
+#define GPIO_INT_EDSTS_EDIF5_Msk         (0x1ul << GPIO_INT_EDSTS_EDIF5_Pos)               /*!< GPIO_INT_T::INT_EDSTS: EDIF5 Mask          */
 
-#define GPIO_INT_EDSTS_EDIF6_Pos         (6)                                               /*!< GPIO_T::INT_EDSTS: EDIF6 Position      */
-#define GPIO_INT_EDSTS_EDIF6_Msk         (0x1ul << GPIO_INT_EDSTS_EDIF6_Pos)               /*!< GPIO_T::INT_EDSTS: EDIF6 Mask          */
+#define GPIO_INT_EDSTS_EDIF6_Pos         (6)                                               /*!< GPIO_INT_T::INT_EDSTS: EDIF6 Position      */
+#define GPIO_INT_EDSTS_EDIF6_Msk         (0x1ul << GPIO_INT_EDSTS_EDIF6_Pos)               /*!< GPIO_INT_T::INT_EDSTS: EDIF6 Mask          */
 
-#define GPIO_INT_EDSTS_EDIF7_Pos         (7)                                               /*!< GPIO_T::INT_EDSTS: EDIF7 Position      */
-#define GPIO_INT_EDSTS_EDIF7_Msk         (0x1ul << GPIO_INT_EDSTS_EDIF7_Pos)               /*!< GPIO_T::INT_EDSTS: EDIF7 Mask          */
+#define GPIO_INT_EDSTS_EDIF7_Pos         (7)                                               /*!< GPIO_INT_T::INT_EDSTS: EDIF7 Position      */
+#define GPIO_INT_EDSTS_EDIF7_Msk         (0x1ul << GPIO_INT_EDSTS_EDIF7_Pos)               /*!< GPIO_INT_T::INT_EDSTS: EDIF7 Mask          */
 
 /**@}*/ /* GPIO_CONST */
 /**@}*/ /* end of GPIO register group */

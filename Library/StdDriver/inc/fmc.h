@@ -174,7 +174,7 @@ __STATIC_INLINE uint32_t FMC_GetVECMAP(void)
   * @brief    Read company ID
   * @param    None
   * @return   The company ID (32-bit). 0xFFFFFFFF means read failed.
-  * @details  The company ID of Nuvoton is fixed to be 0xDA
+  * @details  The company ID of Nuvoton is fixed to be 0x530000DA
   *
   * @note     Global error code g_FMC_i32ErrCode
   *           -1  Read time-out

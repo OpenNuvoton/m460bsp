@@ -295,7 +295,7 @@ int32_t main(void)
     /* Init UART0 for printf */
     UART0_Init();
 
-    /* Clear SPD/DPD mode wake-up status for enterning SPD/DPD mode again */
+    /* Clear SPD/DPD mode wake-up status for entering SPD/DPD mode again */
     u32PMUSTS = CLK->PMUSTS;
     if( CLK->PMUSTS )
     {
@@ -421,7 +421,7 @@ int32_t main(void)
     /* Select SPD mode SRAM retention size */
     CLK->PMUCTL = (CLK->PMUCTL & (~CLK_PMUCTL_SRETSEL_Msk)) | (SET_SRETSEL<<CLK_PMUCTL_SRETSEL_Pos);
 
-    /* Wake-up source configuraion */
+    /* Wake-up source configuration */
     if( ( SET_PDMSEL == CLK_PMUCTL_PDMSEL_PD ) ||
         ( SET_PDMSEL == CLK_PMUCTL_PDMSEL_LLPD ) ||
         ( SET_PDMSEL == CLK_PMUCTL_PDMSEL_FWPD ) )
@@ -433,10 +433,12 @@ int32_t main(void)
     }
     else if( SET_PDMSEL == CLK_PMUCTL_PDMSEL_SPD )
     {
+        /* Enable wake-up pin PB.2 falling edge wake-up at SPD mode */
         CLK_EnableSPDWKPin(1, 2, CLK_SPDWKPIN_FALLING, CLK_SPDWKPIN_DEBOUNCEDIS);
     }
     else if( SET_PDMSEL == CLK_PMUCTL_PDMSEL_DPD )
     {
+        /* Eable wake-up pin 2 (PB.2) falling edge wake-up at DPD mode */
         CLK_EnableDPDWKPin(CLK_DPDWKPIN2_FALLING);
     }
     else

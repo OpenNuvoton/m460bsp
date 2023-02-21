@@ -129,6 +129,7 @@ int main(void)
     file).  See the comments at the top of this file for more information. */
     //prvOptionallyCreateComprehensveTestApplication();
 
+    printf("Toggle LED_R/Y/G(PH.4~PH.6)\n");
     printf("FreeRTOS is starting ...\n");
 
     /* Start the scheduler. */
