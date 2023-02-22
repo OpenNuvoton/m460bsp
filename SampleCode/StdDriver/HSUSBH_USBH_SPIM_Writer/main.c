@@ -89,10 +89,9 @@ void delay_us(int usec)
  *  Set stack base address to SP register.
  */
 #ifdef __ARMCC_VERSION                 /* for Keil compiler */
-__asm __set_SP(uint32_t _sp)
+void __set_SP(uint32_t _sp)
 {
-    MSR MSP, r0
-    BX lr
+    __set_MSP(_sp);
 }
 #endif
 
@@ -656,7 +655,8 @@ int  go_to_flash(char *cmdline)
 
     SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;   /* disable SYSTICK (prevent interrupt)   */
 
-#ifdef __GNUC__                        /* for GNU C compiler */
+#if (defined(__GNUC__) && !defined(__ARMCC_VERSION))
+    /* for GNU C compiler */
     asm volatile("msr msp, r0");
     asm volatile("bx  lr");
 #else

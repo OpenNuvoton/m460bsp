@@ -10,14 +10,14 @@
       <TargetName>FMC_MultiBoot</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6150000::V6.15::ARMCLANG</pCCUsed>
+      <pCCUsed>6160000::V6.16::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>M467HJHAE</Device>
           <Vendor>Nuvoton</Vendor>
-          <PackID>Nuvoton.NuMicro_DFP.1.3.15</PackID>
-          <PackURL>https://github.com/OpenNuvoton/cmsis-packs/raw/master/</PackURL>
+          <PackID>Nuvoton.NuMicro_DFP.1.3.19</PackID>
+          <PackURL>https://github.com/OpenNuvoton/cmsis-packs/raw/master/Nuvoton_DFP/</PackURL>
           <Cpu>IRAM(0x20000000-0x20027FFF) IROM(0-0x7FFFF) CLOCK(50000000) CPUTYPE("Cortex-M4") FPU2</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile>undefined</StartupFile>
@@ -441,14 +441,14 @@
       <TargetName>FMC_Boot0</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
+      <pCCUsed>6160000::V6.16::ARMCLANG</pCCUsed>
+      <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>M467HJHAE</Device>
           <Vendor>Nuvoton</Vendor>
-          <PackID>Nuvoton.NuMicro_DFP.1.3.15</PackID>
-          <PackURL>https://github.com/OpenNuvoton/cmsis-packs/raw/master/</PackURL>
+          <PackID>Nuvoton.NuMicro_DFP.1.3.19</PackID>
+          <PackURL>https://github.com/OpenNuvoton/cmsis-packs/raw/master/Nuvoton_DFP/</PackURL>
           <Cpu>IRAM(0x20000000-0x20027FFF) IROM(0-0x7FFFF) CLOCK(50000000) CPUTYPE("Cortex-M4") FPU2</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile>undefined</StartupFile>
@@ -872,14 +872,14 @@
       <TargetName>FMC_Boot1</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
+      <pCCUsed>6160000::V6.16::ARMCLANG</pCCUsed>
+      <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>M467HJHAE</Device>
           <Vendor>Nuvoton</Vendor>
-          <PackID>Nuvoton.NuMicro_DFP.1.3.15</PackID>
-          <PackURL>https://github.com/OpenNuvoton/cmsis-packs/raw/master/</PackURL>
+          <PackID>Nuvoton.NuMicro_DFP.1.3.19</PackID>
+          <PackURL>https://github.com/OpenNuvoton/cmsis-packs/raw/master/Nuvoton_DFP/</PackURL>
           <Cpu>IRAM(0x20000000-0x20027FFF) IROM(0-0x7FFFF) CLOCK(50000000) CPUTYPE("Cortex-M4") FPU2</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile>undefined</StartupFile>
@@ -1303,14 +1303,14 @@
       <TargetName>FMC_Boot2</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
+      <pCCUsed>6160000::V6.16::ARMCLANG</pCCUsed>
+      <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>M467HJHAE</Device>
           <Vendor>Nuvoton</Vendor>
-          <PackID>Nuvoton.NuMicro_DFP.1.3.15</PackID>
-          <PackURL>https://github.com/OpenNuvoton/cmsis-packs/raw/master/</PackURL>
+          <PackID>Nuvoton.NuMicro_DFP.1.3.19</PackID>
+          <PackURL>https://github.com/OpenNuvoton/cmsis-packs/raw/master/Nuvoton_DFP/</PackURL>
           <Cpu>IRAM(0x20000000-0x20027FFF) IROM(0-0x7FFFF) CLOCK(50000000) CPUTYPE("Cortex-M4") FPU2</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile>undefined</StartupFile>
@@ -1734,14 +1734,14 @@
       <TargetName>FMC_Boot3</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
+      <pCCUsed>6160000::V6.16::ARMCLANG</pCCUsed>
+      <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>M467HJHAE</Device>
           <Vendor>Nuvoton</Vendor>
-          <PackID>Nuvoton.NuMicro_DFP.1.3.15</PackID>
-          <PackURL>https://github.com/OpenNuvoton/cmsis-packs/raw/master/</PackURL>
+          <PackID>Nuvoton.NuMicro_DFP.1.3.19</PackID>
+          <PackURL>https://github.com/OpenNuvoton/cmsis-packs/raw/master/Nuvoton_DFP/</PackURL>
           <Cpu>IRAM(0x20000000-0x20027FFF) IROM(0-0x7FFFF) CLOCK(50000000) CPUTYPE("Cortex-M4") FPU2</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile>undefined</StartupFile>
@@ -2165,14 +2165,14 @@
       <TargetName>FMC_BootLD</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
+      <pCCUsed>6150000::V6.15::ARMCLANG</pCCUsed>
+      <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>M467HJHAE</Device>
           <Vendor>Nuvoton</Vendor>
-          <PackID>Nuvoton.NuMicro_DFP.1.3.15</PackID>
-          <PackURL>https://github.com/OpenNuvoton/cmsis-packs/raw/master/</PackURL>
+          <PackID>Nuvoton.NuMicro_DFP.1.3.19</PackID>
+          <PackURL>https://github.com/OpenNuvoton/cmsis-packs/raw/master/Nuvoton_DFP/</PackURL>
           <Cpu>IRAM(0x20000000-0x20027FFF) IROM(0-0x7FFFF) CLOCK(50000000) CPUTYPE("Cortex-M4") FPU2</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile>undefined</StartupFile>
