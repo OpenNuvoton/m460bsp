@@ -4,7 +4,6 @@ To experience the powerful features of M460 in few minutes, please refer to NuMa
 
 ## .\Document\
 
-
 - CMSIS.html<br>
 	Introduction of CMSIS version 5.0. CMSIS components included CMSIS-CORE, CMSIS-Driver, CMSIS-DSP, etc.
 
@@ -16,11 +15,10 @@ To experience the powerful features of M460 in few minutes, please refer to NuMa
 
 ## .\Library\
 
-
 - CMSIS<br>
 	Cortex® Microcontroller Software Interface Standard (CMSIS) V5.0 definitions by ARM® Corp.
 
-- CryptoAccellerator<br>
+- CryptoAccelerator<br>
 	Library for mbed TLS crypto.
 
 - Device<br>
@@ -87,9 +85,6 @@ To experience the powerful features of M460 in few minutes, please refer to NuMa
 - lwIP<br>
 	A widely used open source TCP/IP stack designed for embedded systems.
 
-- mbedtls-2.13.0<br>
-	A portable, easy to use, readable and flexible SSL library.
-
 - mbedtls-3.1.0<br>
 	mbed TLS offers an SSL library with an intuitive API and readable source code, so you can actually understand what the code does.
 
@@ -99,7 +94,7 @@ To experience the powerful features of M460 in few minutes, please refer to NuMa
 - shine<br>
 	A blazing fast MP3 encoding library implemented in fixed-point arithmetic.
 
-# Licesne
+# License
 
 **SPDX-License-Identifier: Apache-2.0**
 
