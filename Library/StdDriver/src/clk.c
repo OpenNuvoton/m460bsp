@@ -1636,7 +1636,7 @@ void CLK_DisablePLLFN(void)
 uint32_t CLK_EnablePLLFN(uint32_t u32PllClkSrc, uint32_t u32PllFreq)
 {
     uint32_t u32FIN, u32FVCO, u32FREF, u32PllClk;
-    uint32_t u32NR = 0UL, u32NF, u32NO, u32X = 0UL;
+    uint32_t u32NR = 0UL, u32NF = 0UL, u32NO, u32X = 0UL;
     float fNX_X = 0.0, fX = 0.0;
 
     /* Disable PLLFN first to avoid unstable when setting PLLFN */
@@ -1710,15 +1710,18 @@ uint32_t CLK_EnablePLLFN(uint32_t u32PllClkSrc, uint32_t u32PllFreq)
             }
         }
 
-        /* Enable and apply new PLLFN setting. */
-        CLK->PLLFNCTL0 = (u32X << CLK_PLLFNCTL0_FRDIV_Pos) |
-                         (u32NO << CLK_PLLFNCTL0_OUTDIV_Pos) |
-                         ((u32NR - 1UL) << CLK_PLLFNCTL0_INDIV_Pos) |
-                         ((u32NF - 2UL) << CLK_PLLFNCTL0_FBDIV_Pos);
-        CLK->PLLFNCTL1 = u32PllClkSrc;
+        if(u32NR <= 32UL)
+        {
+            /* Enable and apply new PLLFN setting. */
+            CLK->PLLFNCTL0 = (u32X << CLK_PLLFNCTL0_FRDIV_Pos) |
+                             (u32NO << CLK_PLLFNCTL0_OUTDIV_Pos) |
+                             ((u32NR - 1UL) << CLK_PLLFNCTL0_INDIV_Pos) |
+                             ((u32NF - 2UL) << CLK_PLLFNCTL0_FBDIV_Pos);
+            CLK->PLLFNCTL1 = u32PllClkSrc;
 
-        /* Actual PLL output clock frequency. FOUT = (FIN/NR)*2*(NF.X)*(1/NO) */
-        u32PllClk = (uint32_t)((float)u32FIN / (((u32NO + 1UL) * u32NR)<<11) * ((u32NF<<12)+u32X));
+            /* Actual PLL output clock frequency. FOUT = (FIN/NR)*2*(NF.X)*(1/NO) */
+            u32PllClk = (uint32_t)((float)u32FIN / (((u32NO + 1UL) * u32NR)<<11) * ((u32NF<<12)+u32X));
+        }
     }
 
     if((u32PllFreq > FREQ_500MHZ) || (u32PllFreq < FREQ_50MHZ) || (u32NR==33) )

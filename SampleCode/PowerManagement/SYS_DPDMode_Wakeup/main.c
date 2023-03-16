@@ -34,7 +34,7 @@
 //      <0=> Disable
 //      <1=> Enable
 */
-#define SET_LIRC       0
+#define SET_LIRC      0
 
 /*
 // <o0> LXT
@@ -328,7 +328,17 @@ void CheckPowerSource(void)
     printf("Power manager Power Manager Status 0x%x\n", u32RegRstsrc);
 
     if((u32RegRstsrc & CLK_PMUSTS_RTCWK_Msk) != 0)
-        printf("Wake-up source is RTC.\n");
+    {
+        printf("Wake-up source is RTC. Turn off RTC.\n");
+
+        /* RTC wake-up source setting is kept after wake-up from SPD/DPD mode.  */
+        /* Disable the wake-up source setting for next RTC wake-up source test. */
+        if( CLK->APBCLK0 & CLK_APBCLK0_RTCCKEN_Msk)
+        {
+            RTC->INTEN = 0;
+            RTC->INTSTS = RTC->INTSTS;
+        }
+    }
     if((u32RegRstsrc & CLK_PMUSTS_TMRWK_Msk) != 0)
         printf("Wake-up source is Wake-up Timer.\n");
     if((u32RegRstsrc & CLK_PMUSTS_PINWK0_Msk) != 0)
@@ -373,7 +383,6 @@ void GpioPinSetting(void)
 void GpioPinSettingRTC(void)
 {
     /* Set PF.4 ~ PF.11 as Quasi mode output high by RTC control */
-    CLK->APBCLK0 |= CLK_APBCLK0_RTCCKEN_Msk;
     RTC->GPIOCTL1 = RTC_GPIOCTL1_DOUT7_Msk | (RTC_IO_MODE_QUASI<<RTC_GPIOCTL1_OPMODE7_Pos) |
                     RTC_GPIOCTL1_DOUT6_Msk | (RTC_IO_MODE_QUASI<<RTC_GPIOCTL1_OPMODE6_Pos) |
                     RTC_GPIOCTL1_DOUT5_Msk | (RTC_IO_MODE_QUASI<<RTC_GPIOCTL1_OPMODE5_Pos) |
@@ -382,7 +391,6 @@ void GpioPinSettingRTC(void)
                     RTC_GPIOCTL0_DOUT2_Msk | (RTC_IO_MODE_QUASI<<RTC_GPIOCTL0_OPMODE2_Pos) |
                     RTC_GPIOCTL0_DOUT1_Msk | (RTC_IO_MODE_QUASI<<RTC_GPIOCTL0_OPMODE1_Pos) |
                     RTC_GPIOCTL0_DOUT0_Msk | (RTC_IO_MODE_QUASI<<RTC_GPIOCTL0_OPMODE0_Pos);
-    CLK->APBCLK0 &= ~CLK_APBCLK0_RTCCKEN_Msk;
 }
 
 int32_t LvrSetting(void)
@@ -391,6 +399,7 @@ int32_t LvrSetting(void)
 
     if(SET_LVR == 0)
     {
+        /* Disable LVR and wait for LVR stable flag is cleared */
         SYS_DISABLE_LVR();
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
         while( SYS->BODCTL & SYS_BODCTL_LVRRDY_Msk )
@@ -404,6 +413,7 @@ int32_t LvrSetting(void)
     }
     else
     {
+        /* Enable LVR and wait for LVR stable flag is set */
         SYS_ENABLE_LVR();
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
         while( (SYS->BODCTL & SYS_BODCTL_LVRRDY_Msk) == 0 )
@@ -423,10 +433,12 @@ void PorSetting(void)
 {
     if(SET_POR == 0)
     {
+        /* Disable POR */
         SYS_DISABLE_POR();
     }
     else
     {
+        /* Enable POR */
         SYS_ENABLE_POR();
     }
 }
@@ -437,6 +449,7 @@ int32_t LircSetting(void)
 
     if(SET_LIRC == 0)
     {
+        /* Disable LIRC and wait for LIRC stable flag is cleared */
         CLK_DisableXtalRC(CLK_PWRCTL_LIRCEN_Msk);
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
         while( CLK->STATUS & CLK_STATUS_LIRCSTB_Msk )
@@ -450,8 +463,9 @@ int32_t LircSetting(void)
     }
     else
     {
+        /* Enable LIRC and wait for LIRC stable flag is set */
         CLK_EnableXtalRC(CLK_PWRCTL_LIRCEN_Msk);
-        if( CLK_WaitClockReady(CLK_PWRCTL_LIRCEN_Msk) == 0)
+        if( CLK_WaitClockReady(CLK_STATUS_LIRCSTB_Msk) == 0)
         {
             printf("Wait for LIRC enable time-out!\n");
             return -1;
@@ -467,6 +481,7 @@ int32_t LxtSetting(void)
 
     if(SET_LXT == 0)
     {
+        /* Disable LXT and wait for LXT stable flag is cleared */
         CLK_DisableXtalRC(CLK_PWRCTL_LXTEN_Msk);
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
         while( CLK->STATUS & CLK_STATUS_LXTSTB_Msk )
@@ -480,8 +495,9 @@ int32_t LxtSetting(void)
     }
     else
     {
+        /* Enable LXT and wait for LXT stable flag is set */
         CLK_EnableXtalRC(CLK_PWRCTL_LXTEN_Msk);
-        if( CLK_WaitClockReady(CLK_PWRCTL_LXTEN_Msk) == 0)
+        if( CLK_WaitClockReady(CLK_STATUS_LXTSTB_Msk) == 0)
         {
             printf("Wait for LXT enable time-out!\n");
             return -1;

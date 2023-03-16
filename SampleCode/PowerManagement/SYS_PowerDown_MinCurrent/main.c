@@ -4,7 +4,7 @@
  * @brief    Demonstrate how to minimize power consumption when entering power down mode.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
@@ -22,7 +22,7 @@
 //      <4=> SPD
 //      <6=> DPD
 */
-#define SET_PDMSEL       0
+#define SET_PDMSEL    0
 
 /*
 // <o0> SPD mode SRAM retention size
@@ -33,7 +33,7 @@
 //      <4=> 128KB
 //      <5=> 256KB
 */
-#define SET_SRETSEL       0
+#define SET_SRETSEL   0
 
 /*
 // <o0> LVR
@@ -54,7 +54,7 @@
 //      <0=> Disable
 //      <1=> Enable
 */
-#define SET_LIRC       0
+#define SET_LIRC      0
 
 /*
 // <o0> LXT
@@ -64,8 +64,8 @@
 #define SET_LXT       0
 
 
-
 #define GPIO_P0_TO_P15      0xFFFF
+
 
 void PowerDownFunction(void);
 void GPB_IRQHandler(void);
@@ -73,6 +73,7 @@ int32_t LvrSetting(void);
 void PorSetting(void);
 int32_t LircSetting(void);
 int32_t LxtSetting(void);
+void GpioPinSettingRTC(void);
 void SYS_Init(void);
 void UART0_Init(void);
 
@@ -130,6 +131,7 @@ int32_t LvrSetting(void)
 
     if(SET_LVR == 0)
     {
+        /* Disable LVR and wait for LVR stable flag is cleared */
         SYS_DISABLE_LVR();
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
         while( SYS->BODCTL & SYS_BODCTL_LVRRDY_Msk )
@@ -143,6 +145,7 @@ int32_t LvrSetting(void)
     }
     else
     {
+        /* Enable LVR and wait for LVR stable flag is set */
         SYS_ENABLE_LVR();
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
         while( (SYS->BODCTL & SYS_BODCTL_LVRRDY_Msk) == 0 )
@@ -162,10 +165,12 @@ void PorSetting(void)
 {
     if(SET_POR == 0)
     {
+        /* Disable POR */
         SYS_DISABLE_POR();
     }
     else
     {
+        /* Enable POR */
         SYS_ENABLE_POR();
     }
 }
@@ -176,6 +181,7 @@ int32_t LircSetting(void)
 
     if(SET_LIRC == 0)
     {
+        /* Disable LIRC and wait for LIRC stable flag is cleared */
         CLK_DisableXtalRC(CLK_PWRCTL_LIRCEN_Msk);
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
         while( CLK->STATUS & CLK_STATUS_LIRCSTB_Msk )
@@ -189,8 +195,9 @@ int32_t LircSetting(void)
     }
     else
     {
+        /* Enable LIRC and wait for LIRC stable flag is set */
         CLK_EnableXtalRC(CLK_PWRCTL_LIRCEN_Msk);
-        if( CLK_WaitClockReady(CLK_PWRCTL_LIRCEN_Msk) == 0)
+        if( CLK_WaitClockReady(CLK_STATUS_LIRCSTB_Msk) == 0)
         {
             printf("Wait for LIRC enable time-out!\n");
             return -1;
@@ -206,6 +213,7 @@ int32_t LxtSetting(void)
 
     if(SET_LXT == 0)
     {
+        /* Disable LXT and wait for LXT stable flag is cleared */
         CLK_DisableXtalRC(CLK_PWRCTL_LXTEN_Msk);
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
         while( CLK->STATUS & CLK_STATUS_LXTSTB_Msk )
@@ -219,8 +227,9 @@ int32_t LxtSetting(void)
     }
     else
     {
+        /* Enable LXT and wait for LXT stable flag is set */
         CLK_EnableXtalRC(CLK_PWRCTL_LXTEN_Msk);
-        if( CLK_WaitClockReady(CLK_PWRCTL_LXTEN_Msk) == 0)
+        if( CLK_WaitClockReady(CLK_STATUS_LXTSTB_Msk) == 0)
         {
             printf("Wait for LXT enable time-out!\n");
             return -1;
@@ -228,6 +237,19 @@ int32_t LxtSetting(void)
     }
 
     return 0;
+}
+
+void GpioPinSettingRTC(void)
+{
+    /* Set PF.4~PF.11 as Quasi mode output high by RTC control */
+    RTC->GPIOCTL1 = RTC_GPIOCTL1_DOUT7_Msk | (RTC_IO_MODE_QUASI<<RTC_GPIOCTL1_OPMODE7_Pos) |
+                    RTC_GPIOCTL1_DOUT6_Msk | (RTC_IO_MODE_QUASI<<RTC_GPIOCTL1_OPMODE6_Pos) |
+                    RTC_GPIOCTL1_DOUT5_Msk | (RTC_IO_MODE_QUASI<<RTC_GPIOCTL1_OPMODE5_Pos) |
+                    RTC_GPIOCTL1_DOUT4_Msk | (RTC_IO_MODE_QUASI<<RTC_GPIOCTL1_OPMODE4_Pos);
+    RTC->GPIOCTL0 = RTC_GPIOCTL0_DOUT3_Msk | (RTC_IO_MODE_QUASI<<RTC_GPIOCTL0_OPMODE3_Pos) |
+                    RTC_GPIOCTL0_DOUT2_Msk | (RTC_IO_MODE_QUASI<<RTC_GPIOCTL0_OPMODE2_Pos) |
+                    RTC_GPIOCTL0_DOUT1_Msk | (RTC_IO_MODE_QUASI<<RTC_GPIOCTL0_OPMODE1_Pos) |
+                    RTC_GPIOCTL0_DOUT0_Msk | (RTC_IO_MODE_QUASI<<RTC_GPIOCTL0_OPMODE0_Pos);
 }
 
 void SYS_Init(void)
@@ -297,7 +319,7 @@ int32_t main(void)
 
     /* Clear SPD/DPD mode wake-up status for entering SPD/DPD mode again */
     u32PMUSTS = CLK->PMUSTS;
-    if( CLK->PMUSTS )
+    if( u32PMUSTS )
     {
         /* Release I/O hold status for SPD mode */
         CLK->IOPDCTL = 1;
@@ -315,7 +337,7 @@ int32_t main(void)
         }
     }
 
-    /* PB.2 falling-edge wake-up event */
+    /* Check SPD/DPD mode PB.2 falling-edge wake-up event */
     if( u32PMUSTS & (CLK_PMUSTS_PINWK2_Msk|CLK_PMUSTS_GPBWK_Msk) )
     {
         printf("System waken-up done.\n\n");
@@ -340,14 +362,17 @@ int32_t main(void)
     printf("+-------------------------------------------------------------------+\n\n");
 
     /*
-        To measure Power-down current on NuMaker-M467HJ board, remove component, e.g.
-        Nu-Link2-Me, UP1 LDO, UP2 LDO, U2 HyperRAM, U7 Ethernet PHY and U9 Audio codec.
-    */
+        To measure Power-down current:
 
-    /* Check if all the debug messages are finished */
-    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    UART_WAIT_TX_EMPTY(DEBUG_PORT)
-        if(--u32TimeOutCnt == 0) break;
+        On NuMaker-M467HJ V1.0 board, remove components, e.g.
+        Nu-Link2-Me,
+        R79, R80, R81 for LED,
+        U7 Ethernet PHY,
+        U9 Audio codec,
+        R73 and R75 for AUDIO_JKEN#.
+
+        Remove R16 and then user can measure target chip power consumption by AMMETER connector.
+    */
 
     /* Set function pin to GPIO mode except UART pin to print message */
     SYS->GPA_MFP0 = 0;
@@ -357,7 +382,7 @@ int32_t main(void)
     SYS->GPB_MFP0 = 0;
     SYS->GPB_MFP1 = 0;
     SYS->GPB_MFP2 = 0;
-    SYS->GPB_MFP3 = (UART0_RXD_PB12 | UART0_TXD_PB13);
+    SYS->GPB_MFP3 = UART0_TXD_PB13;
     SYS->GPC_MFP0 = 0;
     SYS->GPC_MFP1 = 0;
     SYS->GPC_MFP2 = 0;
@@ -391,17 +416,38 @@ int32_t main(void)
     SYS->GPJ_MFP2 = 0;
     SYS->GPJ_MFP3 = 0;
 
-    /* Configure all GPIO as Quasi-bidirectional Mode */
-    GPIO_SetMode(PA, GPIO_P0_TO_P15, GPIO_MODE_QUASI);
-    GPIO_SetMode(PB, GPIO_P0_TO_P15, GPIO_MODE_QUASI);
-    GPIO_SetMode(PC, GPIO_P0_TO_P15, GPIO_MODE_QUASI);
+    /*
+        Configure all GPIO as Quasi-bidirectional Mode. They are default output high.
+
+        On NuMaker-M467HJ V1.0 board, configure GPIO as input mode pull-down if they have pull-down resistor outside: 
+        PA.6(RMII_RXERR),
+        PB.15(FSUSB_VBUS_EN),
+        PC.6(RMII_RXD1),
+        PJ.13(HSUSB_VBUS_EN).
+    */
+
+    GPIO_SetMode(PA, 0xFFBF, GPIO_MODE_QUASI);
+    GPIO_SetMode(PA, BIT6, GPIO_MODE_INPUT);
+    GPIO_SetPullCtl(PA, BIT6, GPIO_PUSEL_PULL_DOWN);
+
+    GPIO_SetMode(PB, 0x7FFF, GPIO_MODE_QUASI);
+    GPIO_SetMode(PB, BIT15, GPIO_MODE_INPUT);
+    GPIO_SetPullCtl(PB, BIT15, GPIO_PUSEL_PULL_DOWN);
+
+    GPIO_SetMode(PC, 0xFFBF, GPIO_MODE_QUASI);
+    GPIO_SetMode(PC, BIT6, GPIO_MODE_INPUT);
+    GPIO_SetPullCtl(PC, BIT6, GPIO_PUSEL_PULL_DOWN);
+
     GPIO_SetMode(PD, GPIO_P0_TO_P15, GPIO_MODE_QUASI);
     GPIO_SetMode(PE, GPIO_P0_TO_P15, GPIO_MODE_QUASI);
     GPIO_SetMode(PF, GPIO_P0_TO_P15, GPIO_MODE_QUASI);
     GPIO_SetMode(PG, GPIO_P0_TO_P15, GPIO_MODE_QUASI);
     GPIO_SetMode(PH, GPIO_P0_TO_P15, GPIO_MODE_QUASI);
     GPIO_SetMode(PI, GPIO_P0_TO_P15, GPIO_MODE_QUASI);
-    GPIO_SetMode(PJ, GPIO_P0_TO_P15, GPIO_MODE_QUASI);
+
+    GPIO_SetMode(PJ, 0xDFFF, GPIO_MODE_QUASI);
+    GPIO_SetMode(PJ, BIT13, GPIO_MODE_INPUT);
+    GPIO_SetPullCtl(PJ, BIT13, GPIO_PUSEL_PULL_DOWN);
 
     /* Unlock protected registers for Power-down and wake-up setting */
     SYS_UnlockReg();
@@ -435,11 +481,17 @@ int32_t main(void)
     {
         /* Enable wake-up pin PB.2 falling edge wake-up at SPD mode */
         CLK_EnableSPDWKPin(1, 2, CLK_SPDWKPIN_FALLING, CLK_SPDWKPIN_DEBOUNCEDIS);
+
+        /* Set PF.4~PF.11 I/O state by RTC control if RTC is enabled to prevent floating. */
+        if( CLK->APBCLK0 & CLK_APBCLK0_RTCCKEN_Msk ) GpioPinSettingRTC();
     }
     else if( SET_PDMSEL == CLK_PMUCTL_PDMSEL_DPD )
     {
-        /* Eable wake-up pin 2 (PB.2) falling edge wake-up at DPD mode */
+        /* Eable wake-up pin 2 (PB.2) falling edge wake-up at DPD mode. PB.2 would be input mode floating at DPD mode. */
         CLK_EnableDPDWKPin(CLK_DPDWKPIN2_FALLING);
+
+        /* Set PF.4~PF.11 I/O state by RTC control if RTC is enabled to prevent floating. */
+        if( CLK->APBCLK0 & CLK_APBCLK0_RTCCKEN_Msk ) GpioPinSettingRTC();
     }
     else
     {
@@ -462,5 +514,4 @@ int32_t main(void)
 lexit:
 
     while(1);
-
 }
