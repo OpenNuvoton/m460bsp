@@ -64,7 +64,7 @@ extern "C"
 #define GPIO_SLEWCTL_FAST           0x2UL           /*!< GPIO slew setting for fast Mode \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
-/*  GPIO Pull-up And Pull-down Type Constant Definitions                                                   */
+/*  GPIO Pull-up and Pull-down Type Constant Definitions                                                   */
 /*---------------------------------------------------------------------------------------------------------*/
 #define GPIO_PUSEL_DISABLE          0x0UL           /*!< GPIO PUSEL setting for Disable Mode \hideinitializer */
 #define GPIO_PUSEL_PULL_UP          0x1UL           /*!< GPIO PUSEL setting for Pull-up Mode \hideinitializer */
@@ -72,7 +72,7 @@ extern "C"
 
 
 /*---------------------------------------------------------------------------------------------------------*/
-/*  GPIO_DBCTL Constant Definitions                                                                          */
+/*  GPIO_DBCTL Constant Definitions                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
 #define GPIO_DBCTL_ICLK_ON            0x00000020UL /*!< GPIO_DBCTL setting for all IO pins edge detection circuit is always active after reset \hideinitializer */
 #define GPIO_DBCTL_ICLK_OFF           0x00000000UL /*!< GPIO_DBCTL setting for edge detection circuit is active only if IO pin corresponding GPIOx_IEN bit is set to 1 \hideinitializer */

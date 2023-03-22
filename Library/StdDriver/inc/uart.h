@@ -405,7 +405,7 @@ extern "C"
  *                                  - \ref UART_INTSTS_RDAIF_Msk     : Receive Data Available Interrupt Flag
  *
  *    @retval       0 The specified interrupt is not happened.
- *                  1 The specified interrupt is happened.
+ *    @retval       1 The specified interrupt is happened.
  *
  *    @details      This macro get specified interrupt flag or interrupt indicator status.
  *    \hideinitializer

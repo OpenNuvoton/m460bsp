@@ -1167,12 +1167,13 @@ uint32_t CLK_EnablePLL(uint32_t u32PllClkSrc, uint32_t u32PllFreq)
   * @brief      Disable PLL
   * @param      None
   * @return     None
-  * @details    This function set PLL in Power-down mode. \n
+  * @details    This function set PLL in Power-down mode. It is skipped if HCLK is selected as PLL. \n
   *             The register write-protection function should be disabled before using this function.
   */
 void CLK_DisablePLL(void)
 {
-    CLK->PLLCTL |= CLK_PLLCTL_PD_Msk;
+    if( (CLK->CLKSEL0 & CLK_CLKSEL0_HCLKSEL_Msk) != CLK_CLKSEL0_HCLKSEL_PLL )
+        CLK->PLLCTL |= CLK_PLLCTL_PD_Msk;
 }
 
 
