@@ -110,7 +110,7 @@ information. */
 static void prvSetupHardware( void );
 /*-----------------------------------------------------------*/
 
-#if defined (__GNUC__)
+#if defined (__GNUC__) && !defined(__ARMCC_VERSION)
 extern int errno;
 #else
 int errno;
