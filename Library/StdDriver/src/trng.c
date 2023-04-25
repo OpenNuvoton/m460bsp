@@ -35,10 +35,20 @@
 int32_t TRNG_Open(void)
 {
     uint32_t u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
+    uint32_t i;
 
     SYS->IPRST1 |= SYS_IPRST1_TRNGRST_Msk;
     SYS->IPRST1 ^= SYS_IPRST1_TRNGRST_Msk;
 
+    /* Use LIRC as TRNG engine clock */
+    CLK->PWRCTL |= CLK_PWRCTL_LIRCEN_Msk;
+    while((CLK->STATUS & CLK_STATUS_LIRCSTB_Msk) == 0)
+    {
+        if(i++ > u32TimeOutCount) break; /* Wait LIRC time-out */
+    }
+    CLK->CLKSEL2 = (CLK->CLKSEL2 & (~CLK_CLKSEL2_TRNGSEL_Msk)) | CLK_CLKSEL2_TRNGSEL_LIRC;
+    
+    
     TRNG->CTL |= TRNG_CTL_TRNGEN_Msk;
 
     TRNG->ACT |= TRNG_ACT_ACT_Msk;
