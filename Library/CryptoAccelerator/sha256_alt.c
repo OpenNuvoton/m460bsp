@@ -214,8 +214,12 @@ int mbedtls_sha256_finish(mbedtls_sha256_context *ctx, unsigned char output[32])
             CRPT->HMAC_CTL = ctx->ctl | CRPT_HMAC_CTL_START_Msk | CRPT_HMAC_CTL_DMACSCAD_Msk | CRPT_HMAC_CTL_DMALAST_Msk;
         }
 
-        /* Waiting for calculation done */
-        while((CRPT->INTSTS & CRPT_INTSTS_HMACIF_Msk) == 0)
+        /* 
+            Waiting for calculation done. 
+            Need to double check busy flag at last DMA 
+        */
+        while(((CRPT->INTSTS & CRPT_INTSTS_HMACIF_Msk) == 0) ||
+            (CRPT->HMAC_STS & CRPT_HMAC_STS_BUSY_Msk))
         {
             if(timeout-- <= 0)
                 break;
