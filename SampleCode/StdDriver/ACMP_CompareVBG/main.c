@@ -90,7 +90,7 @@ int32_t main(void)
     getchar();
     printf("\n");
 
-    /* Configure ACMP1. Enable ACMP1 and select DAC0 output as the source of ACMP negative input. */
+    /* Configure ACMP1. Enable ACMP1 and select VBG output as the source of ACMP negative input. */
     ACMP_Open(ACMP01, 1, ACMP_CTL_NEGSEL_VBG, ACMP_CTL_HYSTERESIS_DISABLE);
     /* Select P1 as ACMP positive input channel */
     ACMP_SELECT_P(ACMP01, 1, ACMP_CTL_POSSEL_P1);
