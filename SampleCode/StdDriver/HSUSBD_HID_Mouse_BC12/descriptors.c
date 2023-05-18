@@ -48,11 +48,7 @@ uint8_t gu8DeviceDescriptor[] =
 {
     LEN_DEVICE,     /* bLength */
     DESC_DEVICE,    /* bDescriptorType */
-#ifdef SUPPORT_LPM
-    0x01, 0x02,     /* bcdUSB >= 0x0201 to support LPM */
-#else
     0x00, 0x02,     /* bcdUSB */
-#endif
     0x00,           /* bDeviceClass */
     0x00,           /* bDeviceSubClass */
     0x00,           /* bDeviceProtocol */
@@ -75,11 +71,7 @@ uint8_t gu8QualifierDescriptor[] =
 {
     LEN_QUALIFIER,  /* bLength */
     DESC_QUALIFIER, /* bDescriptorType */
-#ifdef SUPPORT_LPM
-    0x01, 0x02,     /* bcdUSB >= 0x0201 to support LPM */
-#else
     0x00, 0x02,     /* bcdUSB */
-#endif
     0x00,           /* bDeviceClass */
     0x00,           /* bDeviceSubClass */
     0x00,           /* bDeviceProtocol */
@@ -306,33 +298,6 @@ uint8_t *gpu8UsbString[4] =
     NULL
 };
 
-#ifdef SUPPORT_LPM
-/*!<USB BOS Descriptor */
-uint8_t gu8BOSDescriptor[] =
-{
-    LEN_BOS,        /* bLength */
-    DESC_BOS,       /* bDescriptorType */
-    /* wTotalLength */
-    0x0C & 0x00FF,
-    (0x0C & 0xFF00) >> 8,
-    0x01,           /* bNumDeviceCaps */
-
-    /* Device Capability */
-    LEN_BOSCAP,     /* bLength */
-    DESC_CAPABILITY,/* bDescriptorType */
-    CAP_USB20_EXT,  /* bDevCapabilityType, 0x02 is USB 2.0 Extension */
-    0x06, 0x04, 0x00, 0x00  /* bmAttributes, 32 bits */
-    /* bit 0 : Reserved. Must 0. */
-    /* bit 1 : 1 to support LPM. */
-    /* bit 2 : 1 to support BSL & Alternat HIRD. */
-    /* bit 3 : 1 to recommend Baseline BESL. */
-    /* bit 4 : 1 to recommand Deep BESL. */
-    /* bit 11:8 : Recommend Baseline BESL value. Ignore by bit3 is zero. */
-    /* bit 15:12 : Recommend Deep BESL value. Ignore by bit4 is zero. */
-    /* bit 31:16 : Reserved. Must 0. */
-};
-#endif
-
 uint8_t *gu8UsbHidReport[3] =
 {
     HID_MouseReportDescriptor,
@@ -363,11 +328,7 @@ S_HSUSBD_INFO_T gsHSInfo =
     gu8ConfigDescriptorFS,
     gu8OtherConfigDescriptorHS,
     gu8OtherConfigDescriptorFS,
-#ifdef SUPPORT_LPM
-    gu8BOSDescriptor,
-#else
     NULL,
-#endif
     gu8UsbHidReport,
     gu32UsbHidReportLen,
     gu32ConfigHidDescIdx
