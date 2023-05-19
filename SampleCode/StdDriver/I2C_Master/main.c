@@ -10,11 +10,27 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
+// *** <<< Use Configuration Wizard in Context Menu >>> ***
+// <e> I2C addressing mode transfer
+#define I2C_10Bit_MODE 0
+//  <o> Addressing Mode Interface
+//  <0=> 7-bit <1=> 10-bit
+// </e>
+//*** <<< end of configuration section >>> ***
+
+#if (I2C_10Bit_MODE)
+#define SLV_10BIT_ADDR (0x01<<2)
+#endif
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
 static volatile uint8_t g_u8DeviceAddr;
+#if (I2C_10Bit_MODE)
+static volatile uint8_t g_u8DeviceLAddr;
+static volatile uint8_t g_au8MstTxData[4];
+#else
 static volatile uint8_t g_au8MstTxData[3];
+#endif
 static volatile uint8_t g_u8MstDataLen;
 static volatile uint8_t g_u8MstEndFlag = 0;
 static volatile uint8_t g_u8MstTxAbortFlag = 0;
@@ -72,7 +88,11 @@ void I2C_MasterRx(uint32_t u32Status)
     }
     else if (u32Status == 0x28)                 /* DATA has been transmitted and ACK has been received */
     {
+#if (I2C_10Bit_MODE)
+        if (g_u8MstDataLen != 3)
+#else
         if (g_u8MstDataLen != 2)
+#endif
         {
             I2C_SET_DATA(I2C0, g_au8MstTxData[g_u8MstDataLen++]);
             I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
@@ -158,7 +178,11 @@ void I2C_MasterTx(uint32_t u32Status)
     }
     else if (u32Status == 0x28)                 /* DATA has been transmitted and ACK has been received */
     {
+#if (I2C_10Bit_MODE)
+        if (g_u8MstDataLen != 4)
+#else
         if (g_u8MstDataLen != 3)
+#endif
         {
             I2C_SET_DATA(I2C0, g_au8MstTxData[g_u8MstDataLen++]);
             I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
@@ -258,6 +282,10 @@ void SYS_Init(void)
 
 void I2C0_Init(void)
 {
+#if (I2C_10Bit_MODE)
+    /* Enable I2C0 10-bit address mode */
+    I2C0->CTL1 |= I2C_CTL1_ADDR10EN_Msk;
+#endif
     /* Open I2C0 and set clock to 100k */
     I2C_Open(I2C0, 100000);
 
@@ -268,7 +296,7 @@ void I2C0_Init(void)
     NVIC_EnableIRQ(I2C0_IRQn);
 }
 
-int32_t Read_Write_SLAVE(uint8_t slvaddr)
+int32_t Read_Write_SLAVE(uint32_t slvaddr)
 {
     uint32_t i;
 
@@ -277,14 +305,26 @@ int32_t Read_Write_SLAVE(uint8_t slvaddr)
         /* Enable I2C timeout */
         I2C_EnableTimeout(I2C0, 0);
         g_u8MstReStartFlag = 0;
+#if (I2C_10Bit_MODE)
+        g_u8DeviceAddr = (slvaddr >> 8) | SLV_10BIT_ADDR;
+        g_u8DeviceLAddr = slvaddr & 0xFF;
+#else
         g_u8DeviceAddr = slvaddr;
+#endif
         g_u8TimeoutFlag = 0;
 
         for(i = 0; i < 0x100; i++)
         {
+#if (I2C_10Bit_MODE)
+            g_au8MstTxData[0] = (uint8_t)g_u8DeviceLAddr;
+            g_au8MstTxData[1] = (uint8_t)((i & 0xFF00) >> 8);
+            g_au8MstTxData[2] = (uint8_t)(i & 0x00FF);
+            g_au8MstTxData[3] = (uint8_t)(g_au8MstTxData[1] + 3);
+#else
             g_au8MstTxData[0] = (uint8_t)((i & 0xFF00) >> 8);
             g_au8MstTxData[1] = (uint8_t)(i & 0x00FF);
             g_au8MstTxData[2] = (uint8_t)(g_au8MstTxData[1] + 3);
+#endif
 
             g_u8MstDataLen = 0;
             g_u8MstEndFlag = 0;
@@ -325,7 +365,11 @@ int32_t Read_Write_SLAVE(uint8_t slvaddr)
             s_I2C0HandlerFn = (I2C_FUNC)I2C_MasterRx;
 
             g_u8MstDataLen = 0;
+#if (I2C_10Bit_MODE)
+            g_u8DeviceAddr = (slvaddr >> 8) | SLV_10BIT_ADDR;
+#else
             g_u8DeviceAddr = slvaddr;
+#endif
 
             I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STA);
 
@@ -354,15 +398,19 @@ int32_t Read_Write_SLAVE(uint8_t slvaddr)
                 g_u8MstReStartFlag = 1;
                 break;
             }
+
+            /* Compare data */
+#if (I2C_10Bit_MODE)
+            if(g_u8MstRxData != g_au8MstTxData[3])
+#else
+            if(g_u8MstRxData != g_au8MstTxData[2])
+#endif
+            {
+                printf("I2C Byte Write/Read Failed, Data 0x%x\n", g_u8MstRxData);
+                return -1;
+            }
         }
     } while(g_u8MstReStartFlag); /*If unexpected abort happens, re-start the transmition*/
-
-    /* Compare data */
-    if(g_u8MstRxData != g_au8MstTxData[2])
-    {
-        printf("I2C Byte Write/Read Failed, Data 0x%x\n", g_u8MstRxData);
-        return -1;
-    }
 
     printf("Master Access Slave (0x%X) Test OK\n", slvaddr);
     return 0;
@@ -385,7 +433,11 @@ int32_t main (void)
     */
 
     printf("+-------------------------------------------------------+\n");
+#if (I2C_10Bit_MODE)
+    printf("| I2C Driver 10bit Sample Code(Master) for access Slave |\n");
+#else
     printf("|       I2C Driver Sample Code(Master) for access Slave |\n");
+#endif
     printf("+-------------------------------------------------------+\n");
 
     /* Init I2C0 */
@@ -394,19 +446,33 @@ int32_t main (void)
     /* Access Slave with no address mask */
     printf("\n");
     printf(" == No Mask Address ==\n");
+#if (I2C_10Bit_MODE)
+    Read_Write_SLAVE(0x116);
+    Read_Write_SLAVE(0x136);
+    Read_Write_SLAVE(0x156);
+    Read_Write_SLAVE(0x176);
+#else
     Read_Write_SLAVE(0x15);
     Read_Write_SLAVE(0x35);
     Read_Write_SLAVE(0x55);
     Read_Write_SLAVE(0x75);
+#endif
     printf("SLAVE Address test OK.\n");
 
     /* Access Slave with address mask */
     printf("\n");
     printf(" == Mask Address ==\n");
+#if (I2C_10Bit_MODE)
+    Read_Write_SLAVE(0x116 & ~0x04);
+    Read_Write_SLAVE(0x136 & ~0x02);
+    Read_Write_SLAVE(0x156 & ~0x04);
+    Read_Write_SLAVE(0x176 & ~0x02);
+#else
     Read_Write_SLAVE(0x15 & ~0x01);
     Read_Write_SLAVE(0x35 & ~0x04);
     Read_Write_SLAVE(0x55 & ~0x01);
     Read_Write_SLAVE(0x75 & ~0x04);
+#endif
     printf("SLAVE Address Mask test OK.\n");
 
     while(1);
