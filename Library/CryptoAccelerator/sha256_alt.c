@@ -51,7 +51,6 @@
 #define ARG_UNUSED(arg)  ((void)arg)
 #endif
 
-
 static void mbedtls_zeroize(void *v, size_t n)
 {
     volatile unsigned char *p = (unsigned char *)v;
@@ -102,10 +101,10 @@ int mbedtls_sha256_starts(mbedtls_sha256_context *ctx, int is224)
     else
         u32OpMode = SHA_MODE_SHA256;
 
-    /* Reset Crypto */
-    SYS->IPRST0 |= SYS_IPRST0_CRPTRST_Msk;
-    SYS->IPRST0 ^= SYS_IPRST0_CRPTRST_Msk;
-
+    /* Stop SHA */
+    CRPT->HMAC_CTL = CRPT_HMAC_CTL_STOP_Msk;
+    /* Clean buffer */
+    ctx->buffer_len = 0;
 
     /* Common register settings */
     ctx->ctl = CRPT_HMAC_CTL_DMAEN_Msk | (u32OpMode << CRPT_HMAC_CTL_OPMODE_Pos) |
@@ -117,14 +116,6 @@ int mbedtls_sha256_starts(mbedtls_sha256_context *ctx, int is224)
 
 
     return 0;
-}
-
-int mbedtls_internal_sha256_process( mbedtls_sha256_context *ctx, const unsigned char data[NU_SHA256_BLOCK_SIZE] )
-{
-    ARG_UNUSED(ctx);
-    ARG_UNUSED(data);
-
-    return MBEDTLS_ERR_PLATFORM_FEATURE_UNSUPPORTED;
 }
 
 int mbedtls_sha256_update(mbedtls_sha256_context *ctx, const unsigned char *input, size_t ilen)
@@ -154,7 +145,7 @@ int mbedtls_sha256_update(mbedtls_sha256_context *ctx, const unsigned char *inpu
             }
 
             /* Waiting for calculation done */
-            while((CRPT->INTSTS & CRPT_INTSTS_HMACIF_Msk) == 0)
+            while(((CRPT->INTSTS & CRPT_INTSTS_HMACIF_Msk) == 0) || (CRPT->HMAC_STS & CRPT_HMAC_STS_BUSY_Msk))
             {
                 if(timeout-- <= 0)
                     break;
@@ -191,6 +182,14 @@ int mbedtls_sha256_update(mbedtls_sha256_context *ctx, const unsigned char *inpu
 
     return 0;
 }
+
+
+int mbedtls_internal_sha256_process(mbedtls_sha256_context* ctx,
+    const unsigned char data[64])
+{
+    return mbedtls_sha256_update(ctx, data, 64);
+}
+
 
 int mbedtls_sha256_finish(mbedtls_sha256_context *ctx, unsigned char output[32])
 {
