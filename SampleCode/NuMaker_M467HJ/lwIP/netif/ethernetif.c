@@ -60,9 +60,7 @@
 #define IFNAME0 'e'
 #define IFNAME1 'n'
 
-
 struct netif *_netif;
-extern u8_t my_mac_addr[6];
 
 /**
  * Helper struct to hold private data used to operate your ethernet interface.
@@ -84,10 +82,15 @@ struct ethernetif
  * @param netif the already initialized lwip network interface structure
  *        for this ethernetif
  */
+sys_sem_t xRxSemaphore = NULL;
+sys_thread_t xRxThread = NULL;
+static void eth_rx_thread_entry(void *parameter);
+void ethernetif_input(u16_t len, u8_t *buf, u32_t s, u32_t ns);
+extern u8 my_mac_addr[6];
+
 static void
 low_level_init(struct netif *netif)
 {
-
     /* set MAC hardware address length */
     netif->hwaddr_len = ETHARP_HWADDR_LEN;
 
@@ -107,11 +110,42 @@ low_level_init(struct netif *netif)
 #ifdef LWIP_IGMP
     netif->flags |= NETIF_FLAG_IGMP;
 #endif
-    
-    // TODO: enable clock & configure GPIO function
-    /* Initial M460 EMAC module */
-    EMAC_ModuleInit(0);
-    EMAC_Open(0, my_mac_addr);
+
+    EMAC_Open(&my_mac_addr[0]);
+
+    if (sys_sem_new(&xRxSemaphore, 0) != ERR_OK)
+    {
+        while (1);
+    }
+    else if ((xRxThread = sys_thread_new("eth_rx", eth_rx_thread_entry, NULL, RX_THREAD_STACKSIZE, RX_THREAD_PRIO)) == NULL)
+    {
+        while (1);
+    }
+		    
+    sys_arch_sem_wait(&xRxSemaphore, 0);
+}
+
+// Implement NAPI
+static void eth_rx_thread_entry(void *parameter)
+{
+    int len;
+
+    sys_sem_signal(&xRxSemaphore);
+
+    while (1)
+    {
+        if (sys_arch_sem_wait(&xRxSemaphore, 0) != SYS_ARCH_TIMEOUT)    // Wait forever
+        {
+            while (1)
+            {
+                if ((len = EMAC_ReceivePkt()) <= 0)
+                {
+                    // Enable RX interrupt.
+                    break;
+                }
+            }
+        }
+    }
 }
 
 /**
@@ -129,33 +163,28 @@ low_level_init(struct netif *netif)
  *       to become availale since the stack doesn't retry to send a packet
  *       dropped because of memory failure (except for the TCP timers).
  */
-
 static err_t
 low_level_output(struct netif *netif, struct pbuf *p)
 {
     struct pbuf *q;
     u8_t *buf = NULL;
     u16_t len = 0;
-    struct sk_buff *tskb = &txbuf[0];
 
-    buf = (uint8_t *)tskb->data;
-//    buf = ETH_get_tx_buf(); //timtim, remove
-//    if(buf == NULL)
-//        return ERR_MEM;
+    buf = EMAC_AllocatePktBuf();
+
 #if ETH_PAD_SIZE
     pbuf_header(p, -ETH_PAD_SIZE); /* drop the padding word */
 #endif
 
-    for(q = p; q != NULL; q = q->next)
+    for (q = p; q != NULL; q = q->next)
     {
-        memcpy((u8_t*)&buf[len], q->payload, q->len);
+        memcpy((u8_t *)&buf[len], q->payload, q->len);
         len = len + q->len;
     }
 #ifdef TIME_STAMPING
     ETH_trigger_tx(len, p->flags & PBUF_FLAG_GET_TXTS ? p : NULL);
 #else
-    EMAC_TransmitPkt(tskb, NULL, len);
-//    ETH_trigger_tx(len, NULL);
+    EMAC_TransmitPkt(buf, len);
 #endif
 
 #if ETH_PAD_SIZE
@@ -194,13 +223,12 @@ low_level_input(struct netif *netif, u16_t len, u8_t *buf)
         pbuf_header(p, -ETH_PAD_SIZE); /* drop the padding word */
 #endif
 
-
         len = 0;
         /* We iterate over the pbuf chain until we have read the entire
         * packet into the pbuf. */
-        for(q = p; q != NULL; q = q->next)
+        for (q = p; q != NULL; q = q->next)
         {
-            memcpy((u8_t*)q->payload, (u8_t*)&buf[len], q->len);
+            memcpy((u8_t *)q->payload, (u8_t *)&buf[len], q->len);
             len = len + q->len;
         }
 
@@ -260,7 +288,7 @@ ethernetif_input(u16_t len, u8_t *buf, u32_t s, u32_t ns)
     case ETHTYPE_PPPOE:
 #endif /* PPPOE_SUPPORT */
         /* full packet send to tcpip_thread to process */
-        if (_netif->input(p, _netif)!=ERR_OK)
+        if (_netif->input(p, _netif) != ERR_OK)
         {
             LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
             pbuf_free(p);
@@ -295,7 +323,7 @@ ethernetif_loopback_input(struct pbuf *p)           // TODO: make sure packet no
     case ETHTYPE_PPPOE:
 #endif /* PPPOE_SUPPORT */
         /* full packet send to tcpip_thread to process */
-        if (_netif->input(p, _netif)!=ERR_OK)
+        if (_netif->input(p, _netif) != ERR_OK)
         {
             LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
             pbuf_free(p);
@@ -341,7 +369,7 @@ ethernetif_init(struct netif *netif)
 
 #if LWIP_NETIF_HOSTNAME
     /* Initialize interface hostname */
-    netif->hostname = "m480";
+    netif->hostname = "nuvoton";
 #endif /* LWIP_NETIF_HOSTNAME */
 
     /*
@@ -361,7 +389,7 @@ ethernetif_init(struct netif *netif)
     netif->output = etharp_output;
     netif->linkoutput = low_level_output;
 
-    ethernetif->ethaddr = (struct eth_addr *)&(netif->hwaddr[0]);
+    ethernetif->ethaddr = (struct eth_addr *) & (netif->hwaddr[0]);
 
     /* initialize the hardware */
     low_level_init(netif);

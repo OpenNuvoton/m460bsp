@@ -786,11 +786,11 @@
                 </option>
                 <option>
                     <name>IlinkIcfOverride</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$\LwIP_SSL_Server.icf</state>
+                    <state>$TOOLKIT_DIR$\config\linker\Nuvoton\M46xxJHAE.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -1089,9 +1089,6 @@
             <name>$PROJ_DIR$\..\..\lwIP\drv_emac\m460_emac.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\lwIP\drv_emac\m460_emac_process.c</name>
-        </file>
-        <file>
             <name>$PROJ_DIR$\..\..\lwIP\drv_emac\m460_mii.c</name>
         </file>
         <file>
@@ -1099,6 +1096,9 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\lwIP\drv_emac\synopGMAC_network_interface.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\lwIP\drv_emac\synopGMAC_plat.c</name>
         </file>
     </group>
     <group>

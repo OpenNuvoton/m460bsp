@@ -85,11 +85,6 @@
 			<locationURI>PARENT-1-PROJECT_LOC/drv_emac/m460_emac.c</locationURI>
 		</link>
 		<link>
-			<name>drv_emac/m460_emac_process.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/drv_emac/m460_emac_process.c</locationURI>
-		</link>
-		<link>
 			<name>drv_emac/m460_mii.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/drv_emac/m460_mii.c</locationURI>
@@ -103,6 +98,11 @@
 			<name>drv_emac/synopGMAC_network_interface.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/drv_emac/synopGMAC_network_interface.c</locationURI>
+		</link>
+		<link>
+			<name>drv_emac/synopGMAC_plat.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/EMAC_TxRx/drv_emac/synopGMAC_plat.c</locationURI>
 		</link>
 	</linkedResources>
 	<filteredResources>

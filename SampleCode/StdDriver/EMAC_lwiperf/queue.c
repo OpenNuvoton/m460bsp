@@ -46,6 +46,4 @@ struct pbuf *queue_try_get(void)
 
 }
 
-
-
 /*** (C) COPYRIGHT 2016 Nuvoton Technology Corp. ***/

@@ -321,7 +321,7 @@
             <PlainCh>0</PlainCh>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
-            <wLevel>1</wLevel>
+            <wLevel>0</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
@@ -329,8 +329,8 @@
             <useXO>0</useXO>
             <v6Lang>3</v6Lang>
             <v6LangP>3</v6LangP>
-            <vShortEn>1</vShortEn>
-            <vShortWch>1</vShortWch>
+            <vShortEn>0</vShortEn>
+            <vShortWch>0</vShortWch>
             <v6Lto>0</v6Lto>
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
@@ -360,13 +360,13 @@
             </VariousControls>
           </Aads>
           <LDads>
-            <umfTarg>1</umfTarg>
+            <umfTarg>0</umfTarg>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
             <noStLib>0</noStLib>
             <RepFail>1</RepFail>
             <useFile>0</useFile>
-            <TextAddressRange>0x08000000</TextAddressRange>
+            <TextAddressRange>0x00000000</TextAddressRange>
             <DataAddressRange>0x20000000</DataAddressRange>
             <pXoBase></pXoBase>
             <ScatterFile></ScatterFile>
@@ -423,11 +423,6 @@
               <FilePath>..\..\lwIP\drv_emac\m460_emac.c</FilePath>
             </File>
             <File>
-              <FileName>m460_emac_process.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\lwIP\drv_emac\m460_emac_process.c</FilePath>
-            </File>
-            <File>
               <FileName>m460_mii.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\lwIP\drv_emac\m460_mii.c</FilePath>
@@ -441,6 +436,11 @@
               <FileName>synopGMAC_network_interface.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\lwIP\drv_emac\synopGMAC_network_interface.c</FilePath>
+            </File>
+            <File>
+              <FileName>synopGMAC_plat.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\lwIP\drv_emac\synopGMAC_plat.c</FilePath>
             </File>
           </Files>
         </Group>

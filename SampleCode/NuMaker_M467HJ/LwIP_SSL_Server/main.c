@@ -110,16 +110,12 @@ information. */
 static void prvSetupHardware( void );
 /*-----------------------------------------------------------*/
 
-#if defined (__GNUC__) && !defined(__ARMCC_VERSION)
-extern int errno;
-#else
-int errno;
-#endif
 volatile int  g_Crypto_Int_done = 0;
 
-unsigned char my_mac_addr[6] = DEFAULT_MAC0_ADDRESS;
 struct netif netif;
 static void vSslTask( void *pvParameters );
+
+u8 my_mac_addr[6] = DEFAULT_MAC0_ADDRESS;
 
 int main(void)
 {
@@ -133,8 +129,7 @@ int main(void)
     vStartGenericQueueTasks( tskIDLE_PRIORITY );
     vStartQueueSetTasks();
 
-
-    printf("FreeRTOS is starting ...\n");
+    printf("\n\nFreeRTOS is starting ...\n");
 
     /* Start the scheduler. */
     vTaskStartScheduler();
@@ -268,7 +263,7 @@ static void vSslTask( void *pvParameters )
     IP4_ADDR(&ipaddr, 192, 168, 1, 2);
     IP4_ADDR(&netmask, 255, 255, 255, 0);
     
-    printf("SSL_Server. IP:192.168.1.2\n");
+    printf("SSL_Server. IP:192.168.1.2 \n");
 
     tcpip_init(NULL, NULL);
 

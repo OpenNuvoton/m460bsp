@@ -50,7 +50,6 @@
 #define LWIP_NETCONN                    0
 #define LWIP_SOCKET                     0
     
-
 /* TCP Maximum segment size. */
 #define TCP_MSS                         1460
 
@@ -63,6 +62,7 @@
 #define TCP_SND_QUEUELEN                (4 * TCP_SND_BUF/TCP_MSS)
 #define MEMP_NUM_TCP_SEG                64
 
+#define LWIP_DHCP                       1
 
 #define LWIP_USING_HW_CHECKSUM          1
 /* ---------- Checksum options ---------- */

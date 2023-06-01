@@ -20,12 +20,12 @@
 uint8_t g_au8MacAddr[6] = DEFAULT_MAC0_ADDRESS;
 uint8_t volatile g_au8IpAddr[4] = {0, 0, 0, 0};
 
-
 /*---------------------------------------------------------------------------------------------------------*/
 /* Functions declaration                                                                                   */
 /*---------------------------------------------------------------------------------------------------------*/
 void SYS_Init(void);
 void UART_Init(void);
+
 
 void SYS_Init(void)
 {
@@ -90,14 +90,13 @@ int main(void)
     printf("+-----------------------------------+\n\n");
     
     /* Initial M460 EMAC module */
-    EMAC_ModuleInit(0);
-    EMAC_Open(0, g_au8MacAddr);
+    EMAC_Open(&g_au8MacAddr[0]);
     
     if(dhcp_start() < 0)
     {
         // Cannot get a DHCP lease
         printf("\nDHCP failed......\n");
     }
-       
+    
     while(1) {}
 }

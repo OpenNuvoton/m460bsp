@@ -48,10 +48,13 @@
 #include "lwip/mem.h"
 #include "lwip/stats.h"
 
+#if ( !(defined(__GNUC__) && !defined(__ARMCC_VERSION)) )
+int errno;
+#endif
+
 /* Very crude mechanism used to determine if the critical section handling
 functions are being called from an interrupt context or not.  This relies on
 the interrupt handler setting this variable manually. */
-portBASE_TYPE xInsideISR = pdFALSE;
 
 /*---------------------------------------------------------------------------*
  * Routine:  sys_mbox_new
@@ -144,15 +147,7 @@ err_t sys_mbox_trypost( sys_mbox_t *pxMailBox, void *pxMessageToPost )
     err_t xReturn;
     portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
 
-    if( xInsideISR != pdFALSE )
-    {
-        xReturn = xQueueSendFromISR( *pxMailBox, &pxMessageToPost, &xHigherPriorityTaskWoken );
-    }
-    else
-    {
-        xReturn = xQueueSend( *pxMailBox, &pxMessageToPost, ( portTickType ) 0 );
-    }
-
+    xReturn = xQueueSend( *pxMailBox, &pxMessageToPost, ( portTickType ) 0 );
     if( xReturn == pdPASS )
     {
         xReturn = ERR_OK;
@@ -165,6 +160,12 @@ err_t sys_mbox_trypost( sys_mbox_t *pxMailBox, void *pxMessageToPost )
     }
 
     return xReturn;
+}
+
+err_t
+sys_mbox_trypost_fromisr(sys_mbox_t *q, void *msg)
+{
+  return sys_mbox_trypost(q, msg);
 }
 
 /*---------------------------------------------------------------------------*
@@ -207,8 +208,6 @@ u32_t sys_arch_mbox_fetch( sys_mbox_t *pxMailBox, void **ppvBuffer, u32_t ulTime
 
     if( ulTimeOut != 0UL )
     {
-        configASSERT( xInsideISR == ( portBASE_TYPE ) 0 );
-
         if( pdTRUE == xQueueReceive( *pxMailBox, &( *ppvBuffer ), ulTimeOut/ portTICK_RATE_MS ) )
         {
             xEndTime = xTaskGetTickCount();
@@ -266,15 +265,7 @@ u32_t sys_arch_mbox_tryfetch( sys_mbox_t *pxMailBox, void **ppvBuffer )
         ppvBuffer = &pvDummy;
     }
 
-    if( xInsideISR != pdFALSE )
-    {
-        lResult = xQueueReceiveFromISR( *pxMailBox, &( *ppvBuffer ), &xHigherPriorityTaskWoken );
-    }
-    else
-    {
-        lResult = xQueueReceive( *pxMailBox, &( *ppvBuffer ), 0UL );
-    }
-
+    lResult = xQueueReceive( *pxMailBox, &( *ppvBuffer ), 0UL );
     if( lResult == pdPASS )
     {
         ulReturn = ERR_OK;
@@ -442,14 +433,7 @@ void sys_sem_signal( sys_sem_t *pxSemaphore )
 {
     portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
 
-    if( xInsideISR != pdFALSE )
-    {
-        xSemaphoreGiveFromISR( *pxSemaphore, &xHigherPriorityTaskWoken );
-    }
-    else
-    {
-        xSemaphoreGive( *pxSemaphore );
-    }
+    xSemaphoreGive( *pxSemaphore );
 }
 
 /*---------------------------------------------------------------------------*
@@ -540,10 +524,7 @@ sys_thread_t sys_thread_new( const char *pcName, void( *pxThread )( void *pvPara
  *---------------------------------------------------------------------------*/
 sys_prot_t sys_arch_protect( void )
 {
-    if( xInsideISR == pdFALSE )
-    {
-        taskENTER_CRITICAL();
-    }
+    taskENTER_CRITICAL();
     return ( sys_prot_t ) 1;
 }
 
@@ -561,10 +542,7 @@ sys_prot_t sys_arch_protect( void )
 void sys_arch_unprotect( sys_prot_t xValue )
 {
     (void) xValue;
-    if( xInsideISR == pdFALSE )
-    {
-        taskEXIT_CRITICAL();
-    }
+    taskEXIT_CRITICAL();
 }
 
 /*

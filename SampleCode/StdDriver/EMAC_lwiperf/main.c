@@ -21,17 +21,20 @@
 #include "lwip/timeouts.h"
 #include "lwip/init.h"
 
+#if LWIP_DHCP
+#include "lwip/dhcp.h"
+#endif
+
 
 static unsigned char sMacAddr[6] = DEFAULT_MAC0_ADDRESS;
+struct netif _netif;
 extern struct pbuf *queue_try_get(void);
 
 
 static err_t netif_output(struct netif *netif, struct pbuf *p)
 {
     uint16_t len = 0;
-    uint8_t *buf;
-    struct sk_buff *tskb = &txbuf[0];
-    DmaDesc *txdesc = g_gmacdev->TxNextDesc;
+    u8_t *buf = NULL;
 
     LINK_STATS_INC(link.xmit);
 
@@ -39,10 +42,10 @@ static err_t netif_output(struct netif *netif, struct pbuf *p)
     
     if((p != NULL) && (p->tot_len != 0))
     {
-        buf = (uint8_t *)tskb->data;
+        buf = EMAC_AllocatePktBuf();
         len = pbuf_copy_partial(p, buf, p->tot_len, 0);
 
-        EMAC_TransmitPkt(tskb, NULL, len);      
+        EMAC_TransmitPkt(buf, len);
     }
     
     __enable_irq();
@@ -61,9 +64,30 @@ static err_t m460_netif_init(struct netif *netif)
     netif->hwaddr_len = sizeof(netif->hwaddr);
     
     /* Initial M460 EMAC module */
-    EMAC_ModuleInit(0);
-    EMAC_Open(0, sMacAddr);
+    EMAC_Open(sMacAddr);
+    
+    return ERR_OK;
+}
 
+static err_t ProcessEMACRx(struct netif *netif)
+{
+    struct pbuf* p;
+    
+    /* Check for received frames, feed them to lwIP */
+    __disable_irq();
+    p = queue_try_get();
+    __enable_irq();
+    if(p != NULL)
+    {
+        if(netif->input(p, netif) != ERR_OK)
+        {
+            pbuf_free(p);
+        }
+    }
+    
+    /* Cyclic lwIP timers check */
+    sys_check_timeouts();
+    
     return ERR_OK;
 }
 
@@ -143,10 +167,10 @@ void UART_Init(void)
 
 int main(void)
 {
-    struct netif netif;
     ip_addr_t ipaddr;
     ip_addr_t netmask;
     ip_addr_t gw;
+    uint8_t u8DHCPInit = 0;  
     
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -163,29 +187,63 @@ int main(void)
     /* Timer1 interval is 1000ms */
     TIMER1_Init();
 
-    printf("M460 LwIP sample code start (HCLK %d Hz)\n", SystemCoreClock);
+    printf("M460 LwIP + iPerf sample code start (HCLK %d Hz)\n", SystemCoreClock);
     
+#if LWIP_DHCP   
+    /* To enable LWIP_DHCP 1 in lwipopts.h */
+    IP4_ADDR(&gw, 0, 0, 0, 0);
+    IP4_ADDR(&ipaddr, 0, 0, 0, 0);
+    IP4_ADDR(&netmask, 0, 0, 0, 0);
+#else    
     IP4_ADDR(&gw, 192, 168, 1, 1);
     IP4_ADDR(&ipaddr, 192, 168, 1, 220);
     IP4_ADDR(&netmask, 255, 255, 255, 0);
-    
-    printf("Local IP: 192. 168. 1. 220\n");
+#endif
         
     lwip_init();
-    netif_add(&netif, &ipaddr, &netmask, &gw, NULL, m460_netif_init, netif_input);
-    netif.name[0] = 'e';
-    netif.name[1] = '0';
+    netif_add(&_netif, &ipaddr, &netmask, &gw, NULL, m460_netif_init, netif_input);
+    _netif.name[0] = 'e';
+    _netif.name[1] = '0';
 
-    netif_set_default(&netif);
-    netif_set_up(&netif);
-    netif_set_link_up(&netif);
+    netif_set_default(&_netif);
+    netif_set_up(&_netif);
+    netif_set_link_up(&_netif);
+        
+#if LWIP_DHCP
+    printf("DHCP starting ...\n");
+    
+    if(dhcp_start(&_netif) == ERR_OK)
+    {
+        while((dhcp_supplied_address(&_netif) == 0) && (u8DHCPInit == 0))
+        {
+            while (u8DHCPInit == 0)
+            {
+                ProcessEMACRx(&_netif);
+                
+                if((uint32_t)_netif.ip_addr.addr != 0)
+                {
+                    u8DHCPInit = 1; // DHCP done
+                    break;
+                }
+            }
+        }
+    }
+    else
+    {
+        printf("DHCP fail\n");
+        while(1) {}
+    }    
+#endif
 
+    printf("IP address:      %s\n", ip4addr_ntoa(&_netif.ip_addr));
+    printf("Subnet mask:     %s\n", ip4addr_ntoa(&_netif.netmask));
+    printf("Default gateway: %s\n", ip4addr_ntoa(&_netif.gw));
+    
     lwiperf_start_tcp_server_default(NULL, NULL);
 
     while (1)
     {
-        struct pbuf* p;
-        
+#if 0
         /* Check mii link status per second */
         if (TIMER1->INTSTS != 0)
         {
@@ -193,20 +251,8 @@ int main(void)
             /* Only enable under the circumstance cable may be plug/unplug */
             mii_link_monitor(g_gmacdev);        
         }
-
-        /* Check for received frames, feed them to lwIP */
-        __disable_irq();
-        p = queue_try_get();
-        __enable_irq();
-        if(p != NULL)
-        {
-            if(netif.input(p, &netif) != ERR_OK)
-            {
-                pbuf_free(p);
-            }
-        }
+#endif
         
-        /* Cyclic lwIP timers check */
-        sys_check_timeouts();
+        ProcessEMACRx(&_netif);
     }
 }

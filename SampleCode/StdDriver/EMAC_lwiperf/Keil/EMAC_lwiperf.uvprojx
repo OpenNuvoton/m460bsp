@@ -312,7 +312,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>7</Optim>
+            <Optim>3</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -321,7 +321,7 @@
             <PlainCh>0</PlainCh>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
-            <wLevel>3</wLevel>
+            <wLevel>0</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
@@ -423,11 +423,6 @@
               <FilePath>..\drv_emac\m460_emac.c</FilePath>
             </File>
             <File>
-              <FileName>m460_emac_process.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\drv_emac\m460_emac_process.c</FilePath>
-            </File>
-            <File>
               <FileName>m460_mii.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\drv_emac\m460_mii.c</FilePath>
@@ -441,6 +436,11 @@
               <FileName>synopGMAC_network_interface.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\drv_emac\synopGMAC_network_interface.c</FilePath>
+            </File>
+            <File>
+              <FileName>synopGMAC_plat.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv_emac\synopGMAC_plat.c</FilePath>
             </File>
           </Files>
         </Group>

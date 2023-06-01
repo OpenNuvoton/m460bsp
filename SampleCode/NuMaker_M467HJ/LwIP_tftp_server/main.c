@@ -114,9 +114,10 @@ static void prvSetupHardware( void );
 /*-----------------------------------------------------------*/
 
 
-unsigned char my_mac_addr[6] = DEFAULT_MAC0_ADDRESS;
 struct netif netif;
 static void vNetTask( void *pvParameters );
+
+u8 my_mac_addr[6] = DEFAULT_MAC0_ADDRESS;
 
 int main(void)
 {
@@ -130,8 +131,7 @@ int main(void)
     vStartGenericQueueTasks( tskIDLE_PRIORITY );
     vStartQueueSetTasks();
 
-
-    printf("FreeRTOS is starting ...\n");
+    printf("\n\nFreeRTOS is starting ...\n");
 
     /* Start the scheduler. */
     vTaskStartScheduler();
@@ -285,7 +285,7 @@ static void vNetTask( void *pvParameters )
     {
         while(dhcp_supplied_address(&netif) == 0)
         {
-            vTaskDelay(10000);
+            vTaskDelay(5000);
             break;
         }
     }
@@ -300,6 +300,12 @@ static void vNetTask( void *pvParameters )
     printf("IP address:      %s\n", ip4addr_ntoa(&netif.ip_addr));
     printf("Subnet mask:     %s\n", ip4addr_ntoa(&netif.netmask));
     printf("Default gateway: %s\n", ip4addr_ntoa(&netif.gw));
+       
+    if((uint32_t)netif.ip_addr.addr == 0)
+    {
+        printf("Get IP fail\n");
+        while(1) {}
+    }
         
     tftp_server_init();
 

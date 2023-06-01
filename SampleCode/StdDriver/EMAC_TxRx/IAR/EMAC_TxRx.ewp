@@ -1075,9 +1075,6 @@
             <name>$PROJ_DIR$\..\drv_emac\m460_emac.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\drv_emac\m460_emac_process.c</name>
-        </file>
-        <file>
             <name>$PROJ_DIR$\..\drv_emac\m460_mii.c</name>
         </file>
         <file>
@@ -1085,6 +1082,9 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\drv_emac\synopGMAC_network_interface.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\drv_emac\synopGMAC_plat.c</name>
         </file>
     </group>
     <group>

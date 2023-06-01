@@ -4,7 +4,7 @@
  * @brief    M460 EMAC MII driver source file
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include "m460_mii.h"
 
@@ -13,12 +13,12 @@
 
 static int32_t mii_mdio_read(synopGMACdevice *gmacdev, uint16_t reg, uint16_t *val)
 {
-    return synopGMAC_read_phy_reg((u32 *)gmacdev->MacBase, gmacdev->PhyBase, reg, val);
+    return synopGMAC_read_phy_reg((u32)gmacdev->MacBase, gmacdev->PhyBase, reg, val);
 }
 
 static int32_t mii_mdio_write(synopGMACdevice *gmacdev, uint16_t reg, uint16_t val)
 {
-    return synopGMAC_write_phy_reg((u32 *)gmacdev->MacBase, gmacdev->PhyBase, reg, val);
+    return synopGMAC_write_phy_reg((u32)gmacdev->MacBase, gmacdev->PhyBase, reg, val);
 }
 
 uint16_t mii_nway_result(uint32_t negotiated)

@@ -1,6 +1,5 @@
 /* ===================================================================================
  * Copyright (c) <2009> Synopsys, Inc.
- * SPDX-License-Identifier: Apache-2.0
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software annotated with this license and associated documentation files
@@ -32,7 +31,8 @@
  * ------------------------REVISION HISTORY---------------------------------
  * Synopsys                 01/Aug/2007                              Created
  */
-#include <string.h>
+
+#include "string.h"
 #include "synopGMAC_Dev.h"
 #include "synopGMAC_network_interface.h"
 
@@ -46,12 +46,10 @@
 s32 synopGMAC_set_mdc_clk_div(synopGMACdevice *gmacdev, u32 clk_div_val)
 {
     u32 orig_data;
-    
-    orig_data = synopGMACReadReg((u32 *)gmacdev->MacBase, GmacGmiiAddr); //set the mdc clock to the user defined value
+    orig_data = synopGMACReadReg(gmacdev->MacBase, GmacGmiiAddr); //set the mdc clock to the user defined value
     orig_data &= (~ GmiiCsrClkMask);
     orig_data |= clk_div_val;
-    synopGMACWriteReg((u32 *)gmacdev->MacBase, GmacGmiiAddr, orig_data);
-    
+    synopGMACWriteReg(gmacdev->MacBase, GmacGmiiAddr, orig_data);
     return 0;
 }
 
@@ -65,10 +63,8 @@ s32 synopGMAC_set_mdc_clk_div(synopGMACdevice *gmacdev, u32 clk_div_val)
 u32 synopGMAC_get_mdc_clk_div(synopGMACdevice *gmacdev)
 {
     u32 data;
-    
-    data = synopGMACReadReg((u32 *)gmacdev->MacBase, GmacGmiiAddr);
+    data = synopGMACReadReg(gmacdev->MacBase, GmacGmiiAddr);
     data &= GmiiCsrClkMask;
-    
     return data;
 }
 
@@ -81,30 +77,25 @@ u32 synopGMAC_get_mdc_clk_div(synopGMACdevice *gmacdev)
   * @param[out] u16 data read from the respective phy register (only valid iff return value is 0).
   * \return Returns 0 on success else return the error status.
   */
-s32 synopGMAC_read_phy_reg(u32 *RegBase, u32 PhyBase, u32 RegOffset, u16 *data)
+s32 synopGMAC_read_phy_reg(u32 RegBase, u32 PhyBase, u32 RegOffset, u16 *data)
 {
-    u32 addr, cr;
+    u32 addr;
     u32 loop_variable;
-    
     addr = ((PhyBase << GmiiDevShift) & GmiiDevMask) | ((RegOffset << GmiiRegShift) & GmiiRegMask);
     addr = addr | GmiiBusy ; //Gmii busy bit
-    cr = (synopGMACReadReg(RegBase, GmacGmiiAddr) & GmiiCsrClkMask);
-    addr |= cr;
-    synopGMACWriteReg(RegBase, GmacGmiiAddr,addr); //write the address from where the data to be read in GmiiGmiiAddr register of synopGMAC ip
+    synopGMACWriteReg(RegBase, GmacGmiiAddr, addr); //write the address from where the data to be read in GmiiGmiiAddr register of synopGMAC ip
 
-    for(loop_variable = 0; loop_variable < DEFAULT_LOOP_VARIABLE; loop_variable++) 
-    { //Wait till the busy bit gets cleared with in a certain amount of time
-        if (!(synopGMACReadReg(RegBase,GmacGmiiAddr) & GmiiBusy)) 
+    for (loop_variable = 0; loop_variable < DEFAULT_LOOP_VARIABLE; loop_variable++)  //Wait till the busy bit gets cleared with in a certain amount of time
+    {
+        if (!(synopGMACReadReg(RegBase, GmacGmiiAddr) & GmiiBusy))
         {
             break;
         }
         plat_delay(DEFAULT_DELAY_VARIABLE);
     }
-    if(loop_variable < DEFAULT_LOOP_VARIABLE)
-    {
-        *data = (u16)(synopGMACReadReg(RegBase, GmacGmiiData) & 0xFFFF);
-    }
-    else 
+    if (loop_variable < DEFAULT_LOOP_VARIABLE)
+        * data = (u16)(synopGMACReadReg(RegBase, GmacGmiiData) & 0xFFFF);
+    else
     {
         TR("Error::: PHY not responding Busy bit didnot get cleared !!!!!!\n");
         return -ESYNOPGMACPHYERR;
@@ -121,9 +112,9 @@ s32 synopGMAC_read_phy_reg(u32 *RegBase, u32 PhyBase, u32 RegOffset, u16 *data)
   * @param[in] data to be written to the respective phy register.
   * \return Returns 0 on success else return the error status.
   */
-s32 synopGMAC_write_phy_reg(u32 *RegBase, u32 PhyBase, u32 RegOffset, u16 data)
+s32 synopGMAC_write_phy_reg(u32 RegBase, u32 PhyBase, u32 RegOffset, u16 data)
 {
-    u32 addr, cr;
+    u32 addr;
     u32 loop_variable;
 
     synopGMACWriteReg(RegBase, GmacGmiiData, data); // write the data in to GmacGmiiData register of synopGMAC ip
@@ -131,24 +122,22 @@ s32 synopGMAC_write_phy_reg(u32 *RegBase, u32 PhyBase, u32 RegOffset, u16 data)
     addr = ((PhyBase << GmiiDevShift) & GmiiDevMask) | ((RegOffset << GmiiRegShift) & GmiiRegMask) | GmiiWrite;
 
     addr = addr | GmiiBusy ; //set Gmii clk to 20-35 Mhz and Gmii busy bit
-    cr = (synopGMACReadReg(RegBase, GmacGmiiAddr) & GmiiCsrClkMask);
-    addr |= cr;
 
-    synopGMACWriteReg(RegBase, GmacGmiiAddr,addr);
-    for(loop_variable = 0; loop_variable < DEFAULT_LOOP_VARIABLE; loop_variable++) 
+    synopGMACWriteReg(RegBase, GmacGmiiAddr, addr);
+    for (loop_variable = 0; loop_variable < DEFAULT_LOOP_VARIABLE; loop_variable++)
     {
-        if (!(synopGMACReadReg(RegBase, GmacGmiiAddr) & GmiiBusy)) 
+        if (!(synopGMACReadReg(RegBase, GmacGmiiAddr) & GmiiBusy))
         {
             break;
         }
         plat_delay(DEFAULT_DELAY_VARIABLE);
     }
 
-    if(loop_variable < DEFAULT_LOOP_VARIABLE) 
-    {       
+    if (loop_variable < DEFAULT_LOOP_VARIABLE)
+    {
         return 0;
-    } 
-    else 
+    }
+    else
     {
         TR("Error::: PHY not responding Busy bit didnot get cleared !!!!!!\n");
         return -ESYNOPGMACPHYERR;
@@ -167,14 +156,12 @@ s32 synopGMAC_write_phy_reg(u32 *RegBase, u32 PhyBase, u32 RegOffset, u16 data)
 s32 synopGMAC_phy_loopback(synopGMACdevice *gmacdev, bool loopback)
 {
     s32 status = 0;
-    
 #ifndef EMULATION
-    if(loopback)
-        status = synopGMAC_write_phy_reg((u32 *)gmacdev->MacBase, gmacdev->PhyBase, PHY_CONTROL_REG, Mii_Loopback);
+    if (loopback)
+        status = synopGMAC_write_phy_reg(gmacdev->MacBase, gmacdev->PhyBase, PHY_CONTROL_REG, Mii_Loopback);
     else
-        status = synopGMAC_write_phy_reg((u32 *)gmacdev->MacBase, gmacdev->PhyBase, PHY_CONTROL_REG, Mii_NoLoopback);
+        status = synopGMAC_write_phy_reg(gmacdev->MacBase, gmacdev->PhyBase, PHY_CONTROL_REG, Mii_NoLoopback);
 #endif
-    
     return status;
 }
 
@@ -187,11 +174,9 @@ s32 synopGMAC_phy_loopback(synopGMACdevice *gmacdev, bool loopback)
 s32 synopGMAC_read_version(synopGMACdevice *gmacdev)
 {
     u32 data = 0;
-    
-    data = synopGMACReadReg((u32 *)gmacdev->MacBase, GmacVersion );
+    data = synopGMACReadReg(gmacdev->MacBase, GmacVersion);
     gmacdev->Version = data;
-    TR("The data read from %08x is %08x\n", (gmacdev->MacBase+GmacVersion), data);
-    
+    TR("The data read from %08x is %08x\n", (gmacdev->MacBase + GmacVersion), data);
     return 0;
 }
 
@@ -201,32 +186,27 @@ s32 synopGMAC_read_version(synopGMACdevice *gmacdev)
   * @param[in] pointer to synopGMACdevice.
   * \return 0 on success else return the error status.
   */
-
 s32 synopGMAC_reset(synopGMACdevice *gmacdev)
 {
     u32 data = 0;
-    
-    synopGMACWriteReg((u32 *)gmacdev->DmaBase, DmaBusMode, DmaResetOn);
+    synopGMACWriteReg(gmacdev->DmaBase, DmaBusMode, DmaResetOn);
     plat_delay(DEFAULT_LOOP_VARIABLE);
 
-    do {
-    	data = synopGMACReadReg((u32 *)gmacdev->DmaBase, DmaBusMode);
-    }while(data & 1);
+    do
+    {
+        data = synopGMACReadReg(gmacdev->DmaBase, DmaBusMode);
+    }
+    while (data & 1);
 
-    TR("DATA after Reset = %08x\n",data);
+    TR("DATA after Reset = %08x\n", data);
 
     return 0;
 }
 
 s32 synopGMAC_reset_nocheck(synopGMACdevice *gmacdev)
 {
-    u32 data = 0;
-    
-    synopGMACWriteReg((u32 *)gmacdev->DmaBase, DmaBusMode, DmaResetOn);
+    synopGMACWriteReg(gmacdev->DmaBase, DmaBusMode, DmaResetOn);
     plat_delay(DEFAULT_LOOP_VARIABLE);
-
-    TR("DATA after Reset = %08x\n",data);
-
     return 0;
 }
 
@@ -241,9 +221,9 @@ s32 synopGMAC_reset_nocheck(synopGMACdevice *gmacdev)
   */
 s32 synopGMAC_dma_bus_mode_init(synopGMACdevice *gmacdev, u32 init_value)
 {
-    synopGMACWriteReg((u32 *)gmacdev->DmaBase, DmaBusMode ,init_value);
-    
+    synopGMACWriteReg(gmacdev->DmaBase, DmaBusMode, init_value);
     return 0;
+
 }
 
 /**
@@ -257,8 +237,7 @@ s32 synopGMAC_dma_bus_mode_init(synopGMACdevice *gmacdev, u32 init_value)
   */
 s32 synopGMAC_dma_control_init(synopGMACdevice *gmacdev, u32 init_value)
 {
-    synopGMACWriteReg((u32 *)gmacdev->DmaBase, DmaControl, init_value);
-    
+    synopGMACWriteReg(gmacdev->DmaBase, DmaControl, init_value);
     return 0;
 }
 
@@ -272,11 +251,12 @@ s32 synopGMAC_dma_control_init(synopGMACdevice *gmacdev, u32 init_value)
   * @param[in] pointer to synopGMACdevice.
   * \return returns void.
   */
-void synopGMAC_wd_enable(synopGMACdevice * gmacdev)
+void synopGMAC_wd_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacConfig, GmacWatchdog);    
+    synopGMACClearBits(gmacdev->MacBase, GmacConfig, GmacWatchdog);
     return;
 }
+
 /**
   * Disable the watchdog timer on the receiver.
   * When disabled, Gmac disabled watchdog timer, and can receive frames up to
@@ -286,7 +266,7 @@ void synopGMAC_wd_enable(synopGMACdevice * gmacdev)
   */
 void synopGMAC_wd_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacConfig, GmacWatchdog);    
+    synopGMACSetBits(gmacdev->MacBase, GmacConfig, GmacWatchdog);
     return;
 }
 
@@ -296,11 +276,12 @@ void synopGMAC_wd_disable(synopGMACdevice *gmacdev)
   * @param[in] pointer to synopGMACdevice.
   * \return returns void.
   */
-void synopGMAC_jab_enable(synopGMACdevice * gmacdev)
+void synopGMAC_jab_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacConfig, GmacJabber);  
+    synopGMACSetBits(gmacdev->MacBase, GmacConfig, GmacJabber);
     return;
 }
+
 /**
   * Disables the Jabber frame support.
   * When disabled, GMAC enables jabber timer. It cuts of transmitter if application
@@ -308,9 +289,9 @@ void synopGMAC_jab_enable(synopGMACdevice * gmacdev)
   * @param[in] pointer to synopGMACdevice.
   * \return returns void.
   */
-void synopGMAC_jab_disable(synopGMACdevice * gmacdev)
+void synopGMAC_jab_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacConfig, GmacJabber);
+    synopGMACClearBits(gmacdev->MacBase, GmacConfig, GmacJabber);
     return;
 }
 
@@ -323,9 +304,10 @@ void synopGMAC_jab_disable(synopGMACdevice * gmacdev)
   */
 void synopGMAC_frame_burst_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacConfig, GmacFrameBurst);
+    synopGMACSetBits(gmacdev->MacBase, GmacConfig, GmacFrameBurst);
     return;
 }
+
 /**
   * Disables Frame bursting.
   * When Disabled, frame bursting is not supported.
@@ -334,7 +316,7 @@ void synopGMAC_frame_burst_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_frame_burst_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacConfig, GmacFrameBurst);
+    synopGMACClearBits(gmacdev->MacBase, GmacConfig, GmacFrameBurst);
     return;
 }
 
@@ -347,9 +329,10 @@ void synopGMAC_frame_burst_disable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_jumbo_frame_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacConfig, GmacJumboFrame);
+    synopGMACSetBits(gmacdev->MacBase, GmacConfig, GmacJumboFrame);
     return;
 }
+
 /**
   * Disable Jumbo frame support.
   * When Disabled GMAC does not supports jumbo frames.
@@ -359,7 +342,7 @@ void synopGMAC_jumbo_frame_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_jumbo_frame_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacConfig, GmacJumboFrame);
+    synopGMACClearBits(gmacdev->MacBase, GmacConfig, GmacJumboFrame);
     return;
 }
 
@@ -370,10 +353,9 @@ void synopGMAC_jumbo_frame_disable(synopGMACdevice *gmacdev)
   * @param[in] pointer to synopGMACdevice.
   * \return void.
   */
-
 void synopGMAC_disable_crs(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacConfig, GmacDisableCrs);
+    synopGMACSetBits(gmacdev->MacBase, GmacConfig, GmacDisableCrs);
     return;
 }
 
@@ -385,9 +367,10 @@ void synopGMAC_disable_crs(synopGMACdevice *gmacdev)
   */
 void synopGMAC_select_gmii(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacConfig, GmacMiiGmii);
+    synopGMACClearBits(gmacdev->MacBase, GmacConfig, GmacMiiGmii);
     return;
 }
+
 /**
   * Selects the MII port.
   * When called MII (10/100Mbps) port is selected (programmable only in 10/100/1000 Mbps configuration).
@@ -396,7 +379,7 @@ void synopGMAC_select_gmii(synopGMACdevice *gmacdev)
   */
 void synopGMAC_select_mii(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacConfig, GmacMiiGmii);
+    synopGMACSetBits(gmacdev->MacBase, GmacConfig, GmacMiiGmii);
     return;
 }
 
@@ -406,11 +389,12 @@ void synopGMAC_select_mii(synopGMACdevice *gmacdev)
   * @param[in] pointer to synopGMACdevice.
   * \return returns void.
   */
-void synopGMAC_rx_own_enable(synopGMACdevice * gmacdev)
+void synopGMAC_rx_own_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacConfig, GmacRxOwn);
+    synopGMACClearBits(gmacdev->MacBase, GmacConfig, GmacRxOwn);
     return;
 }
+
 /**
   * Disables Receive Own bit (Only in Half Duplex Mode).
   * When enaled GMAC disables the reception of frames when gmii_txen_o is asserted.
@@ -419,7 +403,7 @@ void synopGMAC_rx_own_enable(synopGMACdevice * gmacdev)
   */
 void synopGMAC_rx_own_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacConfig, GmacRxOwn);
+    synopGMACSetBits(gmacdev->MacBase, GmacConfig, GmacRxOwn);
     return;
 }
 
@@ -433,9 +417,10 @@ void synopGMAC_rx_own_disable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_loopback_on(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacConfig, GmacLoopback);
+    synopGMACSetBits(gmacdev->MacBase, GmacConfig, GmacLoopback);
     return;
 }
+
 /**
   * Sets the GMAC in Normal mode.
   * @param[in] pointer to synopGMACdevice.
@@ -443,7 +428,7 @@ void synopGMAC_loopback_on(synopGMACdevice *gmacdev)
   */
 void synopGMAC_loopback_off(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacConfig, GmacLoopback);
+    synopGMACClearBits(gmacdev->MacBase, GmacConfig, GmacLoopback);
     return;
 }
 
@@ -454,9 +439,10 @@ void synopGMAC_loopback_off(synopGMACdevice *gmacdev)
   */
 void synopGMAC_set_full_duplex(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacConfig, GmacDuplex);
+    synopGMACSetBits(gmacdev->MacBase, GmacConfig, GmacDuplex);
     return;
 }
+
 /**
   * Sets the GMAC core in Half-Duplex mode.
   * @param[in] pointer to synopGMACdevice.
@@ -464,7 +450,7 @@ void synopGMAC_set_full_duplex(synopGMACdevice *gmacdev)
   */
 void synopGMAC_set_half_duplex(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacConfig, GmacDuplex);
+    synopGMACClearBits(gmacdev->MacBase, GmacConfig, GmacDuplex);
     return;
 }
 
@@ -478,9 +464,10 @@ void synopGMAC_set_half_duplex(synopGMACdevice *gmacdev)
   */
 void synopGMAC_retry_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacConfig, GmacRetry);
+    synopGMACClearBits(gmacdev->MacBase, GmacConfig, GmacRetry);
     return;
 }
+
 /**
   * GMAC tries only one transmission (Only in Half Duplex mode).
   * If collision occurs on the GMII/MII, GMAC will ignore the current frami
@@ -490,7 +477,7 @@ void synopGMAC_retry_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_retry_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacConfig, GmacRetry);
+    synopGMACSetBits(gmacdev->MacBase, GmacConfig, GmacRetry);
     return;
 }
 
@@ -504,9 +491,10 @@ void synopGMAC_retry_disable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_pad_crc_strip_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacConfig, GmacPadCrcStrip);
+    synopGMACSetBits(gmacdev->MacBase, GmacConfig, GmacPadCrcStrip);
     return;
 }
+
 /**
   * GMAC doesnot strips the Pad/FCS field of incoming frames.
   * GMAC will pass all the incoming frames to Host unmodified.
@@ -515,9 +503,16 @@ void synopGMAC_pad_crc_strip_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_pad_crc_strip_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacConfig, GmacPadCrcStrip);
+    u32 status;
+    synopGMACClearBits(gmacdev->MacBase, GmacConfig, GmacPadCrcStrip);
+    status = synopGMACReadReg(gmacdev->MacBase, GmacConfig);
+    if ((status & GmacPadCrcStrip))
+    {
+        TR("strips status : %u\n", status & GmacPadCrcStrip);
+    }
     return;
 }
+
 /**
   * GMAC programmed with the back off limit value.
   * @param[in] pointer to synopGMACdevice.
@@ -527,12 +522,10 @@ void synopGMAC_pad_crc_strip_disable(synopGMACdevice *gmacdev)
 void synopGMAC_back_off_limit(synopGMACdevice *gmacdev, u32 value)
 {
     u32 data;
-    
-    data = synopGMACReadReg((u32 *)gmacdev->MacBase, GmacConfig);
+    data = synopGMACReadReg(gmacdev->MacBase, GmacConfig);
     data &= (~GmacBackoffLimit);
     data |= value;
-    synopGMACWriteReg((u32 *)gmacdev->MacBase, GmacConfig,data);
-    
+    synopGMACWriteReg(gmacdev->MacBase, GmacConfig, data);
     return;
 }
 
@@ -549,9 +542,10 @@ void synopGMAC_back_off_limit(synopGMACdevice *gmacdev, u32 value)
   */
 void synopGMAC_deferral_check_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacConfig, GmacDeferralCheck);
+    synopGMACSetBits(gmacdev->MacBase, GmacConfig, GmacDeferralCheck);
     return;
 }
+
 /**
   * Disables the Deferral check in GMAC (Only in Half Duplex mode).
   * GMAC defers until the CRS signal goes inactive.
@@ -560,9 +554,10 @@ void synopGMAC_deferral_check_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_deferral_check_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacConfig, GmacDeferralCheck);
+    synopGMACClearBits(gmacdev->MacBase, GmacConfig, GmacDeferralCheck);
     return;
 }
+
 /**
   * Enable the reception of frames on GMII/MII.
   * @param[in] pointer to synopGMACdevice.
@@ -570,9 +565,10 @@ void synopGMAC_deferral_check_disable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_rx_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacConfig, GmacRx);
+    synopGMACSetBits(gmacdev->MacBase, GmacConfig, GmacRx);
     return;
 }
+
 /**
   * Disable the reception of frames on GMII/MII.
   * GMAC receive state machine is disabled after completion of reception of current frame.
@@ -581,9 +577,10 @@ void synopGMAC_rx_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_rx_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacConfig, GmacRx);
+    synopGMACClearBits(gmacdev->MacBase, GmacConfig, GmacRx);
     return;
 }
+
 /**
   * Enable the transmission of frames on GMII/MII.
   * @param[in] pointer to synopGMACdevice.
@@ -591,9 +588,10 @@ void synopGMAC_rx_disable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_tx_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacConfig, GmacTx);
+    synopGMACSetBits(gmacdev->MacBase, GmacConfig, GmacTx);
     return;
 }
+
 /**
   * Disable the transmission of frames on GMII/MII.
   * GMAC transmit state machine is disabled after completion of transmission of current frame.
@@ -602,10 +600,9 @@ void synopGMAC_tx_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_tx_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacConfig, GmacTx);
+    synopGMACClearBits(gmacdev->MacBase, GmacConfig, GmacTx);
     return;
 }
-
 
 /*Receive frame filter configuration functions*/
 
@@ -618,9 +615,10 @@ void synopGMAC_tx_disable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_frame_filter_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacFrameFilter, GmacFilter);
+    synopGMACClearBits(gmacdev->MacBase, GmacFrameFilter, GmacFilter);
     return;
 }
+
 /**
   * Disables reception of all the frames to application.
   * GMAC passes only those received frames to application which
@@ -630,7 +628,7 @@ void synopGMAC_frame_filter_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_frame_filter_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacFrameFilter, GmacFilter);
+    synopGMACSetBits(gmacdev->MacBase, GmacFrameFilter, GmacFilter);
     return;
 }
 
@@ -643,7 +641,7 @@ void synopGMAC_frame_filter_disable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_write_hash_table_high(synopGMACdevice *gmacdev, u32 data)
 {
-    synopGMACWriteReg((u32 *)gmacdev->MacBase, GmacHashHigh,data);
+    synopGMACWriteReg(gmacdev->MacBase, GmacHashHigh, data);
     return;
 }
 
@@ -656,7 +654,7 @@ void synopGMAC_write_hash_table_high(synopGMACdevice *gmacdev, u32 data)
   */
 void synopGMAC_write_hash_table_low(synopGMACdevice *gmacdev, u32 data)
 {
-    synopGMACWriteReg((u32 *)gmacdev->MacBase, GmacHashLow,data);
+    synopGMACWriteReg(gmacdev->MacBase, GmacHashLow, data);
     return;
 }
 
@@ -669,7 +667,7 @@ void synopGMAC_write_hash_table_low(synopGMACdevice *gmacdev, u32 data)
   */
 void synopGMAC_hash_perfect_filter_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacFrameFilter, GmacHashPerfectFilter);
+    synopGMACSetBits(gmacdev->MacBase, GmacFrameFilter, GmacHashPerfectFilter);
     return;
 }
 
@@ -682,7 +680,7 @@ void synopGMAC_hash_perfect_filter_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_Hash_filter_only_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacFrameFilter, GmacHashPerfectFilter);
+    synopGMACSetBits(gmacdev->MacBase, GmacFrameFilter, GmacHashPerfectFilter);
     return;
 }
 
@@ -696,9 +694,10 @@ void synopGMAC_Hash_filter_only_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_src_addr_filter_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacFrameFilter, GmacSrcAddrFilter);
+    synopGMACSetBits(gmacdev->MacBase, GmacFrameFilter, GmacSrcAddrFilter);
     return;
 }
+
 /**
   * Disables Source address filtering.
   * When disabled GMAC forwards the received frames with updated SAMatch bit in RxStatus.
@@ -707,9 +706,10 @@ void synopGMAC_src_addr_filter_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_src_addr_filter_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacFrameFilter, GmacSrcAddrFilter);
+    synopGMACClearBits(gmacdev->MacBase, GmacFrameFilter, GmacSrcAddrFilter);
     return;
 }
+
 /**
   * Enables Inverse Destination address filtering.
   * @param[in] pointer to synopGMACdevice.
@@ -717,9 +717,10 @@ void synopGMAC_src_addr_filter_disable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_dst_addr_filter_inverse(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacFrameFilter, GmacDestAddrFilterNor);
+    synopGMACSetBits(gmacdev->MacBase, GmacFrameFilter, GmacDestAddrFilterNor);
     return;
 }
+
 /**
   * Enables the normal Destination address filtering.
   * @param[in] pointer to synopGMACdevice.
@@ -727,7 +728,7 @@ void synopGMAC_dst_addr_filter_inverse(synopGMACdevice *gmacdev)
   */
 void synopGMAC_dst_addr_filter_normal(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacFrameFilter, GmacDestAddrFilterNor);
+    synopGMACClearBits(gmacdev->MacBase, GmacFrameFilter, GmacDestAddrFilterNor);
     return;
 }
 
@@ -738,15 +739,13 @@ void synopGMAC_dst_addr_filter_normal(synopGMACdevice *gmacdev)
   * \return void.
   * \note Depends on RFE of FlowControlRegister[2]
   */
-void synopGMAC_set_pass_control(synopGMACdevice *gmacdev,u32 passcontrol)
+void synopGMAC_set_pass_control(synopGMACdevice *gmacdev, u32 passcontrol)
 {
     u32 data;
-    
-    data = synopGMACReadReg((u32 *)gmacdev->MacBase, GmacFrameFilter);
+    data = synopGMACReadReg(gmacdev->MacBase, GmacFrameFilter);
     data &= (~GmacPassControl);
     data |= passcontrol;
-    synopGMACWriteReg((u32 *)gmacdev->MacBase, GmacFrameFilter, data);
-    
+    synopGMACWriteReg(gmacdev->MacBase, GmacFrameFilter, data);
     return;
 }
 
@@ -758,9 +757,10 @@ void synopGMAC_set_pass_control(synopGMACdevice *gmacdev,u32 passcontrol)
   */
 void synopGMAC_broadcast_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacFrameFilter, GmacBroadcast);
+    synopGMACClearBits(gmacdev->MacBase, GmacFrameFilter, GmacBroadcast);
     return;
 }
+
 /**
   * Disable Broadcast frames.
   * When disabled Address filtering module filters all incoming broadcast frames.
@@ -769,7 +769,7 @@ void synopGMAC_broadcast_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_broadcast_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacFrameFilter, GmacBroadcast);
+    synopGMACSetBits(gmacdev->MacBase, GmacFrameFilter, GmacBroadcast);
     return;
 }
 
@@ -781,9 +781,10 @@ void synopGMAC_broadcast_disable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_multicast_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacFrameFilter, GmacMulticastFilter);
+    synopGMACSetBits(gmacdev->MacBase, GmacFrameFilter, GmacMulticastFilter);
     return;
 }
+
 /**
   * Disable Multicast frames.
   * When disabled multicast frame filtering depends on HMC bit.
@@ -792,7 +793,7 @@ void synopGMAC_multicast_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_multicast_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacFrameFilter, GmacMulticastFilter);
+    synopGMACClearBits(gmacdev->MacBase, GmacFrameFilter, GmacMulticastFilter);
     return;
 }
 
@@ -804,9 +805,10 @@ void synopGMAC_multicast_disable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_multicast_hash_filter_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacFrameFilter, GmacMcastHashFilter);
+    synopGMACSetBits(gmacdev->MacBase, GmacFrameFilter, GmacMcastHashFilter);
     return;
 }
+
 /**
   * Disables multicast hash filtering.
   * When disabled GMAC performs perfect destination address filtering for multicast frames, it compares
@@ -816,7 +818,7 @@ void synopGMAC_multicast_hash_filter_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_multicast_hash_filter_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacFrameFilter, GmacMcastHashFilter);
+    synopGMACClearBits(gmacdev->MacBase, GmacFrameFilter, GmacMcastHashFilter);
     return;
 }
 
@@ -829,9 +831,10 @@ void synopGMAC_multicast_hash_filter_disable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_promisc_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacFrameFilter, GmacPromiscuousMode);
+    synopGMACSetBits(gmacdev->MacBase, GmacFrameFilter, GmacPromiscuousMode);
     return;
 }
+
 /**
   * Clears promiscous mode.
   * When called the GMAC falls back to normal operation from promiscous mode.
@@ -840,10 +843,9 @@ void synopGMAC_promisc_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_promisc_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacFrameFilter, GmacPromiscuousMode);
+    synopGMACClearBits(gmacdev->MacBase, GmacFrameFilter, GmacPromiscuousMode);
     return;
 }
-
 
 /**
   * Enables unicast hash filtering.
@@ -853,9 +855,10 @@ void synopGMAC_promisc_disable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_unicast_hash_filter_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacFrameFilter, GmacUcastHashFilter);
+    synopGMACSetBits(gmacdev->MacBase, GmacFrameFilter, GmacUcastHashFilter);
     return;
 }
+
 /**
   * Disables multicast hash filtering.
   * When disabled GMAC performs perfect destination address filtering for unicast frames, it compares
@@ -865,9 +868,10 @@ void synopGMAC_unicast_hash_filter_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_unicast_hash_filter_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacFrameFilter, GmacUcastHashFilter);
+    synopGMACClearBits(gmacdev->MacBase, GmacFrameFilter, GmacUcastHashFilter);
     return;
 }
+
 
 /*Flow control configuration functions*/
 
@@ -880,9 +884,10 @@ void synopGMAC_unicast_hash_filter_disable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_unicast_pause_frame_detect_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacFlowControl, GmacUnicastPauseFrame);
+    synopGMACSetBits(gmacdev->MacBase, GmacFlowControl, GmacUnicastPauseFrame);
     return;
 }
+
 /**
   * Disables detection of pause frames with stations unicast address.
   * When disabled GMAC only detects with the unique multicast address (802.3x).
@@ -891,9 +896,10 @@ void synopGMAC_unicast_pause_frame_detect_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_unicast_pause_frame_detect_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacFlowControl, GmacUnicastPauseFrame);
+    synopGMACClearBits(gmacdev->MacBase, GmacFlowControl, GmacUnicastPauseFrame);
     return;
 }
+
 /**
   * Rx flow control enable.
   * When Enabled GMAC will decode the rx pause frame and disable the tx for a specified time.
@@ -902,9 +908,10 @@ void synopGMAC_unicast_pause_frame_detect_disable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_rx_flow_control_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacFlowControl, GmacRxFlowControl);
+    synopGMACSetBits(gmacdev->MacBase, GmacFlowControl, GmacRxFlowControl);
     return;
 }
+
 /**
   * Rx flow control disable.
   * When disabled GMAC will not decode pause frame.
@@ -913,9 +920,10 @@ void synopGMAC_rx_flow_control_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_rx_flow_control_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacFlowControl, GmacRxFlowControl);
+    synopGMACClearBits(gmacdev->MacBase, GmacFlowControl, GmacRxFlowControl);
     return;
 }
+
 /**
   * Tx flow control enable.
   * When Enabled
@@ -926,7 +934,7 @@ void synopGMAC_rx_flow_control_disable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_tx_flow_control_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacFlowControl, GmacTxFlowControl);
+    synopGMACSetBits(gmacdev->MacBase, GmacFlowControl, GmacTxFlowControl);
     return;
 }
 
@@ -940,7 +948,7 @@ void synopGMAC_tx_flow_control_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_tx_flow_control_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacFlowControl, GmacTxFlowControl);
+    synopGMACClearBits(gmacdev->MacBase, GmacFlowControl, GmacTxFlowControl);
     return;
 }
 
@@ -956,14 +964,15 @@ void synopGMAC_tx_activate_flow_control(synopGMACdevice *gmacdev)
 {
     //In case of full duplex check for this bit to b'0. if it is read as b'1 indicates that
     //control frame transmission is in progress.
-    if(gmacdev->Speed == FULLDUPLEX) 
+    if (gmacdev->Speed == FULLDUPLEX)
     {
-        if(!synopGMACCheckBits((u32 *)gmacdev->MacBase, GmacFlowControl, GmacFlowControlBackPressure))
-            synopGMACSetBits((u32 *)gmacdev->MacBase, GmacFlowControl, GmacFlowControlBackPressure);
-    } 
-    else 
-    { //if half duplex mode        
-        synopGMACSetBits((u32 *)gmacdev->MacBase, GmacFlowControl, GmacFlowControlBackPressure);
+        if (!synopGMACCheckBits(gmacdev->MacBase, GmacFlowControl, GmacFlowControlBackPressure))
+            synopGMACSetBits(gmacdev->MacBase, GmacFlowControl, GmacFlowControlBackPressure);
+    }
+    else  //if half duplex mode
+    {
+
+        synopGMACSetBits(gmacdev->MacBase, GmacFlowControl, GmacFlowControlBackPressure);
     }
 
     return;
@@ -977,9 +986,9 @@ void synopGMAC_tx_activate_flow_control(synopGMACdevice *gmacdev)
 void synopGMAC_tx_deactivate_flow_control(synopGMACdevice *gmacdev)
 {
     //In full duplex this bit is automatically cleared after transmitting a pause control frame.
-    if(gmacdev->Speed == HALFDUPLEX) 
+    if (gmacdev->Speed == HALFDUPLEX)
     {
-        synopGMACSetBits((u32 *)gmacdev->MacBase, GmacFlowControl, GmacFlowControlBackPressure);
+        synopGMACSetBits(gmacdev->MacBase, GmacFlowControl, GmacFlowControlBackPressure);
     }
     return;
 }
@@ -995,14 +1004,13 @@ void synopGMAC_pause_control(synopGMACdevice *gmacdev)
 {
     u32 omr_reg;
     u32 mac_flow_control_reg;
-    
-    omr_reg = synopGMACReadReg((u32 *)gmacdev->DmaBase, DmaControl);
-    omr_reg |= DmaRxFlowCtrlAct4K | DmaRxFlowCtrlDeact5K |DmaEnHwFlowCtrl;
-    synopGMACWriteReg((u32 *)gmacdev->DmaBase, DmaControl, omr_reg);
+    omr_reg = synopGMACReadReg(gmacdev->DmaBase, DmaControl);
+    omr_reg |= DmaRxFlowCtrlAct4K | DmaRxFlowCtrlDeact5K | DmaEnHwFlowCtrl;
+    synopGMACWriteReg(gmacdev->DmaBase, DmaControl, omr_reg);
 
-    mac_flow_control_reg = synopGMACReadReg((u32 *)gmacdev->MacBase, GmacFlowControl);
+    mac_flow_control_reg = synopGMACReadReg(gmacdev->MacBase, GmacFlowControl);
     mac_flow_control_reg |= GmacRxFlowControl | GmacTxFlowControl | 0xFFFF0000;
-    synopGMACWriteReg((u32 *)gmacdev->MacBase, GmacFlowControl, mac_flow_control_reg);
+    synopGMACWriteReg(gmacdev->MacBase, GmacFlowControl, mac_flow_control_reg);
 
     return;
 
@@ -1019,7 +1027,7 @@ s32 synopGMAC_mac_init(synopGMACdevice *gmacdev)
 {
     u32 PHYreg;
 
-    if(gmacdev->DuplexMode == FULLDUPLEX)
+    if (gmacdev->DuplexMode == FULLDUPLEX)
     {
         synopGMAC_wd_enable(gmacdev);
         synopGMAC_jab_enable(gmacdev);
@@ -1030,10 +1038,11 @@ s32 synopGMAC_mac_init(synopGMACdevice *gmacdev)
         synopGMAC_set_full_duplex(gmacdev);
         synopGMAC_retry_enable(gmacdev);
         synopGMAC_pad_crc_strip_disable(gmacdev);
-        synopGMAC_back_off_limit(gmacdev,GmacBackoffLimit0);
+        synopGMAC_back_off_limit(gmacdev, GmacBackoffLimit0);
         synopGMAC_deferral_check_disable(gmacdev);
 
-        if(gmacdev->Speed == SPEED1000)
+
+        if (gmacdev->Speed == SPEED1000)
             synopGMAC_select_gmii(gmacdev);
         else
             synopGMAC_select_mii(gmacdev);
@@ -1043,7 +1052,7 @@ s32 synopGMAC_mac_init(synopGMACdevice *gmacdev)
         synopGMAC_rx_enable(gmacdev);
         /*Frame Filter Configuration*/
         synopGMAC_frame_filter_enable(gmacdev);
-        synopGMAC_set_pass_control(gmacdev,GmacPassControl0);
+        synopGMAC_set_pass_control(gmacdev, GmacPassControl0);
         synopGMAC_broadcast_enable(gmacdev);
         synopGMAC_src_addr_filter_disable(gmacdev);
         synopGMAC_multicast_disable(gmacdev);
@@ -1056,9 +1065,10 @@ s32 synopGMAC_mac_init(synopGMACdevice *gmacdev)
         synopGMAC_unicast_pause_frame_detect_disable(gmacdev);
         synopGMAC_rx_flow_control_enable(gmacdev);
         synopGMAC_tx_flow_control_enable(gmacdev);
-    } 
-    else 
-    { //for Half Duplex configuration
+    }
+    else     //for Half Duplex configuration
+    {
+
         synopGMAC_wd_enable(gmacdev);
         synopGMAC_jab_enable(gmacdev);
         synopGMAC_frame_burst_enable(gmacdev);
@@ -1068,10 +1078,11 @@ s32 synopGMAC_mac_init(synopGMACdevice *gmacdev)
         synopGMAC_set_half_duplex(gmacdev);
         synopGMAC_retry_enable(gmacdev);
         synopGMAC_pad_crc_strip_disable(gmacdev);
-        synopGMAC_back_off_limit(gmacdev,GmacBackoffLimit0);
+        synopGMAC_back_off_limit(gmacdev, GmacBackoffLimit0);
         synopGMAC_deferral_check_disable(gmacdev);
 
-        if(gmacdev->Speed == SPEED1000)
+
+        if (gmacdev->Speed == SPEED1000)
             synopGMAC_select_gmii(gmacdev);
         else
             synopGMAC_select_mii(gmacdev);
@@ -1080,7 +1091,7 @@ s32 synopGMAC_mac_init(synopGMACdevice *gmacdev)
         synopGMAC_rx_enable(gmacdev);
         /*Frame Filter Configuration*/
         synopGMAC_frame_filter_enable(gmacdev);
-        synopGMAC_set_pass_control(gmacdev,GmacPassControl0);
+        synopGMAC_set_pass_control(gmacdev, GmacPassControl0);
         synopGMAC_broadcast_enable(gmacdev);
         synopGMAC_src_addr_filter_disable(gmacdev);
         synopGMAC_multicast_disable(gmacdev);
@@ -1095,12 +1106,11 @@ s32 synopGMAC_mac_init(synopGMACdevice *gmacdev)
         synopGMAC_tx_flow_control_disable(gmacdev);
 
         /*To set PHY register to enable CRS on Transmit*/
-        synopGMACWriteReg((u32 *)gmacdev->MacBase, GmacGmiiAddr, GmiiBusy | 0x00000408);
-        PHYreg = synopGMACReadReg((u32 *)gmacdev->MacBase,GmacGmiiData);
-        synopGMACWriteReg((u32 *)gmacdev->MacBase, GmacGmiiData, PHYreg   | 0x00000800);
-        synopGMACWriteReg((u32 *)gmacdev->MacBase, GmacGmiiAddr, GmiiBusy | 0x0000040a);
+        synopGMACWriteReg(gmacdev->MacBase, GmacGmiiAddr, GmiiBusy | 0x00000408);
+        PHYreg = synopGMACReadReg(gmacdev->MacBase, GmacGmiiData);
+        synopGMACWriteReg(gmacdev->MacBase, GmacGmiiData, PHYreg   | 0x00000800);
+        synopGMACWriteReg(gmacdev->MacBase, GmacGmiiAddr, GmiiBusy | 0x0000040a);
     }
-    
     return 0;
 }
 
@@ -1118,10 +1128,36 @@ s32 synopGMAC_set_mac_addr(synopGMACdevice *gmacdev, u32 MacHigh, u32 MacLow, u8
     u32 data;
 
     data = (MacAddr[5] << 8) | MacAddr[4];
-    synopGMACWriteReg((u32 *)gmacdev->MacBase, MacHigh, data);
+    synopGMACWriteReg(gmacdev->MacBase, MacHigh, data);
     data = (MacAddr[3] << 24) | (MacAddr[2] << 16) | (MacAddr[1] << 8) | MacAddr[0] ;
-    synopGMACWriteReg((u32 *)gmacdev->MacBase, MacLow, data);
-    
+    synopGMACWriteReg(gmacdev->MacBase, MacLow, data);
+
+    return 0;
+}
+
+/**
+  * Get the Mac address in to the address specified.
+  * The mac register contents are read and written to buffer passed.
+  * @param[in] pointer to synopGMACdevice to populate mac dma and phy addresses.
+  * @param[in] Register offset for Mac address high
+  * @param[in] Register offset for Mac address low
+  * @param[out] buffer containing the device mac address.
+  * \return 0 upon success. Error code upon failure.
+  */
+s32 synopGMAC_get_mac_addr(synopGMACdevice *gmacdev, u32 MacHigh, u32 MacLow, u8 *MacAddr)
+{
+    u32 data;
+
+    data = synopGMACReadReg(gmacdev->MacBase, MacHigh);
+    MacAddr[5] = (data >> 8) & 0xff;
+    MacAddr[4] = (data)      & 0xff;
+
+    data = synopGMACReadReg(gmacdev->MacBase, MacLow);
+    MacAddr[3] = (data >> 24) & 0xff;
+    MacAddr[2] = (data >> 16) & 0xff;
+    MacAddr[1] = (data >> 8)  & 0xff;
+    MacAddr[0] = (data)       & 0xff;
+
     return 0;
 }
 
@@ -1135,21 +1171,42 @@ s32 synopGMAC_set_mac_addr(synopGMACdevice *gmacdev, u32 MacHigh, u32 MacLow, u8
   * \return 0 upon success. Error code upon failure.
   * \note This is important function. No kernel api provided by Synopsys
   */
-
-s32 synopGMAC_attach (synopGMACdevice *gmacdev, u32 macBase, u32 dmaBase, u32 phyBase)
+static s32 synopGMAC_scan_phyid(synopGMACdevice *gmacdev, u32 phyBase)
 {
-    u8 mac_addr0[6] = DEFAULT_MAC0_ADDRESS;
-    u8 mac_addr1[6] = DEFAULT_MAC1_ADDRESS;
-    
+    int i, j;
+    u16 data;
+
+    for (i = phyBase, j = 0; j < 32; i = (i + 1) & 0x1f, j++)
+    {
+        synopGMAC_read_phy_reg(gmacdev->MacBase, i, 2, &data);
+        if (data != 0 && data != 0xffff) break;
+        synopGMAC_read_phy_reg(gmacdev->MacBase, i, 3, &data);
+        if (data != 0 && data != 0xffff) break;
+    }
+    if (j == 32)
+    {
+        j = -1;
+    }
+    return j;
+}
+
+s32 synopGMAC_attach(synopGMACdevice *gmacdev, u32 macBase, u32 dmaBase, u32 phyBase, u8 *mac_addr)
+{
     /*Make sure the Device data strucure is cleared before we proceed further*/
-    memset((void *) gmacdev,0,sizeof(synopGMACdevice));
+    memset((void *) gmacdev, 0, sizeof(synopGMACdevice));
+
     /*Populate the mac and dma base addresses*/
     gmacdev->MacBase = macBase;
     gmacdev->DmaBase = dmaBase;
     gmacdev->PhyBase = phyBase;
 
     /* Program/flash in the station/IP's Mac address */
-    synopGMAC_set_mac_addr(gmacdev, GmacAddr0High, GmacAddr0Low, gmacdev->Intf == 0 ? mac_addr0 : mac_addr1);
+    //synopGMAC_set_mac_addr(gmacdev, GmacAddr0High, GmacAddr0Low, mac_addr);
+
+    if (synopGMAC_scan_phyid(gmacdev, phyBase) < 0)
+    {
+        return -1;
+    }
 
     return 0;
 }
@@ -1174,9 +1231,9 @@ void synopGMAC_rx_desc_init_ring(DmaDesc *desc, bool last_ring_desc)
     desc->buffer2 = 0;
     //desc->data1 = 0;
     //desc->data2 = 0;
-    
     return;
 }
+
 /**
   * Initialize the tx descriptors for ring or chain mode operation.
   *     - Status field is initialized to 0.
@@ -1191,30 +1248,29 @@ void synopGMAC_rx_desc_init_ring(DmaDesc *desc, bool last_ring_desc)
   */
 void synopGMAC_tx_desc_init_ring(DmaDesc *desc, bool last_ring_desc)
 {
-    desc->status = last_ring_desc? TxDescEndOfRing : 0;
+
+    desc->status = last_ring_desc ? TxDescEndOfRing : 0;
     desc->length = 0;
 
     desc->buffer1 = 0;
     desc->buffer2 = 0;
     //desc->data1 = 0;
     //desc->data2 = 0;
-    
+
     return;
 }
 
 s32 synopGMAC_init_tx_rx_desc_queue(synopGMACdevice *gmacdev)
 {
     s32 i;
-    
-    for(i = 0; i < gmacdev -> TxDescCount; i++) 
+    for (i = 0; i < gmacdev -> TxDescCount; i++)
     {
-        synopGMAC_tx_desc_init_ring(gmacdev->TxDesc + i, i == gmacdev->TxDescCount-1);
+        synopGMAC_tx_desc_init_ring(gmacdev->TxDesc + i, i == gmacdev->TxDescCount - 1);
     }
-    TR("At line %d\n",__LINE__);
-    
-    for(i = 0; i < gmacdev -> RxDescCount; i++) 
+    TR("At line %d\n", __LINE__);
+    for (i = 0; i < gmacdev -> RxDescCount; i++)
     {
-        synopGMAC_rx_desc_init_ring(gmacdev->RxDesc + i, i == gmacdev->RxDescCount-1);
+        synopGMAC_rx_desc_init_ring(gmacdev->RxDesc + i, i == gmacdev->RxDescCount - 1);
     }
 
     gmacdev->TxNext = 0;
@@ -1234,7 +1290,7 @@ s32 synopGMAC_init_tx_rx_desc_queue(synopGMACdevice *gmacdev)
   */
 void synopGMAC_init_rx_desc_base(synopGMACdevice *gmacdev)
 {
-    synopGMACWriteReg((u32 *)gmacdev->DmaBase, DmaRxBaseAddr, (u32)((u32)gmacdev->RxDescDma & 0xFFFFFFFF));
+    synopGMACWriteReg(gmacdev->DmaBase, DmaRxBaseAddr, (u32)gmacdev->RxDescDma);
     return;
 }
 
@@ -1247,7 +1303,7 @@ void synopGMAC_init_rx_desc_base(synopGMACdevice *gmacdev)
   */
 void synopGMAC_init_tx_desc_base(synopGMACdevice *gmacdev)
 {
-    synopGMACWriteReg((u32 *)gmacdev->DmaBase, DmaTxBaseAddr, (u32)((u32)gmacdev->TxDescDma & 0xFFFFFFFF));
+    synopGMACWriteReg(gmacdev->DmaBase, DmaTxBaseAddr, (u32)gmacdev->TxDescDma);
     return;
 }
 
@@ -1404,7 +1460,7 @@ bool synopGMAC_is_frame_dribbling_errors(u32 status)
 bool synopGMAC_is_rx_frame_length_errors(u32 status)
 {
 //u32 synopGMAC_dma_rx_length_errors(u32 status)
-    return((status & DescRxLengthError) == DescRxLengthError);
+    return ((status & DescRxLengthError) == DescRxLengthError);
 }
 
 /**
@@ -1418,7 +1474,7 @@ bool synopGMAC_is_rx_frame_length_errors(u32 status)
 bool synopGMAC_is_last_rx_desc(synopGMACdevice *gmacdev, DmaDesc *desc)
 {
 //bool synopGMAC_is_last_desc(DmaDesc *desc)
-    return (((desc->length & RxDescEndOfRing) == RxDescEndOfRing) /*|| ((u32)((u32)gmacdev->RxDesc & 0xFFFFFFFF) == desc->data2)*/);
+    return (((desc->length & RxDescEndOfRing) == RxDescEndOfRing) /*|| ((u32)((u64)gmacdev->RxDesc & 0xFFFFFFFF) == desc->data2)*/);
 }
 
 /**
@@ -1432,8 +1488,8 @@ bool synopGMAC_is_last_rx_desc(synopGMACdevice *gmacdev, DmaDesc *desc)
 bool synopGMAC_is_last_tx_desc(synopGMACdevice *gmacdev, DmaDesc *desc)
 {
 //bool synopGMAC_is_last_desc(DmaDesc *desc)
-    return (((desc->status & TxDescEndOfRing) == TxDescEndOfRing) /*|| ((u32)((u32)gmacdev->TxDesc & 0xFFFFFFFF) == desc->data2)*/);
 
+    return (((desc->status & TxDescEndOfRing) == TxDescEndOfRing) /*|| ((u32)((u64)gmacdev->TxDesc & 0xFFFFFFFF) == desc->data2)*/);
 }
 
 /**
@@ -1452,67 +1508,66 @@ bool synopGMAC_is_last_tx_desc(synopGMACdevice *gmacdev, DmaDesc *desc)
   */
 s32 synopGMAC_get_tx_qptr(synopGMACdevice *gmacdev, u32 *Status, u32 *Buffer1, u32 *Length1, u32 *Data1, u32 *Ext_Status, u32 *Time_Stamp_High, u32 *Time_Stamp_Low)
 {
-    u32  txover     = gmacdev->TxBusy;
+    u32  txover      = gmacdev->TxBusy;
 #ifdef CACHE_ON
-    DmaDesc *txdesc = (DmaDesc *)((uint64_t)(gmacdev->TxBusyDesc) | 0x100000000);
+    DmaDesc *txdesc = (DmaDesc *)((u32)(gmacdev->TxBusyDesc) | UNCACHEABLE);
 #else
     DmaDesc *txdesc = gmacdev->TxBusyDesc;
 #endif
-    
-    if(synopGMAC_is_desc_owned_by_dma(txdesc))
+    if (synopGMAC_is_desc_owned_by_dma(txdesc))
         return -1;
-    
-    if(synopGMAC_is_desc_empty(txdesc))
+    if (synopGMAC_is_desc_empty(txdesc))
         return -1;
 
     (gmacdev->BusyTxDesc)--; //busy tx descriptor is reduced by one as it will be handed over to Processor now
 
-    if(Status != 0)
+    if (Status != 0)
         *Status = txdesc->status;
 
-    if(Ext_Status != 0)
+    if (Ext_Status != 0)
         *Ext_Status = txdesc->extstatus;
-    if(Time_Stamp_High != 0)
+    if (Time_Stamp_High != 0)
         *Time_Stamp_High = txdesc->timestamphigh;
-    if(Time_Stamp_Low != 0)
+    if (Time_Stamp_Low != 0)
         *Time_Stamp_Low = txdesc->timestamplow;
 
-    if(Buffer1 != 0)
+    if (Buffer1 != 0)
         *Buffer1 = txdesc->buffer1;
-    if(Length1 != 0)
+    if (Length1 != 0)
         *Length1 = (txdesc->length & DescSize1Mask) >> DescSize1Shift;
     //if(Data1 != 0)
     //    *Data1 = txdesc->data1;
 
-    gmacdev->TxBusy  = synopGMAC_is_last_tx_desc(gmacdev,txdesc) ? 0 : txover + 1;
+    gmacdev->TxBusy     = synopGMAC_is_last_tx_desc(gmacdev, txdesc) ? 0 : txover + 1;
 
-    if(1 /* ring mode */) 
+    if (1 /* ring mode */)
     {
-        gmacdev->TxBusyDesc = synopGMAC_is_last_tx_desc(gmacdev,txdesc) ? gmacdev->TxDesc : (txdesc + 1);
-        synopGMAC_tx_desc_init_ring(txdesc, synopGMAC_is_last_tx_desc(gmacdev,txdesc));
+        gmacdev->TxBusyDesc = synopGMAC_is_last_tx_desc(gmacdev, txdesc) ? gmacdev->TxDesc : (txdesc + 1);
+        synopGMAC_tx_desc_init_ring(txdesc, synopGMAC_is_last_tx_desc(gmacdev, txdesc));
     }
-    TR("(get)%02d %08x %08x %08x %08x %08x %08x %08x\n", txover, (u32)((u32)txdesc & 0xFFFFFFFF), txdesc->status, txdesc->length, txdesc->buffer1, txdesc->buffer2, txdesc->data1, txdesc->data2);
+//    TR("%02d %08x %08x %08x %08x %08x %08x %08x\n", txover, (u32)txdesc, txdesc->status, txdesc->length, txdesc->buffer1, txdesc->buffer2, txdesc->data1, txdesc->data2);
+    TR("%02d %08x %08x %08x %08x %08x\n", txover, (u32)txdesc, txdesc->status, txdesc->length, txdesc->buffer1, txdesc->buffer2);
 
     return txover;
 }
 
-DmaDesc * prevtx;
+DmaDesc *prevtx;
 void synopGMAC_set_crc_replacement(synopGMACdevice *gmacdev)
 {
 #ifdef CACHE_ON
-	DmaDesc *txdesc = (DmaDesc *)((uint64_t)(gmacdev->TxNextDesc) | 0x100000000);
+    DmaDesc *txdesc = (DmaDesc *)((u32)(gmacdev->TxNextDesc) | UNCACHEABLE);
 #else
-	DmaDesc *txdesc = gmacdev->TxNextDesc;
+    DmaDesc *txdesc = gmacdev->TxNextDesc;
 #endif
-	txdesc->status |= DescTxDisableCrc | DescTxCrcReplacement;
+    txdesc->status |= DescTxDisableCrc | DescTxCrcReplacement;
 
-	prevtx = txdesc;
+    prevtx = txdesc;
 }
 
 void synopGMAC_clr_crc_replacement(synopGMACdevice *gmacdev)
 {
-	prevtx->status &= ~(DescTxDisableCrc | DescTxCrcReplacement);
-	prevtx = NULL;
+    prevtx->status &= ~(DescTxDisableCrc | DescTxCrcReplacement);
+    prevtx = NULL;
 }
 
 /**
@@ -1533,52 +1588,48 @@ void synopGMAC_clr_crc_replacement(synopGMACdevice *gmacdev)
   */
 s32 synopGMAC_set_tx_qptr(synopGMACdevice *gmacdev, u32 Buffer1, u32 Length1, u32 Data1, u32 offload_needed, u32 ts)
 {
-    u32  txnext     = gmacdev->TxNext;
+    u32  txnext      = gmacdev->TxNext;
 #ifdef CACHE_ON
-    DmaDesc *txdesc = (DmaDesc *)((uint64_t)(gmacdev->TxNextDesc) | 0x100000000);
+    DmaDesc *txdesc = (DmaDesc *)((u32)(gmacdev->TxNextDesc) | UNCACHEABLE);
 #else
     DmaDesc *txdesc = gmacdev->TxNextDesc;
 #endif
-    
-    if(!synopGMAC_is_desc_empty(txdesc))
+    if (!synopGMAC_is_desc_empty(txdesc))
         return -1;
 
     (gmacdev->BusyTxDesc)++; //busy tx descriptor is incremented by one as it will be handed over to DMA
 
-    if(1 /* ring mode */) 
+    txdesc->length |= ((Length1 << DescSize1Shift) & DescSize1Mask);
+
+    txdesc->status |= (DescTxFirst | DescTxLast | DescTxIntEnable | (ts == 1 ? DescTxTSEnable : 0));   //ENH_DESC  // FIXME: Need to set DescTxTSEnable?
+
+    txdesc->buffer1 = Buffer1;
+    //txdesc->data1 = Data1;
+
+    if (offload_needed)
     {
-        txdesc->length |= ((Length1 <<DescSize1Shift) & DescSize1Mask);
+        /*
+          Make sure that the OS you are running supports the IP and TCP checkusm offloaidng,
+          before calling any of the functions given below.
+          */
 
-        txdesc->status |=  (DescTxFirst | DescTxLast | DescTxIntEnable | (ts == 1 ? DescTxTSEnable : 0) ); //ENH_DESC  // FIXME: Need to set DescTxTSEnable?
-
-        txdesc->buffer1 = Buffer1;
-        //txdesc->data1 = Data1;
-
-        if(offload_needed) 
-        {
-            /*
-             Make sure that the OS you are running supports the IP and TCP checkusm offloaidng,
-             before calling any of the functions given below.
-             */
-
-        	//TODO:
-            synopGMAC_tx_checksum_offload_ipv4hdr(gmacdev, txdesc);
-            synopGMAC_tx_checksum_offload_tcponly(gmacdev, txdesc);
-            synopGMAC_tx_checksum_offload_tcp_pseudo(gmacdev, txdesc);
-        } 
-        else 
-        {
-        	synopGMAC_tx_checksum_offload_bypass(gmacdev, txdesc);
-        }
-        //__DSB();
-        txdesc->status |= DescOwnByDma;//ENH_DESC
-
-        gmacdev->TxNext = synopGMAC_is_last_tx_desc(gmacdev,txdesc) ? 0 : txnext + 1;
-        gmacdev->TxNextDesc = synopGMAC_is_last_tx_desc(gmacdev,txdesc) ? gmacdev->TxDesc : (txdesc + 1);
+        //TODO:
+        synopGMAC_tx_checksum_offload_ipv4hdr(gmacdev, txdesc);
+        synopGMAC_tx_checksum_offload_tcponly(gmacdev, txdesc);
+        synopGMAC_tx_checksum_offload_tcp_pseudo(gmacdev, txdesc);
+    }
+    else
+    {
+        synopGMAC_tx_checksum_offload_bypass(gmacdev, txdesc);
     }
 
-    TR("(set)%02d %08x %08x %08x %08x %08x %08x %08x\n", txnext, (u32)((u32)txdesc & 0xFFFFFFFF), txdesc->status, txdesc->length, txdesc->buffer1, txdesc->buffer2, txdesc->data1, txdesc->data2);
-    
+    txdesc->status |= DescOwnByDma;//ENH_DESC
+
+    gmacdev->TxNext = synopGMAC_is_last_tx_desc(gmacdev, txdesc) ? 0 : txnext + 1;
+    gmacdev->TxNextDesc = synopGMAC_is_last_tx_desc(gmacdev, txdesc) ? gmacdev->TxDesc : (txdesc + 1);
+
+    //TR("(set)%02d %08x %08x %08x %08x %08x %08x %08x\n", txnext, (u32)txdesc, txdesc->status, txdesc->length, txdesc->buffer1, txdesc->buffer2, txdesc->data1, txdesc->data2);
+    TR("(set)%02d %08x %08x %08x %08x %08x\n", txnext, (u32)txdesc, txdesc->status, txdesc->length, txdesc->buffer1, txdesc->buffer2);
     return txnext;
 }
 
@@ -1598,41 +1649,42 @@ s32 synopGMAC_set_tx_qptr(synopGMACdevice *gmacdev, u32 Buffer1, u32 Length1, u3
   */
 s32 synopGMAC_set_rx_qptr(synopGMACdevice *gmacdev, u32 Buffer1, u32 Length1, u32 Data1)
 {
-    u32  rxnext     = gmacdev->RxNext;
+    u32  rxnext      = gmacdev->RxNext;
 #ifdef CACHE_ON
-    DmaDesc *rxdesc = (DmaDesc *)((uint64_t)(gmacdev->RxNextDesc) | 0x100000000);
+    DmaDesc *rxdesc = (DmaDesc *)((u32)(gmacdev->RxNextDesc) | UNCACHEABLE);
 #else
     DmaDesc *rxdesc = gmacdev->RxNextDesc;
 #endif
-    
-    if(!synopGMAC_is_desc_empty(rxdesc))
+    if (!synopGMAC_is_desc_empty(rxdesc))
+    {
         return -1;
+    }
 
-	rxdesc->length |= ((Length1 <<DescSize1Shift) & DescSize1Mask);
+    rxdesc->length |= ((Length1 << DescSize1Shift) & DescSize1Mask);
 
-	rxdesc->buffer1 = Buffer1;
-	//rxdesc->data1 = Data1;
+    rxdesc->buffer1 = Buffer1;
+    //rxdesc->data1 = Data1;
 
-	rxdesc->extstatus = 0;
-	rxdesc->reserved1 = 0;
-	rxdesc->timestamplow = 0;
-	rxdesc->timestamphigh = 0;
+    rxdesc->extstatus = 0;
+    rxdesc->reserved1 = 0;
+    rxdesc->timestamplow = 0;
+    rxdesc->timestamphigh = 0;
 
-	rxdesc->buffer2 = 0;
-	//rxdesc->data2 = 0;
+    rxdesc->buffer2 = 0;
+    //rxdesc->data2 = 0;
 
-	if((rxnext % MODULO_INTERRUPT) !=0)
-		rxdesc->length |= RxDisIntCompl;
+    if ((rxnext % MODULO_INTERRUPT) != 0)
+        rxdesc->length |= RxDisIntCompl;
 
-	rxdesc->status = DescOwnByDma;
+    rxdesc->status = DescOwnByDma;
 
-	gmacdev->RxNext     = synopGMAC_is_last_rx_desc(gmacdev, rxdesc) ? 0 : rxnext + 1;
-	gmacdev->RxNextDesc = synopGMAC_is_last_rx_desc(gmacdev, rxdesc) ? gmacdev->RxDesc : (rxdesc + 1);
+    gmacdev->RxNext     = synopGMAC_is_last_rx_desc(gmacdev, rxdesc) ? 0 : rxnext + 1;
+    gmacdev->RxNextDesc = synopGMAC_is_last_rx_desc(gmacdev, rxdesc) ? gmacdev->RxDesc : (rxdesc + 1);
 
-    TR("%02d %08x %08x %08x %08x %08x %08x %08x\n", rxnext, (u32)((u32)rxdesc & 0xFFFFFFFF), rxdesc->status, rxdesc->length, rxdesc->buffer1, rxdesc->buffer2, rxdesc->data1, rxdesc->data2);
+//    TR("%02d %08x %08x %08x %08x %08x %08x %08x\n", rxnext, (u32)rxdesc, rxdesc->status, rxdesc->length, rxdesc->buffer1, rxdesc->buffer2, rxdesc->data1, rxdesc->data2);
+    TR("%02d %08x %08x %08x %08x %08x\n", rxnext, (u32)rxdesc, rxdesc->status, rxdesc->length, rxdesc->buffer1, rxdesc->buffer2);
 
     (gmacdev->BusyRxDesc)++; //One descriptor will be given to Hardware. So busy count incremented by one
-    
     return rxnext;
 }
 
@@ -1650,56 +1702,66 @@ s32 synopGMAC_set_rx_qptr(synopGMACdevice *gmacdev, u32 Buffer1, u32 Length1, u3
   * @param[out] virtual pointer for buffer1.
   * \return returns present rx descriptor index on success. Negative value if error.
   */
+
 s32 synopGMAC_get_rx_qptr(synopGMACdevice *gmacdev, u32 *Status, u32 *Buffer1, u32 *Length1, u32 *Data1,
                           u32 *Ext_Status, u32 *Time_Stamp_High, u32 *Time_Stamp_Low)
 {
-    u32 rxnext      = gmacdev->RxBusy; // index of descriptor the DMA just completed. May be useful when data
+    u32 rxnext       = gmacdev->RxBusy; // index of descriptor the DMA just completed. May be useful when data
     //is spread over multiple buffers/descriptors
 #ifdef CACHE_ON
-    DmaDesc *rxdesc = (DmaDesc *)((uint64_t)(gmacdev->RxBusyDesc) | 0x100000000);
+    DmaDesc *rxdesc = (DmaDesc *)((u32)(gmacdev->RxBusyDesc) | UNCACHEABLE);
 #else
     DmaDesc *rxdesc = gmacdev->RxBusyDesc;
 #endif
-    
-    if(synopGMAC_is_desc_owned_by_dma(rxdesc))
-        return -1;
-    
-    if(synopGMAC_is_desc_empty(rxdesc))
+    if (synopGMAC_is_desc_owned_by_dma(rxdesc))
         return -1;
 
-    if(Status != 0)
+    if (synopGMAC_is_desc_empty(rxdesc))
+        return -1;
+
+    if (Status != 0)
         *Status = rxdesc->status;// send the status of this descriptor
 
-    if(Ext_Status != 0)
+    if (Ext_Status != 0)
         *Ext_Status = rxdesc->extstatus;
-    if(Time_Stamp_High != 0)
+
+    if (Time_Stamp_High != 0)
         *Time_Stamp_High = rxdesc->timestamphigh;
-    if(Time_Stamp_Low != 0)
+
+    if (Time_Stamp_Low != 0)
         *Time_Stamp_Low = rxdesc->timestamplow;
 
-    if(Length1 != 0)
+    if (Length1 != 0)
         *Length1 = (rxdesc->length & DescSize1Mask) >> DescSize1Shift;
-    if(Buffer1 != 0)
+
+    if (Buffer1 != 0)
         *Buffer1 = rxdesc->buffer1;
+
     //if(Data1 != 0)
     //    *Data1 = rxdesc->data1;
 
     gmacdev->RxBusy     = synopGMAC_is_last_rx_desc(gmacdev, rxdesc) ? 0 : rxnext + 1;
 
-	gmacdev->RxBusyDesc = synopGMAC_is_last_rx_desc(gmacdev, rxdesc) ? gmacdev->RxDesc : (rxdesc + 1);
-    
-    //synopGMAC_rx_desc_init_ring(rxdesc, synopGMAC_is_last_rx_desc(gmacdev, rxdesc));
+    /* Ring */
+    gmacdev->RxBusyDesc = synopGMAC_is_last_rx_desc(gmacdev, rxdesc) ? gmacdev->RxDesc : (rxdesc + 1);
+
+#if 1
+    /* Wayne's modification */
+    synopGMAC_rx_desc_init_ring(rxdesc, synopGMAC_is_last_rx_desc(gmacdev, rxdesc));
+#else    
     // why init here.... should change onwer to DMA --ya
     rxdesc->status = DescOwnByDma;
     rxdesc->extstatus = 0;
     rxdesc->reserved1 = 0;
     rxdesc->timestamplow = 0;
     rxdesc->timestamphigh = 0;
-    
-    TR("%02d %08x %08x %08x %08x %08x %08x %08x\n", rxnext,(u32)((u32)rxdesc & 0xFFFFFFFF), rxdesc->status, rxdesc->length, rxdesc->buffer1, rxdesc->buffer2, rxdesc->data1, rxdesc->data2);
+    //TR("%02d %08x %08x %08x %08x %08x %08x %08x\n", rxnext, (u32)rxdesc, rxdesc->status, rxdesc->length, rxdesc->buffer1, rxdesc->buffer2, rxdesc->data1, rxdesc->data2);
+#endif
+
+    TR("%02d %08x %08x %08x %08x %08x\n", rxnext, (u32)rxdesc, rxdesc->status, rxdesc->length, rxdesc->buffer1, rxdesc->buffer2);
     (gmacdev->BusyRxDesc)--; //busy tx descriptor is reduced by one as it will be handed over to Processor now
-    
     return (rxnext);
+
 }
 
 /**
@@ -1711,9 +1773,8 @@ s32 synopGMAC_get_rx_qptr(synopGMACdevice *gmacdev, u32 *Status, u32 *Buffer1, u
 void synopGMAC_clear_interrupt(synopGMACdevice *gmacdev)
 {
     u32 data;
-    
-    data = synopGMACReadReg((u32 *)gmacdev->DmaBase, DmaStatus);
-    synopGMACWriteReg((u32 *)gmacdev->DmaBase, DmaStatus ,data);
+    data = synopGMACReadReg(gmacdev->DmaBase, DmaStatus);
+    synopGMACWriteReg(gmacdev->DmaBase, DmaStatus, data);
 }
 
 /**
@@ -1725,24 +1786,17 @@ u32 synopGMAC_get_interrupt_type(synopGMACdevice *gmacdev)
 {
     u32 data;
     u32 interrupts = 0;
-    
-    data = synopGMACReadReg((u32 *)gmacdev->DmaBase, DmaStatus);
-    synopGMACWriteReg((u32 *)gmacdev->DmaBase, DmaStatus ,data); //This is the appropriate location to clear the interrupts
-    TR("DMA status reg is  %08x\n",data);
-    
-    if(data & DmaIntErrorMask)  interrupts     |= synopGMACDmaError;
-    if(data & DmaIntRxNormMask) interrupts     |= synopGMACDmaRxNormal;
-    if(data & DmaIntRxAbnMask)  interrupts     |= synopGMACDmaRxAbnormal;
-    if(data & DmaIntRxStoppedMask)  interrupts |= synopGMACDmaRxStopped;
-    if(data & DmaIntTxNormMask) interrupts     |= synopGMACDmaTxNormal;
-    if(data & DmaIntTxAbnMask)  interrupts     |= synopGMACDmaTxAbnormal;
-    if(data & DmaIntTxStoppedMask)  interrupts |= synopGMACDmaTxStopped;
+    data = synopGMACReadReg(gmacdev->DmaBase, DmaStatus);
+    synopGMACWriteReg(gmacdev->DmaBase, DmaStatus, data); //This is the appropriate location to clear the interrupts
+    //TR("DMA status reg is  %08x\n", data);
+    if (data & DmaIntErrorMask)  interrupts     |= synopGMACDmaError;
+    if (data & DmaIntRxNormMask) interrupts     |= synopGMACDmaRxNormal;
+    if (data & DmaIntRxAbnMask)  interrupts     |= synopGMACDmaRxAbnormal;
+    if (data & DmaIntRxStoppedMask)  interrupts |= synopGMACDmaRxStopped;
+    if (data & DmaIntTxNormMask) interrupts     |= synopGMACDmaTxNormal;
+    if (data & DmaIntTxAbnMask)  interrupts     |= synopGMACDmaTxAbnormal;
+    if (data & DmaIntTxStoppedMask)  interrupts |= synopGMACDmaTxStopped;
 
-    //printf("%08x\n", data);
-    //if((interrupts != 0) && (interrupts != 1) && (interrupts != 8) && (interrupts != 9)) {
-    //	printf("....\n");
-    //	while(1);
-    //}
     return interrupts;
 }
 
@@ -1755,7 +1809,13 @@ u32 synopGMAC_get_interrupt_type(synopGMACdevice *gmacdev)
   */
 void synopGMAC_enable_interrupt(synopGMACdevice *gmacdev, u32 interrupts)
 {
-    synopGMACWriteReg((u32 *)gmacdev->DmaBase, DmaInterrupt, interrupts);
+    synopGMACWriteReg(gmacdev->DmaBase, DmaInterrupt, interrupts);
+    return;
+}
+
+void synopGMAC_get_ie(synopGMACdevice *gmacdev)
+{
+    synopGMACReadReg(gmacdev->DmaBase, DmaInterrupt);
     return;
 }
 
@@ -1769,7 +1829,7 @@ void synopGMAC_enable_interrupt(synopGMACdevice *gmacdev, u32 interrupts)
   */
 void synopGMAC_disable_interrupt_all(synopGMACdevice *gmacdev)
 {
-    synopGMACWriteReg((u32 *)gmacdev->DmaBase, DmaInterrupt, DmaIntDisable);
+    synopGMACWriteReg(gmacdev->DmaBase, DmaInterrupt, DmaIntDisable);
     return;
 }
 
@@ -1782,10 +1842,9 @@ void synopGMAC_disable_interrupt_all(synopGMACdevice *gmacdev)
   */
 void synopGMAC_disable_interrupt(synopGMACdevice *gmacdev, u32 interrupts)
 {
-    synopGMACClearBits((u32 *)gmacdev->DmaBase, DmaInterrupt, interrupts);
+    synopGMACClearBits(gmacdev->DmaBase, DmaInterrupt, interrupts);
     return;
 }
-
 /**
   * Enable the DMA Reception.
   * @param[in] pointer to synopGMACdevice.
@@ -1793,12 +1852,12 @@ void synopGMAC_disable_interrupt(synopGMACdevice *gmacdev, u32 interrupts)
   */
 void synopGMAC_enable_dma_rx(synopGMACdevice *gmacdev)
 {
-//  synopGMACSetBits((u32 *)gmacdev->DmaBase, DmaControl, DmaRxStart);
+//  synopGMACSetBits(gmacdev->DmaBase, DmaControl, DmaRxStart);
     u32 data;
-    
-    data = synopGMACReadReg((u32 *)gmacdev->DmaBase, DmaControl);
+    data = synopGMACReadReg(gmacdev->DmaBase, DmaControl);
     data |= DmaRxStart;
-    synopGMACWriteReg((u32 *)gmacdev->DmaBase, DmaControl, data);
+    synopGMACWriteReg(gmacdev->DmaBase, DmaControl, data);
+
 }
 
 /**
@@ -1808,48 +1867,48 @@ void synopGMAC_enable_dma_rx(synopGMACdevice *gmacdev)
   */
 void synopGMAC_enable_dma_tx(synopGMACdevice *gmacdev)
 {
-//  synopGMACSetBits((u32 *)gmacdev->DmaBase, DmaControl, DmaTxStart);
+//  synopGMACSetBits(gmacdev->DmaBase, DmaControl, DmaTxStart);
     u32 data;
-    
-    data = synopGMACReadReg((u32 *)gmacdev->DmaBase, DmaControl);
+    data = synopGMACReadReg(gmacdev->DmaBase, DmaControl);
     data |= DmaTxStart;
-    synopGMACWriteReg((u32 *)gmacdev->DmaBase, DmaControl, data);
+    synopGMACWriteReg(gmacdev->DmaBase, DmaControl, data);
+
 }
 
 void synopGMAC_enable_under_size_pkt(synopGMACdevice *gmacdev)
 {
     u32 data;
-    
-    data = synopGMACReadReg((u32 *)gmacdev->DmaBase, DmaControl);
+    data = synopGMACReadReg(gmacdev->DmaBase, DmaControl);
     data |= DmaFwdUnderSzFrames;
-    synopGMACWriteReg((u32 *)gmacdev->DmaBase, DmaControl, data);
+    synopGMACWriteReg(gmacdev->DmaBase, DmaControl, data);
+
 }
 
 void synopGMAC_disable_under_size_pkt(synopGMACdevice *gmacdev)
 {
     u32 data;
-    
-    data = synopGMACReadReg((u32 *)gmacdev->DmaBase, DmaControl);
+    data = synopGMACReadReg(gmacdev->DmaBase, DmaControl);
     data &= ~DmaFwdUnderSzFrames;
-    synopGMACWriteReg((u32 *)gmacdev->DmaBase, DmaControl, data);
+    synopGMACWriteReg(gmacdev->DmaBase, DmaControl, data);
+
 }
 
 void synopGMAC_enable_crc_err_pkt(synopGMACdevice *gmacdev)
 {
     u32 data;
-    data = synopGMACReadReg((u32 *)gmacdev->DmaBase, DmaControl);
+    data = synopGMACReadReg(gmacdev->DmaBase, DmaControl);
     data |= DmaFwdErrorFrames;
-    synopGMACWriteReg((u32 *)gmacdev->DmaBase, DmaControl, data);
+    synopGMACWriteReg(gmacdev->DmaBase, DmaControl, data);
 
 }
 
 void synopGMAC_disable_crc_err_pkt(synopGMACdevice *gmacdev)
 {
     u32 data;
-    
-    data = synopGMACReadReg((u32 *)gmacdev->DmaBase, DmaControl);
+    data = synopGMACReadReg(gmacdev->DmaBase, DmaControl);
     data &= ~DmaFwdErrorFrames;
-    synopGMACWriteReg((u32 *)gmacdev->DmaBase, DmaControl, data);
+    synopGMACWriteReg(gmacdev->DmaBase, DmaControl, data);
+
 }
 
 /**
@@ -1861,7 +1920,7 @@ void synopGMAC_disable_crc_err_pkt(synopGMACdevice *gmacdev)
   */
 void synopGMAC_resume_dma_tx(synopGMACdevice *gmacdev)
 {
-    synopGMACWriteReg((u32 *)gmacdev->DmaBase, DmaTxPollDemand, 0);
+    synopGMACWriteReg(gmacdev->DmaBase, DmaTxPollDemand, 0);
 
 }
 
@@ -1874,9 +1933,9 @@ void synopGMAC_resume_dma_tx(synopGMACdevice *gmacdev)
   */
 void synopGMAC_resume_dma_rx(synopGMACdevice *gmacdev)
 {
-    synopGMACWriteReg((u32 *)gmacdev->DmaBase, DmaRxPollDemand, 0);
-}
+    synopGMACWriteReg(gmacdev->DmaBase, DmaRxPollDemand, 0);
 
+}
 /**
   * Take ownership of this Descriptor.
   * The function is same for both the ring mode and the chain mode DMA structures.
@@ -1885,10 +1944,10 @@ void synopGMAC_resume_dma_rx(synopGMACdevice *gmacdev)
   */
 void synopGMAC_take_desc_ownership(DmaDesc *desc)
 {
-    if(desc) 
+    if (desc)
     {
         desc->status &= ~DescOwnByDma;  //Clear the DMA own bit
-        //desc->status |= DescError;  // Set the error to indicate this descriptor is bad
+//      desc->status |= DescError;  // Set the error to indicate this descriptor is bad
     }
 }
 
@@ -1905,14 +1964,10 @@ void synopGMAC_take_desc_ownership_rx(synopGMACdevice *gmacdev)
 {
     s32 i;
     DmaDesc *desc;
-    
     desc = gmacdev->RxDesc;
-    for(i = 0; i < gmacdev->RxDescCount; i++) 
+    for (i = 0; i < gmacdev->RxDescCount; i++)
     {
-        if(1 /* ring mode */) 
-        {
-            synopGMAC_take_desc_ownership(desc + i);
-        }
+        synopGMAC_take_desc_ownership(desc + i);
     }
 }
 
@@ -1929,15 +1984,12 @@ void synopGMAC_take_desc_ownership_tx(synopGMACdevice *gmacdev)
 {
     s32 i;
     DmaDesc *desc;
-    
     desc = gmacdev->TxDesc;
-    for(i = 0; i < gmacdev->TxDescCount; i++) 
+    for (i = 0; i < gmacdev->TxDescCount; i++)
     {
-        if(1 /* ring mode */) 
-        {
-            synopGMAC_take_desc_ownership(desc + i);
-        }
+        synopGMAC_take_desc_ownership(desc + i);
     }
+
 }
 
 /**
@@ -1948,14 +2000,12 @@ void synopGMAC_take_desc_ownership_tx(synopGMACdevice *gmacdev)
 
 void synopGMAC_disable_dma_tx(synopGMACdevice *gmacdev)
 {
-//  synopGMACClearBits((u32 *)gmacdev->DmaBase, DmaControl, DmaTxStart);
+//  synopGMACClearBits(gmacdev->DmaBase, DmaControl, DmaTxStart);
     u32 data;
-    
-    data = synopGMACReadReg((u32 *)gmacdev->DmaBase, DmaControl);
+    data = synopGMACReadReg(gmacdev->DmaBase, DmaControl);
     data &= (~DmaTxStart);
-    synopGMACWriteReg((u32 *)gmacdev->DmaBase, DmaControl, data);
+    synopGMACWriteReg(gmacdev->DmaBase, DmaControl, data);
 }
-
 /**
   * Disable the DMA for Reception.
   * @param[in] pointer to synopGMACdevice.
@@ -1963,13 +2013,13 @@ void synopGMAC_disable_dma_tx(synopGMACdevice *gmacdev)
   */
 void synopGMAC_disable_dma_rx(synopGMACdevice *gmacdev)
 {
-//  synopGMACClearBits((u32 *)gmacdev->DmaBase, DmaControl, DmaRxStart);
+//  synopGMACClearBits(gmacdev->DmaBase, DmaControl, DmaRxStart);
     u32 data;
-    
-    data = synopGMACReadReg((u32 *)gmacdev->DmaBase, DmaControl);
+    data = synopGMACReadReg(gmacdev->DmaBase, DmaControl);
     data &= (~DmaRxStart);
-    synopGMACWriteReg((u32 *)gmacdev->DmaBase, DmaControl, data);
+    synopGMACWriteReg(gmacdev->DmaBase, DmaControl, data);
 }
+
 
 
 /*******************PMT APIs***************************************/
@@ -1983,10 +2033,9 @@ void synopGMAC_disable_dma_rx(synopGMACdevice *gmacdev)
   */
 void synopGMAC_pmt_int_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacInterruptMask, GmacPmtIntMask);
+    synopGMACClearBits(gmacdev->MacBase, GmacInterruptMask, GmacPmtIntMask);
     return;
 }
-
 /**
   * Disables the assertion of PMT interrupt.
   * This disables the assertion of PMT interrupt due to Magic Pkt or Wakeup frame
@@ -1996,7 +2045,7 @@ void synopGMAC_pmt_int_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_pmt_int_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacInterruptMask, GmacPmtIntMask);
+    synopGMACSetBits(gmacdev->MacBase, GmacInterruptMask, GmacPmtIntMask);
     return;
 }
 
@@ -2008,7 +2057,7 @@ void synopGMAC_pmt_int_disable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_power_down_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase ,GmacPmtCtrlStatus, GmacPmtPowerDown);
+    synopGMACSetBits(gmacdev->MacBase, GmacPmtCtrlStatus, GmacPmtPowerDown);
     return;
 }
 
@@ -2021,7 +2070,7 @@ void synopGMAC_power_down_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_power_down_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacPmtCtrlStatus, GmacPmtPowerDown);
+    synopGMACClearBits(gmacdev->MacBase, GmacPmtCtrlStatus, GmacPmtPowerDown);
     return;
 }
 
@@ -2032,7 +2081,7 @@ void synopGMAC_power_down_disable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_enable_pmt_interrupt(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacInterruptMask, GmacPmtIntMask);
+    synopGMACClearBits(gmacdev->MacBase, GmacInterruptMask, GmacPmtIntMask);
 }
 
 /**
@@ -2042,7 +2091,7 @@ void synopGMAC_enable_pmt_interrupt(synopGMACdevice *gmacdev)
   */
 void synopGMAC_disable_pmt_interrupt(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacInterruptMask, GmacPmtIntMask);
+    synopGMACSetBits(gmacdev->MacBase, GmacInterruptMask, GmacPmtIntMask);
 }
 
 /**
@@ -2052,13 +2101,13 @@ void synopGMAC_disable_pmt_interrupt(synopGMACdevice *gmacdev)
   */
 void synopGMAC_magic_packet_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacPmtCtrlStatus, GmacPmtMagicPktEnable);
+    synopGMACSetBits(gmacdev->MacBase, GmacPmtCtrlStatus, GmacPmtMagicPktEnable);
     return;
 }
 
 void synopGMAC_magic_packet_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacPmtCtrlStatus, GmacPmtMagicPktEnable);
+    synopGMACClearBits(gmacdev->MacBase, GmacPmtCtrlStatus, GmacPmtMagicPktEnable);
     return;
 }
 
@@ -2070,7 +2119,7 @@ void synopGMAC_magic_packet_disable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_wakeup_frame_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacPmtCtrlStatus, GmacPmtWakeupFrameEnable);
+    synopGMACSetBits(gmacdev->MacBase, GmacPmtCtrlStatus, GmacPmtWakeupFrameEnable);
     return;
 }
 
@@ -2081,7 +2130,7 @@ void synopGMAC_wakeup_frame_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_pmt_unicast_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase,GmacPmtCtrlStatus,GmacPmtGlobalUnicast);
+    synopGMACSetBits(gmacdev->MacBase, GmacPmtCtrlStatus, GmacPmtGlobalUnicast);
     return;
 }
 
@@ -2093,9 +2142,8 @@ void synopGMAC_pmt_unicast_enable(synopGMACdevice *gmacdev)
 bool synopGMAC_is_magic_packet_received(synopGMACdevice *gmacdev)
 {
     u32 data;
-    
-    data =  synopGMACReadReg((u32 *)gmacdev->MacBase, GmacPmtCtrlStatus);
-    return((data & GmacPmtMagicPktReceived) == GmacPmtMagicPktReceived);
+    data =  synopGMACReadReg(gmacdev->MacBase, GmacPmtCtrlStatus);
+    return ((data & GmacPmtMagicPktReceived) == GmacPmtMagicPktReceived);
 }
 
 /**
@@ -2106,12 +2154,10 @@ bool synopGMAC_is_magic_packet_received(synopGMACdevice *gmacdev)
 bool synopGMAC_is_wakeup_frame_received(synopGMACdevice *gmacdev)
 {
     u32 data;
-    
-    data =  synopGMACReadReg((u32 *)gmacdev->MacBase, GmacPmtCtrlStatus);
-    return((data & GmacPmtWakeupFrameReceived) == GmacPmtWakeupFrameReceived);
+    data =  synopGMACReadReg(gmacdev->MacBase, GmacPmtCtrlStatus);
+    return ((data & GmacPmtWakeupFrameReceived) == GmacPmtWakeupFrameReceived);
 }
 
-#if 0
 /**
   * Populates the remote wakeup frame registers.
   * Consecutive 8 writes to GmacWakeupAddr writes the wakeup frame filter registers.
@@ -2121,19 +2167,20 @@ bool synopGMAC_is_wakeup_frame_received(synopGMACdevice *gmacdev)
   * @param[in] pointer to frame filter contents array.
   * \return returns void.
   */
-
-void synopGMAC_write_wakeup_frame_register(synopGMACdevice *gmacdev, u32 * filter_contents)
+#if 0
+void synopGMAC_write_wakeup_frame_register(synopGMACdevice *gmacdev, u32 *filter_contents)
 {
     s32 i;
-    synopGMACSetBits((u32 *)gmacdev->MacBase,GmacPmtCtrlStatus,GmacPmtFrmFilterPtrReset);
+    synopGMACSetBits(gmacdev->MacBase, GmacPmtCtrlStatus, GmacPmtFrmFilterPtrReset);
     plat_delay(10);
-    for(i =0; i<WAKEUP_REG_LENGTH; i++)
-        synopGMACWriteReg((u32 *)gmacdev->MacBase, GmacWakeupAddr,  *(filter_contents + i));
+    for (i = 0; i < WAKEUP_REG_LENGTH; i++)
+        synopGMACWriteReg(gmacdev->MacBase, GmacWakeupAddr,  *(filter_contents + i));
     return;
 
 }
 #endif
 /*******************PMT APIs***************************************/
+
 
 /*******************Ip checksum offloading APIs***************************************/
 
@@ -2147,9 +2194,10 @@ void synopGMAC_write_wakeup_frame_register(synopGMACdevice *gmacdev, u32 * filte
   */
 void synopGMAC_enable_rx_chksum_offload(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacConfig, GmacRxIpcOffload);
+    synopGMACSetBits(gmacdev->MacBase, GmacConfig, GmacRxIpcOffload);
     return;
 }
+
 /**
   * Disable the ip checksum offloading in receive path.
   * Ip checksum offloading is disabled in the receive path.
@@ -2158,7 +2206,7 @@ void synopGMAC_enable_rx_chksum_offload(synopGMACdevice *gmacdev)
   */
 void synopGMAC_disable_rx_chksum_offload(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacConfig, GmacRxIpcOffload);
+    synopGMACClearBits(gmacdev->MacBase, GmacConfig, GmacRxIpcOffload);
 }
 
 /**
@@ -2170,7 +2218,7 @@ void synopGMAC_disable_rx_chksum_offload(synopGMACdevice *gmacdev)
   */
 void synopGMAC_rx_tcpip_chksum_drop_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->DmaBase, DmaControl, DmaDisableDropTcpCs);
+    synopGMACClearBits(gmacdev->DmaBase, DmaControl, DmaDisableDropTcpCs);
     return;
 }
 
@@ -2183,7 +2231,7 @@ void synopGMAC_rx_tcpip_chksum_drop_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_rx_tcpip_chksum_drop_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->DmaBase, DmaControl, DmaDisableDropTcpCs);
+    synopGMACSetBits(gmacdev->DmaBase, DmaControl, DmaDisableDropTcpCs);
     return;
 }
 
@@ -2204,9 +2252,9 @@ void synopGMAC_rx_tcpip_chksum_drop_disable(synopGMACdevice *gmacdev)
   * @param[in] u32 status field of the corresponding descriptor.
   * \return returns TRUE or FALSE.
   */
-bool synopGMAC_is_ext_status(synopGMACdevice *gmacdev, u32 status)             // extended status present indicates that the RDES4 need to be probed
+bool synopGMAC_is_ext_status(synopGMACdevice *gmacdev, u32 status)            // extended status present indicates that the RDES4 need to be probed
 {
-    return ((status & DescRxEXTsts ) != 0); // if extstatus set then it returns 1
+    return ((status & DescRxEXTsts) != 0);  // if extstatus set then it returns 1
 }
 
 /**
@@ -2217,7 +2265,7 @@ bool synopGMAC_is_ext_status(synopGMACdevice *gmacdev, u32 status)             /
   * @param[in] u32 status field of the corresponding descriptor.
   * \return returns TRUE or FALSE.
   */
-bool synopGMAC_ES_is_IP_header_error(synopGMACdevice *gmacdev, u32 ext_status)          // IP header (IPV4) checksum error
+bool synopGMAC_ES_is_IP_header_error(synopGMACdevice *gmacdev, u32 ext_status)         // IP header (IPV4) checksum error
 {
     return ((ext_status & DescRxIpHeaderError) != 0); // if IPV4 header error return 1
 }
@@ -2230,9 +2278,10 @@ bool synopGMAC_ES_is_IP_header_error(synopGMACdevice *gmacdev, u32 ext_status)  
   * @param[in] u32 status field of the corresponding descriptor.
   * \return returns TRUE or FALSE.
   */
-bool synopGMAC_ES_is_rx_checksum_bypassed(synopGMACdevice *gmacdev, u32 ext_status)     // Hardware engine bypassed the checksum computation/checking
+bool synopGMAC_ES_is_rx_checksum_bypassed(synopGMACdevice *gmacdev, u32 ext_status)    // Hardware engine bypassed the checksum computation/checking
 {
-    return ((ext_status & DescRxChkSumBypass ) != 0); // if checksum offloading bypassed return 1
+  
+  return ((ext_status & DescRxChkSumBypass) != 0);  // if checksum offloading bypassed return 1
 }
 
 /**
@@ -2243,9 +2292,9 @@ bool synopGMAC_ES_is_rx_checksum_bypassed(synopGMACdevice *gmacdev, u32 ext_stat
   * @param[in] u32 status field of the corresponding descriptor.
   * \return returns TRUE or FALSE.
   */
-bool synopGMAC_ES_is_IP_payload_error(synopGMACdevice *gmacdev, u32 ext_status)         // IP payload checksum is in error (UDP/TCP/ICMP checksum error)
+bool synopGMAC_ES_is_IP_payload_error(synopGMACdevice *gmacdev, u32 ext_status)        // IP payload checksum is in error (UDP/TCP/ICMP checksum error)
 {
-    return((ext_status & DescRxIpPayloadError) != 0); // if IP payload error return 1
+    return ((ext_status & DescRxIpPayloadError) != 0); // if IP payload error return 1
 }
 
 /**
@@ -2256,19 +2305,19 @@ bool synopGMAC_ES_is_IP_payload_error(synopGMACdevice *gmacdev, u32 ext_status) 
   */
 u32 synopGMAC_is_rx_checksum_error(synopGMACdevice *gmacdev, u32 status)
 {
-    if     (((status & DescRxChkBit5) == 0) && ((status & DescRxChkBit7) == 0) && ((status & DescRxChkBit0) == 0))
+    if (((status & DescRxChkBit5) == 0) && ((status & DescRxChkBit7) == 0) && ((status & DescRxChkBit0) == 0))
         return RxLenLT600;
-    else if(((status & DescRxChkBit5) == 0) && ((status & DescRxChkBit7) == 0) && ((status & DescRxChkBit0) != 0))
+    else if (((status & DescRxChkBit5) == 0) && ((status & DescRxChkBit7) == 0) && ((status & DescRxChkBit0) != 0))
         return RxIpHdrPayLoadChkBypass;
-    else if(((status & DescRxChkBit5) == 0) && ((status & DescRxChkBit7) != 0) && ((status & DescRxChkBit0) != 0))
+    else if (((status & DescRxChkBit5) == 0) && ((status & DescRxChkBit7) != 0) && ((status & DescRxChkBit0) != 0))
         return RxChkBypass;
-    else if(((status & DescRxChkBit5) != 0) && ((status & DescRxChkBit7) == 0) && ((status & DescRxChkBit0) == 0))
+    else if (((status & DescRxChkBit5) != 0) && ((status & DescRxChkBit7) == 0) && ((status & DescRxChkBit0) == 0))
         return RxNoChkError;
-    else if(((status & DescRxChkBit5) != 0) && ((status & DescRxChkBit7) == 0) && ((status & DescRxChkBit0) != 0))
+    else if (((status & DescRxChkBit5) != 0) && ((status & DescRxChkBit7) == 0) && ((status & DescRxChkBit0) != 0))
         return RxPayLoadChkError;
-    else if(((status & DescRxChkBit5) != 0) && ((status & DescRxChkBit7) != 0) && ((status & DescRxChkBit0) == 0))
+    else if (((status & DescRxChkBit5) != 0) && ((status & DescRxChkBit7) != 0) && ((status & DescRxChkBit0) == 0))
         return RxIpHdrChkError;
-    else if(((status & DescRxChkBit5) != 0) && ((status & DescRxChkBit7) != 0) && ((status & DescRxChkBit0) != 0))
+    else if (((status & DescRxChkBit5) != 0) && ((status & DescRxChkBit7) != 0) && ((status & DescRxChkBit0) != 0))
         return RxIpHdrPayLoadChkError;
     else
         return RxIpHdrPayLoadRes;
@@ -2310,6 +2359,8 @@ bool synopGMAC_is_tx_payload_checksum_error(synopGMACdevice *gmacdev, u32 status
 void synopGMAC_tx_checksum_offload_bypass(synopGMACdevice *gmacdev, DmaDesc *desc)
 {
     desc->status = (desc->status & (~DescTxCisMask));//ENH_DESC
+
+
 }
 
 /**
@@ -2323,6 +2374,8 @@ void synopGMAC_tx_checksum_offload_ipv4hdr(synopGMACdevice *gmacdev, DmaDesc *de
 {
 
     desc->status = ((desc->status & (~DescTxCisMask)) | DescTxCisIpv4HdrCs);//ENH_DESC
+
+
 }
 
 /**
@@ -2335,7 +2388,10 @@ void synopGMAC_tx_checksum_offload_ipv4hdr(synopGMACdevice *gmacdev, DmaDesc *de
   */
 void synopGMAC_tx_checksum_offload_tcponly(synopGMACdevice *gmacdev, DmaDesc *desc)
 {
+
     desc->status = ((desc->status & (~DescTxCisMask)) | DescTxCisTcpOnlyCs);//ENH_DESC
+
+
 }
 
 /**
@@ -2349,17 +2405,16 @@ void synopGMAC_tx_checksum_offload_tcponly(synopGMACdevice *gmacdev, DmaDesc *de
   */
 void synopGMAC_tx_checksum_offload_tcp_pseudo(synopGMACdevice *gmacdev, DmaDesc *desc)
 {
+
     desc->status = ((desc->status & (~DescTxCisMask)) | DescTxCisTcpPseudoCs);
+
+
 }
 
 /*******************Ip checksum offloading APIs***************************************/
 
 
-
-
-
 /*******************IEEE 1588 Timestamping API***************************************/
-
 
 /*
  * At this time the driver supports the IEEE time stamping feature when the Enhanced Descriptors are enabled.
@@ -2378,7 +2433,7 @@ void synopGMAC_tx_checksum_offload_tcp_pseudo(synopGMACdevice *gmacdev, DmaDesc 
   */
 void synopGMAC_TS_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSENA);
+    synopGMACSetBits(gmacdev->MacBase, GmacTSControl, GmacTSENA);
     return;
 }
 
@@ -2390,7 +2445,7 @@ void synopGMAC_TS_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_TS_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSENA);
+    synopGMACClearBits(gmacdev->MacBase, GmacTSControl, GmacTSENA);
     return;
 }
 
@@ -2403,8 +2458,8 @@ void synopGMAC_TS_disable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_TS_int_enable(synopGMACdevice *gmacdev)
 {
-    //synopGMACClearBits((u32 *)gmacdev->MacBase,GmacInterruptMask,GmacTSIntMask);
-	synopGMACSetBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSTRIG);
+    //synopGMACClearBits(gmacdev->MacBase,GmacInterruptMask,GmacTSIntMask);
+    synopGMACSetBits(gmacdev->MacBase, GmacTSControl, GmacTSTRIG);
     return;
 }
 
@@ -2415,8 +2470,8 @@ void synopGMAC_TS_int_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_TS_int_disable(synopGMACdevice *gmacdev)
 {
-    //synopGMACSetBits((u32 *)gmacdev->MacBase,GmacInterruptMask,GmacTSIntMask);
-	synopGMACClearBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSTRIG);
+    //synopGMACSetBits(gmacdev->MacBase,GmacInterruptMask,GmacTSIntMask);
+    synopGMACClearBits(gmacdev->MacBase, GmacTSControl, GmacTSTRIG);
     return;
 }
 
@@ -2429,7 +2484,7 @@ void synopGMAC_TS_int_disable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_TS_mac_addr_filt_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSENMACADDR);
+    synopGMACSetBits(gmacdev->MacBase, GmacTSControl, GmacTSENMACADDR);
     return;
 }
 
@@ -2440,7 +2495,7 @@ void synopGMAC_TS_mac_addr_filt_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_TS_mac_addr_filt_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSENMACADDR);
+    synopGMACClearBits(gmacdev->MacBase, GmacTSControl, GmacTSENMACADDR);
     return;
 }
 
@@ -2458,10 +2513,9 @@ void synopGMAC_TS_mac_addr_filt_disable(synopGMACdevice *gmacdev)
 void synopGMAC_TS_set_clk_type(synopGMACdevice *gmacdev, u32 clk_type)
 {
     u32 clkval;
-    
-    clkval = synopGMACReadReg((u32 *)gmacdev->MacBase, GmacTSControl); //set the mdc clock to the user defined value
-    clkval = (clkval & ~GmacTSCLKTYPE)| clk_type;
-    synopGMACWriteReg((u32 *)gmacdev->MacBase, GmacTSControl, clkval);
+    clkval = synopGMACReadReg(gmacdev->MacBase, GmacTSControl); //set the mdc clock to the user defined value
+    clkval = (clkval & ~GmacTSCLKTYPE) | clk_type;
+    synopGMACWriteReg(gmacdev->MacBase, GmacTSControl, clkval);
     return;
 }
 
@@ -2476,7 +2530,7 @@ void synopGMAC_TS_set_clk_type(synopGMACdevice *gmacdev, u32 clk_type)
   */
 void synopGMAC_TS_master_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSMSTRENA);
+    synopGMACSetBits(gmacdev->MacBase, GmacTSControl, GmacTSMSTRENA);
     return;
 }
 
@@ -2491,7 +2545,7 @@ void synopGMAC_TS_master_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_TS_master_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSMSTRENA);
+    synopGMACClearBits(gmacdev->MacBase, GmacTSControl, GmacTSMSTRENA);
     return;
 }
 
@@ -2505,7 +2559,7 @@ void synopGMAC_TS_master_disable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_TS_event_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSEVNTENA);
+    synopGMACSetBits(gmacdev->MacBase, GmacTSControl, GmacTSEVNTENA);
     return;
 }
 
@@ -2518,7 +2572,7 @@ void synopGMAC_TS_event_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_TS_event_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSEVNTENA);
+    synopGMACClearBits(gmacdev->MacBase, GmacTSControl, GmacTSEVNTENA);
     return;
 }
 
@@ -2531,7 +2585,7 @@ void synopGMAC_TS_event_disable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_TS_IPV4_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSIPV4ENA);
+    synopGMACSetBits(gmacdev->MacBase, GmacTSControl, GmacTSIPV4ENA);
     return;
 }
 
@@ -2544,11 +2598,10 @@ void synopGMAC_TS_IPV4_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_TS_IPV4_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSIPV4ENA);
+    synopGMACClearBits(gmacdev->MacBase, GmacTSControl, GmacTSIPV4ENA);
     return;
-}                    
+}                    // Only for "Advanced Time Stamp"
 
-// Only for "Advanced Time Stamp"
 /**
   * Enable time stamp snapshot for IPV6 frames.
   * When enabled, time stamp snapshot is taken for IPV6 frames
@@ -2558,9 +2611,10 @@ void synopGMAC_TS_IPV4_disable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_TS_IPV6_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSIPV6ENA);
+    synopGMACSetBits(gmacdev->MacBase, GmacTSControl, GmacTSIPV6ENA);
     return;
 }
+
 /**
   * Disable time stamp snapshot for IPV6 frames.
   * When disabled, time stamp snapshot is not taken for IPV6 frames
@@ -2570,7 +2624,7 @@ void synopGMAC_TS_IPV6_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_TS_IPV6_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSIPV6ENA);
+    synopGMACClearBits(gmacdev->MacBase, GmacTSControl, GmacTSIPV6ENA);
     return;
 }
 
@@ -2583,7 +2637,7 @@ void synopGMAC_TS_IPV6_disable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_TS_ptp_over_ethernet_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSIPENA);
+    synopGMACSetBits(gmacdev->MacBase, GmacTSControl, GmacTSIPENA);
     return;
 }
 
@@ -2596,7 +2650,7 @@ void synopGMAC_TS_ptp_over_ethernet_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_TS_ptp_over_ethernet_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSIPENA);
+    synopGMACClearBits(gmacdev->MacBase, GmacTSControl, GmacTSIPENA);
     return;
 }
 
@@ -2608,7 +2662,7 @@ void synopGMAC_TS_ptp_over_ethernet_disable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_TS_pkt_snoop_ver2(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSVER2ENA);
+    synopGMACSetBits(gmacdev->MacBase, GmacTSControl, GmacTSVER2ENA);
     return;
 }
 
@@ -2620,7 +2674,7 @@ void synopGMAC_TS_pkt_snoop_ver2(synopGMACdevice *gmacdev)
   */
 void synopGMAC_TS_pkt_snoop_ver1(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSVER2ENA);
+    synopGMACClearBits(gmacdev->MacBase, GmacTSControl, GmacTSVER2ENA);
     return;
 }
 
@@ -2632,7 +2686,7 @@ void synopGMAC_TS_pkt_snoop_ver1(synopGMACdevice *gmacdev)
   */
 void synopGMAC_TS_digital_rollover_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSCTRLSSR);
+    synopGMACSetBits(gmacdev->MacBase, GmacTSControl, GmacTSCTRLSSR);
     return;
 }
 
@@ -2644,7 +2698,7 @@ void synopGMAC_TS_digital_rollover_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_TS_binary_rollover_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSCTRLSSR);
+    synopGMACClearBits(gmacdev->MacBase, GmacTSControl, GmacTSCTRLSSR);
     return;
 }
 
@@ -2657,7 +2711,7 @@ void synopGMAC_TS_binary_rollover_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_TS_all_frames_enable(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSENALL);
+    synopGMACSetBits(gmacdev->MacBase, GmacTSControl, GmacTSENALL);
     return;
 }
 
@@ -2670,7 +2724,7 @@ void synopGMAC_TS_all_frames_enable(synopGMACdevice *gmacdev)
   */
 void synopGMAC_TS_all_frames_disable(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSENALL);
+    synopGMACClearBits(gmacdev->MacBase, GmacTSControl, GmacTSENALL);
     return;
 }
 
@@ -2685,27 +2739,24 @@ void synopGMAC_TS_all_frames_disable(synopGMACdevice *gmacdev)
 s32 synopGMAC_TS_addend_update(synopGMACdevice *gmacdev, u32 addend_value)
 {
     u32 loop_variable;
-    
-    synopGMACWriteReg((u32 *)gmacdev->MacBase, GmacTSAddend, addend_value);// Load the addend_value in to Addend register
-    for(loop_variable = 0; loop_variable < DEFAULT_LOOP_VARIABLE; loop_variable++) 
-    { //Wait till the busy bit gets cleared with in a certain amount of time
-        if(!((synopGMACReadReg((u32 *)gmacdev->MacBase, GmacTSControl)) & GmacTSADDREG)) 
-        { // if it is cleared then break
+    synopGMACWriteReg(gmacdev->MacBase, GmacTSAddend, addend_value); // Load the addend_value in to Addend register
+    for (loop_variable = 0; loop_variable < DEFAULT_LOOP_VARIABLE; loop_variable++)  //Wait till the busy bit gets cleared with in a certain amount of time
+    {
+        if (!((synopGMACReadReg(gmacdev->MacBase, GmacTSControl)) & GmacTSADDREG)) // if it is cleared then break
+        {
             break;
         }
         plat_delay(DEFAULT_DELAY_VARIABLE);
     }
-    if(loop_variable < DEFAULT_LOOP_VARIABLE)
-    {
-        synopGMACSetBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSADDREG);
-    }
-    else 
+    if (loop_variable < DEFAULT_LOOP_VARIABLE)
+        synopGMACSetBits(gmacdev->MacBase, GmacTSControl, GmacTSADDREG);
+    else
     {
         TR("Error::: The TSADDREG bit is not getting cleared !!!!!!\n");
         return -ESYNOPGMACPHYERR;
     }
-    
     return 0;
+
 }
 
 /**
@@ -2720,27 +2771,23 @@ s32 synopGMAC_TS_addend_update(synopGMACdevice *gmacdev, u32 addend_value)
 s32 synopGMAC_TS_timestamp_update(synopGMACdevice *gmacdev, u32 high_value, u32 low_value)
 {
     u32 loop_variable;
-    
-    synopGMACWriteReg((u32 *)gmacdev->MacBase, GmacTSHighUpdate, high_value);// Load the high value to Timestamp High register
-    synopGMACWriteReg((u32 *)gmacdev->MacBase, GmacTSLowUpdate, low_value);// Load the high value to Timestamp High register
-    for(loop_variable = 0; loop_variable < DEFAULT_LOOP_VARIABLE; loop_variable++) 
-    { //Wait till the busy bit gets cleared with in a certain amount of time
-        if(!((synopGMACReadReg((u32 *)gmacdev->MacBase, GmacTSControl)) & GmacTSUPDT)) 
-        { // if it is cleared then break
+    synopGMACWriteReg(gmacdev->MacBase, GmacTSHighUpdate, high_value); // Load the high value to Timestamp High register
+    synopGMACWriteReg(gmacdev->MacBase, GmacTSLowUpdate, low_value); // Load the high value to Timestamp High register
+    for (loop_variable = 0; loop_variable < DEFAULT_LOOP_VARIABLE; loop_variable++)  //Wait till the busy bit gets cleared with in a certain amount of time
+    {
+        if (!((synopGMACReadReg(gmacdev->MacBase, GmacTSControl)) & GmacTSUPDT)) // if it is cleared then break
+        {
             break;
         }
         plat_delay(DEFAULT_DELAY_VARIABLE);
     }
-    if(loop_variable < DEFAULT_LOOP_VARIABLE)
-    {
-        synopGMACSetBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSUPDT);
-    }
-    else 
+    if (loop_variable < DEFAULT_LOOP_VARIABLE)
+        synopGMACSetBits(gmacdev->MacBase, GmacTSControl, GmacTSUPDT);
+    else
     {
         TR("Error::: The TSADDREG bit is not getting cleared !!!!!!\n");
         return -ESYNOPGMACPHYERR;
     }
-    
     return 0;
 }
 
@@ -2756,27 +2803,23 @@ s32 synopGMAC_TS_timestamp_update(synopGMACdevice *gmacdev, u32 high_value, u32 
 s32 synopGMAC_TS_timestamp_init(synopGMACdevice *gmacdev, u32 high_value, u32 low_value)
 {
     u32 loop_variable;
-    
-    synopGMACWriteReg((u32 *)gmacdev->MacBase, GmacTSHighUpdate, high_value);// Load the high value to Timestamp High register
-    synopGMACWriteReg((u32 *)gmacdev->MacBase, GmacTSLowUpdate, low_value);// Load the high value to Timestamp High register
-    for(loop_variable = 0; loop_variable < DEFAULT_LOOP_VARIABLE; loop_variable++) 
-    { //Wait till the busy bit gets cleared with in a certain amount of time
-        if(!((synopGMACReadReg((u32 *)gmacdev->MacBase, GmacTSControl)) & GmacTSINT)) 
-        { // if it is cleared then break
+    synopGMACWriteReg(gmacdev->MacBase, GmacTSHighUpdate, high_value); // Load the high value to Timestamp High register
+    synopGMACWriteReg(gmacdev->MacBase, GmacTSLowUpdate, low_value); // Load the high value to Timestamp High register
+    for (loop_variable = 0; loop_variable < DEFAULT_LOOP_VARIABLE; loop_variable++)  //Wait till the busy bit gets cleared with in a certain amount of time
+    {
+        if (!((synopGMACReadReg(gmacdev->MacBase, GmacTSControl)) & GmacTSINT)) // if it is cleared then break
+        {
             break;
         }
         plat_delay(DEFAULT_DELAY_VARIABLE);
     }
-    if(loop_variable < DEFAULT_LOOP_VARIABLE)
-    {
-        synopGMACSetBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSINT);
-    }
-    else 
+    if (loop_variable < DEFAULT_LOOP_VARIABLE)
+        synopGMACSetBits(gmacdev->MacBase, GmacTSControl, GmacTSINT);
+    else
     {
         TR("Error::: The TSADDREG bit is not getting cleared !!!!!!\n");
         return -ESYNOPGMACPHYERR;
     }
-    
     return 0;
 }
 
@@ -2788,7 +2831,7 @@ s32 synopGMAC_TS_timestamp_init(synopGMACdevice *gmacdev, u32 high_value, u32 lo
   */
 void synopGMAC_TS_coarse_update(synopGMACdevice *gmacdev)
 {
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSCFUPDT);
+    synopGMACClearBits(gmacdev->MacBase, GmacTSControl, GmacTSCFUPDT);
     return;
 }
 
@@ -2800,7 +2843,7 @@ void synopGMAC_TS_coarse_update(synopGMACdevice *gmacdev)
   */
 void synopGMAC_TS_fine_update(synopGMACdevice *gmacdev)
 {
-    synopGMACSetBits((u32 *)gmacdev->MacBase, GmacTSControl, GmacTSCFUPDT);
+    synopGMACSetBits(gmacdev->MacBase, GmacTSControl, GmacTSCFUPDT);
     return;
 }
 
@@ -2811,7 +2854,7 @@ void synopGMAC_TS_fine_update(synopGMACdevice *gmacdev)
   */
 void synopGMAC_TS_subsecond_init(synopGMACdevice *gmacdev, u32 sub_sec_inc_value)
 {
-    synopGMACWriteReg((u32 *)gmacdev->MacBase, GmacTSSubSecIncr, (sub_sec_inc_value & GmacSSINCMsk));
+    synopGMACWriteReg(gmacdev->MacBase, GmacTSSubSecIncr, (sub_sec_inc_value & GmacSSINCMsk));
     return;
 }
 
@@ -2827,11 +2870,11 @@ void synopGMAC_TS_subsecond_init(synopGMACdevice *gmacdev, u32 sub_sec_inc_value
   * \note Please note that since the atomic access to the timestamp registers is not possible,
   *  the contents read may be different from the actual time stamp.
   */
-void synopGMAC_TS_read_timestamp(synopGMACdevice *gmacdev, u16 *higher_sec_val, u32 *sec_val, u32 *sub_sec_val)
+void synopGMAC_TS_read_timestamp(synopGMACdevice *gmacdev, u16 *higher_sec_val, u32 *sec_val, u32   *sub_sec_val)
 {
-    * higher_sec_val = (u16)(synopGMACReadReg((u32 *)gmacdev->MacBase, GmacTSHighWord) & GmacTSHighWordMask);
-    * sec_val        = synopGMACReadReg((u32 *)gmacdev->MacBase, GmacTSHigh);
-    * sub_sec_val    = synopGMACReadReg((u32 *)gmacdev->MacBase, GmacTSLow);
+    * higher_sec_val = (u16)(synopGMACReadReg(gmacdev->MacBase, GmacTSHighWord) & GmacTSHighWordMask);
+    * sec_val        = synopGMACReadReg(gmacdev->MacBase, GmacTSHigh);
+    * sub_sec_val    = synopGMACReadReg(gmacdev->MacBase, GmacTSLow);
     return;
 }
 
@@ -2843,7 +2886,7 @@ void synopGMAC_TS_read_timestamp(synopGMACdevice *gmacdev, u16 *higher_sec_val, 
   */
 void synopGMAC_TS_load_timestamp_higher_val(synopGMACdevice *gmacdev, u32 higher_sec_val)
 {
-    synopGMACWriteReg((u32 *)gmacdev->MacBase, GmacTSHighWord, (higher_sec_val & GmacTSHighWordMask));
+    synopGMACWriteReg(gmacdev->MacBase, GmacTSHighWord, (higher_sec_val & GmacTSHighWordMask));
     return;
 }
 
@@ -2855,7 +2898,7 @@ void synopGMAC_TS_load_timestamp_higher_val(synopGMACdevice *gmacdev, u32 higher
   */
 void synopGMAC_TS_read_timestamp_higher_val(synopGMACdevice *gmacdev, u16 *higher_sec_val)
 {
-    * higher_sec_val = (u16)(synopGMACReadReg((u32 *)gmacdev->MacBase, GmacTSHighWord) & GmacTSHighWordMask);
+    * higher_sec_val = (u16)(synopGMACReadReg(gmacdev->MacBase, GmacTSHighWord) & GmacTSHighWordMask);
     return;
 }
 
@@ -2869,8 +2912,8 @@ void synopGMAC_TS_read_timestamp_higher_val(synopGMACdevice *gmacdev, u16 *highe
   */
 void synopGMAC_TS_load_target_timestamp(synopGMACdevice *gmacdev, u32 sec_val, u32 sub_sec_val)
 {
-    synopGMACWriteReg((u32 *)gmacdev->MacBase, GmacTSTargetTimeHigh, sec_val);
-    synopGMACWriteReg((u32 *)gmacdev->MacBase, GmacTSTargetTimeLow, sub_sec_val);
+    synopGMACWriteReg(gmacdev->MacBase, GmacTSTargetTimeHigh, sec_val);
+    synopGMACWriteReg(gmacdev->MacBase, GmacTSTargetTimeLow, sub_sec_val);
     return;
 }
 
@@ -2884,62 +2927,75 @@ void synopGMAC_TS_load_target_timestamp(synopGMACdevice *gmacdev, u32 sec_val, u
   */
 void synopGMAC_TS_read_target_timestamp(synopGMACdevice *gmacdev, u32 *sec_val, u32 *sub_sec_val)
 {
-    * sec_val     = synopGMACReadReg((u32 *)gmacdev->MacBase, GmacTSTargetTimeHigh);
-    * sub_sec_val = synopGMACReadReg((u32 *)gmacdev->MacBase, GmacTSTargetTimeLow);
+    * sec_val     = synopGMACReadReg(gmacdev->MacBase, GmacTSTargetTimeHigh);
+    * sub_sec_val = synopGMACReadReg(gmacdev->MacBase, GmacTSTargetTimeLow);
     return;
 }
 
 void synopGMAC_src_addr_insert_enable(synopGMACdevice *gmacdev)
 {
-	synopGMACClearBits((u32 *)gmacdev->MacBase, GmacConfig, GmacSrcAddrInsRpl);
-	synopGMACSetBits((u32 *)gmacdev->MacBase, GmacConfig, GmacSrcAddrIns);
+    synopGMACClearBits(gmacdev->MacBase, GmacConfig, GmacSrcAddrInsRpl);
+    synopGMACSetBits(gmacdev->MacBase, GmacConfig, GmacSrcAddrIns);
 
 }
 
 void synopGMAC_src_addr_insert_disable(synopGMACdevice *gmacdev)
 {
 
-    synopGMACClearBits((u32 *)gmacdev->MacBase, GmacConfig, GmacSrcAddrInsRpl);
+    synopGMACClearBits(gmacdev->MacBase, GmacConfig, GmacSrcAddrInsRpl);
+
 }
 
 void synopGMAC_src_addr_replace_enable(synopGMACdevice *gmacdev)
 {
-	synopGMACClearBits((u32 *)gmacdev->MacBase, GmacConfig, GmacSrcAddrInsRpl);
-	synopGMACSetBits((u32 *)gmacdev->MacBase, GmacConfig, GmacSrcAddrRpl);
+    synopGMACClearBits(gmacdev->MacBase, GmacConfig, GmacSrcAddrInsRpl);
+    synopGMACSetBits(gmacdev->MacBase, GmacConfig, GmacSrcAddrRpl);
+
+
 }
 
 void synopGMAC_src_addr_replace_disable(synopGMACdevice *gmacdev)
 {
-	synopGMACClearBits((u32 *)gmacdev->MacBase, GmacConfig, GmacSrcAddrInsRpl);
-}
+    synopGMACClearBits(gmacdev->MacBase, GmacConfig, GmacSrcAddrInsRpl);
 
+}
 
 void synopGMAC_svlan_insertion_enable(synopGMACdevice *gmacdev, u16 vlantag)
 {
-	synopGMACWriteReg((u32 *)gmacdev->MacBase, GmacVLANIncRep, GmacVLP | GmacSVLAN | GmacVLANIns| vlantag);
+
+    synopGMACWriteReg(gmacdev->MacBase, GmacVLANIncRep, GmacVLP | GmacSVLAN | GmacVLANIns | vlantag);
+
+
 }
 
 void synopGMAC_cvlan_insertion_enable(synopGMACdevice *gmacdev, u16 vlantag)
 {
-	synopGMACWriteReg((u32 *)gmacdev->MacBase, GmacVLANIncRep, GmacVLP | GmacCVLAN | GmacVLANIns | vlantag);
+    synopGMACWriteReg(gmacdev->MacBase, GmacVLANIncRep, GmacVLP | GmacCVLAN | GmacVLANIns | vlantag);
+
+
 }
 
 void synopGMAC_svlan_replace_enable(synopGMACdevice *gmacdev, u16 vlantag)
 {
-	synopGMACWriteReg((u32 *)gmacdev->MacBase, GmacVLANIncRep, GmacVLP | GmacSVLAN | GmacVLANRep | vlantag);
+    synopGMACWriteReg(gmacdev->MacBase, GmacVLANIncRep, GmacVLP | GmacSVLAN | GmacVLANRep | vlantag);
+
 }
 
 void synopGMAC_cvlan_replace_enable(synopGMACdevice *gmacdev, u16 vlantag)
 {
-	synopGMACWriteReg((u32 *)gmacdev->MacBase, GmacVLANIncRep, GmacVLP | GmacCVLAN | GmacVLANRep | vlantag);
+    synopGMACWriteReg(gmacdev->MacBase, GmacVLANIncRep, GmacVLP | GmacCVLAN | GmacVLANRep | vlantag);
+
 }
 
 void synopGMAC_vlan_deletion_enable(synopGMACdevice *gmacdev)
 {
-	synopGMACWriteReg((u32 *)gmacdev->MacBase, GmacVLANIncRep, GmacVLP | GmacVLANDel);
+    synopGMACWriteReg(gmacdev->MacBase, GmacVLANIncRep, GmacVLP | GmacVLANDel);
+
+
 }
 
 void synopGMAC_vlan_no_act_enable(synopGMACdevice *gmacdev)
 {
-	synopGMACClearBits((u32 *)gmacdev->MacBase, GmacVLANIncRep, 0xFFFFFFFF);
+    synopGMACClearBits(gmacdev->MacBase, GmacVLANIncRep, 0xFFFFFFFF);
 }
+

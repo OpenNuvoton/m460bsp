@@ -14,10 +14,10 @@
 extern uint8_t  g_au8MacAddr[6];
 extern uint8_t  volatile g_au8IpAddr[4];
 
-static uint8_t  au8TxBuf[1514];
+//static uint8_t  au8TxBuf[1514];
 static uint8_t  au8RxBuf[1514];
-static uint16_t s_u16IpPacketId = 1000;   // Packet ID used in IP header
-static uint32_t s_u32PktRdy;                // If not 0, this variable stores the Tx packet length
+static uint16_t s_u16IpPacketId = 1000; // Packet ID used in IP header
+static uint32_t s_u32PktRdy;            // If not 0, this variable stores the Tx packet length
 #ifdef __ICCARM__
 #pragma data_alignment=4
 static uint8_t  s_au8DhcpRawBuffer[3020];
@@ -61,7 +61,15 @@ __align(4) static uint8_t  s_au8DhcpRawBuffer[3020];   // Buffer to store DHCP T
 
 static uint8_t s_au8DhcpOptions[] = { 0x63, 0x82, 0x53, 0x63, 0x35, 0x01, DHCP_DISCOVER };
 
+static void DisableRXIRQ(void)
+{
+    __disable_irq();
+}
 
+static void EnableRXIRQ(void)
+{
+    __enable_irq();
+}
 
 static uint16_t chksum(uint16_t *cp, int cnt)
 {
@@ -80,8 +88,12 @@ static uint16_t chksum(uint16_t *cp, int cnt)
 
 static void arp_reply(uint8_t *target_ip, uint8_t *target_mac)
 {
-    ARP_PACKET  *arp = (ARP_PACKET *)&au8TxBuf[0];
+    ARP_PACKET  *arp = NULL;
+    uint8_t     *buf = NULL;
 
+    buf = EMAC_AllocatePktBuf();
+    arp = (ARP_PACKET *)buf;
+    
     memcpy((char *)arp->au8DestMac, (char *)target_mac, 6);
     memcpy((char *)arp->au8SrcMac, (char *)g_au8MacAddr, 6);
     arp->u16Type = SWAP16(PROTOCOL_ARP);
@@ -94,19 +106,24 @@ static void arp_reply(uint8_t *target_ip, uint8_t *target_mac)
     memcpy((char *)arp->su8SenderIP, (char *)g_au8IpAddr, 4);
     memcpy((char *)arp->au8TargetHA, (char *)target_mac, 6);
     memcpy((char *)arp->au8TargetIP, (char *)target_ip, 4);
-    EMAC_TransmitPkt(NULL, &au8TxBuf[0], sizeof(ARP_PACKET));
+    
+    EMAC_TransmitPkt(buf, sizeof(ARP_PACKET));
 }
 
 static void  udp_send( uint8_t *pu8SrcMac, uint8_t *pu8SrcIP, uint16_t u16SrcPort,
                        uint8_t *pu8DestMac, uint8_t *pu8DestIP, uint16_t u16DestPort,
                        uint8_t *pu8TxData, uint32_t u32Len)
 {
-    UDP_PACKET *udp = (UDP_PACKET *)&au8TxBuf[0];
+    UDP_PACKET  *udp = NULL;
+    uint8_t     *buf = NULL;
 
-    // To disable RX IRQ ?
+    buf = EMAC_AllocatePktBuf();
+    udp = (UDP_PACKET *)buf;
 
+    DisableRXIRQ();
+    
     /*- prepare Ethernet header, 14 bytes -*/
-    memcpy((char *)&au8TxBuf[sizeof(UDP_PACKET)], (char *)pu8TxData, u32Len);
+    memcpy((char *)&buf[sizeof(UDP_PACKET)], (char *)pu8TxData, u32Len);
     memcpy((char *)udp->au8DestMac, (char *)pu8DestMac, 6);
     memcpy((char *)udp->au8SrcMac, (char *)pu8SrcMac, 6);
     udp->u16Type = SWAP16(PROTOCOL_IP);
@@ -131,27 +148,28 @@ static void  udp_send( uint8_t *pu8SrcMac, uint8_t *pu8SrcIP, uint16_t u16SrcPor
     udp->u16MLen = SWAP16(8 + u32Len);
     udp->u16UDPChksum = 0;
 
-    EMAC_TransmitPkt(NULL, &au8TxBuf[0], sizeof(UDP_PACKET) + u32Len);
-    // To enable RX IRQ ?
-}
+    EMAC_TransmitPkt(buf, (sizeof(UDP_PACKET) + u32Len));
 
+    EnableRXIRQ();
+}
 
 int process_rx_packet(uint8_t *pu8Packet, uint32_t u32Len)
 {
-    ARP_PACKET    *arp = (ARP_PACKET *)pu8Packet;
-    IP_PACKET    *ip  = (IP_PACKET *)pu8Packet;
-    UDP_PACKET    *udp  = (UDP_PACKET *)pu8Packet;
+    ARP_PACKET  *arp = (ARP_PACKET *)pu8Packet;
+    IP_PACKET   *ip  = (IP_PACKET *)pu8Packet;
+    UDP_PACKET  *udp  = (UDP_PACKET *)pu8Packet;
+    uint8_t     *buf = NULL;
 
     if (pu8Packet[0] == 0xFF)       /* this is a broadcast packet */
     {
         /*
          *  We manage the ARP reply process here.
          *  In the following code, if we have received a ARP request,
-         *  we send ARP reply immediately.
+         *  we send ARsP reply immediately.
          */
         if ((!COMPARE_IP(arp->au8TargetIP, g_au8IpAddr)) &&
                 (arp->u16Type == SWAP16(PROTOCOL_ARP)) && (arp->u16Operation == SWAP16(ARP_REQUEST)))
-        {
+        {            
             arp_reply(arp->su8SenderIP, arp->au8SenderHA);
         }
 
@@ -171,7 +189,6 @@ int process_rx_packet(uint8_t *pu8Packet, uint32_t u32Len)
         if ((ip->u8Prot == IP_PRO_UDP) && (udp->u16SrcPort == SWAP16(67)))
         {
             // This is a DHCP packet...
-
             s_u32PktRdy = u32Len;
             memcpy(au8RxBuf, pu8Packet, u32Len);
             return 0;
@@ -190,20 +207,20 @@ int process_rx_packet(uint8_t *pu8Packet, uint32_t u32Len)
         if ((ip->u8Prot == IP_PRO_ICMP) && (!COMPARE_IP(ip->au8DestIP, g_au8IpAddr)) &&
                 (pu8Packet[34] == 0x08))
         {
-            IP_PACKET    *tx_ip;
-
-
+            IP_PACKET   *tx_ip;
+            
             /* duplicate packet then modify it */
-            memcpy((char *)&au8TxBuf[0], (char *)&pu8Packet[0], u32Len);
+            buf = EMAC_AllocatePktBuf();
+            memcpy((char *)&buf[0], (char *)&pu8Packet[0], u32Len);
 
-
-            tx_ip = (IP_PACKET *)&au8TxBuf[0];
+            tx_ip = (IP_PACKET *)&buf[0];
             memcpy((char *)tx_ip->au8DestMac, (char *)ip->au8SrcMac, 6);
             memcpy((char *)tx_ip->au8SrcMac, (char *)g_au8MacAddr, 6);
             tx_ip->u16Type = SWAP16(PROTOCOL_IP);
             tx_ip->u8VerHLen = 0x45;         /* fixed value, do not change it */
             tx_ip->u8ToS = 0;                /* no special priority */
-            tx_ip->u16TLen = SWAP16(60);
+            //tx_ip->u16TLen = SWAP16(60); // forced 32-bytes ping
+            tx_ip->u16TLen = SWAP16(u32Len - sizeof(ETHER_PACKET));
             tx_ip->u16ID = SWAP16(s_u16IpPacketId);
             tx_ip->u16Frag = 0;
             tx_ip->u8TTL = 64;
@@ -216,14 +233,14 @@ int process_rx_packet(uint8_t *pu8Packet, uint32_t u32Len)
             s_u16IpPacketId++;
 
             /* ICMP reply */
-            au8TxBuf[34] = 0;
+            buf[34] = 0;
 
             /* ICMP checksum */
-            au8TxBuf[36] = 0;
-            au8TxBuf[37] = 0;
-            *(uint16_t *)&au8TxBuf[36] = ~chksum((uint16_t *)&au8TxBuf[34], (u32Len - 34) / 2);
+            buf[36] = 0;
+            buf[37] = 0;
+            *(uint16_t *)&buf[36] = ~chksum((uint16_t *)&buf[34], (u32Len - 34) / 2);
 
-            EMAC_TransmitPkt(NULL, au8TxBuf, u32Len);
+            EMAC_TransmitPkt(buf, u32Len);
 
             return 0;
         }
@@ -235,14 +252,14 @@ int process_rx_packet(uint8_t *pu8Packet, uint32_t u32Len)
 
 int dhcp_start(void)
 {
-    uint8_t        *cptr;
-    int            opt_len, len, retry, offer, out;
-    uint8_t        serverMAC[] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
-    uint8_t        serverIP[] = { 0xff, 0xff, 0xff, 0xff };
+    uint8_t     *cptr;
+    int         opt_len, len, retry, offer, out;
+    uint8_t     serverMAC[] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
+    uint8_t     serverIP[] = { 0xff, 0xff, 0xff, 0xff };
     uint32_t    tx_id = 0x8900;            /* just give a start value */
     DHCP_HDR_T  *dhcpRx, *dhcpTx;
     UDP_PACKET  *udp;
-    uint32_t delay;
+    volatile uint32_t    delay;
 
     dhcpTx = (DHCP_HDR_T *)&s_au8DhcpRawBuffer[0];
     udp = (UDP_PACKET *)&s_au8DhcpRawBuffer[1500];
@@ -294,10 +311,10 @@ wait_offer:
         {
             if(s_u32PktRdy)
             {
-                // To disable RX IRQ ?
+                DisableRXIRQ();
                 memcpy((char *)&s_au8DhcpRawBuffer[1500], au8RxBuf, s_u32PktRdy);
                 s_u32PktRdy = 0;
-                // To enable RX IRQ ?
+                EnableRXIRQ();
                 if ((udp->u16DestPort == SWAP16(CLIENT_PORT)) &&
                         (dhcpRx->op_code == BOOTP_REPLY) &&
                         (dhcpRx->tx_id == dhcpTx->tx_id))
@@ -371,10 +388,10 @@ wait_offer:
         {
             if(s_u32PktRdy)
             {
-                // To disable RX IRQ ?
+                DisableRXIRQ();
                 memcpy((char *)&s_au8DhcpRawBuffer[1500], au8RxBuf, s_u32PktRdy);
                 s_u32PktRdy = 0;
-                // To enable RX IRQ ?
+                EnableRXIRQ();
                 if((udp->u16DestPort == SWAP16(CLIENT_PORT)) &&
                         (dhcpRx->op_code != BOOTP_REPLY) &&
                         (dhcpRx->tx_id != dhcpTx->tx_id))

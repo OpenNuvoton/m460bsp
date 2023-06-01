@@ -36,45 +36,43 @@
 #ifndef SYNOP_GMAC_DEV_H
 #define SYNOP_GMAC_DEV_H 1
 
-#include "synopGMAC_plat.h"
 
-#define GMAC_CNT	1
+#include "synopGMAC_plat.h"
+//#include "synopGMAC_types.h"
 
 /*SynopGMAC can support up to 32 phys*/
 
-enum GMACPhyBase {
+enum GMACPhyBase
+{
     PHY0  = 0,          //The device can support 32 phys, but we use first phy only
     PHY1  = 1,
     PHY31 = 31,
 };
 
-#define DEFAULT_PHY_BASE    PHY1       //We use First Phy 
-
-#define GMAC0MappedAddr		EMAC_BASE   //0x40012000
-#define GMAC1MappedAddr		EMAC_BASE
+#define DEFAULT_PHY_BASE PHY0       //We use First Phy
 #define MACBASE 0x0000          // The Mac Base address offset is 0x0000
 #define DMABASE 0x1000          // Dma base address starts with an offset 0x1000
 
 
-#define TRANSMIT_DESC_SIZE  32//256 //Tx Descriptors needed in the Descriptor pool/queue
-#define RECEIVE_DESC_SIZE   32//256 //Rx Descriptors needed in the Descriptor pool/queue
+#define TRANSMIT_DESC_SIZE          16 //Tx Descriptors needed in the Descriptor pool/queue
+#define RECEIVE_DESC_SIZE           32 //Rx Descriptors needed in the Descriptor pool/queue
 
 #define ETHERNET_HEADER             14  //6 byte Dest addr, 6 byte Src addr, 2 byte length/type
 #define ETHERNET_CRC                 4  //Ethernet CRC
-#define ETHERNET_EXTRA           2  //Only God knows about this?????
-#define ETHERNET_PACKET_COPY       250  // Maximum length when received data is copied on to a new skb  
-#define ETHERNET_PACKET_EXTRA       18  // Preallocated length for the rx packets is MTU + ETHERNET_PACKET_EXTRA  
-#define VLAN_TAG             4  //optional 802.1q VLAN Tag
+#define ETHERNET_EXTRA               2  //Only God knows about this?????
+#define ETHERNET_PACKET_COPY       250  // Maximum length when received data is copied on to a new skb
+#define ETHERNET_PACKET_EXTRA       18  // Preallocated length for the rx packets is MTU + ETHERNET_PACKET_EXTRA
+#define VLAN_TAG                     4  //optional 802.1q VLAN Tag
 #define MIN_ETHERNET_PAYLOAD        46  //Minimum Ethernet payload size
 #define MAX_ETHERNET_PAYLOAD      1500  //Maximum Ethernet payload size
 #define JUMBO_FRAME_PAYLOAD       9000  //Jumbo frame payload size
 
-#define TX_BUF_SIZE        ETHERNET_HEADER + ETHERNET_CRC + MAX_ETHERNET_PAYLOAD + VLAN_TAG
-
+#define PKT_FRAME_BUF_SIZE        1536  //(ETHERNET_HEADER + ETHERNET_CRC + MAX_ETHERNET_PAYLOAD + VLAN_TAG)+alignment
 
 // This is the IP's phy address. This is unique address for every MAC in the universe
 #define DEFAULT_MAC0_ADDRESS {0x00, 0x55, 0x7B, 0xB5, 0x7D, 0xF7}
 #define DEFAULT_MAC1_ADDRESS {0x00, 0x55, 0x7B, 0xB5, 0x7D, 0xF8}
+
 /*
 DMA Descriptor Structure
 The structure is common for both receive and transmit descriptors
@@ -89,9 +87,10 @@ Whenever IEEE 1588 Timestamping is enabled TX/RX DESC6 provides the lower 32 bit
 In addition to this whenever extended status bit is set (RX DESC0 bit 0), RX DESC4 contains the extended status information
 */
 
-#define MODULO_INTERRUPT   1 // if it is set to 1, interrupt is available for all the descriptors or else interrupt is available only for 
+#define MODULO_INTERRUPT   1 // if it is set to 1, interrupt is available for all the descriptors or else interrupt is available only for
 // descriptor whose index%MODULO_INTERRUPT is zero
-typedef struct DmaDescStruct {
+typedef struct DmaDescStruct
+{
     u32   status;         /* Status                                     */
     u32   length;         /* Buffer 1  and Buffer 2 length                      */
     u32   buffer1;        /* Network Buffer 1 pointer (Dma-able)                            */
@@ -105,27 +104,22 @@ typedef struct DmaDescStruct {
     //u32   data2;          /* This holds virtual address of buffer2, not used by DMA             */
 } DmaDesc;
 
-enum DescMode {
+enum DescMode
+{
     RINGMODE    = 0x00000001,
     CHAINMODE   = 0x00000002,
 };
 
-enum BufferMode {
+enum BufferMode
+{
     SINGLEBUF   = 0x00000001,
     DUALBUF     = 0x00000002,
 };
 
-typedef u32 *       dma_addr_t;
-
 /* synopGMAC device data */
 
-struct sk_buff {
-	unsigned char data[2048];
-	unsigned int len;
-	unsigned int volatile rdy;
-};
-
-struct net_device_stats {
+struct net_device_stats
+{
     u32 tx_bytes;
     u32 tx_packets;
     u32 tx_errors;
@@ -147,15 +141,15 @@ struct net_device_stats {
     volatile u32 ts_int;
 };
 
-typedef struct synopGMACDeviceStruct {
-    u64 MacBase;                 /* base address of MAC registers           */
-    u64 DmaBase;                 /* base address of DMA registers           */
-    u64 PhyBase;                 /* PHY device address on MII interface     */
-    u64 Version;                 /* Gmac Revision version                   */
+typedef struct synopGMACDeviceStruct
+{
+    u32 MacBase;               /* base address of MAC registers         */
+    u32 DmaBase;               /* base address of DMA registers         */
+    u32 PhyBase;               /* PHY device address on MII interface   */
+    u32 Version;               /* Gmac Revision version                 */
 
-
-    /*dma_addr_t*/ DmaDesc *TxDescDma;        /* Dma-able address of first tx descriptor either in ring or chain mode, this is used by the GMAC device*/
-    /*dma_addr_t*/ DmaDesc *RxDescDma;    /* Dma-albe address of first rx descriptor either in ring or chain mode, this is used by the GMAC device*/
+    dma_addr_t TxDescDma;      /* Dma-able address of first tx descriptor either in ring or chain mode, this is used by the GMAC device*/
+    dma_addr_t RxDescDma;      /* Dma-albe address of first rx descriptor either in ring or chain mode, this is used by the GMAC device*/
     DmaDesc *TxDesc;               /* start address of TX descriptors ring or chain, this is used by the driver  */
     DmaDesc *RxDesc;               /* start address of RX descriptors ring or chain, this is used by the driver  */
 
@@ -170,11 +164,12 @@ typedef struct synopGMACDeviceStruct {
     u32  RxBusy;                   /* index of the rx descriptor owned by DMA, obtained by synopGMAC_get_rx_qptr()                   */
     u32  RxNext;                   /* index of the rx descriptor next available with driver, given to DMA by synopGMAC_set_rx_qptr() */
 
-    DmaDesc * TxBusyDesc;          /* Tx Descriptor address corresponding to the index TxBusy */
-    DmaDesc * TxNextDesc;          /* Tx Descriptor address corresponding to the index TxNext */
-    DmaDesc * RxBusyDesc;          /* Rx Descriptor address corresponding to the index TxBusy */
-    DmaDesc * RxNextDesc;          /* Rx Descriptor address corresponding to the index RxNext */
+    DmaDesc *TxBusyDesc;           /* Tx Descriptor address corresponding to the index TxBusy */
+    DmaDesc *TxNextDesc;           /* Tx Descriptor address corresponding to the index TxNext */
+    DmaDesc *RxBusyDesc;           /* Rx Descriptor address corresponding to the index TxBusy */
+    DmaDesc *RxNextDesc;           /* Rx Descriptor address corresponding to the index RxNext */
 
+    struct net_device_stats synopGMACNetStats;
 
     /*Phy related stuff*/
     u32 ClockDivMdc;         /* Clock divider value programmed in the hardware           */
@@ -183,13 +178,14 @@ typedef struct synopGMACDeviceStruct {
     u32 DuplexMode;                /* Duplex mode of the Phy                    */
     u32 Speed;           /* Speed of the Phy                        */
     u32 LoopBackMode;        /* Loopback status of the Phy                  */
-    u32 Intf;
-    struct net_device_stats synopGMACNetStats;
 
     u32 tx_sec;
     u32 tx_subsec;
     u32 rx_sec;
     u32 rx_subsec;
+
+    u32 GMAC_Power_down;
+    u8 mac_addr[8];
 
 } synopGMACdevice;
 
@@ -199,7 +195,8 @@ typedef struct synopGMACDeviceStruct {
  * Since the Phy register map is standard, this map hardly changes to a different Ppy
  */
 
-enum MiiRegisters {
+enum MiiRegisters
+{
     PHY_CONTROL_REG           = 0x0000,     /*Control Register*/
     PHY_STATUS_REG            = 0x0001,     /*Status Register */
     PHY_ID_HI_REG             = 0x0002,     /*PHY Identifier High Register*/
@@ -229,7 +226,8 @@ enum MiiRegisters {
 /* This is Control register layout. Control register is of 16 bit wide.
 */
 
-enum Mii_GEN_CTRL {
+enum Mii_GEN_CTRL
+{
     /*  Description                bits        R/W  default value  */
     Mii_reset        = 0x8000,
     Mii_Speed_10         = 0x0000,   /* 10   Mbps                    6:13           RW                      */
@@ -244,7 +242,8 @@ enum Mii_GEN_CTRL {
     Mii_NoLoopback       = 0x0000,   /* Enable Loop back             14                 RW                      */
 };
 
-enum Mii_Phy_Status {
+enum Mii_Phy_Status
+{
     Mii_phy_status_speed_10     = 0x0000,
     Mii_phy_status_speed_100    = 0x4000,
     Mii_phy_status_speed_1000   = 0x8000,
@@ -256,27 +255,32 @@ enum Mii_Phy_Status {
 };
 /* This is Status register layout. Status register is of 16 bit wide.
 */
-enum Mii_GEN_STATUS {
+enum Mii_GEN_STATUS
+{
     Mii_AutoNegCmplt     = 0x0020,   /* Autonegotiation completed      5              RW                   */
     Mii_Link             = 0x0004,   /* Link status                    2              RW                   */
 };
 
-enum Mii_Link_Status {
+enum Mii_Link_Status
+{
     LINKDOWN    = 0,
     LINKUP      = 1,
 };
 
-enum Mii_Duplex_Mode {
+enum Mii_Duplex_Mode
+{
     HALFDUPLEX = 1,
     FULLDUPLEX = 2,
 };
-enum Mii_Link_Speed {
+enum Mii_Link_Speed
+{
     SPEED10     = 1,
     SPEED100    = 2,
     SPEED1000   = 3,
 };
 
-enum Mii_Loop_Back {
+enum Mii_Loop_Back
+{
     NOLOOPBACK  = 0,
     LOOPBACK    = 1,
 };
@@ -288,7 +292,8 @@ enum Mii_Loop_Back {
  * For Pci based system address is BARx + GmacRegisterBase
  * For any other system translation is done accordingly
  **********************************************************/
-enum GmacRegisters {
+enum GmacRegisters
+{
     GmacConfig        = 0x0000,    /* Mac config Register                       */
     GmacFrameFilter       = 0x0004,    /* Mac frame filtering controls              */
     GmacHashHigh          = 0x0008,    /* Multi-cast hash table high                */
@@ -299,7 +304,7 @@ enum GmacRegisters {
     GmacVlan              = 0x001C,    /* VLAN tag Register (IEEE 802.1Q)           */
 
     GmacVersion           = 0x0020,    /* GMAC Core Version Register                */
-	GmacDebug           = 0x0024,    /* GMAC Debug Register                */
+    GmacDebug           = 0x0024,    /* GMAC Debug Register                */
     GmacWakeupAddr        = 0x0028,    /* GMAC wake-up frame filter adrress reg     */
     GmacPmtCtrlStatus     = 0x002C,    /* PMT control and status register           */
 
@@ -343,8 +348,8 @@ enum GmacRegisters {
     GmacAddr14Low             = 0x00B4,    /* Mac address14 low Register                */
     GmacAddr15High        = 0x00B8,    /* Mac address15 high Register               */
     GmacAddr15Low     = 0x00BC,    /* Mac address15 low Register                */
-	GmacRgmiiCtrlSts     = 0x00D8,    /*SGMII_RGMII_SMII_Control_Status Register           */
-	GmacVLANIncRep		= 0x0584,
+    GmacRgmiiCtrlSts     = 0x00D8,    /*SGMII_RGMII_SMII_Control_Status Register           */
+    GmacVLANIncRep      = 0x0584,
     /*Time Stamp Register Map*/
     GmacTSControl             = 0x0700,  /* Controls the Timestamp update logic                         : only when IEEE 1588 time stamping is enabled in corekit            */
 
@@ -365,9 +370,9 @@ enum GmacRegisters {
     //GmacTSHighWordUpdate    = 0x072C,  /* Time Stamp Higher Word Update Register (Version 2 only); only lower 16 bits are valid                                            */
 
     GmacTSStatus            = 0x0728,  /* Time Stamp Status Register                                                                                                       */
-	GmacPPSCtrl             = 0x072C,  /* PPS Control Register                                                                                                       */
-	GmacPPSInt				= 0x0760,  /* PPS0 Interval Register                                                                                                           */
-	GmacPPSWidth			= 0x0764,  /* PPS0 Width Register                                                                                                              */
+    GmacPPSCtrl             = 0x072C,  /* PPS Control Register                                                                                                       */
+    GmacPPSInt              = 0x0760,  /* PPS0 Interval Register                                                                                                           */
+    GmacPPSWidth            = 0x0764,  /* PPS0 Width Register                                                                                                              */
 };
 
 /**********************************************************
@@ -382,13 +387,14 @@ enum GmacRegisters {
  **********************************************************/
 
 /* GmacConfig              = 0x0000,    Mac config Register  Layout */
-enum GmacConfigReg {
+enum GmacConfigReg
+{
     /* Bit description                      Bits         R/W   Reset value  */
 
-	GmacSrcAddrInsRpl		= 0x70000000,
-	GmacSrcAddrIns		= 0x20000000,
-	GmacSrcAddrRpl		= 0x30000000,
-	GmacWatchdog           = 0x00800000,
+    GmacSrcAddrInsRpl       = 0x70000000,
+    GmacSrcAddrIns      = 0x20000000,
+    GmacSrcAddrRpl      = 0x30000000,
+    GmacWatchdog           = 0x00800000,
     GmacWatchdogDisable      = 0x00800000,     /* (WD)Disable watchdog timer on Rx      23           RW                */
     GmacWatchdogEnable       = 0x00000000,     /* Enable watchdog timer                                        0       */
 
@@ -466,11 +472,12 @@ enum GmacConfigReg {
 };
 
 /* GmacFrameFilter    = 0x0004,     Mac frame filtering controls Register Layout*/
-enum GmacFrameFilterReg {
+enum GmacFrameFilterReg
+{
     GmacFilter         = 0x80000000,
     GmacFilterOff            = 0x80000000,     /* (RA)Receive all incoming packets       31         RW                 */
     GmacFilterOn             = 0x00000000,     /* Receive filtered packets only                                0       */
-	GmacVlanTagFilter      = 0x00010000,     /*VLAN tag filter enable           16         RW         0       */
+    GmacVlanTagFilter      = 0x00010000,     /*VLAN tag filter enable           16         RW         0       */
     GmacHashPerfectFilter      = 0x00000400,     /*Hash or Perfect Filter enable           10         RW         0       */
 
     GmacSrcAddrFilter      = 0x00000200,
@@ -514,7 +521,8 @@ enum GmacFrameFilterReg {
 
 
 /*GmacGmiiAddr             = 0x0010,    GMII address Register(ext. Phy) Layout          */
-enum GmacGmiiAddrReg {
+enum GmacGmiiAddrReg
+{
     GmiiDevMask              = 0x0000F800,     /* (PA)GMII device address                 15:11     RW         0x00    */
     GmiiDevShift             = 11,
 
@@ -535,42 +543,47 @@ enum GmacGmiiAddrReg {
     GmiiBusy                 = 0x00000001,     /* (GB)GMII interface is busy                 0      RW          0      */
 };
 
-enum GmacVlanTagReg {
-	GmacEnableSVlan			= 0x00040000,  	/* (ESVL) Enabe S-Vlan							*/
-	GmacVlanInvMatch		= 0x00020000,  	/* (VTIM) VLAN tag inverse match enable 		*/
-	GmacEnable12BitComp		= 0x00010000,  	/* (ETV)  Enable 12-bit VLAN tag comparision	*/
-	GmacVlanTagMsk			= 0x0000FFFF	/* (VL)	  VLAN tag								*/
+enum GmacVlanTagReg
+{
+    GmacEnableSVlan         = 0x00040000,   /* (ESVL) Enabe S-Vlan                          */
+    GmacVlanInvMatch        = 0x00020000,   /* (VTIM) VLAN tag inverse match enable         */
+    GmacEnable12BitComp     = 0x00010000,   /* (ETV)  Enable 12-bit VLAN tag comparision    */
+    GmacVlanTagMsk          = 0x0000FFFF    /* (VL)   VLAN tag                              */
 
 };
 
 
-enum GmacLPICtrlStsReg {
-	GmacLPITxAuto		= 0x00080000,
-	GmacLPIPhyStsEn		= 0x00040000,
-	GmacLPIPhySts		= 0x00020000,
-	GmacLPIEn			= 0x00010000,
-	GmacRxLPISts		= 0x00000200,
-	GmacTxLPISts		= 0x00000100,
-	GmacRxLPIExit		= 0x00000008,
-	GmacRxLPIEnter		= 0x00000004,
-	GmacTxLPIExit		= 0x00000002,
-	GmacTxLPIEnter		= 0x00000001,
+enum GmacLPICtrlStsReg
+{
+    GmacLPITxAuto       = 0x00080000,
+    GmacLPIPhyStsEn     = 0x00040000,
+    GmacLPIPhySts       = 0x00020000,
+    GmacLPIEn           = 0x00010000,
+    GmacRxLPISts        = 0x00000200,
+    GmacTxLPISts        = 0x00000100,
+    GmacRxLPIExit       = 0x00000008,
+    GmacRxLPIEnter      = 0x00000004,
+    GmacTxLPIExit       = 0x00000002,
+    GmacTxLPIEnter      = 0x00000001,
 };
 
-enum GmacLPITimerCtrlReg {
-	GmacLPILinkStableTimerMsk	= 0x03FF0000,
-	GmacLPITxWaitTimerMsk		= 0x0000FFFF,
+enum GmacLPITimerCtrlReg
+{
+    GmacLPILinkStableTimerMsk   = 0x03FF0000,
+    GmacLPITxWaitTimerMsk       = 0x0000FFFF,
 };
 
 
 /* GmacGmiiData            = 0x0014,    GMII data Register(ext. Phy) Layout             */
-enum GmacGmiiDataReg {
+enum GmacGmiiDataReg
+{
     GmiiDataMask             = 0x0000FFFF,     /* (GD)GMII Data                             15:0    RW         0x0000  */
 };
 
 
 /*GmacFlowControl    = 0x0018,    Flow control Register   Layout                  */
-enum GmacFlowControlReg {
+enum GmacFlowControlReg
+{
     GmacPauseTimeMask        = 0xFFFF0000,     /* (PT) PAUSE TIME field in the control frame  31:16   RW       0x0000  */
     GmacPauseTimeShift       = 16,
 
@@ -592,27 +605,29 @@ enum GmacFlowControlReg {
     GmacTxFlowControlEnable  = 0x00000002,     /* (TFE)Enable Tx flow control                   1    RW                */
     GmacTxFlowControlDisable = 0x00000000,     /* Disable flow control                                           0     */
 
-    GmacFlowControlBackPressure= 0x00000001,
+    GmacFlowControlBackPressure = 0x00000001,
     GmacSendPauseFrame       = 0x00000001,     /* (FCB/PBA)send pause frm/Apply back pressure   0    RW          0     */
 };
 
 
-enum GmacVLANIncRepReg {
-	GmacSVLAN		= 0x00080000,
-	GmacCVLAN		= 0x00000000,
-	GmacVLP			= 0x00040000,
-	GmacVLANNoACT	= 0x00000000,
-	GmacVLANDel		= 0x00010000,
-	GmacVLANIns		= 0x00020000,
-	GmacVLANRep		= 0x00030000,
-	GmacVLANMsk		= 0x0000FFFF
+enum GmacVLANIncRepReg
+{
+    GmacSVLAN       = 0x00080000,
+    GmacCVLAN       = 0x00000000,
+    GmacVLP         = 0x00040000,
+    GmacVLANNoACT   = 0x00000000,
+    GmacVLANDel     = 0x00010000,
+    GmacVLANIns     = 0x00020000,
+    GmacVLANRep     = 0x00030000,
+    GmacVLANMsk     = 0x0000FFFF
 
 };
 
 /*  GmacInterruptStatus   = 0x0038,     Mac Interrupt ststus register          */
-enum GmacInterruptStatusBitDefinition {
+enum GmacInterruptStatusBitDefinition
+{
     GmacLPIIntSts           = 0x00000400,    /* set if int generated due to TS (Read Time Stamp Status Register to know details)*/
-	GmacTSIntSts           = 0x00000200,    /* set if int generated due to TS (Read Time Stamp Status Register to know details)*/
+    GmacTSIntSts           = 0x00000200,    /* set if int generated due to TS (Read Time Stamp Status Register to know details)*/
     GmacMmcRxChksumOffload   = 0x00000080,    /* set if int generated in MMC RX CHECKSUM OFFLOAD int register                     */
     GmacMmcTxIntSts    = 0x00000040,    /* set if int generated in MMC TX Int register             */
     GmacMmcRxIntSts    = 0x00000020,    /* set if int generated in MMC RX Int register             */
@@ -625,7 +640,8 @@ enum GmacInterruptStatusBitDefinition {
 };
 
 /*  GmacInterruptMask       = 0x003C,     Mac Interrupt Mask register          */
-enum GmacInterruptMaskBitDefinition {
+enum GmacInterruptMaskBitDefinition
+{
     GmacTSIntMask          = 0x00000200,    /* when set disables the time stamp interrupt generation            */
     GmacPmtIntMask     = 0x00000008,    /* when set Disables the assertion of PMT interrupt                 */
     GmacPcsAnIntMask       = 0x00000004,    /* When set disables the assertion of PCS AN complete interrupt         */
@@ -639,7 +655,8 @@ enum GmacInterruptMaskBitDefinition {
  * For any other system translation is done accordingly
  **********************************************************/
 
-enum DmaRegisters {
+enum DmaRegisters
+{
     DmaBusMode        = 0x0000,    /* CSR0 - Bus Mode Register                          */
     DmaTxPollDemand   = 0x0004,    /* CSR1 - Transmit Poll Demand Register              */
     DmaRxPollDemand   = 0x0008,    /* CSR2 - Receive Poll Demand Register               */
@@ -662,7 +679,8 @@ enum DmaRegisters {
  **********************************************************/
 
 /*DmaBusMode               = 0x0000,    CSR0 - Bus Mode */
-enum DmaBusModeReg {
+enum DmaBusModeReg
+{
     /* Bit description                                Bits     R/W   Reset value */
 
     DmaFixedBurstEnable     = 0x00010000,   /* (FB)Fixed Burst SINGLE, INCR4, INCR8 or INCR16   16     RW                */
@@ -705,7 +723,8 @@ enum DmaBusModeReg {
 
 
 /*DmaStatus         = 0x0014,    CSR5 - Dma status Register                        */
-enum DmaStatusReg {
+enum DmaStatusReg
+{
     /*Bit 28 27 and 26 indicate whether the interrupt due to PMT GMACMMC or GMAC LINE Remaining bits are DMA interrupts*/
 
 
@@ -755,7 +774,8 @@ enum DmaStatusReg {
 };
 
 /*DmaControl        = 0x0018,     CSR6 - Dma Operation Mode Register                */
-enum DmaControlReg {
+enum DmaControlReg
+{
     DmaDisableDropTcpCs   = 0x04000000,   /* (DT) Dis. drop. of tcp/ip CS error frames        26      RW        0       */
 
     DmaStoreAndForward      = 0x00200000,   /* (SF)Store and forward                            21      RW        0       */
@@ -808,23 +828,24 @@ enum DmaControlReg {
 
 
 /*DmaInterrupt      = 0x001C,    CSR7 - Interrupt enable Register Layout     */
-enum  DmaInterruptReg {
-    DmaIeNormal            = DmaIntNormal     ,   /* Normal interrupt enable                 RW        0       */
-    DmaIeAbnormal          = DmaIntAbnormal   ,   /* Abnormal interrupt enable               RW        0       */
+enum  DmaInterruptReg
+{
+    DmaIeNormal            = DmaIntNormal,        /* Normal interrupt enable                 RW        0       */
+    DmaIeAbnormal          = DmaIntAbnormal,      /* Abnormal interrupt enable               RW        0       */
 
-    DmaIeEarlyRx           = DmaIntEarlyRx    ,   /* Early receive interrupt enable          RW        0       */
-    DmaIeBusError          = DmaIntBusError   ,   /* Fatal bus error enable                  RW        0       */
-    DmaIeEarlyTx           = DmaIntEarlyTx    ,   /* Early transmit interrupt enable         RW        0       */
-    DmaIeRxWdogTO          = DmaIntRxWdogTO   ,   /* Receive Watchdog Timeout enable         RW        0       */
-    DmaIeRxStopped         = DmaIntRxStopped  ,   /* Receive process stopped enable          RW        0       */
-    DmaIeRxNoBuffer        = DmaIntRxNoBuffer ,   /* Receive buffer unavailable enable       RW        0       */
+    DmaIeEarlyRx           = DmaIntEarlyRx,       /* Early receive interrupt enable          RW        0       */
+    DmaIeBusError          = DmaIntBusError,      /* Fatal bus error enable                  RW        0       */
+    DmaIeEarlyTx           = DmaIntEarlyTx,       /* Early transmit interrupt enable         RW        0       */
+    DmaIeRxWdogTO          = DmaIntRxWdogTO,      /* Receive Watchdog Timeout enable         RW        0       */
+    DmaIeRxStopped         = DmaIntRxStopped,     /* Receive process stopped enable          RW        0       */
+    DmaIeRxNoBuffer        = DmaIntRxNoBuffer,    /* Receive buffer unavailable enable       RW        0       */
     DmaIeRxCompleted       = DmaIntRxCompleted,   /* Completion of frame reception enable    RW        0       */
     DmaIeTxUnderflow       = DmaIntTxUnderflow,   /* Transmit underflow enable               RW        0       */
 
     DmaIeRxOverflow        = DmaIntRcvOverflow,   /* Receive Buffer overflow interrupt       RW        0       */
-    DmaIeTxJabberTO        = DmaIntTxJabberTO ,   /* Transmit Jabber Timeout enable          RW        0       */
-    DmaIeTxNoBuffer        = DmaIntTxNoBuffer ,   /* Transmit buffer unavailable enable      RW        0       */
-    DmaIeTxStopped         = DmaIntTxStopped  ,   /* Transmit process stopped enable         RW        0       */
+    DmaIeTxJabberTO        = DmaIntTxJabberTO,    /* Transmit Jabber Timeout enable          RW        0       */
+    DmaIeTxNoBuffer        = DmaIntTxNoBuffer,    /* Transmit buffer unavailable enable      RW        0       */
+    DmaIeTxStopped         = DmaIntTxStopped,     /* Transmit process stopped enable         RW        0       */
     DmaIeTxCompleted       = DmaIntTxCompleted,   /* Transmit completed enable               RW        0       */
 };
 
@@ -886,7 +907,7 @@ enum DmaDescriptorStatus    /* status word of DMA descriptor */
     DescRxFirst           = 0x00000200,   /* (FS)Rx - first descriptor of the frame              9                          */
     DescRxLast            = 0x00000100,   /* (LS)Rx - last descriptor of the frame               8                          */
     DescRxLongFrame       = 0x00000080,   /* (Giant Frame)Rx - frame is longer than 1518/1522    7                          */
-	DescRxTSAvailable     = 0x00000080,   /* Share bit with (Giant Frame)Rx    7                                            */
+    DescRxTSAvailable     = 0x00000080,   /* Share bit with (Giant Frame)Rx    7                                            */
     DescRxCollision       = 0x00000040,   /* (LC)Rx - late collision occurred during reception   6                          */
     DescRxFrameEther      = 0x00000020,   /* (FT)Rx - Frame type - Ethernet, otherwise 802.3     5                          */
     DescRxWatchdog        = 0x00000010,   /* (RWT)Rx - watchdog timer expired during reception   4                          */
@@ -902,8 +923,8 @@ enum DmaDescriptorStatus    /* status word of DMA descriptor */
     DescTxFirst           = 0x10000000,   /* (FS)Tx - First segment of the frame                 28                       */
     DescTxDisableCrc      = 0x08000000,   /* (DC)Tx - Add CRC disabled (first segment only)      27                       */
     DescTxDisablePadd       = 0x04000000,   /* (DP)disable padding, added by - reyaz               26                       */
-	DescTxTSEnable       = 0x02000000,   /* (TTSE) Transmit Timestamp Enable             25                       */
-	DescTxCrcReplacement   = 0x01000000,   /* (CRCR) CRC Replacement Control             24                       */
+    DescTxTSEnable       = 0x02000000,   /* (TTSE) Transmit Timestamp Enable             25                       */
+    DescTxCrcReplacement   = 0x01000000,   /* (CRCR) CRC Replacement Control             24                       */
     DescTxCisMask       = 0x00c00000,   /* Tx checksum offloading control mask             23:22            */
     DescTxCisBypass     = 0x00000000,   /* Checksum bypass                              */
     DescTxCisIpv4HdrCs  = 0x00400000,   /* IPv4 header checksum                             */
@@ -919,7 +940,7 @@ enum DmaDescriptorStatus    /* status word of DMA descriptor */
 
     DescRxTSavail         = 0x00000080,   /* Time stamp available                                7                          */
     DescRxFrameType     = 0x00000020,   /* (FT)Rx - Frame type - Ethernet, otherwise 802.3     5                          */
-	DescTxTSStatus        = 0x00020000,   /* (TTSS) Transmit Timestamp Status                    17                         */
+    DescTxTSStatus        = 0x00020000,   /* (TTSS) Transmit Timestamp Status                    17                         */
     DescTxIpv4ChkError    = 0x00010000,   /* (IHE) Tx Ip header error                            16                         */
     DescTxTimeout         = 0x00004000,   /* (JT)Tx - Transmit jabber timeout                    14                         */
     DescTxFrameFlushed    = 0x00002000,   /* (FF)Tx - DMA/MTL flushed the frame due to SW flush  13                         */
@@ -988,7 +1009,7 @@ enum DmaDescriptorStatus    /* status word of DMA descriptor */
                                             with Ethernet type value                                                      */
     DescRxIpPayloadType   = 0x00000007,     /* Indicate the type of payload encapsulated          2:0
                                              in IPdatagram processed by COE (Rx)                                          */
-    DescRxIpPayloadUnknown= 0x00000000,     /* Unknown or didnot process IP payload                                         */
+    DescRxIpPayloadUnknown = 0x00000000,    /* Unknown or didnot process IP payload                                         */
     DescRxIpPayloadUDP    = 0x00000001,     /* UDP                                                                          */
     DescRxIpPayloadTCP    = 0x00000002,     /* TCP                                                                          */
     DescRxIpPayloadICMP   = 0x00000003,     /* ICMP                                                                         */
@@ -997,7 +1018,8 @@ enum DmaDescriptorStatus    /* status word of DMA descriptor */
 
 
 // Rx Descriptor COE type2 encoding
-enum RxDescCOEEncode {
+enum RxDescCOEEncode
+{
     RxLenLT600          = 0,    /* Bit(5:7:0)=>0 IEEE 802.3 type frame Length field is Lessthan 0x0600          */
     RxIpHdrPayLoadChkBypass = 1,    /* Bit(5:7:0)=>1 Payload & Ip header checksum bypassed (unsuppported payload)       */
     RxIpHdrPayLoadRes       = 2,    /* Bit(5:7:0)=>2 Reserved                               */
@@ -1028,26 +1050,27 @@ enum synopGMACDmaIntEnum  /* Intrerrupt types */
 /**********************************************************
  * Initial register values
  **********************************************************/
-enum InitialRegisters {
+enum InitialRegisters
+{
     /* Full-duplex mode with perfect filter on */
     GmacConfigInitFdx1000   = GmacWatchdogEnable | GmacJabberEnable         | GmacFrameBurstEnable | GmacJumboFrameDisable
-    | GmacSelectGmii     | GmacEnableRxOwn          | GmacLoopbackOff
-    | GmacFullDuplex     | GmacRetryEnable          | GmacPadCrcStripDisable
-    | GmacBackoffLimit0  | GmacDeferralCheckDisable | GmacTxEnable          | GmacRxEnable,
+                              | GmacSelectGmii     | GmacEnableRxOwn          | GmacLoopbackOff
+                              | GmacFullDuplex     | GmacRetryEnable          | GmacPadCrcStripDisable
+                              | GmacBackoffLimit0  | GmacDeferralCheckDisable | GmacTxEnable          | GmacRxEnable,
 
     /* Full-duplex mode with perfect filter on */
     GmacConfigInitFdx110    = GmacWatchdogEnable | GmacJabberEnable         | GmacFrameBurstEnable  | GmacJumboFrameDisable
-    | GmacSelectMii      | GmacEnableRxOwn          | GmacLoopbackOff
-    | GmacFullDuplex     | GmacRetryEnable          | GmacPadCrcStripDisable
-    | GmacBackoffLimit0  | GmacDeferralCheckDisable | GmacTxEnable          | GmacRxEnable,
+                              | GmacSelectMii      | GmacEnableRxOwn          | GmacLoopbackOff
+                              | GmacFullDuplex     | GmacRetryEnable          | GmacPadCrcStripDisable
+                              | GmacBackoffLimit0  | GmacDeferralCheckDisable | GmacTxEnable          | GmacRxEnable,
 
     /* Full-duplex mode */
     // CHANGED: Pass control config, dest addr filter normal, added source address filter, multicast & unicast
     // Hash filter.
     /*                        = GmacFilterOff         | GmacPassControlOff | GmacBroadcastEnable */
     GmacFrameFilterInitFdx = GmacFilterOn          | GmacPassControl0   | GmacBroadcastEnable |  GmacSrcAddrFilterDisable
-    | GmacMulticastFilterOn | GmacDestAddrFilterNor | GmacMcastHashFilterOff
-    | GmacPromiscuousModeOff | GmacUcastHashFilterOff,
+                             | GmacMulticastFilterOn | GmacDestAddrFilterNor | GmacMcastHashFilterOff
+                             | GmacPromiscuousModeOff | GmacUcastHashFilterOff,
 
     /* Full-duplex mode */
     GmacFlowControlInitFdx = GmacUnicastPauseFrameOff | GmacRxFlowControlEnable | GmacTxFlowControlEnable,
@@ -1060,20 +1083,20 @@ enum InitialRegisters {
     // CHANGED: Removed Endian configuration, added single bit config for PAD/CRC strip,
     /*| GmacSelectMii      | GmacLittleEndian         | GmacDisableRxOwn      | GmacLoopbackOff*/
     GmacConfigInitHdx1000  = GmacWatchdogEnable | GmacJabberEnable         | GmacFrameBurstEnable  | GmacJumboFrameDisable
-    | GmacSelectGmii     | GmacDisableRxOwn         | GmacLoopbackOff
-    | GmacHalfDuplex     | GmacRetryEnable          | GmacPadCrcStripDisable
-    | GmacBackoffLimit0  | GmacDeferralCheckDisable | GmacTxEnable          | GmacRxEnable,
+                             | GmacSelectGmii     | GmacDisableRxOwn         | GmacLoopbackOff
+                             | GmacHalfDuplex     | GmacRetryEnable          | GmacPadCrcStripDisable
+                             | GmacBackoffLimit0  | GmacDeferralCheckDisable | GmacTxEnable          | GmacRxEnable,
 
     /* Half-duplex mode with perfect filter on */
     GmacConfigInitHdx110   = GmacWatchdogEnable | GmacJabberEnable         | GmacFrameBurstEnable  | GmacJumboFrameDisable
-    | GmacSelectMii      | GmacDisableRxOwn         | GmacLoopbackOff
-    | GmacHalfDuplex     | GmacRetryEnable          | GmacPadCrcStripDisable
-    | GmacBackoffLimit0  | GmacDeferralCheckDisable | GmacTxEnable          | GmacRxEnable,
+                             | GmacSelectMii      | GmacDisableRxOwn         | GmacLoopbackOff
+                             | GmacHalfDuplex     | GmacRetryEnable          | GmacPadCrcStripDisable
+                             | GmacBackoffLimit0  | GmacDeferralCheckDisable | GmacTxEnable          | GmacRxEnable,
 
     /* Half-duplex mode */
     GmacFrameFilterInitHdx = GmacFilterOn          | GmacPassControl0        | GmacBroadcastEnable | GmacSrcAddrFilterDisable
-    | GmacMulticastFilterOn | GmacDestAddrFilterNor   | GmacMcastHashFilterOff
-    | GmacUcastHashFilterOff| GmacPromiscuousModeOff,
+                             | GmacMulticastFilterOn | GmacDestAddrFilterNor   | GmacMcastHashFilterOff
+                             | GmacUcastHashFilterOff | GmacPromiscuousModeOff,
 
     /* Half-duplex mode */
     GmacFlowControlInitHdx = GmacUnicastPauseFrameOff | GmacRxFlowControlDisable | GmacTxFlowControlDisable,
@@ -1109,12 +1132,199 @@ enum InitialRegisters {
     DmaIntTxStoppedMask     = DmaIntTxStopped,          /* transmitter stopped */
 
     DmaIntEnable            = DmaIeNormal     | DmaIeAbnormal    | DmaIntErrorMask
-    | DmaIntRxAbnMask | DmaIntRxNormMask | DmaIntRxStoppedMask
-    | DmaIntTxAbnMask | DmaIntTxNormMask | DmaIntTxStoppedMask,
+                              | DmaIntRxAbnMask | DmaIntRxNormMask | DmaIntRxStoppedMask
+                              | DmaIntTxAbnMask | DmaIntTxNormMask | DmaIntTxStoppedMask,
     DmaIntDisable           = 0,
 };
 
 
+/**********************************************************
+ * Mac Management Counters (MMC)
+ **********************************************************/
+
+enum MMC_ENABLE
+{
+    GmacMmcCntrl            = 0x0100,   /* mmc control for operating mode of MMC                        */
+    GmacMmcIntrRx           = 0x0104,   /* maintains interrupts generated by rx counters                    */
+    GmacMmcIntrTx           = 0x0108,   /* maintains interrupts generated by tx counters                    */
+    GmacMmcIntrMaskRx       = 0x010C,   /* mask for interrupts generated from rx counters                   */
+    GmacMmcIntrMaskTx       = 0x0110,   /* mask for interrupts generated from tx counters                   */
+};
+enum MMC_TX
+{
+    GmacMmcTxOctetCountGb       = 0x0114,   /*Bytes Tx excl. of preamble and retried bytes     (Good or Bad)            */
+    GmacMmcTxFrameCountGb       = 0x0118,   /*Frames Tx excl. of retried frames            (Good or Bad)            */
+    GmacMmcTxBcFramesG      = 0x011C,   /*Broadcast Frames Tx                  (Good)               */
+    GmacMmcTxMcFramesG      = 0x0120,   /*Multicast Frames Tx                  (Good)               */
+
+    GmacMmcTx64OctetsGb     = 0x0124,   /*Tx with len 64 bytes excl. of pre and retried    (Good or Bad)            */
+    GmacMmcTx65To127OctetsGb    = 0x0128,   /*Tx with len >64 bytes <=127 excl. of pre and retried    (Good or Bad)         */
+    GmacMmcTx128To255OctetsGb   = 0x012C,   /*Tx with len >128 bytes <=255 excl. of pre and retried   (Good or Bad)         */
+    GmacMmcTx256To511OctetsGb   = 0x0130,   /*Tx with len >256 bytes <=511 excl. of pre and retried   (Good or Bad)         */
+    GmacMmcTx512To1023OctetsGb  = 0x0134,   /*Tx with len >512 bytes <=1023 excl. of pre and retried  (Good or Bad)         */
+    GmacMmcTx1024ToMaxOctetsGb  = 0x0138,   /*Tx with len >1024 bytes <=MaxSize excl. of pre and retried (Good or Bad)      */
+
+    GmacMmcTxUcFramesGb     = 0x013C,   /*Unicast Frames Tx                      (Good or Bad)          */
+    GmacMmcTxMcFramesGb     = 0x0140,   /*Multicast Frames Tx                  (Good and Bad)           */
+    GmacMmcTxBcFramesGb     = 0x0144,   /*Broadcast Frames Tx                  (Good and Bad)           */
+    GmacMmcTxUnderFlowError     = 0x0148,   /*Frames aborted due to Underflow error                         */
+    GmacMmcTxSingleColG     = 0x014C,   /*Successfully Tx Frames after singel collision in Half duplex mode         */
+    GmacMmcTxMultiColG      = 0x0150,   /*Successfully Tx Frames after more than singel collision in Half duplex mode       */
+    GmacMmcTxDeferred       = 0x0154,   /*Successfully Tx Frames after a deferral in Half duplex mode               */
+    GmacMmcTxLateCol        = 0x0158,   /*Frames aborted due to late collision error                        */
+    GmacMmcTxExessCol       = 0x015C,   /*Frames aborted due to excessive (16) collision errors                 */
+    GmacMmcTxCarrierError       = 0x0160,   /*Frames aborted due to carrier sense error (No carrier or Loss of carrier)     */
+    GmacMmcTxOctetCountG        = 0x0164,   /*Bytes Tx excl. of preamble and retried bytes     (Good)               */
+    GmacMmcTxFrameCountG        = 0x0168,   /*Frames Tx                            (Good)               */
+    GmacMmcTxExessDef       = 0x016C,   /*Frames aborted due to excessive deferral errors (deferred for more than 2 max-sized frame times)*/
+
+    GmacMmcTxPauseFrames        = 0x0170,   /*Number of good pause frames Tx.                           */
+    GmacMmcTxVlanFramesG        = 0x0174,   /*Number of good Vlan frames Tx excl. retried frames                    */
+};
+enum MMC_RX
+{
+    GmacMmcRxFrameCountGb       = 0x0180,   /*Frames Rx                            (Good or Bad)            */
+    GmacMmcRxOctetCountGb       = 0x0184,   /*Bytes Rx excl. of preamble and retried bytes     (Good or Bad)            */
+    GmacMmcRxOctetCountG        = 0x0188,   /*Bytes Rx excl. of preamble and retried bytes     (Good)               */
+    GmacMmcRxBcFramesG      = 0x018C,   /*Broadcast Frames Rx                  (Good)               */
+    GmacMmcRxMcFramesG      = 0x0190,   /*Multicast Frames Rx                  (Good)               */
+
+    GmacMmcRxCrcError       = 0x0194,   /*Number of frames received with CRC error                      */
+    GmacMmcRxAlignError     = 0x0198,   /*Number of frames received with alignment (dribble) error. Only in 10/100mode      */
+    GmacMmcRxRuntError      = 0x019C,   /*Number of frames received with runt (<64 bytes and CRC error) error           */
+    GmacMmcRxJabberError        = 0x01A0,   /*Number of frames rx with jabber (>1518/1522 or >9018/9022 and CRC)            */
+    GmacMmcRxUnderSizeG     = 0x01A4,   /*Number of frames received with <64 bytes without any error                */
+    GmacMmcRxOverSizeG      = 0x01A8,   /*Number of frames received with >1518/1522 bytes without any error         */
+
+    GmacMmcRx64OctetsGb     = 0x01AC,   /*Rx with len 64 bytes excl. of pre and retried    (Good or Bad)            */
+    GmacMmcRx65To127OctetsGb    = 0x01B0,   /*Rx with len >64 bytes <=127 excl. of pre and retried    (Good or Bad)         */
+    GmacMmcRx128To255OctetsGb   = 0x01B4,   /*Rx with len >128 bytes <=255 excl. of pre and retried   (Good or Bad)         */
+    GmacMmcRx256To511OctetsGb   = 0x01B8,   /*Rx with len >256 bytes <=511 excl. of pre and retried   (Good or Bad)         */
+    GmacMmcRx512To1023OctetsGb  = 0x01BC,   /*Rx with len >512 bytes <=1023 excl. of pre and retried  (Good or Bad)         */
+    GmacMmcRx1024ToMaxOctetsGb  = 0x01C0,   /*Rx with len >1024 bytes <=MaxSize excl. of pre and retried (Good or Bad)      */
+
+    GmacMmcRxUcFramesG      = 0x01C4,   /*Unicast Frames Rx                      (Good)             */
+    GmacMmcRxLengthError        = 0x01C8,   /*Number of frames received with Length type field != frame size            */
+    GmacMmcRxOutOfRangeType     = 0x01CC,   /*Number of frames received with length field != valid frame size           */
+
+    GmacMmcRxPauseFrames        = 0x01D0,   /*Number of good pause frames Rx.                           */
+    GmacMmcRxFifoOverFlow       = 0x01D4,   /*Number of missed rx frames due to FIFO overflow                   */
+    GmacMmcRxVlanFramesGb       = 0x01D8,   /*Number of good Vlan frames Rx                             */
+
+    GmacMmcRxWatchdobError      = 0x01DC,   /*Number of frames rx with error due to watchdog timeout error              */
+};
+enum MMC_IP_RELATED
+{
+    GmacMmcRxIpcIntrMask        = 0x0200,   /*Maintains the mask for interrupt generated from rx IPC statistic counters         */
+    GmacMmcRxIpcIntr        = 0x0208,   /*Maintains the interrupt that rx IPC statistic counters generate           */
+
+    GmacMmcRxIpV4FramesG        = 0x0210,   /*Good IPV4 datagrams received                              */
+    GmacMmcRxIpV4HdrErrFrames   = 0x0214,   /*Number of IPV4 datagrams received with header errors                  */
+    GmacMmcRxIpV4NoPayFrames    = 0x0218,   /*Number of IPV4 datagrams received which didnot have TCP/UDP/ICMP payload      */
+    GmacMmcRxIpV4FragFrames     = 0x021C,   /*Number of IPV4 datagrams received with fragmentation                  */
+    GmacMmcRxIpV4UdpChkDsblFrames   = 0x0220,   /*Number of IPV4 datagrams received that had a UDP payload checksum disabled        */
+
+    GmacMmcRxIpV6FramesG        = 0x0224,   /*Good IPV6 datagrams received                              */
+    GmacMmcRxIpV6HdrErrFrames   = 0x0228,   /*Number of IPV6 datagrams received with header errors                  */
+    GmacMmcRxIpV6NoPayFrames    = 0x022C,   /*Number of IPV6 datagrams received which didnot have TCP/UDP/ICMP payload      */
+
+    GmacMmcRxUdpFramesG     = 0x0230,   /*Number of good IP datagrams with good UDP payload                 */
+    GmacMmcRxUdpErrorFrames     = 0x0234,   /*Number of good IP datagrams with UDP payload having checksum error            */
+
+    GmacMmcRxTcpFramesG     = 0x0238,   /*Number of good IP datagrams with good TDP payload                 */
+    GmacMmcRxTcpErrorFrames     = 0x023C,   /*Number of good IP datagrams with TCP payload having checksum error            */
+
+    GmacMmcRxIcmpFramesG        = 0x0240,   /*Number of good IP datagrams with good Icmp payload                    */
+    GmacMmcRxIcmpErrorFrames    = 0x0244,   /*Number of good IP datagrams with Icmp payload having checksum error           */
+
+    GmacMmcRxIpV4OctetsG        = 0x0250,   /*Good IPV4 datagrams received excl. Ethernet hdr,FCS,Pad,Ip Pad bytes          */
+    GmacMmcRxIpV4HdrErrorOctets = 0x0254,   /*Number of bytes in IPV4 datagram with header errors                   */
+    GmacMmcRxIpV4NoPayOctets    = 0x0258,   /*Number of bytes in IPV4 datagram with no TCP/UDP/ICMP payload             */
+    GmacMmcRxIpV4FragOctets     = 0x025C,   /*Number of bytes received in fragmented IPV4 datagrams                 */
+    GmacMmcRxIpV4UdpChkDsblOctets   = 0x0260,   /*Number of bytes received in UDP segment that had UDP checksum disabled        */
+
+    GmacMmcRxIpV6OctetsG        = 0x0264,   /*Good IPV6 datagrams received excl. Ethernet hdr,FCS,Pad,Ip Pad bytes          */
+    GmacMmcRxIpV6HdrErrorOctets = 0x0268,   /*Number of bytes in IPV6 datagram with header errors                   */
+    GmacMmcRxIpV6NoPayOctets    = 0x026C,   /*Number of bytes in IPV6 datagram with no TCP/UDP/ICMP payload             */
+
+    GmacMmcRxUdpOctetsG     = 0x0270,   /*Number of bytes in IP datagrams with good UDP payload                 */
+    GmacMmcRxUdpErrorOctets     = 0x0274,   /*Number of bytes in IP datagrams with UDP payload having checksum error        */
+
+    GmacMmcRxTcpOctetsG     = 0x0278,   /*Number of bytes in IP datagrams with good TDP payload                 */
+    GmacMmcRxTcpErrorOctets     = 0x027C,   /*Number of bytes in IP datagrams with TCP payload having checksum error        */
+
+    GmacMmcRxIcmpOctetsG        = 0x0280,   /*Number of bytes in IP datagrams with good Icmp payload                */
+    GmacMmcRxIcmpErrorOctets    = 0x0284,   /*Number of bytes in IP datagrams with Icmp payload having checksum error       */
+};
+
+
+enum MMC_CNTRL_REG_BIT_DESCRIPTIONS
+{
+    GmacMmcCounterFreeze        = 0x00000008,       /* when set MMC counters freeze to current value                */
+    GmacMmcCounterResetOnRead   = 0x00000004,       /* when set MMC counters will be reset to 0 after read              */
+    GmacMmcCounterStopRollover  = 0x00000002,       /* when set counters will not rollover after max value              */
+    GmacMmcCounterReset     = 0x00000001,       /* when set all counters wil be reset (automatically cleared after 1 clk)   */
+
+};
+
+enum MMC_RX_INTR_MASK_AND_STATUS_BIT_DESCRIPTIONS
+{
+    GmacMmcRxWDInt          = 0x00800000,       /* set when rxwatchdog error reaches half of max value              */
+    GmacMmcRxVlanInt        = 0x00400000,       /* set when GmacMmcRxVlanFramesGb counter reaches half of max value     */
+    GmacMmcRxFifoOverFlowInt    = 0x00200000,       /* set when GmacMmcRxFifoOverFlow counter reaches half of max value     */
+    GmacMmcRxPauseFrameInt      = 0x00100000,       /* set when GmacMmcRxPauseFrames counter reaches half of max value      */
+    GmacMmcRxOutOfRangeInt      = 0x00080000,       /* set when GmacMmcRxOutOfRangeType counter reaches half of max value       */
+    GmacMmcRxLengthErrorInt     = 0x00040000,       /* set when GmacMmcRxLengthError counter reaches half of max value      */
+    GmacMmcRxUcFramesInt        = 0x00020000,       /* set when GmacMmcRxUcFramesG counter reaches half of max value        */
+    GmacMmcRx1024OctInt     = 0x00010000,       /* set when GmacMmcRx1024ToMaxOctetsGb counter reaches half of max value    */
+    GmacMmcRx512OctInt      = 0x00008000,       /* set when GmacMmcRx512To1023OctetsGb counter reaches half of max value    */
+    GmacMmcRx256OctInt      = 0x00004000,       /* set when GmacMmcRx256To511OctetsGb counter reaches half of max value     */
+    GmacMmcRx128OctInt      = 0x00002000,       /* set when GmacMmcRx128To255OctetsGb counter reaches half of max value     */
+    GmacMmcRx65OctInt       = 0x00001000,       /* set when GmacMmcRx65To127OctetsG counter reaches half of max value       */
+    GmacMmcRx64OctInt       = 0x00000800,       /* set when GmacMmcRx64OctetsGb counter reaches half of max value       */
+    GmacMmcRxOverSizeInt        = 0x00000400,       /* set when GmacMmcRxOverSizeG counter reaches half of max value        */
+    GmacMmcRxUnderSizeInt       = 0x00000200,       /* set when GmacMmcRxUnderSizeG counter reaches half of max value       */
+    GmacMmcRxJabberErrorInt     = 0x00000100,       /* set when GmacMmcRxJabberError counter reaches half of max value      */
+    GmacMmcRxRuntErrorInt       = 0x00000080,       /* set when GmacMmcRxRuntError counter reaches half of max value        */
+    GmacMmcRxAlignErrorInt      = 0x00000040,       /* set when GmacMmcRxAlignError counter reaches half of max value       */
+    GmacMmcRxCrcErrorInt        = 0x00000020,       /* set when GmacMmcRxCrcError counter reaches half of max value         */
+    GmacMmcRxMcFramesInt        = 0x00000010,       /* set when GmacMmcRxMcFramesG counter reaches half of max value        */
+    GmacMmcRxBcFramesInt        = 0x00000008,       /* set when GmacMmcRxBcFramesG counter reaches half of max value        */
+    GmacMmcRxOctetGInt      = 0x00000004,       /* set when GmacMmcRxOctetCountG counter reaches half of max value      */
+    GmacMmcRxOctetGbInt     = 0x00000002,       /* set when GmacMmcRxOctetCountGb counter reaches half of max value     */
+    GmacMmcRxFrameInt       = 0x00000001,       /* set when GmacMmcRxFrameCountGb counter reaches half of max value     */
+};
+
+enum MMC_TX_INTR_MASK_AND_STATUS_BIT_DESCRIPTIONS
+{
+
+    GmacMmcTxVlanInt        = 0x01000000,       /* set when GmacMmcTxVlanFramesG counter reaches half of max value      */
+    GmacMmcTxPauseFrameInt      = 0x00800000,       /* set when GmacMmcTxPauseFrames counter reaches half of max value      */
+    GmacMmcTxExessDefInt        = 0x00400000,       /* set when GmacMmcTxExessDef counter reaches half of max value         */
+    GmacMmcTxFrameInt       = 0x00200000,       /* set when GmacMmcTxFrameCount counter reaches half of max value       */
+    GmacMmcTxOctetInt       = 0x00100000,       /* set when GmacMmcTxOctetCountG counter reaches half of max value      */
+    GmacMmcTxCarrierErrorInt    = 0x00080000,       /* set when GmacMmcTxCarrierError counter reaches half of max value     */
+    GmacMmcTxExessColInt        = 0x00040000,       /* set when GmacMmcTxExessCol counter reaches half of max value         */
+    GmacMmcTxLateColInt     = 0x00020000,       /* set when GmacMmcTxLateCol counter reaches half of max value          */
+    GmacMmcTxDeferredInt        = 0x00010000,       /* set when GmacMmcTxDeferred counter reaches half of max value         */
+    GmacMmcTxMultiColInt        = 0x00008000,       /* set when GmacMmcTxMultiColG counter reaches half of max value        */
+    GmacMmcTxSingleCol      = 0x00004000,       /* set when GmacMmcTxSingleColG counter reaches half of max value       */
+    GmacMmcTxUnderFlowErrorInt  = 0x00002000,       /* set when GmacMmcTxUnderFlowError counter reaches half of max value       */
+    GmacMmcTxBcFramesGbInt      = 0x00001000,       /* set when GmacMmcTxBcFramesGb counter reaches half of max value       */
+    GmacMmcTxMcFramesGbInt      = 0x00000800,       /* set when GmacMmcTxMcFramesGb counter reaches half of max value       */
+    GmacMmcTxUcFramesInt        = 0x00000400,       /* set when GmacMmcTxUcFramesGb counter reaches half of max value       */
+    GmacMmcTx1024OctInt         = 0x00000200,       /* set when GmacMmcTx1024ToMaxOctetsGb counter reaches half of max value    */
+    GmacMmcTx512OctInt      = 0x00000100,       /* set when GmacMmcTx512To1023OctetsGb counter reaches half of max value    */
+    GmacMmcTx256OctInt      = 0x00000080,       /* set when GmacMmcTx256To511OctetsGb counter reaches half of max value     */
+    GmacMmcTx128OctInt      = 0x00000040,       /* set when GmacMmcTx128To255OctetsGb counter reaches half of max value     */
+    GmacMmcTx65OctInt       = 0x00000020,       /* set when GmacMmcTx65To127OctetsGb counter reaches half of max value      */
+    GmacMmcTx64OctInt       = 0x00000010,       /* set when GmacMmcTx64OctetsGb counter reaches half of max value       */
+    GmacMmcTxMcFramesInt        = 0x00000008,       /* set when GmacMmcTxMcFramesG counter reaches half of max value        */
+    GmacMmcTxBcFramesInt        = 0x00000004,       /* set when GmacMmcTxBcFramesG counter reaches half of max value        */
+    GmacMmcTxFrameGbInt         = 0x00000002,       /* set when GmacMmcTxFrameCountGb counter reaches half of max value     */
+    GmacMmcTxOctetGbInt         = 0x00000001,       /* set when GmacMmcTxOctetCountGb counter reaches half of max value     */
+
+};
 
 
 /**********************************************************
@@ -1137,7 +1347,8 @@ enum InitialRegisters {
 
 #define WAKEUP_REG_LENGTH   8               /*This is the reg length for wake up register configuration*/
 
-enum GmacPmtCtrlStatusBitDefinition {
+enum GmacPmtCtrlStatusBitDefinition
+{
     GmacPmtFrmFilterPtrReset    = 0x80000000,       /* when set remote wake-up frame filter register pointer to 3'b000 */
     GmacPmtGlobalUnicast        = 0x00000200,       /* When set enables any unicast packet to be a wake-up frame       */
     GmacPmtWakeupFrameReceived  = 0x00000040,       /* Wake up frame received                      */
@@ -1153,7 +1364,8 @@ enum GmacPmtCtrlStatusBitDefinition {
 /**********************************************************
  * IEEE 1588-2008 Precision Time Protocol (PTP) Support
  **********************************************************/
-enum PTPMessageType {
+enum PTPMessageType
+{
     SYNC               = 0x0,
     Delay_Req          = 0x1,
     Pdelay_Req             = 0x2,
@@ -1168,7 +1380,8 @@ enum PTPMessageType {
 
 
 
-typedef struct TimeStampStruct {
+typedef struct TimeStampStruct
+{
     u32   TSversion;      /* PTP Version 1 or PTP version2                                                                          */
     u32   TSmessagetype;  /* Message type associated with this time stamp                                                           */
 
@@ -1190,7 +1403,8 @@ typedef struct TimeStampStruct {
   */
 
 /* GmacTSControl  = 0x0700,   Controls the Timestamp update logic  : only when IEEE 1588 time stamping is enabled in corekit         */
-enum GmacTSControlReg {
+enum GmacTSControlReg
+{
     GmacTSENMACADDR   = 0x00040000,     /* Enable Mac Addr for PTP filtering     18            RW         0     */
 
     GmacTSCLKTYPE         = 0x00030000,     /* Select the type of clock node         17:16         RW         00    */
@@ -1235,28 +1449,33 @@ enum GmacTSControlReg {
 
 
 /*  GmacTSSubSecIncr          = 0x0704,   8 bit value by which sub second register is incremented     : only when IEEE 1588 time stamping without external timestamp input */
-enum GmacTSSubSecIncrReg {
+enum GmacTSSubSecIncrReg
+{
     GmacSSINCMsk            = 0x000000FF,       /* Only Lower 8 bits are valid bits     7:0           RW         00    */
 };
 
 /*  GmacTSLow         = 0x070C,   Indicates whether the timestamp low count is positive or negative; for Adv timestamp it is always zero */
-enum GmacTSSign {
+enum GmacTSSign
+{
     GmacTSSign              = 0x80000000,      /* PSNT                                  31            RW          0    */
     GmacTSPositive          = 0x00000000,
     GmacTSNegative          = 0x80000000,
 };
 
 /*GmacTargetTimeLow       = 0x0718,   32 bit nano seconds(MS) to be compared with system time     : only when IEEE 1588 time stamping without external timestamp input */
-enum GmacTSLowReg {
+enum GmacTSLowReg
+{
     GmacTSDecThr            = 0x3B9AC9FF,      /*when TSCTRLSSR is set the max value for GmacTargetTimeLowReg and GmacTimeStampLow register is 0x3B9AC9FF at 1ns precision       */
 };
 
 /* GmacTSHighWord          = 0x0724,   Time Stamp Higher Word Register (Version 2 only); only lower 16 bits are valid                                                   */
-enum GmacTSHighWordReg {
+enum GmacTSHighWordReg
+{
     GmacTSHighWordMask      = 0x0000FFFF,     /* Time Stamp Higher work register has only lower 16 bits valid           */
 };
 /*GmacTSStatus            = 0x0728,   Time Stamp Status Register                                                                                                       */
-enum GmacTSStatusReg {
+enum GmacTSStatusReg
+{
     GmacTSTargTimeReached   = 0x00000002,     /* Time Stamp Target Time Reached          1             RO          0    */
     GmacTSSecondsOverflow   = 0x00000001,     /* Time Stamp Seconds Overflow             0             RO          0    */
 };
@@ -1300,94 +1519,94 @@ void synopGMAC_TS_coarse_update(synopGMACdevice *gmacdev);          // Only if "
 void synopGMAC_TS_fine_update(synopGMACdevice *gmacdev);            // Only if "fine correction" enabled
 
 void synopGMAC_TS_subsecond_init(synopGMACdevice *gmacdev, u32 sub_sec_inc_val); // Update should happen making use of subsecond mask
-void synopGMAC_TS_read_timestamp(synopGMACdevice *gmacdev, u16 * higher_sec_val,
-                                 u32 * sec_val, u32 *  sub_sec_val);                   // Reads the timestamp low,high and higher(Ver2) registers in the the struct pointer; readonly contents
+void synopGMAC_TS_read_timestamp(synopGMACdevice *gmacdev, u16 *higher_sec_val,
+                                 u32 *sec_val, u32   *sub_sec_val);                    // Reads the timestamp low,high and higher(Ver2) registers in the the struct pointer; readonly contents
 void synopGMAC_TS_load_target_timestamp(synopGMACdevice *gmacdev, u32 sec_val, u32 sub_sec_val); //Loads the timestamp target register with the values provided
 
 void synopGMAC_TS_load_timestamp_higher_val(synopGMACdevice *gmacdev, u32 higher_sec_val);
-void synopGMAC_TS_read_timestamp_higher_val(synopGMACdevice *gmacdev, u16 * higher_sec_val);
-void synopGMAC_TS_read_target_timestamp(synopGMACdevice *gmacdev, u32 * sec_val, u32 * sub_sec_val); //Read the target time stamp register contents
+void synopGMAC_TS_read_timestamp_higher_val(synopGMACdevice *gmacdev, u16 *higher_sec_val);
+void synopGMAC_TS_read_target_timestamp(synopGMACdevice *gmacdev, u32 *sec_val, u32 *sub_sec_val);   //Read the target time stamp register contents
 
 
 /**********************************************************
  * Common functions
  **********************************************************/
-s32 synopGMAC_set_mdc_clk_div(synopGMACdevice *gmacdev,u32 clk_div_val);
+s32 synopGMAC_set_mdc_clk_div(synopGMACdevice *gmacdev, u32 clk_div_val);
 u32 synopGMAC_get_mdc_clk_div(synopGMACdevice *gmacdev);
-s32 synopGMAC_read_phy_reg(u32 *RegBase,u32 PhyBase, u32 RegOffset, u16 * data);
-s32 synopGMAC_write_phy_reg(u32 *RegBase, u32 PhyBase, u32 RegOffset, u16 data);
+s32 synopGMAC_read_phy_reg(u32 RegBase, u32 PhyBase, u32 RegOffset, u16 *data);
+s32 synopGMAC_write_phy_reg(u32 RegBase, u32 PhyBase, u32 RegOffset, u16 data);
 s32 synopGMAC_phy_loopback(synopGMACdevice *gmacdev, bool loopback);
-s32 synopGMAC_read_version (synopGMACdevice * gmacdev) ;
-s32 synopGMAC_reset (synopGMACdevice * gmacdev );
-s32 synopGMAC_reset_nocheck (synopGMACdevice * gmacdev );
-s32 synopGMAC_dma_bus_mode_init(synopGMACdevice * gmacdev, u32 init_value );
-s32 synopGMAC_dma_control_init(synopGMACdevice * gmacdev, u32 init_value);
-void synopGMAC_wd_enable(synopGMACdevice * gmacdev);
-void synopGMAC_wd_disable(synopGMACdevice * gmacdev);
-void synopGMAC_jab_enable(synopGMACdevice * gmacdev);
-void synopGMAC_jab_disable(synopGMACdevice * gmacdev);
-void synopGMAC_frame_burst_enable(synopGMACdevice * gmacdev);
-void synopGMAC_frame_burst_disable(synopGMACdevice * gmacdev);
-void synopGMAC_jumbo_frame_enable(synopGMACdevice * gmacdev);
-void synopGMAC_jumbo_frame_disable(synopGMACdevice * gmacdev);
-void synopGMAC_select_gmii(synopGMACdevice * gmacdev);
-void synopGMAC_select_mii(synopGMACdevice * gmacdev);
-void synopGMAC_rx_own_enable(synopGMACdevice * gmacdev);
-void synopGMAC_rx_own_disable(synopGMACdevice * gmacdev);
-void synopGMAC_loopback_on(synopGMACdevice * gmacdev);
-void synopGMAC_loopback_off(synopGMACdevice * gmacdev);
-void synopGMAC_set_full_duplex(synopGMACdevice * gmacdev);
-void synopGMAC_set_half_duplex(synopGMACdevice * gmacdev);
-void synopGMAC_retry_enable(synopGMACdevice * gmacdev);
-void synopGMAC_retry_disable(synopGMACdevice * gmacdev);
-void synopGMAC_pad_crc_strip_enable(synopGMACdevice * gmacdev);
-void synopGMAC_pad_crc_strip_disable(synopGMACdevice * gmacdev);
-void synopGMAC_back_off_limit(synopGMACdevice * gmacdev, u32 value);
-void synopGMAC_deferral_check_enable(synopGMACdevice * gmacdev);
-void synopGMAC_deferral_check_disable(synopGMACdevice * gmacdev);
-void synopGMAC_rx_enable(synopGMACdevice * gmacdev);
-void synopGMAC_rx_disable(synopGMACdevice * gmacdev);
-void synopGMAC_tx_enable(synopGMACdevice * gmacdev);
-void synopGMAC_tx_disable(synopGMACdevice * gmacdev);
-void synopGMAC_frame_filter_enable(synopGMACdevice * gmacdev);
-void synopGMAC_frame_filter_disable(synopGMACdevice * gmacdev);
-void synopGMAC_write_hash_table_high(synopGMACdevice * gmacdev, u32 data);
-void synopGMAC_write_hash_table_low(synopGMACdevice * gmacdev, u32 data);
-void synopGMAC_hash_perfect_filter_enable(synopGMACdevice * gmacdev);
-void synopGMAC_Hash_filter_only_enable(synopGMACdevice * gmacdev);
-void synopGMAC_src_addr_filter_enable(synopGMACdevice * gmacdev);
-void synopGMAC_src_addr_filter_disable(synopGMACdevice * gmacdev);
-void synopGMAC_dst_addr_filter_inverse(synopGMACdevice * gmacdev);
-void synopGMAC_dst_addr_filter_normal(synopGMACdevice * gmacdev);
-void synopGMAC_set_pass_control(synopGMACdevice * gmacdev,u32 passcontrol);
-void synopGMAC_broadcast_enable(synopGMACdevice * gmacdev);
-void synopGMAC_broadcast_disable(synopGMACdevice * gmacdev);
-void synopGMAC_multicast_enable(synopGMACdevice * gmacdev);
-void synopGMAC_multicast_disable(synopGMACdevice * gmacdev);
-void synopGMAC_multicast_hash_filter_enable(synopGMACdevice * gmacdev);
-void synopGMAC_multicast_hash_filter_disable(synopGMACdevice * gmacdev);
-void synopGMAC_promisc_enable(synopGMACdevice * gmacdev);
-void synopGMAC_promisc_disable(synopGMACdevice * gmacdev);
-void synopGMAC_unicast_hash_filter_enable(synopGMACdevice * gmacdev);
-void synopGMAC_unicast_hash_filter_disable(synopGMACdevice * gmacdev);
-void synopGMAC_unicast_pause_frame_detect_enable(synopGMACdevice * gmacdev);
-void synopGMAC_unicast_pause_frame_detect_disable(synopGMACdevice * gmacdev);
-void synopGMAC_rx_flow_control_enable(synopGMACdevice * gmacdev);
-void synopGMAC_rx_flow_control_disable(synopGMACdevice * gmacdev);
-void synopGMAC_tx_flow_control_enable(synopGMACdevice * gmacdev);
-void synopGMAC_tx_flow_control_disable(synopGMACdevice * gmacdev);
-void synopGMAC_tx_activate_flow_control(synopGMACdevice * gmacdev);
-void synopGMAC_tx_deactivate_flow_control(synopGMACdevice * gmacdev);
+s32 synopGMAC_read_version(synopGMACdevice *gmacdev) ;
+s32 synopGMAC_reset(synopGMACdevice *gmacdev);
+s32 synopGMAC_reset_nocheck(synopGMACdevice *gmacdev);
+s32 synopGMAC_dma_bus_mode_init(synopGMACdevice *gmacdev, u32 init_value);
+s32 synopGMAC_dma_control_init(synopGMACdevice *gmacdev, u32 init_value);
+void synopGMAC_wd_enable(synopGMACdevice *gmacdev);
+void synopGMAC_wd_disable(synopGMACdevice *gmacdev);
+void synopGMAC_jab_enable(synopGMACdevice *gmacdev);
+void synopGMAC_jab_disable(synopGMACdevice *gmacdev);
+void synopGMAC_frame_burst_enable(synopGMACdevice *gmacdev);
+void synopGMAC_frame_burst_disable(synopGMACdevice *gmacdev);
+void synopGMAC_jumbo_frame_enable(synopGMACdevice *gmacdev);
+void synopGMAC_jumbo_frame_disable(synopGMACdevice *gmacdev);
+void synopGMAC_select_gmii(synopGMACdevice *gmacdev);
+void synopGMAC_select_mii(synopGMACdevice *gmacdev);
+void synopGMAC_rx_own_enable(synopGMACdevice *gmacdev);
+void synopGMAC_rx_own_disable(synopGMACdevice *gmacdev);
+void synopGMAC_loopback_on(synopGMACdevice *gmacdev);
+void synopGMAC_loopback_off(synopGMACdevice *gmacdev);
+void synopGMAC_set_full_duplex(synopGMACdevice *gmacdev);
+void synopGMAC_set_half_duplex(synopGMACdevice *gmacdev);
+void synopGMAC_retry_enable(synopGMACdevice *gmacdev);
+void synopGMAC_retry_disable(synopGMACdevice *gmacdev);
+void synopGMAC_pad_crc_strip_enable(synopGMACdevice *gmacdev);
+void synopGMAC_pad_crc_strip_disable(synopGMACdevice *gmacdev);
+void synopGMAC_back_off_limit(synopGMACdevice *gmacdev, u32 value);
+void synopGMAC_deferral_check_enable(synopGMACdevice *gmacdev);
+void synopGMAC_deferral_check_disable(synopGMACdevice *gmacdev);
+void synopGMAC_rx_enable(synopGMACdevice *gmacdev);
+void synopGMAC_rx_disable(synopGMACdevice *gmacdev);
+void synopGMAC_tx_enable(synopGMACdevice *gmacdev);
+void synopGMAC_tx_disable(synopGMACdevice *gmacdev);
+void synopGMAC_frame_filter_enable(synopGMACdevice *gmacdev);
+void synopGMAC_frame_filter_disable(synopGMACdevice *gmacdev);
+void synopGMAC_write_hash_table_high(synopGMACdevice *gmacdev, u32 data);
+void synopGMAC_write_hash_table_low(synopGMACdevice *gmacdev, u32 data);
+void synopGMAC_hash_perfect_filter_enable(synopGMACdevice *gmacdev);
+void synopGMAC_Hash_filter_only_enable(synopGMACdevice *gmacdev);
+void synopGMAC_src_addr_filter_enable(synopGMACdevice *gmacdev);
+void synopGMAC_src_addr_filter_disable(synopGMACdevice *gmacdev);
+void synopGMAC_dst_addr_filter_inverse(synopGMACdevice *gmacdev);
+void synopGMAC_dst_addr_filter_normal(synopGMACdevice *gmacdev);
+void synopGMAC_set_pass_control(synopGMACdevice *gmacdev, u32 passcontrol);
+void synopGMAC_broadcast_enable(synopGMACdevice *gmacdev);
+void synopGMAC_broadcast_disable(synopGMACdevice *gmacdev);
+void synopGMAC_multicast_enable(synopGMACdevice *gmacdev);
+void synopGMAC_multicast_disable(synopGMACdevice *gmacdev);
+void synopGMAC_multicast_hash_filter_enable(synopGMACdevice *gmacdev);
+void synopGMAC_multicast_hash_filter_disable(synopGMACdevice *gmacdev);
+void synopGMAC_promisc_enable(synopGMACdevice *gmacdev);
+void synopGMAC_promisc_disable(synopGMACdevice *gmacdev);
+void synopGMAC_unicast_hash_filter_enable(synopGMACdevice *gmacdev);
+void synopGMAC_unicast_hash_filter_disable(synopGMACdevice *gmacdev);
+void synopGMAC_unicast_pause_frame_detect_enable(synopGMACdevice *gmacdev);
+void synopGMAC_unicast_pause_frame_detect_disable(synopGMACdevice *gmacdev);
+void synopGMAC_rx_flow_control_enable(synopGMACdevice *gmacdev);
+void synopGMAC_rx_flow_control_disable(synopGMACdevice *gmacdev);
+void synopGMAC_tx_flow_control_enable(synopGMACdevice *gmacdev);
+void synopGMAC_tx_flow_control_disable(synopGMACdevice *gmacdev);
+void synopGMAC_tx_activate_flow_control(synopGMACdevice *gmacdev);
+void synopGMAC_tx_deactivate_flow_control(synopGMACdevice *gmacdev);
 void synopGMAC_pause_control(synopGMACdevice *gmacdev);
-s32 synopGMAC_mac_init(synopGMACdevice * gmacdev);
-s32 synopGMAC_check_phy_init (synopGMACdevice * gmacdev);
+s32 synopGMAC_mac_init(synopGMACdevice *gmacdev);
+//s32 synopGMAC_check_phy_init (synopGMACdevice * gmacdev);
 s32 synopGMAC_set_mac_addr(synopGMACdevice *gmacdev, u32 MacHigh, u32 MacLow, u8 *MacAddr);
 s32 synopGMAC_get_mac_addr(synopGMACdevice *gmacdev, u32 MacHigh, u32 MacLow, u8 *MacAddr);
-s32 synopGMAC_attach (synopGMACdevice * gmacdev, u32 macBase, u32 dmaBase, u32 phyBase);
+s32 synopGMAC_attach(synopGMACdevice *gmacdev, u32 macBase, u32 dmaBase, u32 phyBase, u8 *mac_addr);
 void synopGMAC_rx_desc_init_ring(DmaDesc *desc, bool last_ring_desc);
 void synopGMAC_tx_desc_init_ring(DmaDesc *desc, bool last_ring_desc);
-void synopGMAC_rx_desc_init_chain(DmaDesc * desc);
-void synopGMAC_tx_desc_init_chain(DmaDesc * desc);
+void synopGMAC_rx_desc_init_chain(DmaDesc *desc);
+void synopGMAC_tx_desc_init_chain(DmaDesc *desc);
 s32 synopGMAC_init_tx_rx_desc_queue(synopGMACdevice *gmacdev);
 void synopGMAC_init_rx_desc_base(synopGMACdevice *gmacdev);
 void synopGMAC_init_tx_desc_base(synopGMACdevice *gmacdev);
@@ -1412,18 +1631,18 @@ bool synopGMAC_is_rx_frame_collision(u32 status);
 bool synopGMAC_is_rx_crc(u32 status);
 bool synopGMAC_is_frame_dribbling_errors(u32 status);
 bool synopGMAC_is_rx_frame_length_errors(u32 status);
-bool synopGMAC_is_last_rx_desc(synopGMACdevice * gmacdev,DmaDesc *desc);
-bool synopGMAC_is_last_tx_desc(synopGMACdevice * gmacdev,DmaDesc *desc);
-bool synopGMAC_is_rx_desc_chained(DmaDesc * desc);
-bool synopGMAC_is_tx_desc_chained(DmaDesc * desc);
-void synopGMAC_get_desc_data(DmaDesc * desc, u32 * Status, u32 * Buffer1, u32 * Length1, u32 * Data1);
+bool synopGMAC_is_last_rx_desc(synopGMACdevice *gmacdev, DmaDesc *desc);
+bool synopGMAC_is_last_tx_desc(synopGMACdevice *gmacdev, DmaDesc *desc);
+bool synopGMAC_is_rx_desc_chained(DmaDesc *desc);
+bool synopGMAC_is_tx_desc_chained(DmaDesc *desc);
+void synopGMAC_get_desc_data(DmaDesc *desc, u32 *Status, u32 *Buffer1, u32 *Length1, u32 *Data1);
 
-s32 synopGMAC_get_tx_qptr(synopGMACdevice * gmacdev, u32 * Status, u32 * Buffer1, u32 * Length1, u32 * Data1, u32 * Ext_Status, u32 * Time_Stamp_High, u32 * Time_Stamp_low);
+s32 synopGMAC_get_tx_qptr(synopGMACdevice *gmacdev, u32 *Status, u32 *Buffer1, u32 *Length1, u32 *Data1, u32 *Ext_Status, u32 *Time_Stamp_High, u32 *Time_Stamp_low);
 
-s32 synopGMAC_set_tx_qptr(synopGMACdevice * gmacdev, u32 Buffer1, u32 Length1, u32 Data1, u32 offload_needed, u32 ts);
-s32 synopGMAC_set_rx_qptr(synopGMACdevice * gmacdev, u32 Buffer1, u32 Length1, u32 Data1);
+s32 synopGMAC_set_tx_qptr(synopGMACdevice *gmacdev, u32 Buffer1, u32 Length1, u32 Data1, u32 offload_needed, u32 ts);
+s32 synopGMAC_set_rx_qptr(synopGMACdevice *gmacdev, u32 Buffer1, u32 Length1, u32 Data1);
 
-s32 synopGMAC_get_rx_qptr(synopGMACdevice * gmacdev, u32 * Status, u32 * Buffer1, u32 * Length1, u32 * Data1, u32 * Ext_Status, u32 * Time_Stamp_High, u32 * Time_Stamp_low);
+s32 synopGMAC_get_rx_qptr(synopGMACdevice *gmacdev, u32 *Status, u32 *Buffer1, u32 *Length1, u32 *Data1, u32 *Ext_Status, u32 *Time_Stamp_High, u32 *Time_Stamp_low);
 
 void synopGMAC_clear_interrupt(synopGMACdevice *gmacdev);
 u32 synopGMAC_get_interrupt_type(synopGMACdevice *gmacdev);
@@ -1431,20 +1650,20 @@ u32 synopGMAC_get_interrupt_mask(synopGMACdevice *gmacdev);
 void synopGMAC_enable_interrupt(synopGMACdevice *gmacdev, u32 interrupts);
 void synopGMAC_disable_interrupt_all(synopGMACdevice *gmacdev);
 void synopGMAC_disable_interrupt(synopGMACdevice *gmacdev, u32 interrupts);
-void synopGMAC_enable_dma_rx(synopGMACdevice * gmacdev);
-void synopGMAC_enable_dma_tx(synopGMACdevice * gmacdev);
-void synopGMAC_resume_dma_tx(synopGMACdevice * gmacdev);
-void synopGMAC_resume_dma_rx(synopGMACdevice * gmacdev);
-void synopGMAC_take_desc_ownership(DmaDesc * desc);
-void synopGMAC_take_desc_ownership_rx(synopGMACdevice * gmacdev);
-void synopGMAC_take_desc_ownership_tx(synopGMACdevice * gmacdev);
-void synopGMAC_disable_dma_tx(synopGMACdevice * gmacdev);
-void synopGMAC_disable_dma_rx(synopGMACdevice * gmacdev);
+void synopGMAC_enable_dma_rx(synopGMACdevice *gmacdev);
+void synopGMAC_enable_dma_tx(synopGMACdevice *gmacdev);
+void synopGMAC_resume_dma_tx(synopGMACdevice *gmacdev);
+void synopGMAC_resume_dma_rx(synopGMACdevice *gmacdev);
+void synopGMAC_take_desc_ownership(DmaDesc *desc);
+void synopGMAC_take_desc_ownership_rx(synopGMACdevice *gmacdev);
+void synopGMAC_take_desc_ownership_tx(synopGMACdevice *gmacdev);
+void synopGMAC_disable_dma_tx(synopGMACdevice *gmacdev);
+void synopGMAC_disable_dma_rx(synopGMACdevice *gmacdev);
 /******Following APIs are valid only for Enhanced Descriptor from 3.50a release onwards*******/
-bool synopGMAC_is_ext_status(synopGMACdevice *gmacdev,u32 status);
-bool synopGMAC_ES_is_IP_header_error(synopGMACdevice *gmacdev,u32 ext_status);
-bool synopGMAC_ES_is_rx_checksum_bypassed(synopGMACdevice *gmacdev,u32 ext_status);
-bool synopGMAC_ES_is_IP_payload_error(synopGMACdevice *gmacdev,u32 ext_status);
+bool synopGMAC_is_ext_status(synopGMACdevice *gmacdev, u32 status);
+bool synopGMAC_ES_is_IP_header_error(synopGMACdevice *gmacdev, u32 ext_status);
+bool synopGMAC_ES_is_rx_checksum_bypassed(synopGMACdevice *gmacdev, u32 ext_status);
+bool synopGMAC_ES_is_IP_payload_error(synopGMACdevice *gmacdev, u32 ext_status);
 /*******************PMT APIs***************************************/
 void synopGMAC_pmt_int_enable(synopGMACdevice *gmacdev);
 void synopGMAC_pmt_int_disable(synopGMACdevice *gmacdev);
@@ -1458,7 +1677,7 @@ void synopGMAC_wakeup_frame_enable(synopGMACdevice *gmacdev);
 void synopGMAC_pmt_unicast_enable(synopGMACdevice *gmacdev);
 bool synopGMAC_is_magic_packet_received(synopGMACdevice *gmacdev);
 bool synopGMAC_is_wakeup_frame_received(synopGMACdevice *gmacdev);
-void synopGMAC_write_wakeup_frame_register(synopGMACdevice *gmacdev, u32 * filter_contents);
+void synopGMAC_write_wakeup_frame_register(synopGMACdevice *gmacdev, u32 *filter_contents);
 
 /*******************Ip checksum offloading APIs***************************************/
 void synopGMAC_enable_rx_chksum_offload(synopGMACdevice *gmacdev);
@@ -1475,25 +1694,25 @@ void synopGMAC_tx_checksum_offload_tcp_pseudo(synopGMACdevice *gmacdev, DmaDesc 
 
 
 // For testing --ya
-void synopGMAC_src_addr_insert_enable(synopGMACdevice * gmacdev);
-void synopGMAC_src_addr_insert_disable(synopGMACdevice * gmacdev);
-void synopGMAC_src_addr_replace_enable(synopGMACdevice * gmacdev);
-void synopGMAC_src_addr_replace_disable(synopGMACdevice * gmacdev);
+void synopGMAC_src_addr_insert_enable(synopGMACdevice *gmacdev);
+void synopGMAC_src_addr_insert_disable(synopGMACdevice *gmacdev);
+void synopGMAC_src_addr_replace_enable(synopGMACdevice *gmacdev);
+void synopGMAC_src_addr_replace_disable(synopGMACdevice *gmacdev);
 
-void synopGMAC_svlan_insertion_enable(synopGMACdevice * gmacdev, u16 vlantag);
-void synopGMAC_cvlan_insertion_enable(synopGMACdevice * gmacdev, u16 vlantag);
-void synopGMAC_svlan_replace_enable(synopGMACdevice * gmacdev, u16 vlantag);
-void synopGMAC_cvlan_replace_enable(synopGMACdevice * gmacdev, u16 vlantag);
-void synopGMAC_vlan_deletion_enable(synopGMACdevice * gmacdev);
-void synopGMAC_vlan_no_act_enable(synopGMACdevice * gmacdev);
+void synopGMAC_svlan_insertion_enable(synopGMACdevice *gmacdev, u16 vlantag);
+void synopGMAC_cvlan_insertion_enable(synopGMACdevice *gmacdev, u16 vlantag);
+void synopGMAC_svlan_replace_enable(synopGMACdevice *gmacdev, u16 vlantag);
+void synopGMAC_cvlan_replace_enable(synopGMACdevice *gmacdev, u16 vlantag);
+void synopGMAC_vlan_deletion_enable(synopGMACdevice *gmacdev);
+void synopGMAC_vlan_no_act_enable(synopGMACdevice *gmacdev);
 
-void synopGMAC_set_crc_replacement(synopGMACdevice * gmacdev);
-void synopGMAC_clr_crc_replacement(synopGMACdevice * gmacdev);
+void synopGMAC_set_crc_replacement(synopGMACdevice *gmacdev);
+void synopGMAC_clr_crc_replacement(synopGMACdevice *gmacdev);
 
-void synopGMAC_enable_under_size_pkt(synopGMACdevice * gmacdev);
-void synopGMAC_disable_under_size_pkt(synopGMACdevice * gmacdev);
+void synopGMAC_enable_under_size_pkt(synopGMACdevice *gmacdev);
+void synopGMAC_disable_under_size_pkt(synopGMACdevice *gmacdev);
 
-void synopGMAC_enable_crc_err_pkt(synopGMACdevice * gmacdev);
-void synopGMAC_disable_crc_err_pkt(synopGMACdevice * gmacdev);
+void synopGMAC_enable_crc_err_pkt(synopGMACdevice *gmacdev);
+void synopGMAC_disable_crc_err_pkt(synopGMACdevice *gmacdev);
 
 #endif /* End of file */

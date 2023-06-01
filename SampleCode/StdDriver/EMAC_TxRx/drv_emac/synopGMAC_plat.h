@@ -55,8 +55,9 @@ typedef unsigned short  u16;        ///< Define 16-bit unsigned data type
 typedef unsigned int    u32;        ///< Define 32-bit unsigned data type
 typedef signed   int    s32;        ///< Define 32-bit signed data type
 //typedef unsigned long long u64;
-typedef unsigned int    u64;
+//typedef unsigned int    u64;
 
+typedef u32 *dma_addr_t;
 
 typedef int bool;
 enum synopGMAC_boolean {
@@ -66,14 +67,6 @@ enum synopGMAC_boolean {
 
 #define DEFAULT_DELAY_VARIABLE  10
 #define DEFAULT_LOOP_VARIABLE   10000
-
-/* There are platform related endian conversions
- *
- */
-
-#define LE32_TO_CPU __le32_to_cpu
-#define BE32_TO_CPU __be32_to_cpu
-#define CPU_TO_LE32 __cpu_to_le32
 
 /* Error Codes */
 #define ESYNOPGMACNOERR   0
@@ -85,100 +78,11 @@ enum synopGMAC_boolean {
 /**
   * These are the wrapper function prototypes for OS/platform related routines
   */
-
-extern void   plat_delay(uint32_t ticks);
-
-
-/**
- * The Low level function to read register contents from Hardware.
- *
- * @param[in] pointer to the base of register map
- * @param[in] Offset from the base
- * \return  Returns the register contents
- */
-static u32 __INLINE synopGMACReadReg(u32 *RegBase, u32 RegOffset)
-{
-
-    u64 addr = (u64)RegBase + RegOffset;
-    u32 data = inp32((void *)addr);
-    return data;
-
-}
-
-/**
- * The Low level function to write to a register in Hardware.
- *
- * @param[in] pointer to the base of register map
- * @param[in] Offset from the base
- * @param[in] Data to be written
- * \return  void
- */
-static void  __INLINE synopGMACWriteReg(u32 *RegBase, u32 RegOffset, u32 RegData)
-{
-
-    u64 addr = (u64)RegBase + RegOffset;
-    if(RegOffset == 0) // add 1us delay if minimum ECLK is 2.5MHz for write MAC configuration register
-        plat_delay(1);
-    outp32((void *)addr, RegData);
-    return;
-}
-
-/**
- * The Low level function to set bits of a register in Hardware.
- *
- * @param[in] pointer to the base of register map
- * @param[in] Offset from the base
- * @param[in] Bit mask to set bits to logical 1
- * \return  void
- */
-static void __INLINE synopGMACSetBits(u32 *RegBase, u32 RegOffset, u32 BitPos)
-{
-    u64 addr = (u64)RegBase + RegOffset;
-    u32 data = inp32((void *)addr);
-    data |= BitPos;
-
-    outp32((void *)addr, data);
-
-    return;
-}
-
-
-/**
- * The Low level function to clear bits of a register in Hardware.
- *
- * @param[in] pointer to the base of register map
- * @param[in] Offset from the base
- * @param[in] Bit mask to clear bits to logical 0
- * \return  void
- */
-static void __INLINE synopGMACClearBits(u32 *RegBase, u32 RegOffset, u32 BitPos)
-{
-    u64 addr = (u64)RegBase + RegOffset;
-    u32 data = inp32((void *)addr);
-    data &= (~BitPos);
-
-    outp32((void *)addr, data);
-    return;
-}
-
-/**
- * The Low level function to Check the setting of the bits.
- *
- * @param[in] pointer to the base of register map
- * @param[in] Offset from the base
- * @param[in] Bit mask to set bits to logical 1
- * \return  returns TRUE if set to '1' returns FALSE if set to '0'. Result undefined there are no bit set in the BitPos argument.
- *
- */
-static bool __INLINE synopGMACCheckBits(u32 *RegBase, u32 RegOffset, u32 BitPos)
-{
-    u64 addr = (u64)RegBase + RegOffset;
-    u32 data = inp32((void *)addr);
-    data &= BitPos;
-    if(data)  return true;
-    else        return false;
-
-}
-
+void plat_delay(u32 delay);
+u32  synopGMACReadReg(u32 RegBase, u32 RegOffset);
+void synopGMACWriteReg(u32 RegBase, u32 RegOffset, u32 RegData);
+void synopGMACSetBits(u32 RegBase, u32 RegOffset, u32 BitPos);
+void synopGMACClearBits(u32 RegBase, u32 RegOffset, u32 BitPos);
+bool synopGMACCheckBits(u32 RegBase, u32 RegOffset, u32 BitPos);
 
 #endif
