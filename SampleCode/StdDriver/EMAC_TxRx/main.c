@@ -3,6 +3,8 @@
  * @version  V3.00
  * @brief    This Ethernet sample tends to get a DHCP lease from DHCP server. 
  *           After IP address configured, this sample can reply to PING packets.
+ *		     This sample shows how to use EMAC driver to simply handle RX and TX packets,
+ *		     it is not suitable for performance and stress testing.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
