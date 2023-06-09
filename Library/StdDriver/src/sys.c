@@ -73,7 +73,7 @@ uint32_t SYS_GetResetSrc(void)
   * @brief      Check if register is locked or not
   * @param      None
   * @retval     0 Write-protection function is disabled.
-  *             1 Write-protection function is enabled.
+  * @retval     1 Write-protection function is enabled.
   * @details    This function check register write-protection bit setting.
   */
 uint32_t SYS_IsRegLocked(void)

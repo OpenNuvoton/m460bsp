@@ -5,7 +5,7 @@
  * $Date: 16/10/17 2:06p $
  * @brief
  *           Implement a code and execute in SRAM to program embedded Flash.
- *           (Support KEIL MDK Only)
+ *           (Support IAR)
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
@@ -103,13 +103,11 @@ int32_t main(void)
 
     /*
        This sample code is used to demonstrate how to implement a code to execute in SRAM.
-       By setting scatter loading file (scatter.scf),
-       RO code is placed to 0x20000000 ~ 0x20001fff with RW is placed to 0x20002000 ~ 0x20003fff.
     */
 
     /* SysTick used for test interrupts in SRAM */
     SysTick_Config(SystemCoreClock/1000);
-    
+
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -121,7 +119,7 @@ int32_t main(void)
 
     printf("Execute demo code in SRAM ==>\n");
 
-    func = (FUNC_PTR *)(SRAM_CODE_BASE + 1);
+    func = (FUNC_PTR *)(SRAM_CODE_EXE_ADDR + 1);
 
     func();   /* branch to exeinsram.o in SRAM  */
 
