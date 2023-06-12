@@ -24,19 +24,30 @@ static uint8_t s_au8XmdBuf[1030];
 */
 static int32_t XMD_Write(uint32_t u32Addr, uint32_t u32Data)
 {
+    uint32_t u32TimeOutCnt;
 
     FMC->ISPADDR = u32Addr;
     if((u32Addr & (FMC_FLASH_PAGE_SIZE - 1)) == 0)
     {
         FMC->ISPCMD = FMC_ISPCMD_PAGE_ERASE;
         FMC->ISPTRG = FMC_ISPTRG_ISPGO_Msk;
-        while(FMC->ISPTRG);
+        u32TimeOutCnt = FMC_TIMEOUT_ERASE;
+        while(FMC->ISPTRG)
+        {
+            if(--u32TimeOutCnt == 0)
+                return -1;
+        }
     }
 
     FMC->ISPDAT = u32Data;
     FMC->ISPCMD = FMC_ISPCMD_PROGRAM;
     FMC->ISPTRG = FMC_ISPTRG_ISPGO_Msk;
-    while(FMC->ISPTRG);
+    u32TimeOutCnt = FMC_TIMEOUT_WRITE;
+    while(FMC->ISPTRG)
+    {
+        if(--u32TimeOutCnt == 0)
+            return -1;
+    }
 
     return 0;
 }
@@ -54,25 +65,30 @@ static void XMD_putc(uint8_t c)
 static int32_t XMD_getc()
 {
     UART_T* pUART = UART0;
+    uint32_t u32ms = 0;
 
-    SysTick->LOAD = 100000 * CyclesPerUs;
-    SysTick->VAL  = (0x00);
-    SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
-
-    /* Waiting for down-count to zero */
-
-
-    while(pUART->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk)
+    /* Wait for 100ms */
+    while( u32ms < 100 )
     {
-        if((SysTick->CTRL & (1 << 16)) != 0)
-        {
-            SysTick->CTRL = 0;
-            return -1; // timeout
-        }
-    }
-    SysTick->CTRL = 0;
+        SysTick->CTRL = 0;
+        SysTick->LOAD = 1000 * CyclesPerUs; /* 1ms */
+        SysTick->VAL  = (0x0UL);
+        SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
 
-    return ((int32_t)pUART->DAT);
+        /* Waiting for down-count to zero */
+        while((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) == 0UL)
+        {
+           if( (pUART->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) != UART_FIFOSTS_RXEMPTY_Msk )
+           {
+               SysTick->CTRL = 0;
+               return ((int32_t)pUART->DAT);
+           }
+        }
+        u32ms++;
+    }
+
+    SysTick->CTRL = 0;
+    return -1; /* time-out */
 }
 
 static uint16_t crc16_ccitt(const uint8_t *pu8buf, int32_t i32len)
