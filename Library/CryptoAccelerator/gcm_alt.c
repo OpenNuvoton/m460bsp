@@ -548,7 +548,8 @@ int mbedtls_gcm_update( mbedtls_gcm_context *ctx,
 
 
     len_aligned = (len & 0xf)?(len & (~0xful))+16:len;
-
+    *output_length = len;
+    
     if(len == 0)
     {
         CRPT->AES_GCM_PCNT[0] = ctx->len;
