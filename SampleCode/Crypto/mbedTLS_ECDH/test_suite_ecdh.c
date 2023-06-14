@@ -1769,6 +1769,7 @@ int execute_tests( int argc , const char ** argv )
             mbedtls_fprintf( stdout, "%s%.66s",
                     mbedtls_test_info.result == MBEDTLS_TEST_RESULT_FAILED ?
                     "\n" : "", buf );
+            fflush( stdout );
             mbedtls_fprintf( stdout, " " );
             for( i = strlen( buf ) + 1; i < 67; i++ )
                 mbedtls_fprintf( stdout, "." );
@@ -1857,6 +1858,7 @@ int execute_tests( int argc , const char ** argv )
             {
                 total_skipped++;
                 mbedtls_fprintf( stdout, "----" );
+                fflush( stdout );
 
                 if( 1 == option_verbose && ret == DISPATCH_UNSUPPORTED_SUITE )
                 {
