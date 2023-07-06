@@ -31,8 +31,7 @@ void SendChar(int ch);
 
 
 
-#if (defined(__ICCARM__) && (__VER__ >= 9020000))
-typedef void    FILE;
+#if defined(__ICCARM__)
 
 # ifndef DEBUG_ENABLE_SEMIHOST
 size_t __write(int handle, const unsigned char *buf, size_t bufSize)
