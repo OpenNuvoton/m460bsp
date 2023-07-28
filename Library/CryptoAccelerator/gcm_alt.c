@@ -341,7 +341,7 @@ static int32_t _GCM(mbedtls_gcm_context *ctx, const uint8_t *iv, uint32_t ivlen,
     CRPT->AES_GCM_PCNT[1] = 0;
 
     plen_aligned = (plen & 0xful) ? ((plen + 16) / 16) * 16 : plen;
-    if(plen <= GCM_PBLOCK_SIZE)
+    if(ivlen + alen + plen + 16 <= MAX_GCM_BUF)
     {
         /* Just one shot */
 
