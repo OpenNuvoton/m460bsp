@@ -174,9 +174,9 @@ extern "C"
   * @brief This macro is used to disable input channel interrupt
   * @param[in] ecap      Specify ECAP port
   * @param[in] u32Mask   The input channel mask
-  *                  - \ref ECAP_IC0
-  *                  - \ref ECAP_IC1
-  *                  - \ref ECAP_IC2
+  *                  - \ref ECAP_CTL0_CAPIEN0_Msk
+  *                  - \ref ECAP_CTL0_CAPIEN1_Msk
+  *                  - \ref ECAP_CTL0_CAPIEN2_Msk
   * @return None
   * @details This macro will disable the input channel_n interrupt.
   * \hideinitializer
