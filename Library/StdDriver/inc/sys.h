@@ -4764,7 +4764,7 @@ Example 1: If user want to set PA.0 as SC0_CLK in initial function,
 #define SPI0_CLK_PF8_Msk        SYS_GPF_MFP2_PF8MFP_Msk        /*<! SPI0_CLK        PF8      MFP Mask */
 #define SPI0_CLK_PA2_Msk        SYS_GPA_MFP0_PA2MFP_Msk        /*<! SPI0_CLK        PA2      MFP Mask */
 #define SPI0_CLK_PB14_Msk       SYS_GPB_MFP3_PB14MFP_Msk       /*<! SPI0_CLK        PB14     MFP Mask */
-#define SPI10_CLK_PA13_Msk      SYS_GPA_MFP3_PA13MFP_Msk       /*<! SPI10_CLK       PA13     MFP Mask */
+#define SPI0_CLK_PA13_Msk       SYS_GPA_MFP3_PA13MFP_Msk       /*<! SPI0_CLK        PA13     MFP Mask */
 #define SPI0_I2SMCLK_PF10_Msk   SYS_GPF_MFP2_PF10MFP_Msk       /*<! SPI0_I2SMCLK    PF10     MFP Mask */
 #define SPI0_I2SMCLK_PD13_Msk   SYS_GPD_MFP3_PD13MFP_Msk       /*<! SPI0_I2SMCLK    PD13     MFP Mask */
 #define SPI0_I2SMCLK_PB0_Msk    SYS_GPB_MFP0_PB0MFP_Msk        /*<! SPI0_I2SMCLK    PB0      MFP Mask */
