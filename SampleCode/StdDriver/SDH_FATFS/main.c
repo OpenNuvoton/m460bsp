@@ -13,6 +13,10 @@
 #include "diskio.h"
 #include "ff.h"
 
+#define DEF_CARD_DETECT_SOURCE       CardDetect_From_GPIO
+//#define DEF_CARD_DETECT_SOURCE       CardDetect_From_DAT3
+
+
 #define BUFF_SIZE       (8*1024)
 
 static UINT blen = BUFF_SIZE;
@@ -299,6 +303,8 @@ void SDH0_IRQHandler(void)
 
     //----- SD interrupt status
     isr = SDH0->INTSTS;
+    ier = SDH0->INTEN;
+
     if (isr & SDH_INTSTS_BLKDIF_Msk)
     {
         // block down
@@ -306,7 +312,8 @@ void SDH0_IRQHandler(void)
         SDH0->INTSTS = SDH_INTSTS_BLKDIF_Msk;
     }
 
-    if (isr & SDH_INTSTS_CDIF_Msk)   // card detect
+    if ((ier & SDH_INTEN_CDIEN_Msk) &&
+            (isr & SDH_INTSTS_CDIF_Msk))    // card detect
     {
         //----- SD interrupt status
         // it is work to delay 50 times for SD_CLK = 200KHz
@@ -316,7 +323,11 @@ void SDH0_IRQHandler(void)
             isr = SDH0->INTSTS;
         }
 
+#if (DEF_CARD_DETECT_SOURCE==CardDetect_From_DAT3)
+        if (!(isr & SDH_INTSTS_CDSTS_Msk))
+#else
         if (isr & SDH_INTSTS_CDSTS_Msk)
+#endif
         {
             printf("\n***** card remove !\n");
             SD0.IsCardInsert = FALSE;   // SDISR_CD_Card = 1 means card remove for GPIO mode
@@ -325,7 +336,6 @@ void SDH0_IRQHandler(void)
         else
         {
             printf("***** card insert !\n");
-            gSdInit = 1;
 //            SDH_Open(SDH0, CardDetect_From_GPIO);
 //            SDH_Probe(SDH0);
         }
@@ -419,8 +429,10 @@ void SYS_Init(void)
 
     /* Set multi-function pin for SDH */
     /* CD: PB12(9), PD13(3) */
+#if (DEF_CARD_DETECT_SOURCE==CardDetect_From_GPIO)
     //SET_SD0_nCD_PB12();
     SET_SD0_nCD_PD13();
+#endif
 
     /* CLK: PB1(3), PE6(3) */
     //SET_SD0_CLK_PB1();
@@ -495,7 +507,7 @@ int32_t main(void)
         SD initial state needs 300KHz clock output, driver will use HIRC for SD initial clock source.
         And then switch back to the user's setting.
     */
-    SDH_Open_Disk(SDH0, CardDetect_From_GPIO);
+    gSdInit = (SDH_Open_Disk(SDH0, DEF_CARD_DETECT_SOURCE)==0)?1:0;
 
     SYS_LockReg();
 
@@ -504,6 +516,12 @@ int32_t main(void)
     printf("          SDH Testing               \n");
     printf("====================================\n");
 
+#if (DEF_CARD_DETECT_SOURCE == CardDetect_From_DAT3)
+    printf("You enabled card detection source from DAT3 mode.\n");
+    printf("Please remove pull-up resistor of DAT3 pin and add a pull-down 100Kohm resistor on DAT3 pin.\n");
+    printf("Please also check your SD card is with an internal pull-up circuit on DAT3 pin.\n");
+#endif
+
     printf("\n\n SDH FATFS TEST!\n");
 
     f_chdrive(sd_path);          /* set default path */
@@ -511,12 +529,15 @@ int32_t main(void)
     for (;;)
     {
         if(!(SDH_CardDetection(SDH0)))
-            continue;
-
-        if (gSdInit)
         {
-            SDH_Open_Disk(SDH0, CardDetect_From_GPIO);
             gSdInit = 0;
+            printf("No card!!\n");
+            continue;
+        }
+
+        if (!gSdInit)
+        {
+            gSdInit = (SDH_Open_Disk(SDH0, DEF_CARD_DETECT_SOURCE)==0)?1:0;
         }
         printf(_T(">"));
         ptr = Line;

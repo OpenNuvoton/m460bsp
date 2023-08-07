@@ -68,10 +68,10 @@ extern "C"
 #define CardDetect_From_DAT3  (1ul << 9)   /*!< Card detection pin is DAT3 \hideinitializer */
 
 /* SDH Define Error Code */
-#define SDH_TIMEOUT_CNT     SystemCoreClock     /*!< SDH time-out counter (1 second time-out) \hideinitializer */
-#define SDH_OK              ( 0L)               /*!< SDH operation OK \hideinitializer */
-#define SDH_ERR_FAIL        (-1L)               /*!< SDH operation failed \hideinitializer */
-#define SDH_ERR_TIMEOUT     (-2L)               /*!< SDH operation abort due to timeout error \hideinitializer */
+#define SDH_TIMEOUT_CNT     2000000        /*!< SDH time-out counter \hideinitializer */
+#define SDH_OK              ( 0L)          /*!< SDH operation OK \hideinitializer */
+#define SDH_ERR_FAIL        (-1L)          /*!< SDH operation failed \hideinitializer */
+#define SDH_ERR_TIMEOUT     (-2L)          /*!< SDH operation abort due to timeout error \hideinitializer */
 
 
 /*@}*/ /* end of group SDH_EXPORTED_CONSTANTS */
@@ -91,6 +91,7 @@ typedef struct SDH_info_t
     unsigned int    diskSize;       /*!< Disk size in K bytes */
     int             sectorSize;     /*!< Sector size in bytes */
     unsigned char   *dmabuf;
+    int32_t         i32ErrCode;     /*!< SDH global error code */
 } SDH_INFO_T;                       /*!< Structure holds SD card info */
 
 /*@}*/ /* end of group SDH_EXPORTED_TYPEDEF */
@@ -193,7 +194,7 @@ uint32_t SDH_Read(SDH_T *sdh, uint8_t *pu8BufAddr, uint32_t u32StartSec, uint32_
 uint32_t SDH_Write(SDH_T *sdh, uint8_t *pu8BufAddr, uint32_t u32StartSec, uint32_t u32SecCount);
 
 uint32_t SDH_CardDetection(SDH_T *sdh);
-void SDH_Open_Disk(SDH_T *sdh, uint32_t u32CardDetSrc);
+int SDH_Open_Disk(SDH_T *sdh, uint32_t u32CardDetSrc);
 void SDH_Close_Disk(SDH_T *sdh);
 
 
