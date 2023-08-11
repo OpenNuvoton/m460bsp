@@ -480,7 +480,11 @@ void HID_VendorRequest(void)
 #define HID_CMD_WRITE    0xC3
 #define HID_CMD_TEST     0xB4
 
+#if (EP_MAX_PKT_SIZE == 1024)
+#define PAGE_SIZE        1024
+#else
 #define PAGE_SIZE        512
+#endif
 
 #ifdef __ICCARM__
 typedef __packed struct

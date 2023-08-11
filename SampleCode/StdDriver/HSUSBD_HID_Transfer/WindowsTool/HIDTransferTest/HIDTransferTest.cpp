@@ -25,9 +25,17 @@
 #define HID_CMD_TEST     0xB4
 
 
+#if (HID_MAX_PACKET_SIZE_EP == 1024)
+#define PAGE_SIZE       1024
+#else
 #define PAGE_SIZE       512
+#endif
 #define SECTOR_SIZE     4096
+#if (HID_MAX_PACKET_SIZE_EP == 1024)
+#define HID_PACKET_SIZE 1024
+#else
 #define HID_PACKET_SIZE 512
+#endif
 
 
 #define USB_TIME_OUT    100
@@ -342,7 +350,11 @@ lexit:
 }
 
 
+#if (HID_MAX_PACKET_SIZE_EP == 1024)
+#define TEST_PAGES   512        /* 512 pages */
+#else
 #define TEST_PAGES   1024       /* 1024 pages */
+#endif
 #define TEST_BASE    0x10000    /* 64kbytes */
 
 int main(void)

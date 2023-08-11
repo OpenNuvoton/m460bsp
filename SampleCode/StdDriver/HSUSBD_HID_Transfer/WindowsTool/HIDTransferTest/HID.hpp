@@ -15,7 +15,7 @@ extern "C" {
 }
 
 
-#define HID_MAX_PACKET_SIZE_EP 512
+#define HID_MAX_PACKET_SIZE_EP 1024    /* It could be 1024 or 512 */
 #define V6M_MAX_COMMAND_LENGTH (HID_MAX_PACKET_SIZE_EP - 2)
 
 class CHidIO
