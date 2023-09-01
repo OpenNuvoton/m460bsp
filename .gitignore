@@ -1,0 +1,23 @@
+#Files
+*.uvgui.*
+*.uvguix.*
+*.log
+*.txt
+*.scvd
+*.dep
+*.ewt
+
+# Folders
+Obj/
+.settings/
+settings/
+lst/
+obj/
+Listings/
+Objects/
+Output/
+Release/
+.vs/
+out/
+build/
+.metadata/
