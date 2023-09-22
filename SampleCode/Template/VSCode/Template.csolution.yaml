@@ -1,0 +1,47 @@
+solution:
+  created-by: uv2csolution@1.0.0
+  created-for: CMSIS-Toolbox@2.0.0
+  packs:
+    - pack: Nuvoton::NuMicro_DFP
+  target-types:
+    - type: GCC
+      device: M467HJHAE
+      processor:
+        trustzone: non-secure
+      add-path:
+        - ../../../Library/CMSIS/Include
+        - ../../../Library/Device/Nuvoton/m460/Include
+        - ../../../Library/StdDriver/inc
+      compiler: GCC@>=10.3.1
+  build-types:
+    - type: Debug
+      optimize: none
+      warnings: on
+      misc:
+        - C-CPP:
+          - -mthumb
+          - -masm-syntax-unified
+          - -fmessage-length=0
+          - -fsigned-char
+          - -ffunction-sections
+          - -fdata-sections
+          - -g
+        - C:
+          - -std=gnu11
+        - ASM:
+          - -mthumb
+          - -fmessage-length=0
+          - -fsigned-char
+          - -ffunction-sections
+          - -fdata-sections
+          - -g
+          - -x assembler-with-cpp
+        - Link:
+          - -mthumb
+          - -fmessage-length=0
+          - -fsigned-char
+          - -g
+          - --specs=nano.specs
+          - -Wl,--gc-sections,-Map=$elf()$.map
+  projects:
+    - project: Template.cproject.yaml

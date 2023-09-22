@@ -1,0 +1,37 @@
+project:
+  linker:
+    - script: ../../../../Library/Device/Nuvoton/m460/Source/GCC/gcc_arm.ld
+  setups:
+    - output:
+        type: "bin"
+  groups:
+    - group: CMSIS
+      files:
+        - file: ../../../../Library/Device/Nuvoton/m460/Source/system_m460.c
+        - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/startup_M460.S
+        - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/_syscalls.c
+        - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/semihosting.h
+        - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/gcc_arm.ld
+        - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/gcc_arm_128k.ld
+    - group: Demo Files
+      files:
+        - file: ../main.c
+        - file: ../ParTest.c
+        - file: ../../../../ThirdParty/FreeRTOS/Demo/Common/Minimal/QueueSet.c
+        - file: ../../../../ThirdParty/FreeRTOS/Demo/Common/Minimal/flash.c
+        - file: ../../../../ThirdParty/FreeRTOS/Demo/Common/Minimal/PollQ.c
+    - group: FreeRTOS files
+      files:
+        - file: ../../../../ThirdParty/FreeRTOS/Source/tasks.c
+        - file: ../../../../ThirdParty/FreeRTOS/Source/timers.c
+        - file: ../../../../ThirdParty/FreeRTOS/Source/list.c
+        - file: ../../../../ThirdParty/FreeRTOS/Source/queue.c
+        - file: ../../../../ThirdParty/FreeRTOS/Source/portable/GCC/ARM_CM4F/port.c
+        - file: ../../../../ThirdParty/FreeRTOS/Source/portable/MemMang/heap_2.c
+    - group: lib
+      files:
+        - file: ../../../../Library/StdDriver/src/clk.c
+        - file: ../../../../Library/StdDriver/src/retarget.c
+        - file: ../../../../Library/StdDriver/src/sys.c
+        - file: ../../../../Library/StdDriver/src/uart.c
+        - file: ../../../../Library/StdDriver/src/gpio.c

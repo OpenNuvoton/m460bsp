@@ -1,0 +1,90 @@
+project:
+  linker:
+    - script: ../../../../Library/Device/Nuvoton/m460/Source/GCC/gcc_arm.ld
+  setups:
+    - output:
+        type: "bin"
+  groups:
+    - group: CMSIS
+      files:
+        - file: ../../../../Library/Device/Nuvoton/m460/Source/system_m460.c
+        - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/startup_M460.S
+        - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/_syscalls.c
+        - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/semihosting.h
+        - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/gcc_arm.ld
+        - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/gcc_arm_128k.ld
+    - group: User
+      files:
+        - file: ../main.c
+        - file: ../Sensor_nt99141.c
+        - file: ../i2c_gpio.c
+        - file: ../jpeg.c
+    - group: Library
+      files:
+        - file: ../../../../Library/StdDriver/src/clk.c
+        - file: ../../../../Library/StdDriver/src/retarget.c
+        - file: ../../../../Library/StdDriver/src/sys.c
+        - file: ../../../../Library/StdDriver/src/uart.c
+        - file: ../../../../Library/StdDriver/src/ccap.c
+        - file: ../../../../Library/StdDriver/src/gpio.c
+    - group: Libjpeg
+      files:
+        - file: ../../../../ThirdParty/libjpeg/jdapimin.c
+        - file: ../../../../ThirdParty/libjpeg/jaricom.c
+        - file: ../../../../ThirdParty/libjpeg/jcapistd.c
+        - file: ../../../../ThirdParty/libjpeg/jcarith.c
+        - file: ../../../../ThirdParty/libjpeg/jccoefct.c
+        - file: ../../../../ThirdParty/libjpeg/jccolor.c
+        - file: ../../../../ThirdParty/libjpeg/jcdctmgr.c
+        - file: ../../../../ThirdParty/libjpeg/jchuff.c
+        - file: ../../../../ThirdParty/libjpeg/jcinit.c
+        - file: ../../../../ThirdParty/libjpeg/jcmainct.c
+        - file: ../../../../ThirdParty/libjpeg/jcmarker.c
+        - file: ../../../../ThirdParty/libjpeg/jcmaster.c
+        - file: ../../../../ThirdParty/libjpeg/jcomapi.c
+        - file: ../../../../ThirdParty/libjpeg/jcparam.c
+        - file: ../../../../ThirdParty/libjpeg/jcprepct.c
+        - file: ../../../../ThirdParty/libjpeg/jcsample.c
+        - file: ../../../../ThirdParty/libjpeg/jctrans.c
+        - file: ../../../../ThirdParty/libjpeg/jcapimin.c
+        - file: ../../../../ThirdParty/libjpeg/jdapistd.c
+        - file: ../../../../ThirdParty/libjpeg/jdarith.c
+        - file: ../../../../ThirdParty/libjpeg/jdatadst.c
+        - file: ../../../../ThirdParty/libjpeg/jdatasrc.c
+        - file: ../../../../ThirdParty/libjpeg/jdcoefct.c
+        - file: ../../../../ThirdParty/libjpeg/jdcolor.c
+        - file: ../../../../ThirdParty/libjpeg/jddctmgr.c
+        - file: ../../../../ThirdParty/libjpeg/jdhuff.c
+        - file: ../../../../ThirdParty/libjpeg/jdinput.c
+        - file: ../../../../ThirdParty/libjpeg/jdmainct.c
+        - file: ../../../../ThirdParty/libjpeg/jdmarker.c
+        - file: ../../../../ThirdParty/libjpeg/jdmaster.c
+        - file: ../../../../ThirdParty/libjpeg/jdmerge.c
+        - file: ../../../../ThirdParty/libjpeg/jdpostct.c
+        - file: ../../../../ThirdParty/libjpeg/jdsample.c
+        - file: ../../../../ThirdParty/libjpeg/jdtrans.c
+        - file: ../../../../ThirdParty/libjpeg/jfdctflt.c
+        - file: ../../../../ThirdParty/libjpeg/jfdctfst.c
+        - file: ../../../../ThirdParty/libjpeg/jfdctint.c
+        - file: ../../../../ThirdParty/libjpeg/jidctflt.c
+        - file: ../../../../ThirdParty/libjpeg/jidctfst.c
+        - file: ../../../../ThirdParty/libjpeg/jidctint.c
+        - file: ../../../../ThirdParty/libjpeg/jmemansi.c
+        - file: ../../../../ThirdParty/libjpeg/jquant1.c
+        - file: ../../../../ThirdParty/libjpeg/jquant2.c
+        - file: ../../../../ThirdParty/libjpeg/jutils.c
+        - file: ../../../../ThirdParty/libjpeg/rdbmp.c
+        - file: ../../../../ThirdParty/libjpeg/rdcolmap.c
+        - file: ../../../../ThirdParty/libjpeg/rdgif.c
+        - file: ../../../../ThirdParty/libjpeg/rdppm.c
+        - file: ../../../../ThirdParty/libjpeg/rdrle.c
+        - file: ../../../../ThirdParty/libjpeg/rdswitch.c
+        - file: ../../../../ThirdParty/libjpeg/rdtarga.c
+        - file: ../../../../ThirdParty/libjpeg/transupp.c
+        - file: ../../../../ThirdParty/libjpeg/wrbmp.c
+        - file: ../../../../ThirdParty/libjpeg/wrgif.c
+        - file: ../../../../ThirdParty/libjpeg/wrppm.c
+        - file: ../../../../ThirdParty/libjpeg/wrrle.c
+        - file: ../../../../ThirdParty/libjpeg/jerror.c
+        - file: ../../../../ThirdParty/libjpeg/wrtarga.c
+        - file: ../../../../ThirdParty/libjpeg/jmemmgr.c

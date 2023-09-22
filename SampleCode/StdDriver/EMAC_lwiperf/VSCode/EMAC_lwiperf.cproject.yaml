@@ -1,0 +1,63 @@
+project:
+  linker:
+    - script: ../../../../Library/Device/Nuvoton/m460/Source/GCC/gcc_arm.ld
+  setups:
+    - output:
+        type: "bin"
+  groups:
+    - group: CMSIS
+      files:
+        - file: ../../../../Library/Device/Nuvoton/m460/Source/system_m460.c
+        - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/startup_M460.S
+        - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/_syscalls.c
+        - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/semihosting.h
+        - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/gcc_arm.ld
+        - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/gcc_arm_128k.ld
+    - group: User
+      files:
+        - file: ../main.c
+        - file: ../queue.c
+        - file: ../sys_arch.c
+    - group: drv_emac
+      files:
+        - file: ../drv_emac/m460_emac.c
+        - file: ../drv_emac/m460_mii.c
+        - file: ../drv_emac/synopGMAC_Dev.c
+        - file: ../drv_emac/synopGMAC_network_interface.c
+        - file: ../drv_emac/synopGMAC_plat.c
+    - group: Library
+      files:
+        - file: ../../../../Library/StdDriver/src/retarget.c
+        - file: ../../../../Library/StdDriver/src/sys.c
+        - file: ../../../../Library/StdDriver/src/clk.c
+        - file: ../../../../Library/StdDriver/src/uart.c
+        - file: ../../../../Library/StdDriver/src/timer.c
+    - group: LwIP
+      files:
+        - file: ../../../../ThirdParty/lwIP/src/apps/lwiperf/lwiperf.c
+        - file: ../../../../ThirdParty/lwIP/src/core/def.c
+        - file: ../../../../ThirdParty/lwIP/src/core/dns.c
+        - file: ../../../../ThirdParty/lwIP/src/core/inet_chksum.c
+        - file: ../../../../ThirdParty/lwIP/src/core/init.c
+        - file: ../../../../ThirdParty/lwIP/src/core/ip.c
+        - file: ../../../../ThirdParty/lwIP/src/core/mem.c
+        - file: ../../../../ThirdParty/lwIP/src/core/memp.c
+        - file: ../../../../ThirdParty/lwIP/src/core/netif.c
+        - file: ../../../../ThirdParty/lwIP/src/core/pbuf.c
+        - file: ../../../../ThirdParty/lwIP/src/core/raw.c
+        - file: ../../../../ThirdParty/lwIP/src/core/stats.c
+        - file: ../../../../ThirdParty/lwIP/src/core/sys_lwip.c
+        - file: ../../../../ThirdParty/lwIP/src/core/tcp.c
+        - file: ../../../../ThirdParty/lwIP/src/core/tcp_in.c
+        - file: ../../../../ThirdParty/lwIP/src/core/tcp_out.c
+        - file: ../../../../ThirdParty/lwIP/src/core/timeouts.c
+        - file: ../../../../ThirdParty/lwIP/src/core/udp.c
+        - file: ../../../../ThirdParty/lwIP/src/core/ipv4/autoip.c
+        - file: ../../../../ThirdParty/lwIP/src/core/ipv4/dhcp.c
+        - file: ../../../../ThirdParty/lwIP/src/core/ipv4/etharp.c
+        - file: ../../../../ThirdParty/lwIP/src/core/ipv4/icmp.c
+        - file: ../../../../ThirdParty/lwIP/src/core/ipv4/igmp.c
+        - file: ../../../../ThirdParty/lwIP/src/core/ipv4/ip4.c
+        - file: ../../../../ThirdParty/lwIP/src/core/ipv4/ip4_addr.c
+        - file: ../../../../ThirdParty/lwIP/src/core/ipv4/ip4_frag.c
+        - file: ../../../../ThirdParty/lwIP/src/netif/ethernet.c

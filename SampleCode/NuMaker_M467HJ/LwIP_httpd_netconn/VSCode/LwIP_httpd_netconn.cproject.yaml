@@ -1,0 +1,84 @@
+project:
+  linker:
+    - script: ../../../../Library/Device/Nuvoton/m460/Source/GCC/gcc_arm.ld
+  setups:
+    - output:
+        type: "bin"
+  groups:
+    - group: CMSIS
+      files:
+        - file: ../../../../Library/Device/Nuvoton/m460/Source/system_m460.c
+        - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/startup_M460.S
+        - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/_syscalls.c
+        - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/semihosting.h
+        - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/gcc_arm.ld
+        - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/gcc_arm_128k.ld
+    - group: User
+      files:
+        - file: ../main.c
+        - file: ../fs.c
+        - file: ../httpserver-netconn.c
+    - group: drv_emac
+      files:
+        - file: ../../lwIP/drv_emac/m460_emac.c
+        - file: ../../lwIP/drv_emac/m460_mii.c
+        - file: ../../lwIP/drv_emac/synopGMAC_Dev.c
+        - file: ../../lwIP/drv_emac/synopGMAC_network_interface.c
+        - file: ../../lwIP/drv_emac/synopGMAC_plat.c
+    - group: FreeRTOS
+      files:
+        - file: ../../../../ThirdParty/FreeRTOS/Source/list.c
+        - file: ../../../../ThirdParty/FreeRTOS/Source/tasks.c
+        - file: ../../../../ThirdParty/FreeRTOS/Source/timers.c
+        - file: ../../../../ThirdParty/FreeRTOS/Source/portable/MemMang/heap_2.c
+        - file: ../../../../ThirdParty/FreeRTOS/Source/queue.c
+        - file: ../../../../ThirdParty/FreeRTOS/Demo/Common/Minimal/GenQTest.c
+        - file: ../../../../ThirdParty/FreeRTOS/Demo/Common/Minimal/PollQ.c
+        - file: ../../../../ThirdParty/FreeRTOS/Demo/Common/Minimal/semtest.c
+        - file: ../../../../ThirdParty/FreeRTOS/Demo/Common/Minimal/QueueSet.c
+        - file: ../../../../ThirdParty/FreeRTOS/Source/portable/GCC/ARM_CM4F/port.c
+    - group: Library
+      files:
+        - file: ../../../../Library/StdDriver/src/retarget.c
+        - file: ../../../../Library/StdDriver/src/sys.c
+        - file: ../../../../Library/StdDriver/src/clk.c
+        - file: ../../../../Library/StdDriver/src/uart.c
+    - group: LwIP
+      files:
+        - file: ../../lwip/sys_arch.c
+        - file: ../../lwip/time_stamp.c
+        - file: ../../lwip/netif/ethernetif.c
+        - file: ../../../../ThirdParty/lwip/src/core/def.c
+        - file: ../../../../ThirdParty/lwip/src/core/dns.c
+        - file: ../../../../ThirdParty/lwip/src/core/inet_chksum.c
+        - file: ../../../../ThirdParty/lwip/src/core/init.c
+        - file: ../../../../ThirdParty/lwip/src/core/ip.c
+        - file: ../../../../ThirdParty/lwip/src/core/mem.c
+        - file: ../../../../ThirdParty/lwip/src/core/memp.c
+        - file: ../../../../ThirdParty/lwip/src/core/netif.c
+        - file: ../../../../ThirdParty/lwip/src/core/pbuf.c
+        - file: ../../../../ThirdParty/lwip/src/core/raw.c
+        - file: ../../../../ThirdParty/lwip/src/core/stats.c
+        - file: ../../../../ThirdParty/lwip/src/core/sys_lwip.c
+        - file: ../../../../ThirdParty/lwip/src/core/tcp.c
+        - file: ../../../../ThirdParty/lwip/src/core/tcp_in.c
+        - file: ../../../../ThirdParty/lwip/src/core/tcp_out.c
+        - file: ../../../../ThirdParty/lwip/src/core/timeouts.c
+        - file: ../../../../ThirdParty/lwip/src/core/udp.c
+        - file: ../../../../ThirdParty/lwip/src/core/ipv4/autoip.c
+        - file: ../../../../ThirdParty/lwip/src/core/ipv4/dhcp.c
+        - file: ../../../../ThirdParty/lwip/src/core/ipv4/etharp.c
+        - file: ../../../../ThirdParty/lwip/src/core/ipv4/icmp.c
+        - file: ../../../../ThirdParty/lwip/src/core/ipv4/igmp.c
+        - file: ../../../../ThirdParty/lwip/src/core/ipv4/ip4.c
+        - file: ../../../../ThirdParty/lwip/src/core/ipv4/ip4_addr.c
+        - file: ../../../../ThirdParty/lwip/src/core/ipv4/ip4_frag.c
+        - file: ../../../../ThirdParty/lwip/src/api/api_lib.c
+        - file: ../../../../ThirdParty/lwip/src/api/api_msg.c
+        - file: ../../../../ThirdParty/lwip/src/api/err.c
+        - file: ../../../../ThirdParty/lwip/src/api/netbuf.c
+        - file: ../../../../ThirdParty/lwip/src/api/netdb.c
+        - file: ../../../../ThirdParty/lwip/src/api/netifapi.c
+        - file: ../../../../ThirdParty/lwip/src/api/sockets.c
+        - file: ../../../../ThirdParty/lwip/src/api/tcpip.c
+        - file: ../../../../ThirdParty/lwip/src/netif/ethernet.c

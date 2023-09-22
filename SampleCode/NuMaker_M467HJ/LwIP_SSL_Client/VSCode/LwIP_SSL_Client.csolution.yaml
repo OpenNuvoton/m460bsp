@@ -1,0 +1,57 @@
+solution:
+  created-by: uv2csolution@1.0.0
+  created-for: CMSIS-Toolbox@2.0.0
+  packs:
+    - pack: Nuvoton::NuMicro_DFP
+  target-types:
+    - type: GCC
+      device: M467HJHAE
+      processor:
+        trustzone: non-secure
+      add-path:
+        - ../../../../Library/Device/Nuvoton/m460/Include
+        - ../../../../Library/StdDriver/inc
+        - ../../../../ThirdParty/FreeRTOS/SOURCE/include
+        - ../../../../ThirdParty/FreeRTOS/DEMO/COMMON/include
+        - ../../../../ThirdParty/FreeRTOS/SOURCE/portable/GCC/ARM_CM4F
+        - ..
+        - ../../../../ThirdParty/lwip/src/include
+        - ../../lwip/include
+        - ../../../../Library/CMSIS/Include
+        - ../../lwip/drv_emac
+        - ../../../../ThirdParty/mbedtls-3.1.0/include
+        - ../../../../ThirdParty/mbedtls-3.1.0/library
+        - ../../../../ThirdParty/mbedtls-3.1.0/tests/include
+      compiler: GCC@>=10.3.1
+  build-types:
+    - type: Debug
+      optimize: none
+      warnings: on
+      misc:
+        - C-CPP:
+          - -mthumb
+          - -masm-syntax-unified
+          - -fmessage-length=0
+          - -fsigned-char
+          - -ffunction-sections
+          - -fdata-sections
+          - -g
+        - C:
+          - -std=gnu11
+        - ASM:
+          - -mthumb
+          - -fmessage-length=0
+          - -fsigned-char
+          - -ffunction-sections
+          - -fdata-sections
+          - -g
+          - -x assembler-with-cpp
+        - Link:
+          - -mthumb
+          - -fmessage-length=0
+          - -fsigned-char
+          - -g
+          - --specs=nano.specs
+          - -Wl,--gc-sections,-Map=$elf()$.map
+  projects:
+    - project: LwIP_SSL_Client.cproject.yaml
