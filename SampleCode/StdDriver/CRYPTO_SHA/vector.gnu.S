@@ -12,7 +12,11 @@
 	.text
 
 g_u32VectorDataBase:
+#ifndef _ARM_VSCODE_
     .incbin  "../../sha_test_vector"
+#else
+    .incbin  "../sha_test_vector"
+#endif
 g_u32VectorDataLimit:
     .space   4
 

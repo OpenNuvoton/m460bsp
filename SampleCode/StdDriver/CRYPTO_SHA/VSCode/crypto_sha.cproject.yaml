@@ -3,8 +3,15 @@ project:
     - script: ../../../../Library/Device/Nuvoton/m460/Source/GCC/gcc_arm.ld
   setups:
     - output:
-        type: "bin"
+        type: hex
   groups:
+    - group: User
+      files:
+        - file: ../main.c
+        - file: ../vector_parser.c
+        - file: ../vector.gnu.S
+          define:
+          - _ARM_VSCODE_
     - group: CMSIS
       files:
         - file: ../../../../Library/Device/Nuvoton/m460/Source/system_m460.c
@@ -13,15 +20,10 @@ project:
         - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/semihosting.h
         - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/gcc_arm.ld
         - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/gcc_arm_128k.ld
-    - group: User
-      files:
-        - file: ../main.c
-        - file: ../vector_parser.c
-        - file: ../vector.gnu.S
     - group: Library
       files:
-        - file: ../../../../Library/StdDriver/src/retarget.c
-        - file: ../../../../Library/StdDriver/src/clk.c
         - file: ../../../../Library/StdDriver/src/sys.c
-        - file: ../../../../Library/StdDriver/src/uart.c
+        - file: ../../../../Library/StdDriver/src/clk.c
+        - file: ../../../../Library/StdDriver/src/retarget.c
         - file: ../../../../Library/StdDriver/src/crypto.c
+        - file: ../../../../Library/StdDriver/src/uart.c

@@ -22,6 +22,8 @@ solution:
     - type: Debug
       optimize: none
       warnings: on
+      define:
+        - MBEDTLS_CONFIG_FILE: mbedtls_config.h
       misc:
         - C-CPP:
           - -mthumb

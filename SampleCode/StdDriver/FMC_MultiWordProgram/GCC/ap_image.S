@@ -18,7 +18,11 @@
     .text
 
 loaderImage1Base:
+#ifndef _ARM_VSCODE_
     .incbin  "../../multi_word_prog.bin"
+#else
+    .incbin  "../GCC/multi_word_prog.bin"
+#endif
 loaderImage1Limit:
     .space   4
 

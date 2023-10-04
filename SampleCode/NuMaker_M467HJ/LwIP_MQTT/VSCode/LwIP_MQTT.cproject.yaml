@@ -9,6 +9,8 @@ project:
       files:
         - file: ../../../../Library/Device/Nuvoton/m460/Source/system_m460.c
         - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/startup_M460.S
+          define:
+          - __STACK_SIZE: 0x1800
         - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/_syscalls.c
         - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/semihosting.h
         - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/gcc_arm.ld
@@ -64,43 +66,43 @@ project:
         - file: ../../../../ThirdParty/paho.mqtt.embedded-c/MQTTPacket/src/MQTTUnsubscribeServer.c
     - group: LwIP
       files:
-        - file: ../../lwip/sys_arch.c
-        - file: ../../lwip/time_stamp.c
-        - file: ../../lwip/netif/ethernetif.c
-        - file: ../../../../ThirdParty/lwip/src/core/def.c
-        - file: ../../../../ThirdParty/lwip/src/core/dns.c
-        - file: ../../../../ThirdParty/lwip/src/core/inet_chksum.c
-        - file: ../../../../ThirdParty/lwip/src/core/init.c
-        - file: ../../../../ThirdParty/lwip/src/core/ip.c
-        - file: ../../../../ThirdParty/lwip/src/core/mem.c
-        - file: ../../../../ThirdParty/lwip/src/core/memp.c
-        - file: ../../../../ThirdParty/lwip/src/core/netif.c
-        - file: ../../../../ThirdParty/lwip/src/core/pbuf.c
-        - file: ../../../../ThirdParty/lwip/src/core/raw.c
-        - file: ../../../../ThirdParty/lwip/src/core/stats.c
-        - file: ../../../../ThirdParty/lwip/src/core/sys_lwip.c
-        - file: ../../../../ThirdParty/lwip/src/core/tcp.c
-        - file: ../../../../ThirdParty/lwip/src/core/tcp_in.c
-        - file: ../../../../ThirdParty/lwip/src/core/tcp_out.c
-        - file: ../../../../ThirdParty/lwip/src/core/timeouts.c
-        - file: ../../../../ThirdParty/lwip/src/core/udp.c
-        - file: ../../../../ThirdParty/lwip/src/core/ipv4/autoip.c
-        - file: ../../../../ThirdParty/lwip/src/core/ipv4/dhcp.c
-        - file: ../../../../ThirdParty/lwip/src/core/ipv4/etharp.c
-        - file: ../../../../ThirdParty/lwip/src/core/ipv4/icmp.c
-        - file: ../../../../ThirdParty/lwip/src/core/ipv4/igmp.c
-        - file: ../../../../ThirdParty/lwip/src/core/ipv4/ip4.c
-        - file: ../../../../ThirdParty/lwip/src/core/ipv4/ip4_addr.c
-        - file: ../../../../ThirdParty/lwip/src/core/ipv4/ip4_frag.c
-        - file: ../../../../ThirdParty/lwip/src/api/api_lib.c
-        - file: ../../../../ThirdParty/lwip/src/api/api_msg.c
-        - file: ../../../../ThirdParty/lwip/src/api/err.c
-        - file: ../../../../ThirdParty/lwip/src/api/netbuf.c
-        - file: ../../../../ThirdParty/lwip/src/api/netdb.c
-        - file: ../../../../ThirdParty/lwip/src/api/netifapi.c
-        - file: ../../../../ThirdParty/lwip/src/api/sockets.c
-        - file: ../../../../ThirdParty/lwip/src/api/tcpip.c
-        - file: ../../../../ThirdParty/lwip/src/netif/ethernet.c
+        - file: ../../lwIP/sys_arch.c
+        - file: ../../lwIP/time_stamp.c
+        - file: ../../lwIP/netif/ethernetif.c
+        - file: ../../../../ThirdParty/lwIP/src/core/def.c
+        - file: ../../../../ThirdParty/lwIP/src/core/dns.c
+        - file: ../../../../ThirdParty/lwIP/src/core/inet_chksum.c
+        - file: ../../../../ThirdParty/lwIP/src/core/init.c
+        - file: ../../../../ThirdParty/lwIP/src/core/ip.c
+        - file: ../../../../ThirdParty/lwIP/src/core/mem.c
+        - file: ../../../../ThirdParty/lwIP/src/core/memp.c
+        - file: ../../../../ThirdParty/lwIP/src/core/netif.c
+        - file: ../../../../ThirdParty/lwIP/src/core/pbuf.c
+        - file: ../../../../ThirdParty/lwIP/src/core/raw.c
+        - file: ../../../../ThirdParty/lwIP/src/core/stats.c
+        - file: ../../../../ThirdParty/lwIP/src/core/sys_lwip.c
+        - file: ../../../../ThirdParty/lwIP/src/core/tcp.c
+        - file: ../../../../ThirdParty/lwIP/src/core/tcp_in.c
+        - file: ../../../../ThirdParty/lwIP/src/core/tcp_out.c
+        - file: ../../../../ThirdParty/lwIP/src/core/timeouts.c
+        - file: ../../../../ThirdParty/lwIP/src/core/udp.c
+        - file: ../../../../ThirdParty/lwIP/src/core/ipv4/autoip.c
+        - file: ../../../../ThirdParty/lwIP/src/core/ipv4/dhcp.c
+        - file: ../../../../ThirdParty/lwIP/src/core/ipv4/etharp.c
+        - file: ../../../../ThirdParty/lwIP/src/core/ipv4/icmp.c
+        - file: ../../../../ThirdParty/lwIP/src/core/ipv4/igmp.c
+        - file: ../../../../ThirdParty/lwIP/src/core/ipv4/ip4.c
+        - file: ../../../../ThirdParty/lwIP/src/core/ipv4/ip4_addr.c
+        - file: ../../../../ThirdParty/lwIP/src/core/ipv4/ip4_frag.c
+        - file: ../../../../ThirdParty/lwIP/src/api/api_lib.c
+        - file: ../../../../ThirdParty/lwIP/src/api/api_msg.c
+        - file: ../../../../ThirdParty/lwIP/src/api/err.c
+        - file: ../../../../ThirdParty/lwIP/src/api/netbuf.c
+        - file: ../../../../ThirdParty/lwIP/src/api/netdb.c
+        - file: ../../../../ThirdParty/lwIP/src/api/netifapi.c
+        - file: ../../../../ThirdParty/lwIP/src/api/sockets.c
+        - file: ../../../../ThirdParty/lwIP/src/api/tcpip.c
+        - file: ../../../../ThirdParty/lwIP/src/netif/ethernet.c
     - group: mbedtls
       files:
         - file: ../../../../ThirdParty/mbedtls-3.1.0/library/aes.c
