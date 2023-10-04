@@ -36,7 +36,7 @@ project:
         - file: ../../../../Library/StdDriver/src/gpio.c
     - group: FATFS
       files:
-        - file: ../../../../ThirdParty/FATFS/source/ff.c
+        - file: ../../../../ThirdParty/FatFs/source/ff.c
     - group: MP3Lib
       files:
         - file: ../../../../ThirdParty/LibMAD/src/version.c

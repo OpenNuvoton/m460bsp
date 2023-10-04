@@ -10,11 +10,11 @@ solution:
         trustzone: non-secure
       add-path:
         - ../../../../Library/CMSIS/Include
-        - ../../../../Library/Device/Nuvoton/M460/Include
+        - ../../../../Library/Device/Nuvoton/m460/Include
         - ../../../../Library/StdDriver/inc
         - ../../../../ThirdParty/LibMAD/inc
         - ../../../../ThirdParty/shine/src/lib
-        - ../../../../ThirdParty/FATFS/source
+        - ../../../../ThirdParty/FatFs/source
       compiler: GCC@>=10.3.1
   build-types:
     - type: Debug

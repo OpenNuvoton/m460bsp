@@ -12,7 +12,7 @@ solution:
         - ../../../../Library/Device/Nuvoton/m460/Include
         - ../../../../Library/StdDriver/inc
         - ../../../../ThirdParty/FreeRTOS/Source/include
-        - ../../../../ThirdParty/FreeRTOS/Demo/COMMON/include
+        - ../../../../ThirdParty/FreeRTOS/Demo/Common/include
         - ../../../../ThirdParty/FreeRTOS/Source/portable/GCC/ARM_CM4F
         - ..
         - ../../../../ThirdParty/lwIP/src/include

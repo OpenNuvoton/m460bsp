@@ -28,7 +28,7 @@ project:
         - file: ../../../../Library/StdDriver/src/hsusbd.c
     - group: FATFS
       files:
-        - file: ../../../../ThirdParty/FATFS/source/ff.c
+        - file: ../../../../ThirdParty/FatFs/source/ff.c
     - group: UsbHostLib
       files:
         - file: ../../../../Library/UsbHostLib/src_core/ehci.c

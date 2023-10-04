@@ -11,12 +11,12 @@ solution:
       add-path:
         - ../../../../Library/Device/Nuvoton/m460/Include
         - ../../../../Library/StdDriver/inc
-        - ../../../../ThirdParty/FreeRTOS/SOURCE/include
-        - ../../../../ThirdParty/FreeRTOS/DEMO/COMMON/include
-        - ../../../../ThirdParty/FreeRTOS/SOURCE/portable/GCC/ARM_CM4F
+        - ../../../../ThirdParty/FreeRTOS/Source/include
+        - ../../../../ThirdParty/FreeRTOS/Demo/Common/include
+        - ../../../../ThirdParty/FreeRTOS/Source/portable/GCC/ARM_CM4F
         - ..
-        - ../../../../ThirdParty/lwip/src/include
-        - ../../lwip/include
+        - ../../../../ThirdParty/lwIP/src/include
+        - ../../lwIP/include
         - ../../../../Library/CMSIS/Include
         - ../../lwIP/drv_emac
       compiler: GCC@>=10.3.1
