@@ -12,7 +12,7 @@ solution:
         - ../../../../Library/CMSIS/Include
         - ../../../../Library/Device/Nuvoton/m460/Include
         - ../../../../Library/StdDriver/inc
-        - ../
+        - ../VSCode
       compiler: GCC@>=10.3.1
   build-types:
     - type: Debug
@@ -45,4 +45,4 @@ solution:
           - --specs=nano.specs
           - -Wl,--gc-sections,-Map=$elf()$.map
   projects:
-    - project: crypto_sha.cproject.yaml
+    - project: CRYPTO_SHA.cproject.yaml
