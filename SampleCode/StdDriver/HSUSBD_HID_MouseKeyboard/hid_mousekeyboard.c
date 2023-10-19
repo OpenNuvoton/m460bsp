@@ -15,6 +15,8 @@
 signed char mouse_table[] = { -16, -16, -16, 0, 16, 16, 16, 0};
 uint8_t mouse_idx = 0;
 uint8_t move_len, mouse_mode = 1;
+static uint8_t g_au8LEDStatus[8];
+static uint32_t u32LEDStatus = 0;
 
 uint8_t volatile g_u8EPAReady = 0;
 uint8_t volatile g_u8EPBReady = 0;
@@ -399,6 +401,16 @@ void HID_ClassRequest(void)
             case SET_REPORT:
                 if(((gUsbCmd.wValue >> 8) & 0xff) == 3)     /* Request Type = Feature */
                 {
+                    /* Status stage */
+                    HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
+                    HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_NAKCLR);
+                    HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_STSDONEIEN_Msk);
+                }
+                else if(((gUsbCmd.wValue >> 8) & 0xff) == 2)     /* Request Type = Output */
+                {
+                    HSUSBD_CtrlOut(g_au8LEDStatus, (gUsbCmd.wLength & 0xff));
+                    HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_RXPKIF_Msk);
+                    HSUSBD_ENABLE_CEP_INT(HSUSBD_CEPINTEN_RXPKIEN_Msk);
 
                     /* Status stage */
                     HSUSBD_CLR_CEP_INT_FLAG(HSUSBD_CEPINTSTS_STSDONEIF_Msk);
@@ -539,5 +551,42 @@ void HID_UpdateKeyboardData(void)
             HSUSBD->EP[EPB].EPDAT_BYTE = buf[i];
         HSUSBD->EP[EPB].EPRSPCTL = HSUSBD_EP_RSPCTL_SHORTTXEN;
         HSUSBD_ENABLE_EP_INT(EPB, HSUSBD_EPINTEN_INTKIEN_Msk);
+    }
+
+    if(g_au8LEDStatus[0] != u32LEDStatus)
+    {
+        if((g_au8LEDStatus[0] & HID_LED_ALL) != (u32LEDStatus & HID_LED_ALL))
+        {
+            if(g_au8LEDStatus[0] & HID_LED_NumLock)
+                printf("NumLock ON, ");
+
+            else
+                printf("NumLock OFF, ");
+
+            if(g_au8LEDStatus[0] & HID_LED_CapsLock)
+                printf("CapsLock ON, ");
+
+            else
+                printf("CapsLock OFF, ");
+
+            if(g_au8LEDStatus[0] & HID_LED_ScrollLock)
+                printf("ScrollLock ON, ");
+
+            else
+                printf("ScrollLock OFF, ");
+
+            if(g_au8LEDStatus[0] & HID_LED_Compose)
+                printf("Compose ON, ");
+
+            else
+                printf("Compose OFF, ");
+
+            if(g_au8LEDStatus[0] & HID_LED_Kana)
+                printf("Kana ON\n");
+
+            else
+                printf("Kana OFF\n");
+        }
+        u32LEDStatus = g_au8LEDStatus[0];
     }
 }
