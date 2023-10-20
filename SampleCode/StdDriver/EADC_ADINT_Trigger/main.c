@@ -81,10 +81,10 @@ void SYS_Init(void)
     SET_UART0_TXD_PB13();
 
     /* Set multi-function pins for EADC0 channels. */
-    SET_EADC0_CH0_PB0();
-    SET_EADC0_CH1_PB1();
-    SET_EADC0_CH2_PB2();
-    SET_EADC0_CH3_PB3();
+    SET_EADC0_CH10_PB10();
+    SET_EADC0_CH11_PB11();
+    SET_EADC0_CH14_PB14();
+    SET_EADC0_CH15_PB15();
 
     /* Disable digital input path of EADC analog pin to prevent leakage */
     GPIO_DISABLE_DIGITAL_PATH(PB, BIT3 | BIT2 | BIT1 | BIT0);
