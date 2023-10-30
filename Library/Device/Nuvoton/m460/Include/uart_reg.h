@@ -290,7 +290,7 @@ typedef struct
      * |        |          |1 = Break interrupt is generated.
      * |        |          |Note: This bit can be cleared by writing '1' to it.
      * |[13:8]  |RXPTR     |RX FIFO Pointer (Read Only)
-     * |        |          |This field indicates the RX FIFO Buffer Pointer
+     * |        |          |This field indicates the RX FIFO Buffer Pointer.
      * |        |          |When UART receives one byte from external device, RXPTR increases one.
      * |        |          |When one byte of RX FIFO is read by CPU, RXPTR decreases one.
      * |        |          |The Maximum value shown in RXPTR is 15.
@@ -300,7 +300,7 @@ typedef struct
      * |        |          |This bit initiate RX FIFO empty or not.
      * |        |          |0 = RX FIFO is not empty.
      * |        |          |1 = RX FIFO is empty.
-     * |        |          |Note: When the last byte of RX FIFO has been read by CPU, hardware sets this bit high
+     * |        |          |Note: When the last byte of RX FIFO has been read by CPU, hardware sets this bit high.
      * |        |          |It will be cleared when UART receives any new data.
      * |[15]    |RXFULL    |Receiver FIFO Full (Read Only)
      * |        |          |This bit initiates RX FIFO full or not.
@@ -308,9 +308,9 @@ typedef struct
      * |        |          |1 = RX FIFO is full.
      * |        |          |Note: This bit is set when the number of usage in RX FIFO Buffer is equal to 16, otherwise it is cleared by hardware.
      * |[21:16] |TXPTR     |TX FIFO Pointer (Read Only)
-     * |        |          |This field indicates the TX FIFO Buffer Pointer
+     * |        |          |This field indicates the TX FIFO Buffer Pointer.
      * |        |          |When CPU writes one byte into UART_DAT, TXPTR increases one.
-     * |        |          |When one byte of TX FIFO is transferred to Transmitter Shift Register, TXPTR decreases one..
+     * |        |          |When one byte of TX FIFO is transferred to Transmitter Shift Register, TXPTR decreases one.
      * |        |          |The Maximum value shown in TXPTR is 15.
      * |        |          |When the using level of TX FIFO Buffer equal to 16, the TXFULL bit is set to 1 and TXPTR will show 0.
      * |        |          |As one byte of TX FIFO is transferred to Transmitter Shift Register, the TXFULL bit is cleared to 0 and TXPTR will show 15.
@@ -423,7 +423,7 @@ typedef struct
      * |        |          |0 = No RX time-out interrupt is generated.
      * |        |          |1 = RX time-out interrupt is generated.
      * |[13]    |BUFERRINT |Buffer Error Interrupt Indicator (Read Only)
-     * |        |          |This bit is set if BUFERRIEN(UART_INTEN[5]) and BUFERRIF(UART_ INTSTS[5]) are both set to 1.
+     * |        |          |This bit is set if BUFERRIEN(UART_INTEN[5]) and BUFERRIF(UART_INTSTS[5]) are both set to 1.
      * |        |          |0 = No buffer error interrupt is generated.
      * |        |          |1 = Buffer error interrupt is generated.
      * |[14]    |WKINT     |UART Wake-up Interrupt Indicator (Read Only)
@@ -449,14 +449,14 @@ typedef struct
      * |        |          |Note 2: In UART function mode, this bit is read only and reset to 0 when all bits of BIF(UART_FIFOSTS[6]) , FEF(UART_FIFOSTS[5]) and PEF(UART_FIFOSTS[4]) are cleared.
      * |        |          |Note 3: In RS-485 function mode, this bit is read only and reset to 0 when all bits of BIF(UART_FIFOSTS[6]), FEF(UART_FIFOSTS[5]), PEF(UART_FIFOSTS[4]) and ADDRDETF (UART_FIFOSTS[3]) are cleared.
      * |[19]    |HWMODIF   |PDMA Mode MODEM Interrupt Flag (Read Only)
-     * |        |          |This bit is set when the nCTS pin has state change (CTSDETF (UART_MODEMSTS [0] =1))
+     * |        |          |This bit is set when the nCTS pin has state change (CTSDETF (UART_MODEMSTS[0] =1)).
      * |        |          |If MODEMIEN (UART_INTEN [3]) is enabled, the Modem interrupt will be generated.
      * |        |          |0 = No Modem interrupt flag is generated in PDMA mode.
      * |        |          |1 = Modem interrupt flag is generated in PDMA mode.
-     * |        |          |Note: This bit is read only and reset to 0 when the bit CTSDETF (UART_MODEMSTS[0]) is cleared by writing 1 on CTSDETF (UART_MODEMSTS [0]).
+     * |        |          |Note: This bit is read only and reset to 0 when the bit CTSDETF (UART_MODEMSTS[0]) is cleared by writing 1 on CTSDETF (UART_MODEMSTS[0]).
      * |[20]    |HWTOIF    |PDMA Mode RX Time-out Interrupt Flag (Read Only)
      * |        |          |This bit is set when the RX FIFO is not empty and no activities occurred in the RX FIFO and the time-out counter equal to TOIC (UART_TOUT[7:0]).
-     * |        |          |If RXTOIEN (UART_INTEN [4]) is enabled, the RX time-out interrupt will be generated.
+     * |        |          |If RXTOIEN (UART_INTEN[4]) is enabled, the RX time-out interrupt will be generated.
      * |        |          |0 = No RX time-out interrupt flag is generated in PDMA mode.
      * |        |          |1 = RX time-out interrupt flag is generated in PDMA mode.
      * |        |          |Note: This bit is read only and user can read UART_DAT (RX is in active) to clear it.
@@ -527,11 +527,11 @@ typedef struct
      * |[27:24] |EDIVM1    |Extra Divider for BAUD Rate Mode 1
      * |        |          |This field is used for baud rate calculation in mode 1 and has no effect for baud rate calculation in mode 0 and mode 2.
      * |[28]    |BAUDM0    |BAUD Rate Mode Selection Bit 0
-     * |        |          |This bit is baud rate mode selection bit 0
+     * |        |          |This bit is baud rate mode selection bit 0.
      * |        |          |UART provides three baud rate calculation modes.
      * |        |          |This bit combines with BAUDM1 (UART_BAUD[29]) to select baud rate calculation mode.
      * |[29]    |BAUDM1    |BAUD Rate Mode Selection Bit 1
-     * |        |          |This bit is baud rate mode selection bit 1
+     * |        |          |This bit is baud rate mode selection bit 1.
      * |        |          |UART provides three baud rate calculation modes.
      * |        |          |This bit combines with BAUDM0 (UART_BAUD[28]) to select baud rate calculation mode.
      * |        |          |Note: In IrDA mode must be operated in mode 0.
@@ -579,7 +579,7 @@ typedef struct
      * |        |          |0 = RS-485 Auto Address Detection Operation mode (AAD) Disabled.
      * |        |          |1 = RS-485 Auto Address Detection Operation mode (AAD) Enabled.
      * |        |          |Note: It cannot be active with RS-485_NMM operation mode.
-     * |[10]    |RS485AUD  |RS-485 Auto Direction Function (AUD)
+     * |[10]    |RS485AUD  |RS-485 Auto Direction Function
      * |        |          |0 = RS-485 Auto Direction Operation function (AUD) Disabled.
      * |        |          |1 = RS-485 Auto Direction Operation function (AUD) Enabled.
      * |        |          |Note: It can be active with RS-485_AAD or RS-485_NMM operation mode.
@@ -623,7 +623,7 @@ typedef struct
      * |        |          |0 = TX and RX Enabled.
      * |        |          |1 = TX and RX Disabled.
      * |        |          |Note: The TX and RX will not disable immediately when this bit is set.
-     * |        |          |The TX and RX complete current task before disable TX and RX are disabled.
+     * |        |          |The TX and RX complete current task before TX and RX are disabled.
      * |        |          |When TX and RX disable, the TXRXACT (UART_FIFOSTS[31]) is cleared.
      * |[6]     |DGE       |Deglitch Enable Bit
      * |        |          |0 = Deglitch Disabled.
@@ -828,7 +828,7 @@ typedef struct
      * |[4]     |TOUTWKF   |Received Data FIFO Threshold Time-out Wake-up Flag
      * |        |          |This bit is set if chip wake-up from power-down state by Received Data FIFO Threshold Time-out wake-up.
      * |        |          |0 = Chip stays in power-down state.
-     * |        |          |1 = Chip wake-up from power-down state by Received Data FIFO reached threshold time-out.
+     * |        |          |1 = Chip wake-up from power-down state by Received Data FIFO reached threshold time-out wake-up.
      * |        |          |Note 1: If WKTOUTEN (UART_WKCTL[4]) is enabled, the Received Data FIFO reached threshold time-out wake-up cause this bit is set to '1'.
      * |        |          |Note 2: This bit can be cleared by writing '1' to it.
      * @var UART_T::DWKCOMP
@@ -1104,9 +1104,6 @@ typedef struct
 
 #define UART_INTSTS_HWBUFEIF_Pos         (21)                                              /*!< UART_T::INTSTS: HWBUFEIF Position      */
 #define UART_INTSTS_HWBUFEIF_Msk         (0x1ul << UART_INTSTS_HWBUFEIF_Pos)               /*!< UART_T::INTSTS: HWBUFEIF Mask          */
-
-#define UART_INTSTS_TXENDIF_Pos          (22)                                              /*!< UART_T::INTSTS: TXENDIF Position       */
-#define UART_INTSTS_TXENDIF_Msk          (0x1ul << UART_INTSTS_TXENDIF_Pos)                /*!< UART_T::INTSTS: TXENDIF Mask           */
 
 #define UART_INTSTS_TXENDIF_Pos          (22)                                              /*!< UART_T::INTSTS: TXENDIF Position       */
 #define UART_INTSTS_TXENDIF_Msk          (0x1ul << UART_INTSTS_TXENDIF_Pos)                /*!< UART_T::INTSTS: TXENDIF Mask           */

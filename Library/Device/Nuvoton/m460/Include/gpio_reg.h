@@ -171,7 +171,7 @@ typedef struct
      * |        |          |n=6~15 for port I.
      * |        |          |Max. n=13 for port J.
      * |[n+16]  |RHIENn    |Port A-J Pin[n] Rising Edge or High Level Interrupt Trigger Type Enable Bit
-     * |        |          |The RHIEN (Px_INTEN[n+16]) bit is used to enable the interrupt for each of the corresponding input Px.n pin
+     * |        |          |The RHIEN (Px_INTEN[n+16]) bit is used to enable the interrupt for each of the corresponding input Px.n pin.
      * |        |          |Set bit to 1 also enable the pin wake-up function.
      * |        |          |When setting the RHIEN (Px_INTEN[n+16]) bit to 1 :
      * |        |          |If the interrupt is level trigger (TYPE (Px_INTTYPE[n]) bit is set to 1), the input Px.n pin will generate the interrupt while this pin state is at high level.

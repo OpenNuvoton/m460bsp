@@ -441,6 +441,7 @@ extern "C"
 #define CLK_PLLCTL_NO_2         0x4000UL        /*!< For output divider is 2 \hideinitializer */
 #define CLK_PLLCTL_NO_4         0xC000UL        /*!< For output divider is 4 \hideinitializer */
 
+#if (__HXT == 12000000)
 #define CLK_PLLCTL_72MHz_HXT    (CLK_PLLCTL_PLLSRC_HXT  | CLK_PLLCTL_NR(3UL) | CLK_PLLCTL_NF( 36UL) | CLK_PLLCTL_NO_4) /*!< Predefined PLLCTL setting for 72MHz PLL output with HXT(12MHz X'tal) \hideinitializer */
 #define CLK_PLLCTL_80MHz_HXT    (CLK_PLLCTL_PLLSRC_HXT  | CLK_PLLCTL_NR(3UL) | CLK_PLLCTL_NF( 40UL) | CLK_PLLCTL_NO_4) /*!< Predefined PLLCTL setting for 80MHz PLL output with HXT(12MHz X'tal) \hideinitializer */
 #define CLK_PLLCTL_144MHz_HXT   (CLK_PLLCTL_PLLSRC_HXT  | CLK_PLLCTL_NR(2UL) | CLK_PLLCTL_NF( 24UL) | CLK_PLLCTL_NO_2) /*!< Predefined PLLCTL setting for 144MHz PLL output with HXT(12MHz X'tal) \hideinitializer */
@@ -448,7 +449,9 @@ extern "C"
 #define CLK_PLLCTL_180MHz_HXT   (CLK_PLLCTL_PLLSRC_HXT  | CLK_PLLCTL_NR(3UL) | CLK_PLLCTL_NF( 45UL) | CLK_PLLCTL_NO_2) /*!< Predefined PLLCTL setting for 180MHz PLL output with HXT(12MHz X'tal) \hideinitializer */
 #define CLK_PLLCTL_192MHz_HXT   (CLK_PLLCTL_PLLSRC_HXT  | CLK_PLLCTL_NR(2UL) | CLK_PLLCTL_NF( 32UL) | CLK_PLLCTL_NO_2) /*!< Predefined PLLCTL setting for 192MHz PLL output with HXT(12MHz X'tal) \hideinitializer */
 #define CLK_PLLCTL_200MHz_HXT   (CLK_PLLCTL_PLLSRC_HXT  | CLK_PLLCTL_NR(3UL) | CLK_PLLCTL_NF( 25UL) | CLK_PLLCTL_NO_1) /*!< Predefined PLLCTL setting for 200MHz PLL output with HXT(12MHz X'tal) \hideinitializer */
-
+#else
+# error "The PLL pre-definitions are only valid when external crystal is 12MHz"
+#endif
 #define CLK_PLLCTL_72MHz_HIRC   (CLK_PLLCTL_PLLSRC_HIRC | CLK_PLLCTL_NR(3UL) | CLK_PLLCTL_NF( 36UL) | CLK_PLLCTL_NO_4) /*!< Predefined PLLCTL setting for 72MHz PLL output with HIRC(12MHz IRC) \hideinitializer */
 #define CLK_PLLCTL_80MHz_HIRC   (CLK_PLLCTL_PLLSRC_HIRC | CLK_PLLCTL_NR(3UL) | CLK_PLLCTL_NF( 40UL) | CLK_PLLCTL_NO_4) /*!< Predefined PLLCTL setting for 80MHz PLL output with HIRC(12MHz IRC) \hideinitializer */
 #define CLK_PLLCTL_144MHz_HIRC  (CLK_PLLCTL_PLLSRC_HIRC | CLK_PLLCTL_NR(2UL) | CLK_PLLCTL_NF( 24UL) | CLK_PLLCTL_NO_2) /*!< Predefined PLLCTL setting for 144MHz PLL output with HIRC(12MHz IRC) \hideinitializer */
@@ -484,7 +487,7 @@ extern "C"
 #define MODULE_CLKSEL_ENC(x)        (((x) & 0x07UL) << 26)   /*!< CLKSEL offset on MODULE index, 0x0:CLKSEL0, 0x1:CLKSEL1, 0x2:CLKSEL2, 0x3:CLKSEL3, 0x4:CLKSEL4, 0x5:CLKSEL5 \hideinitializer */
 #define MODULE_CLKSEL_Msk_ENC(x)    (((x) & 0x0fUL) << 22)   /*!< CLKSEL mask offset on MODULE index \hideinitializer */
 #define MODULE_CLKSEL_Pos_ENC(x)    (((x) & 0x1fUL) << 17)   /*!< CLKSEL position offset on MODULE index \hideinitializer */
-#define MODULE_CLKDIV_ENC(x)        (((x) & 0x07UL) << 14)   /*!< APBCLK CLKDIV on MODULE index, 0x0:CLKDIV0, 0x1:CLKDIV1, 0x2:CLKDIV2, 0x3:CLKDIV3, 0x4:CLKDIV4, 0x4:CLKDIV5 \hideinitializer */
+#define MODULE_CLKDIV_ENC(x)        (((x) & 0x07UL) << 14)   /*!< APBCLK CLKDIV on MODULE index, 0x0:CLKDIV0, 0x1:CLKDIV1, 0x2:CLKDIV2, 0x3:CLKDIV3, 0x4:CLKDIV4, 0x5:CLKDIV5 \hideinitializer */
 #define MODULE_CLKDIV_Msk_ENC(x)    (((x) & 0x0fUL) << 10)   /*!< CLKDIV mask offset on MODULE index \hideinitializer */
 #define MODULE_CLKDIV_Pos_ENC(x)    (((x) & 0x1fUL) <<  5)   /*!< CLKDIV position offset on MODULE index \hideinitializer */
 #define MODULE_IP_EN_Pos_ENC(x)     (((x) & 0x1fUL) <<  0)   /*!< AHBCLK/APBCLK offset on MODULE index \hideinitializer */
@@ -1046,6 +1049,22 @@ extern "C"
   * @details    This macro disables Wake-up pin 4 (GPF.6) at Deep Power-down mode.
   */
 #define CLK_DISABLE_DPDWKPIN4()   (CLK->PMUCTL &= ~CLK_PMUCTL_WKPINEN4_Msk)
+
+/**
+  * @brief      Disable DPD Mode VBUS Wake-up
+  * @param      None
+  * @return     None
+  * @details    This macro disables VBUS Wake-up pin (GPA.12) at Deep Power-down mode.
+  */
+#define CLK_DISABLE_DPDVBUS()     (CLK->PMUCTL &= ~CLK_PMUCTL_VBUSWKEN_Msk)
+
+/**
+  * @brief      Enable DPD Mode VBUS Wake-up
+  * @param      None
+  * @return     None
+  * @details    This macro enables VBUS Wake-up pin (GPA.12) at Deep Power-down mode.
+  */
+#define CLK_ENABLE_DPDVBUS()      (CLK->PMUCTL |= CLK_PMUCTL_VBUSWKEN_Msk)
 
 /**
   * @brief      Disable SPD Mode ACMP Wake-up
