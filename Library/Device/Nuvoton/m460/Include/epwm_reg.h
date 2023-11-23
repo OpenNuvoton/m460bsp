@@ -3309,8 +3309,8 @@ typedef struct
     /// @endcond //HIDDEN_SYMBOLS
     __I  uint32_t FTCBUF[3];             /*!< [0x0340] EPWM FTCMPDAT0_1/2_3/4_5 Buffer                                   */
     __IO uint32_t FTCI;                  /*!< [0x034c] EPWM FTCMPDAT Indicator Register                                  */
-    __I  uint32_t CPSCBUF[5];            /*!< [0x0350~0x364] EPWM CLKPSC0~5 Buffer                                       */
-    __I  uint32_t IFACNT[5];             /*!< [0x0368~0x37C] EPWM Interrupt Flag Accumulator Counter 0~5                 */
+    __I  uint32_t CPSCBUF[6];            /*!< [0x0350~0x364] EPWM CLKPSC0~5 Buffer                                       */
+    __I  uint32_t IFACNT[6];             /*!< [0x0368~0x37C] EPWM Interrupt Flag Accumulator Counter 0~5                 */
 
 } EPWM_T;
 

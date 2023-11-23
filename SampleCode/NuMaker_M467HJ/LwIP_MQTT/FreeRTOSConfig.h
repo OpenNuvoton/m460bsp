@@ -48,7 +48,11 @@
 extern uint32_t SystemCoreClock;
 #endif
 
-#define TRACE(...) {printf(__VA_ARGS__);printf("\n");}//clyu
+#if (defined(__ARMCC_VERSION) || defined(__GNUC__))
+#define TRACE(...) {printf(__VA_ARGS__); printf("\n");}//clyu
+#else
+#define TRACE   printf
+#endif
 
 
 #define configUSE_PREEMPTION            1
