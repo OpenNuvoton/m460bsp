@@ -4621,7 +4621,7 @@ typedef struct
      * |        |          |0 = SRAM parity check error NMI source Disabled.
      * |        |          |1 = SRAM parity check error NMI source Enabled.
      * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
-     * |[4]     |CLKFAIL   |Clock Fail Detected and IRC Auto Trim Interrupt NMI Source Enable (Write Protect)
+     * |[4]     |CLKFAIL   |Clock Fail Detected Interrupt NMI Source Enable (Write Protect)
      * |        |          |0 = Clock fail detected interrupt NMI source Disabled.
      * |        |          |1 = Clock fail detected interrupt NMI source Enabled.
      * |        |          |Note: This bit is write protected. Refer to the SYS_REGLCTL register.
@@ -4682,7 +4682,7 @@ typedef struct
      * |[3]     |SRAMPERR  |SRAM Parity Check Error Interrupt Flag (Read Only)
      * |        |          |0 = SRAM parity check error interrupt is deasserted.
      * |        |          |1 = SRAM parity check error interrupt is asserted.
-     * |[4]     |CLKFAIL   |Clock Fail Detected or IRC Auto Trim Interrupt Flag (Read Only)
+     * |[4]     |CLKFAIL   |Clock Fail Detected Interrupt Flag (Read Only)
      * |        |          |0 = Clock fail detected interrupt is deasserted.
      * |        |          |1 = Clock fail detected interrupt is asserted.
      * |[6]     |RTCINT    |RTC Interrupt Flag (Read Only)
@@ -4775,7 +4775,7 @@ typedef struct
 #define NMI_NMISTS_BODOUT_Msk            (0x1ul << NMI_NMISTS_BODOUT_Pos)                  /*!< NMI_T::NMISTS: BODOUT Mask             */
 
 #define NMI_NMISTS_IRCINT_Pos            (1)                                               /*!< NMI_T::NMISTS: IRCINT Position        */
-#define NMI_NMISTS_IRCINT_Msk            (0x1ul << NMI_NMISTS_IRC_NT_Pos)                  /*!< NMI_T::NMISTS: IRCINT Mask            */
+#define NMI_NMISTS_IRCINT_Msk            (0x1ul << NMI_NMISTS_IRCINT_Pos)                  /*!< NMI_T::NMISTS: IRCINT Mask            */
 
 #define NMI_NMISTS_PWRWUINT_Pos          (2)                                               /*!< NMI_T::NMISTS: PWRWUINT Position       */
 #define NMI_NMISTS_PWRWUINT_Msk          (0x1ul << NMI_NMISTS_PWRWUINT_Pos)                /*!< NMI_T::NMISTS: PWRWUINT Mask           */
