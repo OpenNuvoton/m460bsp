@@ -6621,8 +6621,12 @@ typedef struct
 #define CRPT_RSA_CTL_CRTBYP_Pos          (3)                                               /*!< CRPT_T::RSA_CTL: CRTBYP Position       */
 #define CRPT_RSA_CTL_CRTBYP_Msk          (0x1ul << CRPT_RSA_CTL_CRTBYP_Pos)                /*!< CRPT_T::RSA_CTL: CRTBYP Mask           */
 
-#define CRPT_RSA_CTL_KEYLENG_Pos         (4)                                               /*!< CRPT_T::RSA_CTL: KEYLENG Position      */
-#define CRPT_RSA_CTL_KEYLENG_Msk         (0x3ul << CRPT_RSA_CTL_KEYLENG_Pos)               /*!< CRPT_T::RSA_CTL: KEYLENG Mask          */
+#define CRPT_RSA_CTL_KEYLEN_Pos          (4)                                                /*!< CRPT_T::RSA_CTL: KEYLEN Position      */
+#define CRPT_RSA_CTL_KEYLEN_Msk          (0x3ul << CRPT_RSA_CTL_KEYLEN_Pos)                /*!< CRPT_T::RSA_CTL: KEYLEN Mask          */
+
+#define CRPT_RSA_CTL_SCAP_Pos             (8)                                               /*!< CRPT RSA_CTL: SCAP Position             */
+#define CRPT_RSA_CTL_SCAP_Msk             (0x1ul << CRPT_RSA_CTL_SCAP_Pos)                  /*!< CRPT RSA_CTL: SCAP Mask                 */
+
 
 #define CRPT_RSA_STS_BUSY_Pos            (0)                                               /*!< CRPT_T::RSA_STS: BUSY Position         */
 #define CRPT_RSA_STS_BUSY_Msk            (0x1ul << CRPT_RSA_STS_BUSY_Pos)                  /*!< CRPT_T::RSA_STS: BUSY Mask             */

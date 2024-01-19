@@ -2837,7 +2837,7 @@ int32_t RSA_Open(CRPT_T *crpt, uint32_t u32OpMode, uint32_t u32KeySize, \
 
     s_u32RsaOpMode = u32OpMode;
     s_pRSABuf = psRSA_Buf;
-    crpt->RSA_CTL = (u32OpMode) | (u32KeySize << CRPT_RSA_CTL_KEYLENG_Pos);
+    crpt->RSA_CTL = (u32OpMode) | (u32KeySize << CRPT_RSA_CTL_KEYLEN_Pos);
 
     return 0;
 }
@@ -2932,7 +2932,7 @@ int32_t RSA_Read(CRPT_T *crpt, char *Output)
         return (-1);
     }
 
-    u32CntIdx = (crpt->RSA_CTL & CRPT_RSA_CTL_KEYLENG_Msk) >> CRPT_RSA_CTL_KEYLENG_Pos;
+    u32CntIdx = (crpt->RSA_CTL & CRPT_RSA_CTL_KEYLEN_Msk) >> CRPT_RSA_CTL_KEYLEN_Pos;
     Reg2Hex((int32_t)au32CntTbl[u32CntIdx], ((RSA_BUF_NORMAL_T *)s_pRSABuf)->au32RsaOutput, Output);
 
     return 0;
