@@ -118,7 +118,7 @@ extern "C"
 #define RSA_MODE_NORMAL         (0x000UL)     /*!< RSA select normal mode                \hideinitializer */
 #define RSA_MODE_CRT            (0x004UL)     /*!< RSA select CRT mode                   \hideinitializer */
 #define RSA_MODE_CRTBYPASS      (0x00CUL)     /*!< RSA select CRT bypass mode            \hideinitializer */
-
+#define RSA_MODE_SCAP           (0x100UL)     /*!< RSA select SCAP mode                  \hideinitializer */
 
 typedef enum
 {
@@ -179,6 +179,9 @@ typedef struct
     uint32_t au32RsaN[128]; /* The base of modulus operation word. */
     uint32_t au32RsaM[128]; /* The base of exponentiation words. */
     uint32_t au32RsaE[128]; /* The exponent of exponentiation words. */
+    uint32_t au32RsaP[128]; /* The Factor of Modulus Operation. */
+    uint32_t au32RsaQ[128]; /* The Factor of Modulus Operation. */
+    uint32_t au32RsaTmpE[128+4]; /* The Temporary Buffer for SCAP      */
 } RSA_BUF_NORMAL_T;
 
 /* RSA working buffer for CRT ( + CRT bypass) mode */
@@ -196,6 +199,7 @@ typedef struct
     uint32_t au32RsaTmpDq[128]; /* The Temporary Value(Dq) of RSA CRT. */
     uint32_t au32RsaTmpRp[128]; /* The Temporary Value(Rp) of RSA CRT. */
     uint32_t au32RsaTmpRq[128]; /* The Temporary Value(Rq) of RSA CRT. */
+    uint32_t au32RsaTmpE[128+4]; /* The Temporary Buffer for SCAP      */
 } RSA_BUF_CRT_T;
 
 /* RSA working buffer for using key store */
@@ -204,6 +208,7 @@ typedef struct
     uint32_t au32RsaOutput[128]; /* The RSA answer. */
     uint32_t au32RsaN[128]; /* The base of modulus operation word. */
     uint32_t au32RsaM[128]; /* The base of exponentiation words. */
+    uint32_t au32RsaTmpE[128+4]; /* The Temporary Buffer for SCAP      */
 } RSA_BUF_KS_T;
 
 /**@}*/ /* end of group CRYPTO_EXPORTED_CONSTANTS */
