@@ -1,4 +1,4 @@
-/**************************************************************************//**
+﻿/**************************************************************************//**
  * @file     crypto.h
  * @version  V3.00
  * @brief    Cryptographic Accelerator driver header file
@@ -81,11 +81,11 @@ extern "C"
 #define AES_IN_SWAP             (2UL)     /*!< AES swap input data                     \hideinitializer */
 #define AES_IN_OUT_SWAP         (3UL)     /*!< AES swap both input and output data     \hideinitializer */
 
-#define SHA_MODE_SHA1           (0UL)     /*!< SHA select SHA-1 160-bit                \hideinitializer */
-#define SHA_MODE_SHA224         (5UL)     /*!< SHA select SHA-224 224-bit              \hideinitializer */
-#define SHA_MODE_SHA256         (4UL)     /*!< SHA select SHA-256 256-bit              \hideinitializer */
-#define SHA_MODE_SHA384         (7UL)     /*!< SHA select SHA-384 384-bit              \hideinitializer */
-#define SHA_MODE_SHA512         (6UL)     /*!< SHA select SHA-512 512-bit              \hideinitializer */
+#define SHA_MODE_SHA1           (0x0UL)    /*!< SHA select SHA-1 160-bit                \hideinitializer */
+#define SHA_MODE_SHA224         (0x5UL)    /*!< SHA select SHA-224 224-bit              \hideinitializer */
+#define SHA_MODE_SHA256         (0x4UL)    /*!< SHA select SHA-256 256-bit              \hideinitializer */
+#define SHA_MODE_SHA384         (0x7UL)    /*!< SHA select SHA-384 384-bit              \hideinitializer */
+#define SHA_MODE_SHA512         (0x6UL)    /*!< SHA select SHA-512 512-bit              \hideinitializer */
 
 #define HMAC_MODE_SHA1          (8UL)     /*!< HMAC select SHA-1 160-bit                \hideinitializer */
 #define HMAC_MODE_SHA224        (13UL)    /*!< HMAC select SHA-224 224-bit              \hideinitializer */
@@ -119,6 +119,9 @@ extern "C"
 #define RSA_MODE_CRT            (0x004UL)     /*!< RSA select CRT mode                   \hideinitializer */
 #define RSA_MODE_CRTBYPASS      (0x00CUL)     /*!< RSA select CRT bypass mode            \hideinitializer */
 #define RSA_MODE_SCAP           (0x100UL)     /*!< RSA select SCAP mode                  \hideinitializer */
+#define RSA_MODE_CRT_SCAP       (0x104UL)     /*!< RSA select CRT SCAP mode              \hideinitializer */
+#define RSA_MODE_CRTBYPASS_SCAP (0x10CUL)     /*!< RSA select CRT bypass SCAP mode       \hideinitializer */
+
 
 typedef enum
 {
@@ -142,8 +145,8 @@ typedef enum
     CURVE_KO_224,                       /*!< ECC 224-bits "Koblitz" curve   \hideinitializer */
     CURVE_KO_256,                       /*!< ECC 256-bits "Koblitz" curve   \hideinitializer */
     CURVE_BP_256,                       /*!< ECC Brainpool 256-bits curve   \hideinitializer */
-    CURVE_BP_384,                       /*!< ECC Brainpool 256-bits curve   \hideinitializer */
-    CURVE_BP_512,                       /*!< ECC Brainpool 256-bits curve   \hideinitializer */
+    CURVE_BP_384,                       /*!< ECC Brainpool 384-bits curve   \hideinitializer */
+    CURVE_BP_512,                       /*!< ECC Brainpool 512-bits curve   \hideinitializer */
     CURVE_25519,                        /*!< ECC curve-25519          \hideinitializer */
     CURVE_SM2_256,                      /*!< SM2                      \hideinitializer */
     CURVE_UNDEF = -0x7fffffff,                        /*!< Invalid curve            \hideinitializer */
