@@ -854,7 +854,7 @@ int mbedtls_rsa_public(mbedtls_rsa_context* ctx,
     SYS->IPRST0 |= SYS_IPRST0_CRPTRST_Msk;
     SYS->IPRST0 = 0;
 
-    CRPT->RSA_CTL = RSA_MODE_NORMAL | ((ctx->MBEDTLS_PRIVATE(len) / 128 - 1) << CRPT_RSA_CTL_KEYLENG_Pos);
+    CRPT->RSA_CTL = RSA_MODE_NORMAL | ((ctx->MBEDTLS_PRIVATE(len) / 128 - 1) << CRPT_RSA_CTL_KEYLEN_Pos);
 
     mbedtls_mpi_init(&ctx->M);
     //mbedtls_mpi_init(&ctx->CP);
@@ -910,7 +910,7 @@ int mbedtls_rsa_private(mbedtls_rsa_context* ctx,
     SYS->IPRST0 |= SYS_IPRST0_CRPTRST_Msk;
     SYS->IPRST0 = 0;
 
-    CRPT->RSA_CTL = RSA_MODE_NORMAL | ((ctx->MBEDTLS_PRIVATE(len) / 128 - 1) << CRPT_RSA_CTL_KEYLENG_Pos);
+    CRPT->RSA_CTL = RSA_MODE_NORMAL | ((ctx->MBEDTLS_PRIVATE(len) / 128 - 1) << CRPT_RSA_CTL_KEYLEN_Pos);
 
     mbedtls_mpi_init(&ctx->M);
     //mbedtls_mpi_init(&ctx->CP);
