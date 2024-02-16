@@ -81,8 +81,8 @@ void SYS_Init(void)
     SET_SPI0_CLK_PA2();
     SET_SPI0_SS_PA3();
 
-    /* Enable SPI0 clock pin (PA2) schmitt trigger */
-    PA->SMTEN |= GPIO_SMTEN_SMTEN2_Msk;
+    /* Enable SPI0 clock pin (PA2) and SPI0 SS pin (PA3) schmitt trigger */
+    PA->SMTEN |= GPIO_SMTEN_SMTEN2_Msk | GPIO_SMTEN_SMTEN3_Msk;
 }
 
 void SPI_Init(void)
