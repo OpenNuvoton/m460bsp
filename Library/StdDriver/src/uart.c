@@ -43,7 +43,7 @@ void UART_ClearIntFlag(UART_T* uart, uint32_t u32InterruptFlag)
 {
     if(u32InterruptFlag & UART_INTSTS_SWBEINT_Msk)  /* Clear Single-wire Bit Error Detect Interrupt */
     {
-        uart->FIFOSTS = UART_INTSTS_SWBEIF_Msk;
+        uart->INTSTS = UART_INTSTS_SWBEIF_Msk;
     }
 
     if(u32InterruptFlag & UART_INTSTS_RLSINT_Msk)   /* Clear Receive Line Status Interrupt */

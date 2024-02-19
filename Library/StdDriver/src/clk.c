@@ -1758,7 +1758,7 @@ uint32_t CLK_EnablePLLFN(uint32_t u32PllClkSrc, uint32_t u32PllFreq)
         else
         {
             /* Apply default PLLFN setting and return */
-            CLK->PLLFNCTL0 = CLK_PLLCTL_192MHz_HXT;
+            CLK->PLLFNCTL0 = CLK_PLLFNCTL0_192MHz_HIRC;
             CLK->PLLFNCTL1 = CLK_PLLFNCTL1_PLLSRC_HIRC;
 
             /* Actual PLL output clock frequency */

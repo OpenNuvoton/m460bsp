@@ -464,6 +464,7 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /*  PLLFNCTL constant definitions.                                                                         */
 /*---------------------------------------------------------------------------------------------------------*/
+#define CLK_PLLFNCTL0_192MHz_HIRC  (CLK_PLLCTL_NR(2UL) | CLK_PLLCTL_NF( 32UL) | CLK_PLLCTL_NO_2) /*!< Predefined PLLFNCTL0 setting for 192MHz PLLFN output with HIRC(12MHz IRC) \hideinitializer */
 #define CLK_PLLFNCTL1_PLLSRC_HXT   0x00000000UL
 #define CLK_PLLFNCTL1_PLLSRC_HIRC  CLK_PLLFNCTL1_PLLSRC_Msk
 
@@ -476,7 +477,7 @@ extern "C"
 #define MODULE_CLKSEL(x)        (((x) >>26) & 0x07UL)   /*!< Calculate CLKSEL offset on MODULE index, 0x0:CLKSEL0, 0x1:CLKSEL1, 0x2:CLKSEL2, 0x3:CLKSEL3, 0x4:CLKSEL4 \hideinitializer */
 #define MODULE_CLKSEL_Msk(x)    (((x) >>22) & 0x0fUL)   /*!< Calculate CLKSEL mask offset on MODULE index \hideinitializer */
 #define MODULE_CLKSEL_Pos(x)    (((x) >>17) & 0x1fUL)   /*!< Calculate CLKSEL position offset on MODULE index \hideinitializer */
-#define MODULE_CLKDIV(x)        (((x) >>14) & 0x07UL)   /*!< Calculate APBCLK CLKDIV on MODULE index, 0x0:CLKDIV0, 0x1:CLKDIV1, 0x2:CLKDIV2, 0x3:CLKDIV3, 0x4:CLKDIV4, 0x5:CLKDIV5 \hideinitializer */
+#define MODULE_CLKDIV(x)        (((x) >>14) & 0x07UL)   /*!< Calculate CLKDIV offset on MODULE index, 0x0:CLKDIV0, 0x1:CLKDIV1, 0x2:CLKDIV2, 0x3:CLKDIV3, 0x4:CLKDIV4, 0x5:CLKDIV5 \hideinitializer */
 #define MODULE_CLKDIV_Msk(x)    (((x) >>10) & 0x0fUL)   /*!< Calculate CLKDIV mask offset on MODULE index \hideinitializer */
 #define MODULE_CLKDIV_Pos(x)    (((x) >>5 ) & 0x1fUL)   /*!< Calculate CLKDIV position offset on MODULE index \hideinitializer */
 #define MODULE_IP_EN_Pos(x)     (((x) >>0 ) & 0x1fUL)   /*!< Calculate APBCLK offset on MODULE index \hideinitializer */
