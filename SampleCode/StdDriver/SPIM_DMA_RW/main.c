@@ -88,10 +88,10 @@ void SYS_Init(void)
     PJ->SMTEN |= GPIO_SMTEN_SMTEN0_Msk;
 
     /* Set SPIM I/O pins as high slew rate up to 80 MHz. */
-    PI->SLEWCTL = (PE->SLEWCTL & 0x0CFFFFFF) |
+    PI->SLEWCTL = (PI->SLEWCTL & 0x0CFFFFFF) |
                   (0x1<<GPIO_SLEWCTL_HSREN12_Pos) | (0x1<<GPIO_SLEWCTL_HSREN14_Pos) |
                   (0x1<<GPIO_SLEWCTL_HSREN15_Pos) ;
-    PJ->SLEWCTL = (PE->SLEWCTL & 0xF3FFFFF0) |
+    PJ->SLEWCTL = (PJ->SLEWCTL & 0xF3FFFFF0) |
                   (0x1<<GPIO_SLEWCTL_HSREN0_Pos) | (0x1<<GPIO_SLEWCTL_HSREN1_Pos) |
                   (0x1<<GPIO_SLEWCTL_HSREN13_Pos) ;
 #endif
