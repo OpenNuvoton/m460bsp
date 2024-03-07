@@ -649,7 +649,8 @@ int32_t main(void)
     /* Configure PDMA and use Scatter-Gather mode */
     PDMA_Init();
 
-    WAVPlayer();
-
-    while(1);
+    while(1)
+    {
+        WAVPlayer();
+    }
 }

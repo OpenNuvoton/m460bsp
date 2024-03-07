@@ -240,6 +240,7 @@ void USBD20_IRQHandler(void)
 
         /* Set a flag to indicate bulk out ready */
         gi8BulkOutReady = 1;
+        HSUSBD_ENABLE_EP_INT(EPB, 0);
         HSUSBD_CLR_EP_INT_FLAG(EPB, IrqSt);
     }
 

@@ -223,6 +223,7 @@ void VCOM_TransferData(void)
 
         gu32RxSize = 0;
         gi8BulkOutReady = 0; /* Clear bulk out ready flag */
+        HSUSBD_ENABLE_EP_INT(EPB, HSUSBD_EPINTEN_RXPKIEN_Msk | HSUSBD_EPINTEN_SHORTRXIEN_Msk);
     }
 
     /* Process the software Tx FIFO */
