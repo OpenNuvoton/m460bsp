@@ -78,11 +78,8 @@ void USBD_Open(const S_USBD_INFO_T *param, CLASS_REQ pfnClassReq, SET_INTERFACE_
     g_usbd_CtrlMaxPktSize = g_usbd_sInfo->gu8DevDesc[7];
 
     /* Initial USB engine */
-#ifdef SUPPORT_LPM
-    USBD->ATTR = 0x7D0ul | USBD_LPMACK;
-#else
     USBD->ATTR = 0x7D0ul;
-#endif
+
     /* Force SE0 */
     USBD_SET_SE0();
 }

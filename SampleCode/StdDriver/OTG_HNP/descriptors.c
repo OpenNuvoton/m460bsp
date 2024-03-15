@@ -140,25 +140,6 @@ const uint8_t gu8ProductStringDesc[] =
     'H', 0, 'I', 0, 'D', 0, ' ', 0, 'M', 0, 'o', 0, 'u', 0, 's', 0, 'e', 0
 };
 
-#ifdef SUPPORT_LPM
-/*!<USB BOS Descriptor */
-const uint8_t gu8BOSDescriptor[] =
-{
-    LEN_BOS,        /* bLength */
-    DESC_BOS,       /* bDescriptorType */
-    /* wTotalLength */
-    0x0C & 0x00FF,
-    ((0x0C & 0xFF00) >> 8),
-    0x01,           /* bNumDeviceCaps */
-
-    /* Device Capability */
-    LEN_BOSCAP,     /* bLength */
-    DESC_CAPABILITY,/* bDescriptorType */
-    CAP_USB20_EXT,  /* bDevCapabilityType */
-    0x02, 0x00, 0x00, 0x00  /* bmAttributes */
-};
-#endif
-
 const uint8_t *gpu8UsbString[4] =
 {
     gu8StringLang,
@@ -194,11 +175,7 @@ const S_USBD_INFO_T gsInfo =
     (uint8_t *)gu8ConfigDescriptor,
     (uint8_t **)gpu8UsbString,
     (uint8_t **)gpu8UsbHidReport,
-#ifdef SUPPORT_LPM
-    (uint8_t *)gu8BOSDescriptor,
-#else
     NULL,
-#endif
     (uint32_t *)gu32UsbHidReportLen,
     (uint32_t *)gu32ConfigHidDescIdx
 };

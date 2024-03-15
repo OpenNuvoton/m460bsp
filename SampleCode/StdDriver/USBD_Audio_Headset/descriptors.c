@@ -693,30 +693,6 @@ uint8_t gu8ConfigDescriptor[] =
 #endif
 };
 
-#ifdef SUPPORT_LPM
-/*!<USB BOS Descriptor */
-uint8_t gu8BosDescriptor[] =
-{
-    LEN_BOS,                         /* bLength         */
-    DESC_BOS,                        /* bDescriptorType */
-    ((LEN_BOS + LEN_BOSCAP) & 0xFF), /* wTotalLength    */
-    ((LEN_BOS + LEN_BOSCAP) >> 8),   /* wTotalLength    */
-    0x01,                            /* bNumDevcieCaps  */
-    LEN_BOSCAP,                      /* bLength         */
-    DESC_CAPABILITY,                 /* bDescriptorType */
-    CAP_USB20_EXT,                   /* bDevCapabilityType, 0x02 is USB 2.0 Extension */
-    0x06, 0x04, 0x00, 0x00  /* bmAttributs, 32 bits     */
-    /* bit 0 : Reserved. Must 0.                                         */
-    /* bit 1 : 1 to support LPM.                                         */
-    /* bit 2 : 1 to support BSL & Alternat HIRD                          */
-    /* bit 3 : 1 to recommend Baseline BESL                              */
-    /* bit 4 : 1 to recommand Deep BESL                                  */
-    /* bit 11:8 : Recommend Baseline BESL value. Ignore by bit3 is zero. */
-    /* bit 15:12 : Recommend Deep BESL value. Ignore by bit4 is zero.    */
-    /* bit 31:16 : Reserved. Must 0.                                     */
-};
-#endif
-
 /*!<USB Language String Descriptor */
 uint8_t gu8StringLang[4] =
 {
@@ -813,11 +789,7 @@ const S_USBD_INFO_T gsInfo =
     (uint8_t *)gu8ConfigDescriptor,
     (uint8_t **)gpu8UsbString,
     (uint8_t **)gu8UsbHidReport,
-#ifdef SUPPORT_LPM
-    (uint8_t *)gu8BosDescriptor,
-#else
     NULL,
-#endif
     (uint32_t *)gu32UsbHidReportLen,
     (uint32_t *)gu32ConfigHidDescIdx
 };

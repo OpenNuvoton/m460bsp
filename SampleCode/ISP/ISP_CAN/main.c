@@ -9,9 +9,9 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-#define PLL_CLOCK 200000000
+#define PLL_CLOCK                         200000000
 
-#define GPIO_SETMODE(port, pin, u32Mode) ((port)->MODE = ((port)->MODE & ~(0x3ul << ((pin) << 1))) | ((u32Mode) << ((pin) << 1)))
+#define GPIO_SETMODE(port, pin, u32Mode)  ((port)->MODE = ((port)->MODE & ~(0x3ul << ((pin) << 1))) | ((u32Mode) << ((pin) << 1)))
 
 #define CAN_BAUD_RATE                     500000
 #define Master_ISP_ID                     0x487
@@ -89,7 +89,7 @@ void CANFD00_IRQHandler(void)
     /**************************/
     /* Status Change interrupt*/
     /**************************/
-    if ((u32IIDRstatus & CANFD_IR_RF0N_Msk) == CANFD_IR_RF0N_Msk)
+    if((u32IIDRstatus & CANFD_IR_RF0N_Msk) == CANFD_IR_RF0N_Msk)
     {
         /*Clear the Interrupt flag */
         CANFD_ClearStatusFlag(CANFD0, CANFD_IR_TOO_Msk | CANFD_IR_RF0N_Msk);
@@ -159,7 +159,7 @@ int32_t SYS_Init(void)
 
     /* Select CAN FD0 clock source is HCLK */
     CLK->CLKDIV5 = (CLK->CLKDIV5 & (~CLK_CLKDIV5_CANFD0DIV_Msk)) | CLK_CLKDIV5_CANFD0(1);
-    CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_CANFD0SEL_Msk))| CLK_CLKSEL0_CANFD0SEL_HCLK;
+    CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_CANFD0SEL_Msk)) | CLK_CLKSEL0_CANFD0SEL_HCLK;
 
     /* Enable CAN FD0 peripheral clock */
     CLK->AHBCLK1 |= CLK_AHBCLK1_CANFD0CKEN_Msk;
@@ -191,7 +191,7 @@ void CAN_Package_ACK(CANFD_T *psCanfd)
     sTxMsgFrame.au32Data[0] = g_sRxMsgFrame.au32Data[0];
     sTxMsgFrame.au32Data[1] = g_sRxMsgFrame.au32Data[1];
 
-    if (CANFD_TransmitTxMsg(psCanfd, 0, &sTxMsgFrame) == FALSE)    // Configure Msg RAM and send the Msg in the RAM
+    if(CANFD_TransmitTxMsg(psCanfd, 0, &sTxMsgFrame) == FALSE)     // Configure Msg RAM and send the Msg in the RAM
     {
         return;
     }
@@ -201,6 +201,7 @@ void CAN_Package_ACK(CANFD_T *psCanfd)
 void CAN_Init(void)
 {
     CANFD_FD_T sCANFD_Config;
+
     /* Enable CAN FD0 peripheral clock */
     CLK->AHBCLK1 |= CLK_AHBCLK1_CANFD0CKEN_Msk;
 
@@ -235,15 +236,6 @@ void CAN_Init(void)
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
-/*                                    Fini CAN FD0                                                         */
-/*---------------------------------------------------------------------------------------------------------*/
-void CANFD_Fini(void)
-{
-    NVIC_DisableIRQ(CANFD00_IRQn);
-    CANFD_Close(CANFD0);
-}
-
-/*---------------------------------------------------------------------------------------------------------*/
 /* MAIN function                                                                                           */
 /*---------------------------------------------------------------------------------------------------------*/
 int main(void)
@@ -252,8 +244,8 @@ int main(void)
     SYS_UnlockReg();
 
     /* Init System, IP clock and multi-function I/O */
-    if( SYS_Init() < 0 )
-        goto lexit;
+    if(SYS_Init() < 0)
+        goto _APROM;
 
     /* Enable FMC ISP AP CFG function & clear ISPFF */
     FMC->ISPCTL |= FMC_ISPCTL_ISPEN_Msk | FMC_ISPCTL_APUEN_Msk | FMC_ISPCTL_CFGUEN_Msk | FMC_ISPCTL_ISPFF_Msk;
@@ -266,43 +258,43 @@ int main(void)
     SysTick->VAL   = (0x00);
     SysTick->CTRL = SysTick->CTRL | SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
 
-    while (1)
+    while(1)
     {
-        if (s_u8CANPackageFlag == 1)
+        if(s_u8CANPackageFlag == 1)
         {
             break;
         }
 
-        if (SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk)
+        if(SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk)
         {
-            goto lexit;
+            goto _APROM;
         }
     }
 
     /* state of update program */
-    while (1)
+    while(1)
     {
-        if (s_u8CANPackageFlag)
+        if(s_u8CANPackageFlag)
         {
             volatile STR_CANMSG_ISP_T *psISPCanMsg = (STR_CANMSG_ISP_T *)&g_sRxMsgFrame.au32Data[0];
             s_u8CANPackageFlag = 0;
 
-            if (psISPCanMsg->Address == CMD_GET_DEVICEID)
+            if(psISPCanMsg->Address == CMD_GET_DEVICEID)
             {
                 psISPCanMsg->Data = SYS->PDID;
             }
-            else if (psISPCanMsg->Address == CMD_READ_CONFIG)
+            else if(psISPCanMsg->Address == CMD_READ_CONFIG)
             {
                 psISPCanMsg->Data = FMC_Read(psISPCanMsg->Data);
             }
-            else if (psISPCanMsg->Address == CMD_RUN_APROM)
+            else if(psISPCanMsg->Address == CMD_RUN_APROM)
             {
                 break;
             }
             else
             {
                 PD2 = 0;
-                if ((psISPCanMsg->Address % FMC_FLASH_PAGE_SIZE) == 0)
+                if((psISPCanMsg->Address % FMC_FLASH_PAGE_SIZE) == 0)
                 {
                     FMC_Erase(psISPCanMsg->Address);
                 }
@@ -317,10 +309,10 @@ int main(void)
         }
     }
 
-lexit:
-
-    /* CAN FD interface finalization */
-    CANFD_Fini();
+_APROM:
+    /* Reset system and boot from APROM */
+    FMC_SetVectorPageAddr(FMC_APROM_BASE);
+    NVIC_SystemReset();
 
     /* Trap the CPU */
     while(1);

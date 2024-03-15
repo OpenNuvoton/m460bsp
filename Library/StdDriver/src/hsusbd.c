@@ -216,22 +216,6 @@ int HSUSBD_GetDescriptor(void)
 
             break;
         }
-#ifdef SUPPORT_LPM
-        /* Get BOS Descriptor */
-        case DESC_BOS:
-        {
-            if(g_hsusbd_sInfo->gu8BosDesc == 0)
-            {
-                HSUSBD_SET_CEP_STATE(HSUSBD_CEPCTL_STALLEN_Msk);
-            }
-            else
-            {
-                u32Len = Minimum(u32Len, LEN_BOS + LEN_BOSCAP);
-                HSUSBD_PrepareCtrlIn((uint8_t *)g_hsusbd_sInfo->gu8BosDesc, u32Len);
-            }
-            break;
-        }
-#endif
         /* Get Qualifier Descriptor */
         case DESC_QUALIFIER:
         {

@@ -136,10 +136,6 @@ int32_t main(void)
 
     HSUSBD_Open(&gsHSInfo, HID_ClassRequest, NULL);
 
-#ifdef SUPPORT_LPM
-    HSUSBD_ENABLE_LPM();
-#endif
-
     /* Endpoint configuration */
     HID_Init();
 
