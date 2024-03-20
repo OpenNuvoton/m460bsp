@@ -1,0 +1,1239 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<ProjectWorkspace xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="project_mpw.xsd">
+
+  <SchemaVersion>1.0</SchemaVersion>
+
+  <Header>### uVision Project, (C) Keil Software</Header>
+
+  <WorkspaceName>WorkSpace</WorkspaceName>
+
+  <project>
+    <PathAndName>.\StdDriver\FMC_IAP\Keil\fmc_ld_code.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\CortexM4\BitBand\Keil\BitBand.uvprojx</PathAndName>
+    <NodeIsActive>1</NodeIsActive>
+  </project>
+
+  <project>
+    <PathAndName>.\CortexM4\DSP_FFT\KEIL\dsp_fft.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\CortexM4\MPU\Keil\MPU.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\Crypto\mbedTLS_AES\Keil\AES.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\Crypto\mbedTLS_ECDH\Keil\ECDH.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\Crypto\mbedTLS_ECDSA\Keil\ECDSA.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\Crypto\mbedTLS_RSA\Keil\RSA.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\Crypto\mbedTLS_SHA256\Keil\SHA256.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\FreeRTOS\Blinky\Keil\RTOSDemo.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\FreeRTOS\TicklessIdle\Keil\TicklessIdle.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\Hard_Fault_Sample\Keil\Hard_Fault_Sample.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\ISP\ISP_CAN\Keil\ISP_CAN.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\ISP\ISP_DFU\Keil\ISP_DFU.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\ISP\ISP_DFU_20\Keil\ISP_DFU_20.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\ISP\ISP_HID\Keil\ISP_HID.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\ISP\ISP_HID_20\Keil\ISP_HID_20.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\ISP\ISP_I2C\KEIL\ISP_I2C.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\ISP\ISP_RS485\Keil\ISP_RS485.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\ISP\ISP_SPI\Keil\ISP_SPI.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\ISP\ISP_UART\Keil\ISP_UART.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\NuMaker_M467HJ\Blinky\Keil\Blinky.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\NuMaker_M467HJ\LwIP_httpd_netconn\KEIL\LwIP_httpd_netconn.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\NuMaker_M467HJ\LwIP_httpd_socket\KEIL\LwIP_httpd_socket.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\NuMaker_M467HJ\LwIP_MQTT\KEIL\LwIP_MQTT.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\NuMaker_M467HJ\LwIP_SSL_Client\KEIL\LwIP_SSL_Client.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\NuMaker_M467HJ\LwIP_SSL_Server\KEIL\LwIP_SSL_Server.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\NuMaker_M467HJ\LwIP_TCP_EchoClient\KEIL\LwIP_TCP_EchoClient.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\NuMaker_M467HJ\LwIP_TCP_EchoServer\KEIL\LwIP_TCP_EchoServer.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\NuMaker_M467HJ\LwIP_tftp_client\KEIL\LwIP_tftp_client.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\NuMaker_M467HJ\LwIP_tftp_server\KEIL\LwIP_tftp_server.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\NuMaker_M467HJ\LwIP_UDP_EchoClient\KEIL\LwIP_UDP_EchoClient.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\NuMaker_M467HJ\LwIP_UDP_EchoServer\KEIL\LwIP_UDP_EchoServer.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\NuMaker_M467HJ\MP3_Player\Keil\MP3_Player.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\NuMaker_M467HJ\MP3_Recorder\Keil\MP3_Recorder.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\NuMaker_M467HJ\TemperatureSensor\Keil\TemperatureSensor.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\NuMaker_M467HJ\Xmodem\Keil\Xmodem.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\PowerManagement\SYS_DPDMode_Wakeup\Keil\SYS_DPDMode_Wakeup.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\PowerManagement\SYS_PowerDownMode\Keil\SYS_PowerDownMode.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\PowerManagement\SYS_PowerDown_MinCurrent\Keil\SYS_PowerDown_MinCurrent.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\PowerManagement\SYS_PowerMode\Keil\SYS_PowerMode.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\PowerManagement\SYS_SPDMode_Wakeup\Keil\SYS_SPDMode_Wakeup.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\ACMP_CompareDAC\Keil\ACMP_CompareDAC.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\ACMP_CompareVBG\Keil\ACMP_CompareVBG.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\ACMP_Wakeup\Keil\ACMP_Wakeup.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\ACMP_WindowCompare\Keil\ACMP_WindowComapre.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\BMC_Output\Keil\BMC_Output.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\BMC_PDMA_Output\Keil\BMC_PDMA_Output.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\BPWM_Capture\KEIL\BPWM_Capture.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\BPWM_DoubleBuffer\KEIL\BPWM_DoubleBuffer.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\BPWM_OutputWaveform\KEIL\BPWM_OutputWaveform.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\BPWM_SwitchDuty\KEIL\BPWM_SwitchDuty.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\BPWM_SyncStart\KEIL\BPWM_SyncStart.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\CANFD_CANFD_Loopback\KEIL\CANFD_CANFD_Loopback.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\CANFD_CANFD_TxRx\KEIL\CANFD_CANFD_TxRx.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\CANFD_CANFD_TxRxINT\KEIL\CANFD_CANFD_TxRxINT.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\CCAP_Mono_1Bit_Luma\Keil\CCAP_Mono_1Bit_Luma.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\CCAP_Packet_DownScale\Keil\CCAP_Packet_DownScale.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\CCAP_Packet_JpegEncode\Keil\CCAP_Packet_JpegEncode.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\CLK_ClockDetector\Keil\CLK_ClockDetector.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\CRC_CCITT\Keil\CRC_CCITT.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\CRC_CRC32\Keil\CRC_CRC32.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\CRC_CRC8\Keil\CRC_CRC8.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\CRYPTO_AES\KEIL\crypto_aes.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\CRYPTO_AES_CCM\KEIL\crypto_aes_ccm.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\CRYPTO_AES_GCM\KEIL\crypto_aes_gcm.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\CRYPTO_ECC_Demo\KEIL\CRYPTO_ECC_Demo.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\CRYPTO_ECC_ECDH\KEIL\CRYPTO_ECC_ECDH.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\CRYPTO_HMAC\KEIL\crypto_hmac.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\CRYPTO_RSA\KEIL\CRYPTO_RSA.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\CRYPTO_RSA_AccessKeyStore\KEIL\CRYPTO_RSA_AccessKeyStore.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\CRYPTO_RSA_CRTBypass\KEIL\CRYPTO_RSA_CRTBypass.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\CRYPTO_RSA_CRTBypassAccessKeyStore\KEIL\CRYPTO_RSA_CRTBypassAccessKeyStore.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\CRYPTO_SHA\KEIL\crypto_sha.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\DAC_EPWMTrigger\KEIL\DAC_EPWMTrigger.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\DAC_ExtPinTrigger\KEIL\DAC_ExtPinTrigger.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\DAC_GroupMode\KEIL\DAC_GroupMode.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\DAC_PDMA_EPWMTrigger\KEIL\DAC_PDMA_EPWMTrigger.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\DAC_PDMA_TimerTrigger\KEIL\DAC_PDMA_TimerTrigger.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\DAC_SoftwareTrigger\KEIL\DAC_SoftwareTrigger.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\DAC_TimerTrigger\KEIL\DAC_TimerTrigger.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EADC_Accumulate\KEIL\EADC_Accumulate.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EADC_ADINT_Trigger\KEIL\EADC_ADINT_Trigger.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EADC_Average\KEIL\EADC_Average.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EADC_BandGap\KEIL\EADC_BandGap.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EADC_EPWM_Trigger\KEIL\EADC_EPWM_Trigger.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EADC_PDMA_EPWM_Trigger\KEIL\EADC_PDMA_EPWM_Trigger.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EADC_Pending_Priority\KEIL\EADC_Pending_Priority.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EADC_ResultMonitor\KEIL\EADC_ResultMonitor.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EADC_SWTRG_Trigger\KEIL\EADC_SWTRG_Trigger.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EADC_TempSensor\KEIL\EADC_TempSensor.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EADC_Timer_Trigger\KEIL\EADC_Timer_Trigger.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EADC_VBat\KEIL\EADC_VBat.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EBI_NOR\Keil\EBI_NOR.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EBI_SRAM\Keil\EBI_SRAM.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\ECAP_GetEQEIFreq\Keil\ECAP_GetEQEIFreq.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\ECAP_GetInputFreq\Keil\ECAP_GetInputFreq.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EMAC_lwiperf\Keil\EMAC_lwiperf.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EMAC_TxRx\Keil\EMAC_TxRx.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EPWM_AccumulatorINT_TriggerPDMA\KEIL\EPWM_AccumulatorINT_TriggerPDMA.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EPWM_AccumulatorStopMode\KEIL\EPWM_AccumulatorStopMode.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EPWM_Brake\KEIL\EPWM_Brake.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EPWM_Capture\KEIL\EPWM_Capture.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EPWM_DeadTime\KEIL\EPWM_DeadTime.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EPWM_DoubleBuffer\KEIL\EPWM_DoubleBuffer.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EPWM_OutputWaveform\KEIL\EPWM_OutputWaveform.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EPWM_PDMA_Capture\KEIL\EPWM_PDMA_Capture.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EPWM_SwitchDuty\KEIL\EPWM_SwitchDuty.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EPWM_SyncStart\KEIL\EPWM_SyncStart.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\EQEI_CompareMatch\Keil\EQEI_CompareMatch.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\FMC_APPROT\Keil\fmc_approt.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\FMC_CRC32\Keil\fmc_crc32.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\FMC_DualBank\Keil\fmc_dual_bank.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\FMC_DualBankFwUpdate\App\KEIL\App.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\FMC_DualBankFwUpdate\Loader\KEIL\Loader.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\FMC_ExeInSRAM\Keil\FMC_ExeInSRAM.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\FMC_FwUpdateApplication\App\KEIL\App.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\FMC_FwUpdateApplication\BackupApp\KEIL\BackupApp.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\FMC_FwUpdateApplication\Loader\KEIL\Loader.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\FMC_IAP\Keil\fmc_ap_main.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\FMC_MultiBoot\Keil\FMC_MultiBoot.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\FMC_MultiWordProgram\Keil\main_loader.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\FMC_MultiWordProgram\Keil\multi_word_prog.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\FMC_OTP\Keil\fmc_otp.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\FMC_ReadAllOne\Keil\fmc_ReadAllOne.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\FMC_RW\Keil\fmc_rw.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\FMC_XOM\Keil\fmc_xom.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\GPIO_EINTAndDebounce\Keil\GPIO_EINTAndDebounce.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\GPIO_INT\Keil\GPIO_INT.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\GPIO_OutputInput\Keil\GPIO_OutputInput.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\GPIO_PowerDown\Keil\GPIO_PowerDown.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HBI_ExeInHRAM\Keil\HBI_ExeInHRAM.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HBI_RW\Keil\HBI_RW.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HBI_RW_MemMap\Keil\HBI_RW_MemMap.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSOTG_Dual_Role_UMAS\Keil\HSOTG_Dual_Role_UMAS.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSOTG_HNP\Keil\HSOTG_HNP.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBD_Audio10_Codec\Keil\HSUSBD_Audio10_Codec.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBD_Audio10_Headset\Keil\HSUSBD_Audio10_Headset.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBD_Audio20_Codec\Keil\HSUSBD_Audio20_Codec.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBD_Audio20_Headset\Keil\HSUSBD_Audio20_Headset.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBD_HID_Mouse\Keil\HSUSBD_HID_Mouse.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBD_HID_MouseKeyboard\Keil\HSUSBD_HID_MouseKeyboard.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBD_HID_Mouse_BC12\Keil\HSUSBD_HID_Mouse_BC12.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBD_HID_Transfer\Keil\HSUSBD_HID_Transfer.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBD_HID_Transfer_And_MSC\Keil\HSUSBD_HID_Transfer_And_MSC.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBD_Mass_Storage_CDROM\Keil\HSUSBD_Mass_Storage_CDROM.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBD_Mass_Storage_DataFlash\Keil\HSUSBD_Mass_Storage_DataFlash.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBD_Mass_Storage_ScatterGather\Keil\HSUSBD_Mass_Storage_ScatterGather.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBD_Mass_Storage_SD\Keil\HSUSBD_Mass_Storage_SD.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBD_Mass_Storage_ShortPacket\Keil\HSUSBD_Mass_Storage_ShortPacket.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBD_Mass_Storage_SRAM\Keil\HSUSBD_Mass_Storage_SRAM.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBD_RNDIS\KEIL\HSUSBD_RNDIS.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBD_VCOM_SerialEmulator\Keil\HSUSBD_VCOM_SerialEmulator.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBD_VENDOR_LBK\Keil\HSUSBD_VENDOR_LBK.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBH_USBH_AudioClass\Keil\HSUSBH_USBH_AudioClass.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBH_USBH_DEV_CONN\Keil\HSUSBH_USBH_DEV_CONN.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBH_USBH_Firmware_Update\Keil\HSUSBH_USBH_Firmware_Update.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBH_USBH_HID\Keil\HSUSBH_USBH_HID.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBH_USBH_HID_Keyboard\Keil\HSUSBH_USBH_HID_Keyboard.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBH_USBH_HID_Mouse_Keyboard\Keil\HSUSBH_USBH_HID_Mouse_Keyboard.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBH_USBH_MassStorage\Keil\HSUSBH_USBH_MassStorage.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBH_USBH_SPIM_Writer\Keil\HSUSBH_USBH_SPIM_Writer.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBH_USBH_UAC_HID\Keil\HSUSBH_USBH_UAC_HID.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBH_USBH_UAC_LoopBack\Keil\HSUSBH_USBH_UAC_LoopBack.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBH_USBH_VCOM\Keil\HSUSBH_USBH_VCOM.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\HSUSBH_USBH_VENDOR_LBK\Keil\HSUSBH_USBH_VENDOR_LBK.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\I2C_EEPROM\Keil\I2C_EEPROM.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\I2C_Loopback\Keil\I2C_Loopback.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\I2C_Master\Keil\I2C_Master.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\I2C_MultiBytes_Master\Keil\I2C_MultiBytes_Master.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\I2C_PDMA_TRX\Keil\I2C_PDMA_TRX.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\I2C_SingleByte_Master\Keil\I2C_SingleByte_Master.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\I2C_Slave\Keil\I2C_Slave.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\I2C_SMBus\Keil\I2C_SMbus.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\I2C_Wakeup_Slave\Keil\I2C_Wakeup_Slave.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\I2S_Codec\Keil\I2S_Codec.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\I2S_Codec_PDMA\Keil\I2S_Codec_PDMA.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\I2S_MP3PLAYER\Keil\I2S_MP3PLAYER.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\I2S_WAVPLAYER\Keil\I2S_WAVPLAYER.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\KPI_Keyboard\Keil\KPI_Keyboard.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\KS_AESKey\Keil\KS_AESKey.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\KS_ECDH\Keil\KS_ECDH.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\KS_ECDSA\Keil\KS_ECDSA.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\KS_KeyStatus\Keil\KS_KeyStatus.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\OTG_Dual_Role_UMAS\Keil\OTG_Dual_Role_UMAS.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\OTG_HNP\Keil\OTG_HNP.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\PDMA_BasicMode\KEIL\PDMA_BasicMode.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\PDMA_ScatterGather\KEIL\PDMA_ScatterGather.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\PDMA_ScatterGather_PingPongBuffer\KEIL\PDMA_ScatterGather_PingPongBuffer.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\PDMA_StrideRepeat\KEIL\PDMA_StrideRepeat.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\PDMA_TimeOut\KEIL\PDMA_TimeOut.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\PSIO_1Wire\Keil\PSIO_1Wire.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\PSIO_DMX512\Keil\PSIO_DMX512.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\PSIO_IR\Keil\PSIO_IR.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\PSIO_LED\Keil\PSIO_LED.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\PSIO_PS2_Device\Keil\PSIO_PS2_Device.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\PSIO_PS2_Host\Keil\PSIO_PS2_Host.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\PSIO_Wiegand\Keil\PSIO_Wiegand.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\QSPI_DualMode_Flash\Keil\QSPI_DualMode_Flash.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\QSPI_QuadMode_Flash\Keil\QSPI_QuadMode_Flash.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\QSPI_Slave3Wire\Keil\QSPI_Slave3Wire.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\RNG_EntropyPoll\Keil\RNG_EntropyPoll.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\RNG_Random\Keil\RNG_Random.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\RTC_Alarm_Test\Keil\RTC_Alarm_Test.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\RTC_Alarm_Wakeup\Keil\RTC_Alarm_Wakeup.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\RTC_Dynamic_Tamper\Keil\RTC_Dynamic_Tamper.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\RTC_Spare_Access\Keil\RTC_Spare_Access.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\RTC_Static_Tamper\Keil\RTC_Static_Tamper.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\RTC_Time_Display\Keil\RTC_Time_Display.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\SCUART_TxRx\Keil\SCUART_TxRx.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\SC_ReadATR\Keil\SC_ReadATR.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\SC_ReadSIM_PhoneBook\Keil\SC_ReadSIM_PhoneBook.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\SC_Timer\Keil\SC_Timer.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\SDH_FATFS\Keil\SDH_FATFS.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\SPII2S_Master\Keil\SPII2S_Master.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\SPII2S_PDMA_Codec\Keil\SPII2S_PDMA_Codec.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\SPII2S_PDMA_Play\Keil\SPII2S_PDMA_Play.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\SPII2S_PDMA_PlayRecord\Keil\SPII2S_PDMA_PlayRecord.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\SPII2S_PDMA_Record\Keil\SPII2S_PDMA_Record.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\SPII2S_Slave\Keil\SPII2S_Slave.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\SPIM_CIPHER\Keil\spim_cipher.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\SPIM_DMA_RW\Keil\spim_dma_rw.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\SPIM_DMM\Keil\spim_dmm.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\SPIM_DMM_RUN_CODE\Keil\spim_dmm_run_code.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\SPIM_IO_RW\Keil\spim_io_rw.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\SPI_Flash\Keil\SPI_Flash.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\SPI_HalfDuplex\Keil\SPI_HalfDuplex.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\SPI_Loopback\Keil\SPI_Loopback.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\SPI_MasterFIFOMode\Keil\SPI_MasterFIFOMode.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\SPI_PDMA_LoopTest\Keil\SPI_PDMA_LoopTest.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\SPI_SlaveFIFOMode\Keil\SPI_SlaveFIFOMode.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\SYS_BODWakeup\Keil\SYS_BODWakeup.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\SYS_PLLClockOutput\Keil\SYS_PLLClockOutput.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\SYS_TrimHIRC\Keil\SYS_TrimHIRC.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\TIMER_ACMPTrigger\Keil\TIMER_ACMPTrigger.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\TIMER_CaptureCounter\Keil\TIMER_CaptureCounter.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\TIMER_Delay\Keil\TIMER_Delay.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\TIMER_EventCounter\Keil\TIMER_EventCounter.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\TIMER_FreeCountingMode\Keil\TIMER_FreeCountingMode.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\TIMER_InterTimerTriggerMode\Keil\TIMER_InterTimerTriggerMode.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\TIMER_Periodic\Keil\TIMER_Periodic.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\TIMER_PeriodicINT\Keil\TIMER_PeriodicINT.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\TIMER_PWM_AccumulatorINTStopMode\KEIL\TIMER_PWM_AccumulatorINTStopMode.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\TIMER_PWM_AccumulatorINTTriggerPDMA\KEIL\TIMER_PWM_AccumulatorINTTriggerPDMA.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\TIMER_PWM_Brake\KEIL\TIMER_PWM_Brake.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\TIMER_PWM_ChangeDuty\KEIL\TIMER_PWM_ChangeDuty.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\TIMER_PWM_DeadTime\KEIL\TIMER_PWM_DeadTime.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\TIMER_PWM_OutputWaveform\KEIL\TIMER_PWM_OutputWaveform.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\TIMER_TimeoutWakeup\Keil\TIMER_TimeoutWakeupx.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\TIMER_ToggleOut\Keil\TIMER_ToggleOut.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\UART_AutoBaudRate\Keil\UART_AutoBaudRate.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\UART_AutoFlow\Keil\UART_AutoFlow.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\UART_IrDA\Keil\UART_IrDA.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\UART_LIN\Keil\UART_LIN.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\UART_PDMA\Keil\UART_PDMA.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\UART_RS485\Keil\UART_RS485.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\UART_SingleWire\Keil\UART_SingleWire.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\UART_TxRxFunction\Keil\UART_TxRxFunction.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\UART_Wakeup\Keil\UART_Wakeup.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USBD_Audio_Codec\Keil\USBD_Audio_Codec.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USBD_Audio_Headset\Keil\USBD_Audio_Headset.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USBD_HID_Keyboard\Keil\USBD_HID_Keyboard.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USBD_HID_Mouse\Keil\USBD_HID_Mouse.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USBD_HID_MouseKeyboard\Keil\USBD_HID_MouseKeyboard.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USBD_HID_RemoteWakeup\Keil\USBD_HID_RemoteWakeup.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USBD_HID_Touch\Keil\USBD_HID_Touch.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USBD_HID_Transfer\Keil\USBD_HID_Transfer.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USBD_HID_Transfer_And_Keyboard\Keil\USBD_HID_Transfer_And_Keyboard.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USBD_HID_Transfer_And_MSC\Keil\USBD_HID_Transfer_And_MSC.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USBD_HID_Transfer_CTRL\Keil\USBD_HID_Transfer_CTRL.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USBD_Mass_Storage_CDROM\Keil\USBD_Mass_Storage_CDROM.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USBD_Mass_Storage_Flash\Keil\USBD_Mass_Storage_Flash.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USBD_Mass_Storage_SD\Keil\USBD_Mass_Storage_SD.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USBD_Mass_Storage_SRAM\Keil\USBD_Mass_Storage_SRAM.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USBD_Micro_Printer\Keil\USBD_Micro_Printer.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USBD_Printer_And_HID_Transfer\Keil\USBD_Printer_And_HID_Transfer.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USBD_VCOM_And_HID_Keyboard\Keil\USBD_VCOM_And_HID_Keyboard.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USBD_VCOM_And_HID_Transfer\Keil\USBD_VCOM_And_HID_Transfer.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USBD_VCOM_And_Mass_Storage\Keil\USBD_VCOM_And_Mass_Storage.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USBD_VCOM_DualPort\Keil\USBD_VCOM_DualPort.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USBD_VCOM_SerialEmulator\Keil\USBD_VCOM_SerialEmulator.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USBD_VCOM_SerialEmulator_DoubleBuffer\Keil\USBD_VCOM_SerialEmulator_DoubleBuffer.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USBD_VENDOR_LBK\Keil\USBD_VENDOR_LBK.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USCI_I2C_EEPROM\Keil\USCI_I2C_EEPROM.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USCI_I2C_Master\Keil\USCI_I2C_Master.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USCI_I2C_Master_10bit\Keil\USCI_I2C_Master_10bit.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USCI_I2C_Monitor\Keil\USCI_I2C_Monitor.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USCI_I2C_MultiBytes_Master\Keil\USCI_I2C_MultiBytes_Master.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USCI_I2C_SingleByte_Master\Keil\USCI_I2C_SingleByte_Master.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USCI_I2C_Slave\Keil\USCI_I2C_Slave.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USCI_I2C_Slave_10bit\Keil\USCI_I2C_Slave_10bit.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USCI_I2C_Wakeup_Slave\Keil\USCI_I2C_Wakeup_Slave.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USCI_SPI_Loopback\Keil\USCI_SPI_Loopback.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USCI_SPI_MasterMode\Keil\USCI_SPI_MasterMode.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USCI_SPI_SlaveMode\Keil\USCI_SPI_SlaveMode.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USCI_UART_AutoBaudRate\Keil\USCI_UART_AutoBaudRate.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USCI_UART_AutoFlow\Keil\USCI_UART_AutoFlow.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USCI_UART_PDMA\Keil\USCI_UART_PDMA.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USCI_UART_RS485\Keil\USCI_UART_RS485.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USCI_UART_TxRxFunction\Keil\USCI_UART_TxRxFunction.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\USCI_UART_Wakeup\Keil\USCI_UART_Wakeup.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\WDT_TimeoutWakeupAndReset\Keil\WDT_TimeoutWakeupAndReset.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\StdDriver\WWDT_CompareINT\Keil\WWDT_CompareINT.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\Template\Keil\Template.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\XOM\XOMLib\Keil\XOMCode.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\XOM\XOMLib\Keil\XOMLib.uvprojx</PathAndName>
+  </project>
+
+  <project>
+    <PathAndName>.\XOM\XOMLibDemo\Keil\XOMLibDemo.uvprojx</PathAndName>
+  </project>
+
+</ProjectWorkspace>

@@ -337,7 +337,7 @@
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls>-Wno-deprecated-non-prototype</MiscControls>
+              <MiscControls>-Wno-deprecated-non-prototype -Wno-unknown-warning-option</MiscControls>
               <Define>__WINS__ OPT_SPEED</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\..\Library\CMSIS\Include;..\..\..\..\Library\Device\Nuvoton\M460\Include;..\..\..\..\Library\StdDriver\inc;..\..\..\..\ThirdParty\libmad\inc;..\..\..\..\ThirdParty\shine\src\lib;..\..\..\..\ThirdParty\FATFS\source</IncludePath>
@@ -353,7 +353,7 @@
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
             <useXO>0</useXO>
-            <ClangAsOpt>4</ClangAsOpt>
+            <ClangAsOpt>1</ClangAsOpt>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define>Stack_Size=0x800 Heap_Size=0x20000</Define>
