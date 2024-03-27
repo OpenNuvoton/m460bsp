@@ -440,7 +440,7 @@ void UART_FunctionTest()
 
     /* Disable UART2 RDA/Single-wire Bit Error Detection interrupt */
     UART_DisableInt(UART2, (UART_INTEN_RDAIEN_Msk | UART_INTEN_SWBEIEN_Msk));
-    NVIC_DisableIRQ(UART1_IRQn);
+    NVIC_DisableIRQ(UART2_IRQn);
     printf("\nUART Sample Demo End.\n");
 
 }

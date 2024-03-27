@@ -2,8 +2,7 @@
  * @file     main.c
  * @version  V1.00
  * @brief    Show FMC dual bank capability. Non-blocking program APROM bank1
- *           while program is running on APROM bank0.
- *           is running on bank0 without being blocked.
+ *           while program is running on APROM bank0 without being blocked.
  *
  * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/

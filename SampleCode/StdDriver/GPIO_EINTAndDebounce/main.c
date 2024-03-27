@@ -98,7 +98,7 @@ void SYS_Init(void)
     SET_UART0_RXD_PB12();
     SET_UART0_TXD_PB13();
 
-    /* Set multi-function pisn for EINT0(PA.6), EINT0(PB.5) and EINT1(PA.7) */
+    /* Set multi-function pins for EINT0(PA.6), EINT0(PB.5) and EINT1(PA.7) */
     SET_INT0_PA6();
     SET_INT0_PB5();
     SET_INT1_PA7();
@@ -162,7 +162,7 @@ int32_t main(void)
 
     /* Enable interrupt de-bounce function and select de-bounce sampling cycle time is 1024 clocks of LIRC clock */
     GPIO_SET_DEBOUNCE_TIME(PA, GPIO_DBCTL_DBCLKSRC_LIRC, GPIO_DBCTL_DBCLKSEL_1024);
-    GPIO_SET_DEBOUNCE_TIME(PA, GPIO_DBCTL_DBCLKSRC_LIRC, GPIO_DBCTL_DBCLKSEL_1024);
+    GPIO_SET_DEBOUNCE_TIME(PB, GPIO_DBCTL_DBCLKSRC_LIRC, GPIO_DBCTL_DBCLKSEL_1024);
     GPIO_ENABLE_DEBOUNCE(PA, BIT6);
     GPIO_ENABLE_DEBOUNCE(PB, BIT5);
     GPIO_ENABLE_DEBOUNCE(PA, BIT7);

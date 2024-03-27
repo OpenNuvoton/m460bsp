@@ -71,7 +71,7 @@ __Vectors:
 	.long	PWRWU_IRQHandler      /*  2: PWRWU                      */
 	.long	RAMPE_IRQHandler      /*  3: RAMPE                      */
 	.long	CKFAIL_IRQHandler     /*  4: CKFAIL                     */
-	.long	ISP_IRQHandler        /*  5: ISP                   */
+	.long	ISP_IRQHandler        /*  5: ISP                        */
 	.long	RTC_IRQHandler        /*  6: RTC                        */
 	.long	TAMPER_IRQHandler     /*  7: TAMPER                     */
 	.long	WDT_IRQHandler        /*  8: WDT                        */
