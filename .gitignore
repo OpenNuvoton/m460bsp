@@ -6,7 +6,10 @@
 *.scvd
 *.dep
 *.ewt
-.clangd
+*.clangd
+*.yml
+*.cprj
+
 
 # Folders
 Obj/
