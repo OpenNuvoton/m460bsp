@@ -1,10 +1,10 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V3.00
- * @brief    Transmit and receive CAN FD message through CAN interface.
+ * @brief    Transmit and receive CAN message through CAN interface.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (C) 2024 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include "stdio.h"
 #include "string.h"
@@ -35,8 +35,8 @@ CANFD_T * g_pCanfd = ((CANFD_MODULE == 0) ? CANFD0 : (CANFD_MODULE == 1) ? CANFD
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void);
 void SYS_Init(void);
-void CANFD_Init(void);
-void CANFD_TxRxTest(void);
+void CAN_Init(void);
+void CAN_TxRxTest(void);
 
 
 
@@ -64,10 +64,10 @@ void SYS_Init(void)
     CLK_SetModuleClock(UART0_MODULE, CLK_CLKSEL1_UART0SEL_HIRC, CLK_CLKDIV0_UART0(1));
 
 #if (CANFD_MODULE == 0)
-    /* Select CAN FD0 clock source is HCLK */
+    /* Select CAN FD clock source is HCLK */
     CLK_SetModuleClock(CANFD0_MODULE, CLK_CLKSEL0_CANFD0SEL_HCLK, CLK_CLKDIV5_CANFD0(1));
 
-    /* Enable CAN FD0 peripheral clock */
+    /* Enable CAN FD peripheral clock */
     CLK_EnableModuleClock(CANFD0_MODULE);
 #elif (CANFD_MODULE == 1)
     /* Select CAN FD1 clock source is HCLK */
@@ -128,9 +128,9 @@ void SYS_Init(void)
 
 
 /*---------------------------------------------------------------------------------------------------------*/
-/* Init CAN FD                                                                                             */
+/* Init CAN                                                                                                */
 /*---------------------------------------------------------------------------------------------------------*/
-void CANFD_Init(void)
+void CAN_Init(void)
 {
     CANFD_FD_T sCANFD_Config;
 
@@ -141,18 +141,18 @@ void CANFD_Init(void)
     printf("|      CAN_RXD                            CAN_RXD(Any board)  |\n");
     printf("|         |-----------|  CANBUS  |-----------|                |\n");
     printf("|  ------>|           |<-------->|           |<------         |\n");
-    printf("|   CAN_TX|   CANFD   |  CAN_H   |   CANFD   |CAN_TX          |\n");
+    printf("|   CAN_TX|    CAN    |  CAN_H   |    CAN    |CAN_TX          |\n");
     printf("|         |Transceiver|          |Transceiver|                |\n");
     printf("|  <------|           |<-------->|           |------>         |\n");
     printf("|   CAN_RX|           |  CAN_L   |           |CAN_RX          |\n");
     printf("|         |-----------|          |-----------|                |\n");
     printf("+-------------------------------------------------------------+\n\n");
 
-    /* Get the CAN FD configuration value */
-    CANFD_GetDefaultConfig(&sCANFD_Config, CANFD_OP_CAN_FD_MODE);
+    /* Get the CAN configuration value */
+    CANFD_GetDefaultConfig(&sCANFD_Config, CANFD_OP_CAN_MODE);
     sCANFD_Config.sBtConfig.sNormBitRate.u32BitRate = 1000000;
-    sCANFD_Config.sBtConfig.sDataBitRate.u32BitRate = 4000000;
-    /* Open the CAN FD feature */
+    sCANFD_Config.sBtConfig.sDataBitRate.u32BitRate = 0;
+    /* Open the CAN feature */
     CANFD_Open(g_pCanfd, &sCANFD_Config);
 
 #if (CANFD_MODULE == 0)
@@ -167,27 +167,27 @@ void CANFD_Init(void)
     NVIC_EnableIRQ(CANFD30_IRQn);
 #endif
 
-    /* Receive 0x111 (11-bit id) in CAN FD rx message buffer 0 by setting mask 0 */
+    /* Receive 0x111 in CAN rx message buffer 0 by setting mask 0 */
     CANFD_SetSIDFltr(g_pCanfd, 0, CANFD_RX_BUFFER_STD(0x111, 0));
-    /* Receive 0x22F (11-bit id) in CAN FD rx message buffer 0 by setting mask 1 */
+    /* Receive 0x22F in CAN rx message buffer 0 by setting mask 1 */
     CANFD_SetSIDFltr(g_pCanfd, 1, CANFD_RX_BUFFER_STD(0x22F, 0));
-    /* Receive 0x333 (11-bit id) in CAN FD rx message buffer 0 by setting mask 2 */
+    /* Receive 0x333 in CAN rx message buffer 0 by setting mask 2 */
     CANFD_SetSIDFltr(g_pCanfd, 2, CANFD_RX_BUFFER_STD(0x333, 0));
 
-    /* Receive 0x222 (29-bit id) in CAN FD rx message buffer 1 by setting mask 3 */
+    /* Receive 0x222 (29-bit id) in CAN rx message buffer 1 by setting mask 3 */
     CANFD_SetXIDFltr(g_pCanfd, 0, CANFD_RX_BUFFER_EXT_LOW(0x222, 1), CANFD_RX_BUFFER_EXT_HIGH(0x222, 1));
-    /* Receive 0x3333 (29-bit id) in CAN FD rx message buffer 1 by setting mask 3 */
+    /* Receive 0x3333 (29-bit id) in CAN rx message buffer 1 by setting mask 3 */
     CANFD_SetXIDFltr(g_pCanfd, 1, CANFD_RX_BUFFER_EXT_LOW(0x3333, 1), CANFD_RX_BUFFER_EXT_HIGH(0x3333, 1));
-    /* Receive 0x44444 (29-bit id) in CAN FD rx message buffer 1 by setting mask 3 */
+    /* Receive 0x44444 (29-bit id) in CAN rx message buffer 1 by setting mask 3 */
     CANFD_SetXIDFltr(g_pCanfd, 2, CANFD_RX_BUFFER_EXT_LOW(0x44444, 1), CANFD_RX_BUFFER_EXT_HIGH(0x44444, 1));
-    /* CAN FD Run to Normal mode */
+    /* CAN Run to Normal mode */
     CANFD_RunToNormal(g_pCanfd, TRUE);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
-/* Fini CAN FD                                                                                             */
+/* Fini CAN                                                                                                */
 /*---------------------------------------------------------------------------------------------------------*/
-void CANFD_Fini(void)
+void CAN_Fini(void)
 {
 #if (CANFD_MODULE == 0)
     NVIC_DisableIRQ(CANFD00_IRQn);
@@ -204,9 +204,9 @@ void CANFD_Fini(void)
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
-/* CAN FD Function Test                                                                                    */
+/* CAN Function Test                                                                                       */
 /*---------------------------------------------------------------------------------------------------------*/
-void CANFD_TxRxTest(void)
+void CAN_TxRxTest(void)
 {
     uint8_t u8Item;
     uint8_t u8Cnt;
@@ -217,19 +217,19 @@ void CANFD_TxRxTest(void)
     CANFD_FD_MSG_T      sRxMsgFrame;
     CANFD_FD_MSG_T      sTxMsgFrame;
 
-    /* CAN FD interface initialization */
-    CANFD_Init();
+    /* CAN interface initialization */
+    CAN_Init();
 
     printf("+--------------------------------------------------------------------------+\n");
-    printf("|                           CAN FD Function Test                           |\n");
+    printf("|                             CAN Function Test                            |\n");
     printf("+--------------------------------------------------------------------------+\n");
     printf("|  Description :                                                           |\n");
-    printf("|    The sample code needs two boards. One is master(CAN FD transmitter)   |\n");
-    printf("|    and the other is slave(CAN FD receiver). Master will send 6 messages  |\n");
+    printf("|    The sample code needs two boards. One is master(CAN transmitter)      |\n");
+    printf("|    and the other is slave(CAN receiver). Master will send 6 messages     |\n");
     printf("|    with different sizes of data and ID to the slave. Slave will check if |\n");
     printf("|    received data is correct after getting 6 messages data.               |\n");
     printf("|  Please select Master or Slave test                                      |\n");
-    printf("|  [0] Master(CAN FD transmitter)    [1] Slave(CAN FD receiver)            |\n");
+    printf("|  [0] Master(CAN transmitter)    [1] Slave(CAN receiver)                  |\n");
     printf("+--------------------------------------------------------------------------+\n\n");
 
     u8Item = getchar();
@@ -239,7 +239,7 @@ void CANFD_TxRxTest(void)
         /* Send 6 messages with different ID and data size */
         for(u8TxTestNum = 0; u8TxTestNum < 6 ; u8TxTestNum++)
         {
-            printf("Start to CAN FD Bus Transmitter :\n");
+            printf("Start to CAN Bus Transmitter :\n");
 
             /* Set the ID Number */
             if(u8TxTestNum == 0)      sTxMsgFrame.u32Id = 0x111;
@@ -257,30 +257,20 @@ void CANFD_TxRxTest(void)
 
             /* Set the frame type */
             sTxMsgFrame.eFrmType = eCANFD_DATA_FRM;
-            /* Set CAN FD frame format */
-            sTxMsgFrame.bFDFormat = 1;
             /* Set the bitrate switch */
-            sTxMsgFrame.bBitRateSwitch = 1;
+            sTxMsgFrame.bBitRateSwitch = 0;
 
             /* Set the data length */
-            if(u8TxTestNum == 0  ||  u8TxTestNum == 3)     sTxMsgFrame.u32DLC = 16;
-            else if(u8TxTestNum == 1 || u8TxTestNum == 4)  sTxMsgFrame.u32DLC = 32;
-            else if(u8TxTestNum == 2 || u8TxTestNum == 5)  sTxMsgFrame.u32DLC = 64;
+            if(u8TxTestNum == 0  ||  u8TxTestNum == 3)     sTxMsgFrame.u32DLC = 2;
+            else if(u8TxTestNum == 1 || u8TxTestNum == 4)  sTxMsgFrame.u32DLC = 4;
+            else if(u8TxTestNum == 2 || u8TxTestNum == 5)  sTxMsgFrame.u32DLC = 8;
+
+            for(u8Cnt = 0; u8Cnt < sTxMsgFrame.u32DLC; u8Cnt++) sTxMsgFrame.au8Data[u8Cnt] = u8Cnt + u8TxTestNum;
 
             if(u8TxTestNum < 3)
                 printf("Send to transmit message 0x%08x (11-bit)\n", sTxMsgFrame.u32Id);
             else
                 printf("Send to transmit message 0x%08x (29-bit)\n", sTxMsgFrame.u32Id);
-
-            printf("Data Message : ");
-
-            for(u8Cnt = 0; u8Cnt < sTxMsgFrame.u32DLC; u8Cnt++)
-            {
-                sTxMsgFrame.au8Data[u8Cnt] = u8Cnt + u8TxTestNum;
-                printf("%02d,", sTxMsgFrame.au8Data[u8Cnt]);
-            }
-
-            printf("\n\n");
 
             /* Use message buffer 0 */
             if(CANFD_TransmitTxMsg(g_pCanfd, 0, &sTxMsgFrame) != eCANFD_TRANSMIT_SUCCESS)
@@ -294,12 +284,12 @@ void CANFD_TxRxTest(void)
     }
     else
     {
-        printf("Start to CAN FD Bus Receiver :\n");
+        printf("Start to CAN Bus Receiver :\n");
 
         /* Receive 6 messages with different ID and data size */
         do
         {
-            /* Check for any received messages on CAN FD message buffer 0 */
+            /* Check for any received messages on CAN message buffer 0 */
             if(CANFD_ReadRxBufMsg(g_pCanfd, 0, &sRxMsgFrame) == eCANFD_RECEIVE_SUCCESS)
             {
                 printf("Rx buf 0: Received message 0x%08X (11-bit)\r\n", sRxMsgFrame.u32Id);
@@ -323,9 +313,9 @@ void CANFD_TxRxTest(void)
                     u8ErrFlag = 1;
                 }
 
-                if(u8RxTestNum == 0)      u8RxTempLen = 16;
-                else if(u8RxTestNum == 1) u8RxTempLen = 32;
-                else if(u8RxTestNum == 2) u8RxTempLen = 64;
+                if(u8RxTestNum == 0)      u8RxTempLen = 2;
+                else if(u8RxTestNum == 1) u8RxTempLen = 4;
+                else if(u8RxTestNum == 2) u8RxTempLen = 8;
 
                 /* Check Data length */
                 if((u8RxTempLen != sRxMsgFrame.u32DLC) || (sRxMsgFrame.eIdType != eCANFD_SID))
@@ -335,14 +325,14 @@ void CANFD_TxRxTest(void)
 
                 if(u8ErrFlag == 1)
                 {
-                    printf("CAN FD STD ID or Data Error \n");
+                    printf("CAN STD ID or Data Error \n");
                     getchar();
                 }
 
                 u8RxTestNum++;
             }
 
-            /* Check for any received messages on CAN FD message buffer 1 */
+            /* Check for any received messages on CAN message buffer 1 */
             if(CANFD_ReadRxBufMsg(g_pCanfd, 1, &sRxMsgFrame) == eCANFD_RECEIVE_SUCCESS)
             {
 
@@ -367,9 +357,9 @@ void CANFD_TxRxTest(void)
                     u8ErrFlag = 1;
                 }
 
-                if(u8RxTestNum == 3)      u8RxTempLen = 16;
-                else if(u8RxTestNum == 4) u8RxTempLen = 32;
-                else if(u8RxTestNum == 5) u8RxTempLen = 64;
+                if(u8RxTestNum == 3)      u8RxTempLen = 2;
+                else if(u8RxTestNum == 4) u8RxTempLen = 4;
+                else if(u8RxTestNum == 5) u8RxTempLen = 8;
 
                 /* Check Data length */
                 if((u8RxTempLen != sRxMsgFrame.u32DLC) || (sRxMsgFrame.eIdType != eCANFD_XID))
@@ -379,7 +369,7 @@ void CANFD_TxRxTest(void)
 
                 if(u8ErrFlag == 1)
                 {
-                    printf("CAN FD EXD ID or Data Error \n");
+                    printf("CAN EXD ID or Data Error \n");
                     getchar();
                 }
 
@@ -392,8 +382,8 @@ void CANFD_TxRxTest(void)
         printf("\n Receive OK & Check OK\n");
     }
 
-    /* CAN FD interface finalization */
-    CANFD_Fini();
+    /* CAN interface finalization */
+    CAN_Fini();
 }
 
 void UART0_Init(void)
@@ -427,12 +417,12 @@ int32_t main(void)
     /*                                                 SAMPLE CODE                                             */
     /*---------------------------------------------------------------------------------------------------------*/
     printf("\n\nCPU @ %dHz\n", SystemCoreClock);
-    printf("+----------------------------------------+\n");
-    printf("|    CANFD%d FD mode transmission test    |\n", ((CANFD_MODULE == 0) ? 0 : (CANFD_MODULE == 1) ? 1 : (CANFD_MODULE == 2) ? 2 : 3));
-    printf("+----------------------------------------+\n");
+    printf("+---------------------------------------+\n");
+    printf("|   CANFD%d CAN mode transmission test   |\n", ((CANFD_MODULE == 0) ? 0 : (CANFD_MODULE == 1) ? 1 : (CANFD_MODULE == 2) ? 2 : 3));
+    printf("+---------------------------------------+\n");
 
-    /* CANFD sample function */
-    CANFD_TxRxTest();
+    /* CAN sample function */
+    CAN_TxRxTest();
 
     while(1) {}
 }

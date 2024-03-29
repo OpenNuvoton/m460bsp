@@ -659,7 +659,7 @@ void CANFD_Open(CANFD_T *psCanfd, CANFD_FD_T *psCanfdStr)
         CANFD_ConfigXIDFC(psCanfd, &psCanfdStr->sMRamStartAddr, &psCanfdStr->sElemSize);
 
     /*Configures the Tx Buffer element */
-    if (psCanfdStr->sElemSize.u32RxBuf != 0)
+    if (psCanfdStr->sElemSize.u32TxBuf != 0)
         CANFD_InitTxDBuf(psCanfd, &psCanfdStr->sMRamStartAddr, &psCanfdStr->sElemSize, eCANFD_BYTE64);
 
     /*Configures the Rx Buffer element */
