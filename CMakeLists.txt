@@ -66,7 +66,7 @@ set(HEAP_SIZE 0x20000)
 
 #SET(CMAKE_C_FLAGS    "-mcpu=cortex-m4 -Wno-ignored-optimization-argument -Wno-unused-command-line-argument -Wall    -Wno-error=cpp    -c    -fdata-sections    -ffunction-sections        -fshort-enums    -fshort-wchar -funsigned-char -masm=auto -nostdlib -mfpu=none -g -std=c99 -D__MICROLIB")
 #SET(CMAKE_CXX_FLAGS  "-mcpu=cortex-m4 -Wno-ignored-optimization-argument -Wno-unused-command-line-argument -Wall    -Wno-error=cpp    -c    -fdata-sections    -ffunction-sections        -fshort-enums    -fshort-wchar -funsigned-char -masm=auto -nostdlib -mfpu=none -g -D__MICROLIB")
-set(C_FLAGS "--target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c -fno-rtti -funsigned-char -fshort-enums -fshort-wchar -D__MICROLIB -gdwarf-3 -O2 -fno-function-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -D__MICROLIB -DMBEDTLS_CONFIG_FILE=mbedtls_config.h -Ic:/Keil_v5/ARM/ARMCLANG/include")
+set(C_FLAGS "--target=arm-arm-none-eabi -mcpu=cortex-m4+fp -mfloat-abi=hard -c -fno-rtti -funsigned-char -fshort-enums -fshort-wchar -D__MICROLIB -gdwarf-3 -O2 -fno-function-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -D__MICROLIB -DMBEDTLS_CONFIG_FILE=mbedtls_config.h -Ic:/Keil_v5/ARM/ARMCLANG/include")
 set(CMAKE_C_FLAGS "-xc -std=c99  ${C_FLAGS}")
 set(CMAKE_CXX_FLAGS ${C_FLAGS})
 set(CMAKE_ASM_FLAGS "--cpu Cortex-M4.fp.sp -g --16 --apcs=interwork --pd \"__MICROLIB SETA 1\" --pd \"Stack_Size SETA ${STACK_SIZE}\" --pd \"Heap_Size SETA ${HEAP_SIZE}\"" )
@@ -75,6 +75,42 @@ set(CMAKE_EXECUTABLE_SUFFIX ".axf")
 
 project(m460bsp)
 
+
+function(create_project PRJ)
+    add_executable(${PRJ} ${ARGN})
+    target_link_libraries(${PRJ} system_startup standard_driver)
+
+    target_link_options(${PRJ}
+    PUBLIC
+        --cpu=Cortex-M4.fp.sp
+        --library_type=microlib
+        --ro-base 0x00000000
+        --rw-base 0x20000000
+        --entry Reset_Handler
+        --first __Vectors
+        --strict
+        --map
+        --datacompressor=off
+        --info=inline
+        --entry Reset_Handler
+        --summary_stderr
+        --info totals
+        --map
+        --load_addr_map_info
+        --xref
+        --callgraph
+        --symbols
+    )
+
+    add_custom_command(TARGET ${PRJ} POST_BUILD
+        COMMAND ${ARM_FROMELF} --bin --output ${PRJ}.bin ${PRJ}.elf
+        VERBATIM
+    )
+endfunction()
+
+
+
+
 set(BSP_DIR  ${CMAKE_CURRENT_LIST_DIR})
 
 include_directories(${TOOLCHAIN_PATH}/include)
@@ -82,6 +118,7 @@ include_directories(${BSP_DIR}/Library/CMSIS/Include)
 include_directories(${BSP_DIR}/Library/Device/Nuvoton/m460/Include)
 include_directories(${BSP_DIR}/Library/StdDriver/inc)
 include_directories(${BSP_DIR}/Library/CryptoAccelerator)
+include_directories(${BSP_DIR}/Library/NuMaker/xmodem)
 include_directories(${BSP_DIR}/ThirdParty/mbedtls-3.1.0/include)
 include_directories(${BSP_DIR}/ThirdParty/mbedtls-3.1.0/library)
 
@@ -89,6 +126,7 @@ include_directories(${BSP_DIR}/ThirdParty/mbedtls-3.1.0/library)
 add_subdirectory(${BSP_DIR}/Library/StdDriver/src)
 add_subdirectory(${BSP_DIR}/Library/Device/Nuvoton/m460/Source)
 add_subdirectory(${BSP_DIR}/Library/CryptoAccelerator)
+add_subdirectory(${BSP_DIR}/Library/NuMaker/xmodem)
 add_subdirectory(${BSP_DIR}/ThirdParty/mbedtls-3.1.0/library)
 
 target_include_directories(mbedcrypto
@@ -112,47 +150,12 @@ target_include_directories(test_lib
 
 
 # Build sample code
-
-#add_subdirectory(${BSP_DIR}/SampleCode/Crypto/mbedTLS_SHA256)
-#add_subdirectory(${BSP_DIR}/SampleCode/Crypto/mbedTLS_RSA)
-#add_subdirectory(${BSP_DIR}/SampleCode/Crypto/mbedTLS_ECDSA)
-#add_subdirectory(${BSP_DIR}/SampleCode/Crypto/mbedTLS_ECDH)
-#add_subdirectory(${BSP_DIR}/SampleCode/Crypto/mbedTLS_AES)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/TIMER_Periodic)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/ACMP_CompareDAC)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/ACMP_CompareVBG)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/ACMP_Wakeup)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/ACMP_WindowCompare)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/KS_ECDH)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/KS_ECDSA)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/RNG_Random)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/RNG_EntropyPoll)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/EADC_Accumulate)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/EADC_ADINT_Trigger)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/EADC_Average)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/EADC_BandGap)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/EADC_EPWM_Trigger)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/EADC_PDMA_EPWM_Trigger)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/EADC_Pending_Priority)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/EADC_ResultMonitor)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/EADC_SWTRG_Trigger)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/EADC_TempSensor)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/EADC_Timer_Trigger)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/EADC_VBat)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/DAC_EPWMTrigger)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/DAC_ExtPinTrigger)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/DAC_GroupMode)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/DAC_PDMA_EPWMTrigger)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/DAC_PDMA_TimerTrigger)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/DAC_SoftwareTrigger)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/DAC_TimerTrigger)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/HBI_ExeInHRAM)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/HBI_RW)
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/HBI_RW_MemMap)
-#add_subdirectory(${BSP_DIR}/SampleCode/NuMaker_M467HJ/TemperatureSensor)
-
-#add_subdirectory(${BSP_DIR}/SampleCode/StdDriver/CRYPTO_ECC_Demo)
-add_subdirectory(${BSP_DIR}/SampleCode/Crypto/mbedTLS_AES)
+add_subdirectory(${BSP_DIR}/SampleCode/CortexM4)
+add_subdirectory(${BSP_DIR}/SampleCode/StdDriver)
+add_subdirectory(${BSP_DIR}/SampleCode/ISP)
+add_subdirectory(${BSP_DIR}/SampleCode/PowerManagement)
+create_project(Hard_Fault_Sample ${BSP_DIR}/SampleCode/Hard_Fault_Sample/main.c)
+create_project(Template ${BSP_DIR}/SampleCode/Template/main.c)
 
 
 

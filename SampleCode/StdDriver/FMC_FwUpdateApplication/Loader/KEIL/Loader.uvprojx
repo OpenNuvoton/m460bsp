@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\..\..\Library\Device\Nuvoton\m460\Include;..\..\..\..\..\Library\CMSIS\Include;..\..\..\..\..\Library\StdDriver\inc;..\..\common\inc;..\..\..\..\..\Library\NuMaker\common</IncludePath>
+              <IncludePath>..\..\..\..\..\Library\Device\Nuvoton\m460\Include;..\..\..\..\..\Library\CMSIS\Include;..\..\..\..\..\Library\StdDriver\inc;..\..\common\inc;..\..\..\..\..\Library\NuMaker\xmodem</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -441,7 +441,7 @@
             <File>
               <FileName>xmodem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\Library\NuMaker\common\xmodem.c</FilePath>
+              <FilePath>..\..\..\..\..\Library\NuMaker\xmodem\xmodem.c</FilePath>
             </File>
           </Files>
         </Group>
