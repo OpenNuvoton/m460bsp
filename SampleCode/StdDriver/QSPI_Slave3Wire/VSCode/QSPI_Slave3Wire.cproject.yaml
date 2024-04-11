@@ -22,3 +22,4 @@ project:
         - file: ../../../../Library/StdDriver/src/retarget.c
         - file: ../../../../Library/StdDriver/src/uart.c
         - file: ../../../../Library/StdDriver/src/qspi.c
+        - file: ../../../../Library/StdDriver/src/gpio.c

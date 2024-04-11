@@ -93,10 +93,10 @@ void SYS_Init(void)
     CLK_SetModuleClock(UART0_MODULE, CLK_CLKSEL1_UART0SEL_HIRC, CLK_CLKDIV0_UART0(1));
 
 #if (CANFD_MODULE == 0)
-    /* Select CAN FD clock source is HCLK */
+    /* Select CAN FD0 clock source is HCLK */
     CLK_SetModuleClock(CANFD0_MODULE, CLK_CLKSEL0_CANFD0SEL_HCLK, CLK_CLKDIV5_CANFD0(1));
 
-    /* Enable CAN FD peripheral clock */
+    /* Enable CAN FD0 peripheral clock */
     CLK_EnableModuleClock(CANFD0_MODULE);
 #elif (CANFD_MODULE == 1)
     /* Select CAN FD1 clock source is HCLK */

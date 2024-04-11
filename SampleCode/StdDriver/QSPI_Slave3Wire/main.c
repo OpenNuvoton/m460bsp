@@ -11,7 +11,13 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-#define TEST_COUNT 16
+// *** <<< Use Configuration Wizard in Context Menu >>> ***
+// <o> GPIO Slew Rate Control
+// <0=> Normal <1=> High <2=> Fast
+#define SlewRateMode    0
+// *** <<< end of configuration section >>> ***
+
+#define TEST_COUNT      16
 
 static uint32_t s_au32SourceData[TEST_COUNT];
 static uint32_t s_au32DestinationData[TEST_COUNT];
@@ -77,6 +83,17 @@ void SYS_Init(void)
 
     /* Enable QSPI0 clock pin (PA2) schmitt trigger */
     PA->SMTEN |= GPIO_SMTEN_SMTEN2_Msk;
+
+#if (SlewRateMode == 0)
+    /* Enable QSPI0 I/O normal slew rate */
+    GPIO_SetSlewCtl(PA, BIT0 | BIT1 | BIT2, GPIO_SLEWCTL_NORMAL);
+#elif (SlewRateMode == 1)
+    /* Enable QSPI0 I/O high slew rate */
+    GPIO_SetSlewCtl(PA, BIT0 | BIT1 | BIT2, GPIO_SLEWCTL_HIGH);
+#elif (SlewRateMode == 2)
+    /* Enable QSPI0 I/O fast slew rate */
+    GPIO_SetSlewCtl(PA, BIT0 | BIT1 | BIT2, GPIO_SLEWCTL_FAST);
+#endif
 }
 
 void QSPI_Init(void)
@@ -132,8 +149,8 @@ int main(void)
     getchar();
     printf("\n");
 
-    /* Set TX FIFO threshold and enable FIFO mode. */
-    QSPI_SetFIFO(QSPI0, 4, 4);
+    /* Set TX FIFO threshold */
+    QSPI_SetFIFO(QSPI0, 2, 2);
 
     /* Access TX and RX FIFO */
     while(u32RxDataCount < TEST_COUNT)

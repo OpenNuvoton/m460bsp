@@ -11,7 +11,13 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-#define TEST_COUNT  16
+// *** <<< Use Configuration Wizard in Context Menu >>> ***
+// <o> GPIO Slew Rate Control
+// <0=> Normal <1=> High <2=> Fast
+#define SlewRateMode    1
+// *** <<< end of configuration section >>> ***
+
+#define TEST_COUNT      16
 
 #define InterruptMode /* Undefine it when using polling mode */
 
@@ -84,8 +90,16 @@ void SYS_Init(void)
     /* Enable SPI0 clock pin (PA2) schmitt trigger */
     PA->SMTEN |= GPIO_SMTEN_SMTEN2_Msk;
 
+#if (SlewRateMode == 0)
+    /* Enable SPI0 I/O normal slew rate */
+    GPIO_SetSlewCtl(PA, BIT0 | BIT1 | BIT2 | BIT3, GPIO_SLEWCTL_NORMAL);
+#elif (SlewRateMode == 1)
     /* Enable SPI0 I/O high slew rate */
-    GPIO_SetSlewCtl(PA, 0xF, GPIO_SLEWCTL_HIGH);
+    GPIO_SetSlewCtl(PA, BIT0 | BIT1 | BIT2 | BIT3, GPIO_SLEWCTL_HIGH);
+#elif (SlewRateMode == 2)
+    /* Enable SPI0 I/O fast slew rate */
+    GPIO_SetSlewCtl(PA, BIT0 | BIT1 | BIT2 | BIT3, GPIO_SLEWCTL_FAST);
+#endif
 }
 
 void SPI_Init(void)

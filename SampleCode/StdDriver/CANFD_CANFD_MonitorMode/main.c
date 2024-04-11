@@ -86,14 +86,14 @@ void CANFD30_IRQHandler(void)
         CANFD_ClearStatusFlag(g_pCanfd, CANFD_IR_RF1N_Msk);
     }
 
-    /* Rx FIFO 0 Message Lost Interrup */
+    /* Rx FIFO 0 Message Lost Interrupt */
     if(g_pCanfd->IR & CANFD_IR_RF0L_Msk)
     {
         printf("Rx FIFO 0 Message Lost(Standard ID)\n");
         CANFD_ClearStatusFlag(g_pCanfd, CANFD_IR_RF0L_Msk);
     }
 
-    /* Rx FIFO 1 Message Lost Interrup */
+    /* Rx FIFO 1 Message Lost Interrupt */
     if(g_pCanfd->IR & CANFD_IR_RF1L_Msk)
     {
         printf("Rx FIFO 1 Message Lost(Extended ID)\n");
@@ -333,7 +333,7 @@ void CANFD_MonitorMode_Init(uint32_t u32NormBitRate, uint32_t u32DataBitRate)
     /* Enable the Bus Monitoring Mode */
     g_pCanfd->CCCR |= CANFD_CCCR_MON_Msk;
 
-    /* Non-matching Frames with Extended ID and Standard ID are stored in Rx FIFO0 or Rx FIFO1,Reject all remote frames with 11-bit standard IDs and 29-bit extended IDs */
+    /* Non-matching Frames with Extended ID and Standard ID are stored in Rx FIFO0 or Rx FIFO1, reject all remote frames with 11-bit standard IDs and 29-bit extended IDs */
     CANFD_SetGFC(g_pCanfd, eCANFD_ACC_NON_MATCH_FRM_RX_FIFO0, eCANFD_ACC_NON_MATCH_FRM_RX_FIFO1, 1, 1);
     /* Enable RX FIFO New message, Message lost interrupt using interrupt line 0 */
     CANFD_EnableInt(g_pCanfd, (CANFD_IE_RF0NE_Msk | CANFD_IE_RF0LE_Msk | CANFD_IE_RF1NE_Msk | CANFD_IE_RF1LE_Msk), 0, 0, 0);
@@ -435,7 +435,7 @@ int32_t main(void)
             if(g_u8RxFIFO1MsgIndex > 2)
                 g_u8RxFIFO1MsgIndex = 0;
 
-            /* Receive the Rx FIFO0 message(Extended ID) */
+            /* Receive the Rx FIFO1 message(Extended ID) */
             CANFD_ReadRxFifoMsg(g_pCanfd, 1, &g_sRxFIFO1MsgFrame[g_u8RxFIFO1MsgIndex]);
             g_u8RxFIFO1MsgIndex++;
             g_u8RxFIFO1RcvOk = 0;

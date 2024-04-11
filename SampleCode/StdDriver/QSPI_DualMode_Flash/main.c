@@ -9,8 +9,14 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-#define TEST_NUMBER 1   /* page numbers */
-#define TEST_LENGTH 256 /* length */
+// *** <<< Use Configuration Wizard in Context Menu >>> ***
+// <o> GPIO Slew Rate Control
+// <0=> Normal <1=> High <2=> Fast
+#define SlewRateMode    1
+// *** <<< end of configuration section >>> ***
+
+#define TEST_NUMBER     1   /* page numbers */
+#define TEST_LENGTH     256 /* length */
 
 #define SPI_FLASH_PORT  QSPI0
 
@@ -328,8 +334,16 @@ void SYS_Init(void)
     /* Enable QSPI0 clock pin (PA2) schmitt trigger */
     PA->SMTEN |= GPIO_SMTEN_SMTEN2_Msk;
 
+#if (SlewRateMode == 0)
+    /* Enable QSPI0 I/O normal slew rate */
+    GPIO_SetSlewCtl(PA, BIT0 | BIT1 | BIT2 | BIT3, GPIO_SLEWCTL_NORMAL);
+#elif (SlewRateMode == 1)
     /* Enable QSPI0 I/O high slew rate */
-    GPIO_SetSlewCtl(PA, 0xF, GPIO_SLEWCTL_HIGH);
+    GPIO_SetSlewCtl(PA, BIT0 | BIT1 | BIT2 | BIT3, GPIO_SLEWCTL_HIGH);
+#elif (SlewRateMode == 2)
+    /* Enable QSPI0 I/O fast slew rate */
+    GPIO_SetSlewCtl(PA, BIT0 | BIT1 | BIT2 | BIT3, GPIO_SLEWCTL_FAST);
+#endif
 }
 
 /* Main */
@@ -360,12 +374,12 @@ int main(void)
     printf("+-------------------------------------------------------------------------+\n");
 
     /* Wait ready */
-    if( SpiFlash_WaitReady() < 0 ) return -1;
+    if(SpiFlash_WaitReady() < 0) goto lexit;
 
     if((u16ID = SpiFlash_ReadMidDid()) != 0xEF14)
     {
         printf("Wrong ID, 0x%x\n", u16ID);
-        return -1;
+        goto lexit;
     }
     else
         printf("Flash found: W25X16 ...\n");
@@ -376,7 +390,7 @@ int main(void)
     SpiFlash_ChipErase();
 
     /* Wait ready */
-    if( SpiFlash_WaitReady() < 0 ) return -1;
+    if(SpiFlash_WaitReady() < 0) goto lexit;
 
     printf("[OK]\n");
 
@@ -393,7 +407,7 @@ int main(void)
     {
         /* page program */
         SpiFlash_NormalPageProgram(u32FlashAddress, s_au8SrcArray);
-        if( SpiFlash_WaitReady() < 0 ) return -1;
+        if(SpiFlash_WaitReady() < 0) goto lexit;
         u32FlashAddress += 0x100;
     }
 
@@ -426,6 +440,8 @@ int main(void)
         printf("[OK]\n");
     else
         printf("[FAIL]\n");
+
+lexit:
 
     while(1);
 }
