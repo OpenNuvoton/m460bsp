@@ -1,8 +1,9 @@
 /* Linker script to configure memory regions. */
 MEMORY
 {
-  FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 0x80000   /* 512k */
-  RAM (rwx)  : ORIGIN = 0x20000000, LENGTH = 0x28000   /* 160k */
+  FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 0x40000   /* 256k */
+  RAM (rwx)  : ORIGIN = 0x20000000, LENGTH = 0x10000   /* 64k  */
+  HRAM (rwx) : ORIGIN = 0x80000000, LENGTH = 0x4000    /* 16k  */
 }
 
 /* Library configurations */
@@ -51,9 +52,7 @@ SECTIONS
 		__Vectors_Size = __Vectors_End - __Vectors;
 		__end__ = .;
 
-		/* *(.text*) */
-
-        *(EXCLUDE_FILE(./User/exeinsram.o) .text*)
+        *(EXCLUDE_FILE(*exeinhram.c.obj) .text*)
 
 		KEEP(*(.init))
 		KEEP(*(.fini))
@@ -72,9 +71,7 @@ SECTIONS
  		*(SORT(.dtors.*))
  		*(.dtors)
 
-		/* *(.rodata*) */
-
-        *(EXCLUDE_FILE(./User/exeinsram.o) .rodata*)
+        *(EXCLUDE_FILE(*exeinhram.c.obj) .rodata*)
 
 		KEEP(*(.eh_frame*))
 	} > FLASH
@@ -94,7 +91,7 @@ SECTIONS
 	/* To copy multiple ROM to RAM sections,
 	 * uncomment .copy.table section and,
 	 * define __STARTUP_COPY_MULTIPLE in startup_ARMCMx.S */
-	/*
+
 	.copy.table :
 	{
 		. = ALIGN(4);
@@ -107,12 +104,12 @@ SECTIONS
 		LONG (__data2_end__ - __data2_start__)
 		__copy_table_end__ = .;
 	} > FLASH
-	*/
+
 
 	/* To clear multiple BSS sections,
 	 * uncomment .zero.table section and,
 	 * define __STARTUP_CLEAR_BSS_MULTIPLE in startup_ARMCMx.S */
-	/*
+
 	.zero.table :
 	{
 		. = ALIGN(4);
@@ -123,20 +120,16 @@ SECTIONS
 		LONG (__bss2_end__ - __bss2_start__)
 		__zero_table_end__ = .;
 	} > FLASH
-	*/
+
 
 	__etext = .;
 
 	.data : AT (__etext)
 	{
 		__data_start__ = .;
-		
-		./User/exeinsram.o (.text*) 
-		*(.fastcode) 
-		./User/exeinsram.o (.rodata*)
-		
+
 		*(vtable)
-		*(.data*)
+        *(EXCLUDE_FILE(*exeinhram.c.obj) .data*)
 
 		. = ALIGN(4);
 		/* preinit data */
@@ -163,19 +156,44 @@ SECTIONS
 		. = ALIGN(4);
 		/* All data end */
 		__data_end__ = .;
-
+	
 	} > RAM
 
 	.bss :
 	{
 		. = ALIGN(4);
 		__bss_start__ = .;
-		*(.bss*)
+        *(EXCLUDE_FILE(*exeinhram.c.obj) .bss*)
+		/* *(.bss*) */
 		*(COMMON)
 		. = ALIGN(4);
 		__bss_end__ = .;
 	} > RAM
 
+	__etext2 = __etext + (__bss_end__ - __data_start__);
+
+	.hram.data : AT (__etext2)
+	{
+		. = ALIGN(4);
+		__data2_start__ = .;
+
+	   	*exeinhram.c.obj (.text*)
+		*(.fastcode) 
+		*exeinhram.c.obj (.rodata* .data*)
+
+		. = ALIGN(4);
+		__data2_end__ = .;
+	} > HRAM
+
+	hram.bss :
+	{
+		. = ALIGN(4);
+		__bss2_start__ = .;
+		*exeinhram.c.obj (.bss*)
+		. = ALIGN(4);
+		__bss2_end__ = .;
+	} > HRAM
+	
 	.heap (COPY):
 	{
 		__HeapBase = .;
@@ -185,6 +203,7 @@ SECTIONS
 		__HeapLimit = .;
 	} > RAM
 
+
 	/* .stack_dummy section doesn't contains any symbols. It is only
 	 * used for linker to calculate size of stack sections, and assign
 	 * values to stack symbols later */
@@ -192,7 +211,7 @@ SECTIONS
 	{
 		KEEP(*(.stack*))
 	} > RAM
-
+	
 	/* Set stack top to end of RAM, and stack limit move down by
 	 * size of stack_dummy section */
 	__StackTop = ORIGIN(RAM) + LENGTH(RAM);

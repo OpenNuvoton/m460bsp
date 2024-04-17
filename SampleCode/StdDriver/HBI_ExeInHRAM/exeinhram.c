@@ -11,7 +11,124 @@
 
 #define TEST_SIZE   (8 * 1024)
 __ALIGNED(4) uint8_t g_u8Pool[TEST_SIZE];
+#if !defined(__IAR_SYSTEMS_ICC__)
 volatile uint32_t g_u32Ticks = 0;
+void SysTick_Handler()
+{
+    g_u32Ticks++;
+}
+#else
+extern volatile uint32_t g_u32Ticks;
+
+#define TEST_PATTERN                0x5A5A5A5A
+
+static int32_t Clear4Bytes(uint32_t u32StartAddr)
+{
+    outp32(u32StartAddr, 0);
+    return 0;
+}
+
+static int32_t ClearHyperRAM(uint32_t u32StartAddr, uint32_t u32EndAddr)
+{
+    uint32_t u32Data, i;
+
+    for (i = u32StartAddr; i < u32EndAddr; i += 4)
+    {
+        if (Clear4Bytes(i) < 0)
+        {
+            return -1;
+        }
+        u32Data = inp32(i);
+        if (u32Data != 0)
+        {
+            printf("ClearHyperRAM fail!! Read address:0x%08x  data::0x%08x  expect: 0\n", i, u32Data);
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
+int32_t FlashAccess_OnHRAM(void)
+{
+    uint32_t u32Data;
+    uint32_t i, u32StartAddr, u32EndAddr;
+
+    /* The HyperRAM address for erase/write/read demo */
+    u32StartAddr = HYPERRAM_BASE;
+    u32EndAddr = u32StartAddr + 0x1000;
+    ClearHyperRAM(u32StartAddr, u32EndAddr);
+
+    /* Clear HyperRAM */
+    if (ClearHyperRAM(u32StartAddr, u32EndAddr) < 0)
+        goto lexit;
+
+    /* Fill 4 Byte pattern to HyperRAM */
+    printf("4 Byte Write test to HyperRAM .....");
+    for (i = u32StartAddr; i < u32EndAddr; i += 4)
+    {
+        outp32(i, TEST_PATTERN);
+    }
+
+    /* Read 4 Byte pattern to check */
+    for (i = u32StartAddr; i < u32EndAddr; i += 4)
+    {
+        u32Data = inp32(i);
+        if (u32Data != TEST_PATTERN)
+        {
+            printf("Done\n");
+            printf("line(%d) [FAIL] Read address:0x%08x  data::0x%08x  expect:0x%08x \n", __LINE__, i, u32Data, TEST_PATTERN);
+            goto lexit;
+        }
+    }
+    printf("Done!!\n");
+
+    /* Clear HyperRAM */
+    if (ClearHyperRAM(u32StartAddr, u32EndAddr) < 0)
+        goto lexit;
+
+    return 0;
+
+lexit:
+    return -1;
+}
+
+int32_t CopyToHyperRAM(uint32_t u32StartAddr, uint32_t u32EndAddr)
+{
+    uint32_t u32Data, u32Data_HRAM, i, u32DataSize;
+    uint32_t u32HRAMStartAddr;
+
+    u32DataSize = u32EndAddr - u32StartAddr;
+    u32HRAMStartAddr = HYPERRAM_BASE;
+
+    /* Clear HyperRAM */
+    if (ClearHyperRAM(u32HRAMStartAddr, (u32HRAMStartAddr + u32DataSize)) < 0)
+        goto lexit;
+    
+    for (i = 0; i < u32DataSize; i += 4)
+    {
+        u32Data = inp32(u32StartAddr + i);
+        outp32(u32HRAMStartAddr + i, u32Data);
+    }
+
+    /* Read 4 Byte pattern to check */
+    for (i = 0; i < u32DataSize; i += 4)
+    {
+        u32Data = inp32(u32StartAddr + i);
+        u32Data_HRAM = inp32(u32HRAMStartAddr + i);
+        if (u32Data != u32Data_HRAM)
+        {
+            printf("line(%d) [FAIL] Read address:0x%08x  data::0x%08x  expect:0x%08x \n", __LINE__, (u32StartAddr + i), u32Data, u32Data_HRAM);
+            goto lexit;
+        }
+    }
+
+    return 0;
+
+lexit:
+    return -1;
+}
+#endif
 
 void test()
 {
@@ -37,16 +154,9 @@ void test()
 
 }
 
-void SysTick_Handler()
-{
-    g_u32Ticks++;
-    
-}
-
 int32_t ExeInHRAM(void)
 {
     int32_t i, j;
-    uint32_t ticks;
     
     CLK->AHBCLK0 |= CLK_AHBCLK0_GPCCKEN_Msk;
 
@@ -65,7 +175,6 @@ int32_t ExeInHRAM(void)
         PC0 = 0;
         printf("Elapsed time: %d ms, %d loops\n", g_u32Ticks, j-1);
     }
-
 
     return 0;
 }

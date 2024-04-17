@@ -211,6 +211,10 @@ Reset_Handler:
  *  data to implement than the latter.
  *  Macro __STARTUP_COPY_MULTIPLE is used to choose between two schemes.  */
 
+#ifndef __NO_SYSTEM_INIT
+	bl	SystemInit
+#endif
+
 #ifdef __STARTUP_COPY_MULTIPLE
 /*  Multiple sections scheme.
  *
@@ -344,10 +348,6 @@ Reset_Handler:
 	ldr	r1, [r0,#4]                /* R1 = SPIM->CTL1 */
 	orr	r1, r1, #4                 /* R1 |= SPIM_CTL1_CCMEN_Msk */
 	str	r1, [r0,#4]                /* _SPIM_ENABLE_CCM() */
-#endif
-
-#ifndef __NO_SYSTEM_INIT
-	bl	SystemInit
 #endif
 
 /* Init POR */
