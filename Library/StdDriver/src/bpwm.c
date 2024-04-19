@@ -118,7 +118,7 @@ uint32_t BPWM_ConfigCaptureChannel(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_
 }
 
 /**
- * @brief This function Configure BPWM generator and get the nearest frequency in edge aligned(up counter type) auto-reload mode
+ * @brief This function Configure BPWM generator and get the nearest frequency in up counter type auto-reload mode
  * @param[in] bpwm The pointer of the specified BPWM module
  *                - BPWM0 : BPWM Group 0
  *                - BPWM1 : BPWM Group 1
@@ -183,7 +183,7 @@ uint32_t BPWM_ConfigOutputChannel(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_t
     /* all channels share a prescaler */
     u32Prescale -= 1U;
     BPWM_SET_PRESCALER(bpwm, u32ChannelNum, u32Prescale);
-    /* set BPWM to up counter type(edge aligned) */
+    /* set BPWM to up counter type */
     (bpwm)->CTL1 = BPWM_UP_COUNTER;
 
     u32CNR -= 1U;
