@@ -201,6 +201,19 @@ int32_t mii_check_phy_init(synopGMACdevice *gmacdev)
 {
     int32_t ret = -1;
     
+#if 1 
+{
+    uint16_t val;
+    
+    /* Configure RTL8201FL PHY LED status */ 
+    mii_mdio_write(gmacdev, 31, 0x7); // change to page-7
+    mii_mdio_read(gmacdev, 19, &val); // read reg-19 from page-7
+    mii_mdio_write(gmacdev, 19, (val&~(BIT5|BIT4))); // set LED_sel to 00 on reg-19
+    mii_mdio_read(gmacdev, 19, &val);
+    mii_mdio_write(gmacdev, 31, 0); // return to page-0
+}
+#endif
+
     ret = mii_link_ok(gmacdev); 
     if(ret < 0)
         return ret;
