@@ -104,11 +104,11 @@
 #define RX_BUFFER_AND_FIFO_R1_ELEM_FDF_Pos  (21)
 #define RX_BUFFER_AND_FIFO_R1_ELEM_FDF_Msk  (0x1ul << RX_BUFFER_AND_FIFO_R1_ELEM_FDF_Pos)
 
-/* Rx Buffer and FIFO Element BRS(Bit Rate Swit)    */
-#define RX_BUFFER_AND_FIFO_R1_ELEM_BSR_Pos  (20)
-#define RX_BUFFER_AND_FIFO_R1_ELEM_BSR_Msk  (0x1ul << RX_BUFFER_AND_FIFO_R1_ELEM_BSR_Pos)
+/* Rx Buffer and FIFO Element BRS(Bit Rate Switch)    */
+#define RX_BUFFER_AND_FIFO_R1_ELEM_BRS_Pos  (20)
+#define RX_BUFFER_AND_FIFO_R1_ELEM_BRS_Msk  (0x1ul << RX_BUFFER_AND_FIFO_R1_ELEM_BRS_Pos)
 
-/* Rx Buffer and FIFO Element DLC(Bit Rate Swit)    */
+/* Rx Buffer and FIFO Element DLC(Data Length Code)    */
 #define RX_BUFFER_AND_FIFO_R1_ELEM_DLC_Pos  (16)
 #define RX_BUFFER_AND_FIFO_R1_ELEM_DLC_Msk  (0xFul << RX_BUFFER_AND_FIFO_R1_ELEM_DLC_Pos)
 
@@ -148,11 +148,11 @@
 #define TX_BUFFER_T1_ELEM_FDF_Pos  (21)
 #define TX_BUFFER_T1_ELEM_FDF_Msk  (0x1ul << TX_BUFFER_T1_ELEM_FDF_Pos)
 
-/* Tx Buffer Element BRS(Bit Rate Swit)    */
-#define TX_BUFFER_T1_ELEM_BSR_Pos  (20)
-#define TX_BUFFER_T1_ELEM_BSR_Msk  (0x1ul << TX_BUFFER_T1_ELEM_BSR_Pos)
+/* Tx Buffer Element BRS(Bit Rate Switch)    */
+#define TX_BUFFER_T1_ELEM_BRS_Pos  (20)
+#define TX_BUFFER_T1_ELEM_BRS_Msk  (0x1ul << TX_BUFFER_T1_ELEM_BRS_Pos)
 
-/* Tx Buffer Element DLC(Bit Rate Swit)    */
+/* Tx Buffer Element DLC(Data Length Code)    */
 #define TX_BUFFER_T1_ELEM_DLC_Pos  (16)
 #define TX_BUFFER_T1_ELEM_DLC_Msk  (0xFul << TX_BUFFER_T1_ELEM_DLC_Pos)
 
@@ -576,6 +576,30 @@ static uint32_t CANFD_CalculateTimingValues(CANFD_T *psCanfd, uint32_t u32Nomina
 
 
 /**
+ * @brief       Open TDC Function.
+ *
+ * @param[in]   psCanfd     The pointer to CAN FD module base address.
+ * @param[in]   psCanfdStr  message ram setting and bit-time setting
+ *
+ * @return      None.
+ *
+ * @details     Open Transceiver Delay Compensation
+ */
+void CANFD_Open_TDC(CANFD_T *psCanfd, CANFD_FD_T *psCanfdStr)
+{
+    uint8_t u8TDCO;
+
+    if(psCanfdStr->sBtConfig.sDataBitRate.u32BitRate> 1000000)
+    {
+        u8TDCO = (psCanfd->DBTP & CANFD_DBTP_DTSEG1_Msk) >> CANFD_DBTP_DTSEG1_Pos;
+        psCanfd->TDCR = (psCanfd->TDCR & ~CANFD_TDCR_TDCO_Msk) | (u8TDCO << CANFD_TDCR_TDCO_Pos);
+        psCanfd->TDCR = (psCanfd->TDCR & ~CANFD_TDCR_TDCF_Msk) | ((u8TDCO + 1) << CANFD_TDCR_TDCF_Pos);
+        psCanfd->DBTP |= CANFD_DBTP_TDC_Msk;
+    }
+}
+
+
+/**
  * @brief       Config message ram and Set bit-time.
  *
  * @param[in]   psCanfd     The pointer to CAN FD module base address.
@@ -621,6 +645,7 @@ void CANFD_Open(CANFD_T *psCanfd, CANFD_FD_T *psCanfdStr)
     }
 
     /* configuration change enable */
+    psCanfd->CCCR = CANFD_CCCR_INIT_Msk;
     psCanfd->CCCR |= CANFD_CCCR_CCE_Msk;
 
     if (psCanfdStr->sBtConfig.bBitRateSwitch)
@@ -646,6 +671,11 @@ void CANFD_Open(CANFD_T *psCanfd, CANFD_FD_T *psCanfdStr)
     {
         CANFD_SetTimingConfig(psCanfd, &psCanfdStr->sBtConfig.sConfigBitTing);
     }
+
+    /* Open TDC function */
+    CANFD_Open_TDC(psCanfd, psCanfdStr);
+    psCanfd->TXESC = (7 << CANFD_TXESC_TBDS_Pos);
+    psCanfd->RXESC |= (psCanfd->RXESC & (~CANFD_RXESC_F1DS_Msk)) | (7 << CANFD_RXESC_F1DS_Pos);
 
     if (u32RegLockLevel)
         SYS_LockReg();
@@ -961,14 +991,17 @@ uint32_t CANFD_TransmitDMsg(CANFD_T *psCanfd, uint32_t u32TxBufIdx, CANFD_FD_MSG
         psTxBuffer->u32Id = (psTxMsg->u32Id & 0x7FF) << 18;
     }
 
-    if (psTxMsg->eFrmType == eCANFD_REMOTE_FRM) psTxBuffer->u32Id |= TX_BUFFER_T0_ELEM_RTR_Msk;
+    psTxBuffer->u32Config = (CANFD_EncodeDLC(psTxMsg->u32DLC) << TX_BUFFER_T1_ELEM_DLC_Pos);
 
-    psTxBuffer->u32Config = (CANFD_EncodeDLC(psTxMsg->u32DLC) << 16);
-
-    if (psTxMsg->bFDFormat) psTxBuffer->u32Config |= TX_BUFFER_T1_ELEM_FDF_Msk;
-
-    if (psTxMsg->bBitRateSwitch) psTxBuffer->u32Config |= TX_BUFFER_T1_ELEM_BSR_Msk;
-
+    if (psTxMsg->bFDFormat)
+    {
+        psTxBuffer->u32Config |= TX_BUFFER_T1_ELEM_FDF_Msk;
+        if (psTxMsg->bBitRateSwitch) psTxBuffer->u32Config |= TX_BUFFER_T1_ELEM_BRS_Msk;
+    }
+    else
+    {
+        if (psTxMsg->eFrmType == eCANFD_REMOTE_FRM) psTxBuffer->u32Id |= TX_BUFFER_T0_ELEM_RTR_Msk;
+    }
 
     for (u32Idx = 0; u32Idx < (psTxMsg->u32DLC + (4 - 1)) / 4; u32Idx++)
     {
@@ -1460,7 +1493,7 @@ void CANFD_CopyDBufToMsgBuf(CANFD_BUF_T *psRxBuf, CANFD_FD_MSG_T *psMsgBuf)
     else
         psMsgBuf->bFDFormat = FALSE;
 
-    if (psRxBuf->u32Config &  RX_BUFFER_AND_FIFO_R1_ELEM_BSR_Msk)
+    if (psRxBuf->u32Config &  RX_BUFFER_AND_FIFO_R1_ELEM_BRS_Msk)
         psMsgBuf->bBitRateSwitch = TRUE;
     else
         psMsgBuf->bBitRateSwitch = FALSE;
