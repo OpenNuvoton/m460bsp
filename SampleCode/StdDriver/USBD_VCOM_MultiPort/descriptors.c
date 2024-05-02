@@ -30,12 +30,7 @@ static uint8_t s_au8DeviceDescriptor[] =
     0x00, 0x03,     /* bcdDevice */
     0x01,           /* iManufacture */
     0x02,           /* iProduct */
-
-#if (VCOM_CNT >= 3)
-    0x03,
-#else
-    0x00,           /* iSerialNumber - no serial */
-#endif
+    0x03,           /* iSerialNumber */
     0x01            /* bNumConfigurations */
 };
 
@@ -47,23 +42,18 @@ static uint8_t s_au8ConfigDescriptor[] =
 #if (VCOM_CNT == 1)
     0x4B, 0x00,     /* wTotalLength         */
     0x02,           /* bNumInterfaces       */
-
 #elif (VCOM_CNT == 2)
     0x8D, 0x00,     /* wTotalLength         */
     0x04,           /* bNumInterfaces       */
-
 #elif (VCOM_CNT == 3)
     0xCF, 0x00,     /* wTotalLength         */
     0x06,           /* bNumInterfaces       */
-
 #elif (VCOM_CNT == 4)
     0x11, 0x01,     /* wTotalLength         */
     0x08,           /* bNumInterfaces       */
-
 #elif (VCOM_CNT == 5)
     0x53, 0x01,     /* wTotalLength         */
     0x0A,           /* bNumInterfaces       */
-
 #elif (VCOM_CNT == 6)
     0x95, 0x01,     /* wTotalLength         */
     0x0C,           /* bNumInterfaces       */
@@ -71,7 +61,6 @@ static uint8_t s_au8ConfigDescriptor[] =
     0xD7, 0x01,     /* wTotalLength         */
     0x0E,           /* bNumInterfaces       */
 #endif
-//    0x06,           /* bNumInterfaces       */
     0x01,           /* bConfigurationValue  */
     0x00,           /* iConfiguration       */
     0xC0,           /* bmAttributes         */
