@@ -11,6 +11,9 @@
 #define printf(...)     do { }while(0)
 
 
+#define CONFIGURE_PHY_LED_STATUS    (1)
+
+
 static int32_t mii_mdio_read(synopGMACdevice *gmacdev, uint16_t reg, uint16_t *val)
 {
     return synopGMAC_read_phy_reg((u32)gmacdev->MacBase, gmacdev->PhyBase, reg, val);
@@ -197,11 +200,9 @@ void mii_link_monitor(synopGMACdevice *gmacdev)
     }
 }
 
-int32_t mii_check_phy_init(synopGMACdevice *gmacdev)
-{
-    int32_t ret = -1;
-    
-#if 1 
+
+#if (CONFIGURE_PHY_LED_STATUS == 1)
+static void ConfigurePHYLEDStatus(synopGMACdevice *gmacdev)
 {
     uint16_t val;
     
@@ -214,6 +215,10 @@ int32_t mii_check_phy_init(synopGMACdevice *gmacdev)
 }
 #endif
 
+int32_t mii_check_phy_init(synopGMACdevice *gmacdev)
+{
+    int32_t ret = -1;
+    
     ret = mii_link_ok(gmacdev); 
     if(ret < 0)
         return ret;
@@ -224,13 +229,17 @@ int32_t mii_check_phy_init(synopGMACdevice *gmacdev)
         gmacdev->Speed      = 0;
         gmacdev->LinkState  = 0;
         gmacdev->LoopBackMode = 0;
-        
-        return ret;
     }
     else
     {
         mii_ethtool_gset(gmacdev, 1);
         
-        return (gmacdev->Speed | (gmacdev->DuplexMode << 4));
+        ret = (gmacdev->Speed | (gmacdev->DuplexMode << 4));
     }
+    
+#if (CONFIGURE_PHY_LED_STATUS == 1)
+    ConfigurePHYLEDStatus(gmacdev);
+#endif
+
+    return ret;
 }
