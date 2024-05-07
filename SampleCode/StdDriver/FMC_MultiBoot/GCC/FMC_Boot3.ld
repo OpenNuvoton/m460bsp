@@ -1,8 +1,8 @@
 /* Linker script to configure memory regions. */
 MEMORY
 {
-  FLASH (rx) : ORIGIN = 0x0F100000, LENGTH = 0x2000    /* 8K */
-  RAM (rwx)  : ORIGIN = 0x20000000, LENGTH = 0x80000   /* 512K */
+  FLASH (rx) : ORIGIN = 0x00010000, LENGTH = 0x4000    /* 16k */
+  RAM (rwx)  : ORIGIN = 0x20000000, LENGTH = 0x80000   /* 512k */
 }
 
 /* Library configurations */

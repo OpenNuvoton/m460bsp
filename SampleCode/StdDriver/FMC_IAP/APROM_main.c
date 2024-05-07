@@ -10,7 +10,6 @@
 
 #include "NuMicro.h"
 
-typedef void (FUNC_PTR)(void);
 
 extern uint32_t  loaderImage1Base, loaderImage1Limit;   /* symbol of image start and end */
 
@@ -51,35 +50,6 @@ void UART0_Init(void)
 {
     /* Configure UART0 and set UART0 baud rate */
     UART_Open(UART0, 115200);
-}
-
-
-/**
-  * @brief    Check User Configuration CONFIG0 bit 6 IAP boot setting. If it's not boot with IAP
-  *           mode, modify it and execute a chip reset to make it take effect.
-  * @return   Is boot with IAP mode or not.
-  * @retval   0   Success.
-  * @retval   -1  Failed on reading or programming User Configuration.
-  */
-static int  set_IAP_boot_mode(void)
-{
-    uint32_t  au32Config[2];           /* User Configuration */
-
-    if (FMC_ReadConfig(au32Config, 2) < 0)       /* Read User Configuration CONFIG0 and CONFIG1. */
-    {
-        printf("\nRead User Config failed!\n");
-        return -1;                     /* Failed on reading User Configuration */
-    }
-
-    if (au32Config[0] & 0x40)          /* Check if it's boot from APROM/LDROM with IAP. */
-    {
-        FMC_ENABLE_CFG_UPDATE();       /* Enable User Configuration update. */
-        au32Config[0] &= ~0x40;        /* Select IAP boot mode. */
-        FMC_WriteConfig(au32Config, 2);/* Update User Configuration CONFIG0 and CONFIG1. */
-
-        SYS->IPRST0 = SYS_IPRST0_CHIPRST_Msk;    /* Perform chip reset to make new User Config take effect. */
-    }
-    return 0;                          /* success */
 }
 
 /**
@@ -139,12 +109,13 @@ int main()
 {
     uint8_t     u8Item;                /* menu item */
     uint32_t    u32Data;               /* temporary data word */
-    FUNC_PTR    *func;                 /* function pointer */
     uint32_t    u32TimeOutCnt;         /* time-out counter */
 
     SYS_UnlockReg();                   /* Unlock register lock protect */
 
     SYS_Init();                        /* Init System, IP clock and multi-function I/O */
+
+    SCB->VTOR = FMC_APROM_BASE;        /* Set Vector Table Offset Register */
 
     UART0_Init();                      /* Initialize UART0 */
 
@@ -155,16 +126,6 @@ int main()
     printf("+----------------------------------------+\n");
 
     FMC_Open();                        /* Enable FMC ISP function */
-
-    /*
-     *  Check if User Configuration CBS is boot with IAP mode.
-     *  If not, modify it.
-     */
-    if (set_IAP_boot_mode() < 0)
-    {
-        printf("Failed to set IAP boot mode!\n");
-        goto lexit;                    /* Failed to set IAP boot mode. Program aborted. */
-    }
 
     /* Read BS */
     printf("  Boot Mode ............................. ");
@@ -225,41 +186,22 @@ int main()
             u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
             while (!(UART0->FIFOSTS & UART_FIFOSTS_TXEMPTY_Msk))       /* Wait for UART0 TX FIFO cleared */
                 if(--u32TimeOutCnt == 0) break;
+
             /*  NOTE!
              *     Before change VECMAP, user MUST disable all interrupts.
              *     The following code CANNOT locate in address 0x0 ~ 0x200.
              */
 
-            /* FMC_SetVectorPageAddr(FMC_LDROM_BASE) */
-            FMC->ISPCMD = FMC_ISPCMD_VECMAP;              /* ISP command */
-            FMC->ISPADDR = FMC_LDROM_BASE;                /* Vector remap address */
-            FMC->ISPTRG = FMC_ISPTRG_ISPGO_Msk;           /* Trigger ISP command */
-            u32TimeOutCnt = FMC_TIMEOUT_WRITE;            /* Setup time-out count */
-            while (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk)    /* Wait for ISP command done. */
+            FMC_SetVectorPageAddr(FMC_LDROM_BASE);
+            if (g_FMC_i32ErrCode != 0)
             {
-                if(--u32TimeOutCnt == 0)
-                {
-                    printf("FMC_ISPCMD_VECMAP time-out!\n");
-                    goto lexit;
-                }
+                printf("FMC_SetVectorPageAddr(FMC_LDROM_BASE) failed!\n");
+                goto lexit;
             }
 
-            /*
-             *  The reset handler address of an executable image is located at offset 0x4.
-             *  Thus, this sample get reset handler address of LDROM code from FMC_LDROM_BASE + 0x4.
-             */
-            func = (FUNC_PTR *)*(uint32_t *)(FMC_LDROM_BASE + 4);
-            /*
-             *  The stack base address of an executable image is located at offset 0x0.
-             *  Thus, this sample get stack base address of LDROM code from FMC_LDROM_BASE + 0x0.
-             */
-            
-            __set_MSP(M32(FMC_LDROM_BASE));
-            
-            /*
-             *  Branch to the LDROM code's reset handler in way of function call.
-             */
-            func();
+            /* Software reset to boot to LDROM */
+            NVIC_SystemReset();
+
             break;
 
         default :

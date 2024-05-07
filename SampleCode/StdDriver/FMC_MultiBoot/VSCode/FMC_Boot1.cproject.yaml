@@ -1,6 +1,6 @@
 project:
   linker:
-    - script: ../GCC/FMC_Base.ld
+    - script: ../GCC/FMC_Boot1.ld
   setups:
     - output:
         type: "bin"

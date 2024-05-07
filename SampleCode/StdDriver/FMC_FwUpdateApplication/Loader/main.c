@@ -228,6 +228,9 @@ int main()
     /* Initial clocks and multi-functions */
     SYS_Init();
 
+    /* Set Vector Table Offset Register */
+    SCB->VTOR = LOADER_BASE;
+
     /* Configure UART0: 115200, 8-bit word, no parity bit, 1 stop bit. */
     UART_Open(UART0, 115200);
 

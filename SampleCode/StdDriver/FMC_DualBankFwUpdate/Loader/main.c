@@ -70,6 +70,9 @@ int main()
     /* Configure UART0: 115200, 8-bit word, no parity bit, 1 stop bit. */
     UART_Open(UART0, 115200);
 
+    /* Set Vector Table Offset Register */
+    SCB->VTOR = LOADER_BASE;
+
     /* Enable ISP and APROM update */
     FMC_ENABLE_ISP();
     FMC_ENABLE_AP_UPDATE();

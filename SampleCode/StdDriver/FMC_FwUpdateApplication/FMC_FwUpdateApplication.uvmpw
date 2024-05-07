@@ -9,11 +9,11 @@
 
   <project>
     <PathAndName>.\App\KEIL\App.uvprojx</PathAndName>
+    <NodeIsActive>1</NodeIsActive>
   </project>
 
   <project>
     <PathAndName>.\Loader\KEIL\Loader.uvprojx</PathAndName>
-    <NodeIsActive>1</NodeIsActive>
   </project>
 
 </ProjectWorkspace>

@@ -9,10 +9,9 @@ solution:
       processor:
         trustzone: non-secure
       add-path:
-        - ../../../../../Library/CMSIS/Include
-        - ../../../../../Library/Device/Nuvoton/m460/Include
-        - ../../../../../Library/StdDriver/inc
-        - ../LDROM_iap/out/LDROM_iap/GCC/Debug
+        - ../../../../Library/CMSIS/Include
+        - ../../../../Library/Device/Nuvoton/m460/Include
+        - ../../../../Library/StdDriver/inc
       compiler: GCC@>=10.3.1
   build-types:
     - type: Debug
@@ -45,4 +44,4 @@ solution:
           - --specs=nano.specs
           - -Wl,--gc-sections,-Map=$elf()$.map
   projects:
-    - project: APROM_main.cproject.yaml
+    - project: FMC_Boot3.cproject.yaml
