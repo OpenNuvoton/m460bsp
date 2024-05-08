@@ -211,6 +211,9 @@ int main()
     UART_Open(UART0, 115200);
     UART_Open(UART1, 115200);
 
+    /* Set Vector Table Offset Register */
+    SCB->VTOR = APP_BASE;
+
     /* Enable ISP and APROM update */
     FMC_ENABLE_ISP();
     FMC_ENABLE_AP_UPDATE();
@@ -227,8 +230,12 @@ int main()
         printf("+------------------------+\n");
 
         u32ExecBank = (uint32_t)((FMC->ISPSTS & FMC_ISPSTS_FBS_Msk) >> FMC_ISPSTS_FBS_Pos);
-        printf("\n BANK%d APP processing \n", u32ExecBank);
 
+#ifdef NewApp
+        printf("\n BANK%d APP processing (New Firmware!!!)\n", u32ExecBank);
+#else
+        printf("\n BANK%d APP processing \n", u32ExecBank);
+#endif
 
         printf("\n Download new FW?[y/n]\n");
         u32ch = (uint32_t)getchar();

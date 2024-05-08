@@ -142,6 +142,9 @@ int main()
     /* Initial clocks and multi-functions */
     SYS_Init();
 
+    /* Set Vector Table Offset Register */
+    SCB->VTOR = APP_BASE;
+
     /* Configure UART0: 115200, 8-bit word, no parity bit, 1 stop bit. */
     UART_Open(UART0, 115200);
 
@@ -155,7 +158,7 @@ int main()
     NVIC_EnableIRQ(WDT_IRQn);
 
     /* Configure WDT settings and start WDT counting */
-    WDT_Open(WDT_TIMEOUT_2POW18, WDT_RESET_DELAY_18CLK, 1, 0);
+    WDT_Open(WDT_TIMEOUT_2POW16, WDT_RESET_DELAY_18CLK, 1, 0);
 
     /* Enable WDT interrupt function */
     WDT_EnableInt();
@@ -169,7 +172,12 @@ int main()
 
         /* Check CPU run at Bank0 or Bank1 */
         s_u32ExecBank = (uint32_t)((FMC->ISPSTS & FMC_ISPSTS_FBS_Msk) >> FMC_ISPSTS_FBS_Pos);
+
+#ifdef NewApp
         printf("\n BANK%d APP processing (New firmware)\n", s_u32ExecBank);
+#else
+        printf("\n BANK%d APP processing (Active firmware)\n", s_u32ExecBank);
+#endif
 
         /* Execute firmware self test */
         i32Ret = SelfTest();
