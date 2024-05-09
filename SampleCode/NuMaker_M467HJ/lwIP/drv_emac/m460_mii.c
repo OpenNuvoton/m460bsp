@@ -28,13 +28,13 @@ uint16_t mii_nway_result(uint32_t negotiated)
 {
     uint16_t ret;
 
-    if (negotiated & LPA_100FULL)
+    if(negotiated & LPA_100FULL)
         ret = LPA_100FULL;
-    else if (negotiated & LPA_100BASE4)
+    else if(negotiated & LPA_100BASE4)
         ret = LPA_100BASE4;
-    else if (negotiated & LPA_100HALF)
+    else if(negotiated & LPA_100HALF)
         ret = LPA_100HALF;
-    else if (negotiated & LPA_10FULL)
+    else if(negotiated & LPA_10FULL)
         ret = LPA_10FULL;
     else
         ret = LPA_10HALF;
@@ -47,17 +47,18 @@ int32_t mii_ethtool_gset(synopGMACdevice *gmacdev, uint8_t reset)
     int32_t ret = -1;
     uint16_t val, bmcr, lpa;
     volatile int32_t loop_count;
-    
+
     gmacdev->LinkState = LINKDOWN;
-    
+
     if(reset)
     {
         // perform PHY reset
-        do {
+        do
+        {
             ret = mii_mdio_write(gmacdev, MII_BMCR, BMCR_RESET);
             if(ret < 0)
                 break;
-            
+
             loop_count = 10000;
             while(loop_count-- > 0)
             {
@@ -82,18 +83,20 @@ int32_t mii_ethtool_gset(synopGMACdevice *gmacdev, uint8_t reset)
             ret = mii_mdio_write(gmacdev, MII_BMCR, (val | BMCR_ANRESTART));
             if(ret < 0)
                 break;
-        } while(0);
-        
+        }
+        while(0);
+
         if(ret < 0)
         {
             printf("mii:: Reset PHY, FAIL.\n");
             return -ESYNOPGMACPHYERR;
         }
-        
+
         printf("mii:: Reset PHY, PASS.\n");
     }
-    
-    do {        
+
+    do
+    {
         loop_count = 200000;
         while(loop_count-- > 0)
         {
@@ -110,20 +113,21 @@ int32_t mii_ethtool_gset(synopGMACdevice *gmacdev, uint8_t reset)
             ret = -ESYNOPGMACPHYERR;
             break;
         }
-                
+
         ret = mii_mdio_read(gmacdev, MII_LPA, &lpa);
         if(ret < 0)
             break;
-    } while(0);
-    
+    }
+    while(0);
+
     if(ret < 0)
     {
         printf("mii:: Read MII_BMSR status, FAIL.\n");
         return -ESYNOPGMACPHYERR;
-    }    
-    
+    }
+
     gmacdev->LinkState = LINKUP;
-    
+
     val = mii_nway_result(lpa);
     if(val & LPA_100FULL)
     {
@@ -163,16 +167,16 @@ int32_t mii_link_ok(synopGMACdevice *gmacdev)
 {
     uint16_t value;
     int32_t ret = -1;
-    
+
     /* first, a dummy read, needed to latch some MII phys */
-    mii_mdio_read(gmacdev, MII_BMSR, &value);    
+    mii_mdio_read(gmacdev, MII_BMSR, &value);
     ret = mii_mdio_read(gmacdev, MII_BMSR, &value);
     if(ret)
         return ret;
-    
+
     if(value & BMSR_LSTATUS)
         return LINKUP;
-    
+
     return LINKDOWN;
 }
 
@@ -205,11 +209,11 @@ void mii_link_monitor(synopGMACdevice *gmacdev)
 static void ConfigurePHYLEDStatus(synopGMACdevice *gmacdev)
 {
     uint16_t val;
-    
-    /* Configure RTL8201FL PHY LED status */ 
+
+    /* Configure RTL8201FL PHY LED status */
     mii_mdio_write(gmacdev, 31, 0x7); // change to page-7
     mii_mdio_read(gmacdev, 19, &val); // read reg-19 from page-7
-    mii_mdio_write(gmacdev, 19, (val&~(BIT5|BIT4))); // set LED_sel to 00 on reg-19
+    mii_mdio_write(gmacdev, 19, (val & ~(BIT5 | BIT4))); // set LED_sel to 00 on reg-19
     mii_mdio_read(gmacdev, 19, &val);
     mii_mdio_write(gmacdev, 31, 0); // return to page-0
 }
@@ -218,11 +222,11 @@ static void ConfigurePHYLEDStatus(synopGMACdevice *gmacdev)
 int32_t mii_check_phy_init(synopGMACdevice *gmacdev)
 {
     int32_t ret = -1;
-    
-    ret = mii_link_ok(gmacdev); 
+
+    ret = mii_link_ok(gmacdev);
     if(ret < 0)
         return ret;
-    
+
     if(ret == LINKDOWN)
     {
         gmacdev->DuplexMode = 0;
@@ -233,10 +237,10 @@ int32_t mii_check_phy_init(synopGMACdevice *gmacdev)
     else
     {
         mii_ethtool_gset(gmacdev, 1);
-        
+
         ret = (gmacdev->Speed | (gmacdev->DuplexMode << 4));
     }
-    
+
 #if (CONFIGURE_PHY_LED_STATUS == 1)
     ConfigurePHYLEDStatus(gmacdev);
 #endif

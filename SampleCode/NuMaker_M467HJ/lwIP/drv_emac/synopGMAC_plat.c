@@ -13,7 +13,7 @@
 void plat_delay(u32 delay)
 {
     volatile u32 loop = delay;
-    while (loop--);
+    while(loop--);
 }
 
 u32 synopGMACReadReg(u32 RegBase, u32 RegOffset)
@@ -36,7 +36,7 @@ void synopGMACWriteReg(u32 RegBase, u32 RegOffset, u32 RegData)
     TR("%s RegBase = 0x%08x RegOffset = 0x%08x RegData = 0x%08x\n", __FUNCTION__, (u32) RegBase, RegOffset, RegData);
 #endif
 
-    if (RegOffset == 0) // For gmacconfig, we need add a little delay time here.
+    if(RegOffset == 0)  // For gmacconfig, we need add a little delay time here.
         plat_delay(DEFAULT_LOOP_VARIABLE);
 
     *((volatile u32 *)addr) = RegData;
@@ -74,7 +74,7 @@ bool synopGMACCheckBits(u32 RegBase, u32 RegOffset, u32 BitPos)
 {
     u32 data = synopGMACReadReg(RegBase, RegOffset) & BitPos;
 
-    if (data)
+    if(data)
         return true;
     else
         return false;

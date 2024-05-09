@@ -60,7 +60,8 @@ typedef signed   int    s32;        ///< Define 32-bit signed data type
 typedef u32 *dma_addr_t;
 
 typedef int bool;
-enum synopGMAC_boolean {
+enum synopGMAC_boolean
+{
     false = 0,
     true = 1
 };

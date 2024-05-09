@@ -106,7 +106,7 @@ void send_rrq(void)
     /* Prepare data */
     if((nbuf = netbuf_new()) == NULL)
         return;
-    if((data = netbuf_alloc(nbuf, 2 + strlen(file_name) + strlen(tftp_mode) + 2 )) == NULL)      // op 2, two string and two terminators
+    if((data = netbuf_alloc(nbuf, 2 + strlen(file_name) + strlen(tftp_mode) + 2)) == NULL)       // op 2, two string and two terminators
     {
         netbuf_delete(nbuf);
         return;
@@ -128,7 +128,7 @@ void send_wrq(void)
     /* Prepare data */
     if((nbuf = netbuf_new()) == NULL)
         return;
-    if((data = netbuf_alloc(nbuf, 2 + strlen(file_name) + strlen(tftp_mode) + 2 )) == NULL)      // op 2, two string and two terminators
+    if((data = netbuf_alloc(nbuf, 2 + strlen(file_name) + strlen(tftp_mode) + 2)) == NULL)       // op 2, two string and two terminators
     {
         netbuf_delete(nbuf);
         return;
@@ -171,7 +171,7 @@ static void tftp_thread(void *arg)
 
     /* Create a new UDP connection handle */
     conn = netconn_new(NETCONN_UDP);
-    if (conn == NULL)
+    if(conn == NULL)
     {
         printf("netconn_new() failed\n");
         while(1);
@@ -228,7 +228,7 @@ static void tftp_thread(void *arg)
                 }
                 continue;
             }
-            else if (state == TFTP_STATE_WRQ)
+            else if(state == TFTP_STATE_WRQ)
             {
                 if(first)
                 {
@@ -351,7 +351,7 @@ static void tftp_thread(void *arg)
                             remain = flen;
                             data = file;
                             blk++;
-                            new_blk++; // add to avoid enter " if(new_blk == (blk - 1)) " 
+                            new_blk++; // add to avoid enter " if(new_blk == (blk - 1)) "
                             printf(".");
                             first = 0;
                             send_data(blk, data, MIN(remain, TFTP_BLOCK_LENGTH));

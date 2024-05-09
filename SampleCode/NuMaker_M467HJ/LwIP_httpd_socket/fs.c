@@ -124,7 +124,7 @@ fs_open(const char *name)
 
     for(f = FS_ROOT; f != NULL; f = f->next)
     {
-        if (!strcmp(name, (char *)f->name))
+        if(!strcmp(name, (char *)f->name))
         {
             file->data = (const char *)f->data;
             file->len = f->len;
@@ -150,7 +150,7 @@ void
 fs_close(struct fs_file *file)
 {
 #if LWIP_HTTPD_CUSTOM_FILES
-    if (file->is_custom_file)
+    if(file->is_custom_file)
     {
         fs_close_custom(file);
     }

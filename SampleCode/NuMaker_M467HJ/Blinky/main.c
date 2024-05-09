@@ -69,13 +69,13 @@ void UART0_Init(void)
 int main()
 {
     int32_t i = 0;
-    
+
     SYS_UnlockReg();
 
     SYS_Init();
 
     UART0_Init();
-    
+
     /* Enable GPIO PH to control LED */
     CLK->AHBCLK0 |= CLK_AHBCLK0_GPHCKEN_Msk;
 

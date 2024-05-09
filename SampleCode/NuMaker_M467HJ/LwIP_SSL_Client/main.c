@@ -107,13 +107,13 @@ information. */
 /*
  * Set up the hardware ready to run this demo.
  */
-static void prvSetupHardware( void );
+static void prvSetupHardware(void);
 /*-----------------------------------------------------------*/
 
 volatile int  g_Crypto_Int_done = 0;
 
 struct netif netif;
-static void vSslTask( void *pvParameters );
+static void vSslTask(void *pvParameters);
 
 u8 my_mac_addr[6] = DEFAULT_MAC1_ADDRESS;
 
@@ -122,11 +122,11 @@ int main(void)
     /* Configure the hardware ready to run the test. */
     prvSetupHardware();
 
-    xTaskCreate( vSslTask, "ssl", TCPIP_THREAD_STACKSIZE, NULL, mainCHECK_TASK_PRIORITY, NULL );
+    xTaskCreate(vSslTask, "ssl", TCPIP_THREAD_STACKSIZE, NULL, mainCHECK_TASK_PRIORITY, NULL);
 
-    vStartPolledQueueTasks( mainQUEUE_POLL_PRIORITY );
-    vStartSemaphoreTasks( mainSEM_TEST_PRIORITY );
-    vStartGenericQueueTasks( tskIDLE_PRIORITY );
+    vStartPolledQueueTasks(mainQUEUE_POLL_PRIORITY);
+    vStartSemaphoreTasks(mainSEM_TEST_PRIORITY);
+    vStartGenericQueueTasks(tskIDLE_PRIORITY);
     vStartQueueSetTasks();
 
     printf("\n\nFreeRTOS is starting ...\n");
@@ -139,7 +139,7 @@ int main(void)
     insufficient FreeRTOS heap memory available for the idle and/or timer tasks
     to be created.  See the memory management section on the FreeRTOS web site
     for more details. */
-    for( ;; );
+    for(;;);
 }
 /*-----------------------------------------------------------*/
 
@@ -155,8 +155,8 @@ static void UART_Init(void)
     CLK_EnableModuleClock(UART0_MODULE);
 
     /* Select UART0 module clock source as HIRC and UART0 module clock divider as 1 */
-    CLK_SetModuleClock(UART0_MODULE, CLK_CLKSEL1_UART0SEL_HIRC, CLK_CLKDIV0_UART0(1));  
-    
+    CLK_SetModuleClock(UART0_MODULE, CLK_CLKSEL1_UART0SEL_HIRC, CLK_CLKDIV0_UART0(1));
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -168,7 +168,7 @@ static void UART_Init(void)
     UART_Open(DEBUG_PORT, 115200);
 }
 
-static void prvSetupHardware( void )
+static void prvSetupHardware(void)
 {
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -186,13 +186,13 @@ static void prvSetupHardware( void )
     CLK->AHBCLK0 |= CLK_AHBCLK0_GPACKEN_Msk | CLK_AHBCLK0_GPBCKEN_Msk | CLK_AHBCLK0_GPCCKEN_Msk | CLK_AHBCLK0_GPDCKEN_Msk |
                     CLK_AHBCLK0_GPECKEN_Msk | CLK_AHBCLK0_GPFCKEN_Msk | CLK_AHBCLK0_GPGCKEN_Msk | CLK_AHBCLK0_GPHCKEN_Msk;
     CLK->AHBCLK1 |= CLK_AHBCLK1_GPICKEN_Msk | CLK_AHBCLK1_GPJCKEN_Msk;
-    
+
     /* Init UART for printf */
     UART_Init();
 }
 /*-----------------------------------------------------------*/
 
-void vApplicationMallocFailedHook( void )
+void vApplicationMallocFailedHook(void)
 {
     /* vApplicationMallocFailedHook() will only be called if
     configUSE_MALLOC_FAILED_HOOK is set to 1 in FreeRTOSConfig.h.  It is a hook
@@ -205,11 +205,11 @@ void vApplicationMallocFailedHook( void )
     to query the size of free heap space that remains (although it does not
     provide information on how the remaining heap might be fragmented). */
     taskDISABLE_INTERRUPTS();
-    for( ;; );
+    for(;;);
 }
 /*-----------------------------------------------------------*/
 
-void vApplicationIdleHook( void )
+void vApplicationIdleHook(void)
 {
     /* vApplicationIdleHook() will only be called if configUSE_IDLE_HOOK is set
     to 1 in FreeRTOSConfig.h.  It will be called on each iteration of the idle
@@ -223,20 +223,20 @@ void vApplicationIdleHook( void )
 }
 /*-----------------------------------------------------------*/
 
-void vApplicationStackOverflowHook( xTaskHandle pxTask, signed char *pcTaskName )
+void vApplicationStackOverflowHook(xTaskHandle pxTask, signed char *pcTaskName)
 {
-    ( void ) pcTaskName;
-    ( void ) pxTask;
+    (void) pcTaskName;
+    (void) pxTask;
 
     /* Run time stack overflow checking is performed if
     configCHECK_FOR_STACK_OVERFLOW is defined to 1 or 2.  This hook
     function is called if a stack overflow is detected. */
     taskDISABLE_INTERRUPTS();
-    for( ;; );
+    for(;;);
 }
 /*-----------------------------------------------------------*/
 
-void vApplicationTickHook( void )
+void vApplicationTickHook(void)
 {
     /* This function will be called by each tick interrupt if
     configUSE_TICK_HOOK is set to 1 in FreeRTOSConfig.h.  User code can be
@@ -253,7 +253,7 @@ void vApplicationTickHook( void )
 }
 
 extern void ssl_client_socket_init(void);
-static void vSslTask( void *pvParameters )
+static void vSslTask(void *pvParameters)
 {
     ip_addr_t ipaddr;
     ip_addr_t netmask;
@@ -264,7 +264,7 @@ static void vSslTask( void *pvParameters )
     IP4_ADDR(&netmask, 255, 255, 255, 0);
 
     printf("SSL_Client. IP:192.168.1.3 \n");
-    
+
     tcpip_init(NULL, NULL);
 
     netif_add(&netif, &ipaddr, &netmask, &gw, NULL, ethernetif_init, tcpip_input);
@@ -274,5 +274,5 @@ static void vSslTask( void *pvParameters )
 
     ssl_client_socket_init();
 
-    vTaskSuspend( NULL );
+    vTaskSuspend(NULL);
 }

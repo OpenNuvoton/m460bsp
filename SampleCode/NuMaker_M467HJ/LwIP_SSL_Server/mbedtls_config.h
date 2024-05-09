@@ -3136,8 +3136,7 @@
 
 /** \def MBEDTLS_PSA_KEY_SLOT_COUNT
  * Restrict the PSA library to supporting a maximum amount of simultaneously
- * loaded keys. A loaded key is a key stored by the PSA Crypto core as a
- * volatile key, or a persistent key which is loaded temporarily by the
+ * loaded keys. A loaded key is a key stored by the PSA Crypto core as a * volatile key, or a persistent key which is loaded temporarily by the
  * library as part of a crypto operation in flight.
  *
  * If this option is unset, the library will fall back to a default value of

@@ -58,7 +58,7 @@
 #define TCPIP_THREAD_STACKSIZE          2048
 #define TCPIP_THREAD_PRIO               4
 #define TCPIP_MBOX_SIZE                 64
-#define RX_THREAD_STACKSIZE             1024 
+#define RX_THREAD_STACKSIZE             1024
 #define RX_THREAD_PRIO                  2
 #define DEFAULT_TCP_RECVMBOX_SIZE       16
 #define DEFAULT_ACCEPTMBOX_SIZE         16

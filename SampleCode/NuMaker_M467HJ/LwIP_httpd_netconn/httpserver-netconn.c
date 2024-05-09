@@ -35,27 +35,27 @@ void http_server_serve(struct netconn *conn)
 
     /* Read the data from the port, blocking if nothing yet there.
      We assume the request (the part we care about) is in one netbuf */
-    netconn_recv(conn,&inbuf);
+    netconn_recv(conn, &inbuf);
 
-    if (inbuf != NULL)
+    if(inbuf != NULL)
     {
-        if (netconn_err(conn) == ERR_OK)
+        if(netconn_err(conn) == ERR_OK)
         {
             netbuf_data(inbuf, (void**)&buf, &buflen);
 
             /* Is this an HTTP GET command? (only check the first 5 chars, since
             there are other formats for GET, and we're keeping it very simple )*/
-            if ((buflen >=5) && (strncmp(buf, "GET /", 5) == 0))
+            if((buflen >= 5) && (strncmp(buf, "GET /", 5) == 0))
             {
                 /* Check if request to get m4.jpg */
-                if (strncmp((char const *)buf,"GET /img/m4.jpg", 15) == 0)
+                if(strncmp((char const *)buf, "GET /img/m4.jpg", 15) == 0)
                 {
                     /* Check if request to get M4 banner */
                     file = fs_open("/img/m4.jpg");
                     netconn_write(conn, (const unsigned char*)(file->data), (size_t)file->len, NETCONN_NOCOPY);
                     fs_close(file);
                 }
-                else if((strncmp(buf, "GET /index.html", 15) == 0)||(strncmp(buf, "GET / ", 6) == 0))
+                else if((strncmp(buf, "GET /index.html", 15) == 0) || (strncmp(buf, "GET / ", 6) == 0))
                 {
                     /* Load index page */
                     file = fs_open("/index.html");
@@ -94,12 +94,12 @@ static void http_server_netconn_thread(void *arg)
     /* Create a new TCP connection handle */
     conn = netconn_new(NETCONN_TCP);
 
-    if (conn!= NULL)
+    if(conn != NULL)
     {
         /* Bind to port 80 (HTTP) with default IP address */
         err = netconn_bind(conn, NULL, 80);
 
-        if (err == ERR_OK)
+        if(err == ERR_OK)
         {
             /* Put the connection into LISTEN state */
             netconn_listen(conn);
