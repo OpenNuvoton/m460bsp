@@ -3,7 +3,8 @@
  * @version  V3.00
  * @brief    Demonstrate how to call ARM CMSIS DSP library to calculate FFT.
  *
- * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
@@ -47,7 +48,7 @@ void SYS_Init(void)
 
     /* Set both PCLK0 and PCLK1 as HCLK/2 */
     CLK->PCLKDIV = CLK_PCLKDIV_APB0DIV_DIV2 | CLK_PCLKDIV_APB1DIV_DIV2;
-    
+
     /* Set core clock as PLL_CLOCK from PLL */
     CLK_SetCoreClock(FREQ_192MHZ);
 
@@ -120,5 +121,3 @@ int main()
 
     while(SYS->PDID);
 }
-
-/*** (C) COPYRIGHT 2016 Nuvoton Technology Corp. ***/

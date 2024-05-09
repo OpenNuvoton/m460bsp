@@ -3,8 +3,8 @@
  * @version  V1.00
  * @brief    Demonstrate the usage of CortexM4 BitBand.
  *
- *
- * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright SPDX-License-Identifier: Apache-2.0
+ * @copyright Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
@@ -97,5 +97,3 @@ int main()
 
     while(1);
 }
-
-/*** (C) COPYRIGHT 2016 Nuvoton Technology Corp. ***/

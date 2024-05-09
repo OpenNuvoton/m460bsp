@@ -71,7 +71,7 @@ int32_t RTC_Init(void)
         sWriteRTC.u32Minute     = 0;
         sWriteRTC.u32Second     = 0;
         sWriteRTC.u32TimeScale  = RTC_CLOCK_24;
-        if( RTC_Open(&sWriteRTC) < 0 )
+        if(RTC_Open(&sWriteRTC) < 0)
         {
             printf("Initialize RTC module and start counting failed\n");
             return -1;
@@ -280,11 +280,11 @@ int32_t main(void)
     CLK_EnableCKO(CLK_CLKSEL1_CLKOSEL_HCLK, 3, 0);
 
     /* Get power manager wake up source */
-    if( CheckPowerSource() != 0)
+    if(CheckPowerSource() != 0)
         goto lexit;
 
     /* RTC wake-up source setting */
-    if( RTC_Init() < 0 )
+    if(RTC_Init() < 0)
         goto lexit;
 
     /*
@@ -365,7 +365,7 @@ int32_t main(void)
         }
     }
 
-lexit:   
-    
+lexit:
+
     while(1);
 }

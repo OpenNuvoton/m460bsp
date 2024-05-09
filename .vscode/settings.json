@@ -1,6 +1,8 @@
 {
     "files.associations": {
-        "dfu_transfer.h": "c"
+        "dfu_transfer.h": "c",
+        "stdio.h": "c",
+        "numicro.h": "c"
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
 }

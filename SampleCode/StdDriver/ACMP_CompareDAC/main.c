@@ -44,7 +44,7 @@ void SYS_Init(void)
 
     /* Set PCLK0 and PCLK1 to HCLK/2 */
     CLK->PCLKDIV = (CLK_PCLKDIV_APB0DIV_DIV2 | CLK_PCLKDIV_APB1DIV_DIV2);
-    
+
     /* Set core clock */
     CLK_SetCoreClock(FREQ_192MHZ);
 
