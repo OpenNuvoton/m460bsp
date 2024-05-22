@@ -129,7 +129,7 @@ void EPWM0_Init(void)
 
 }
 
-int32_t main(void)
+int main(void)
 {
 
     /* Init System, IP clock and multi-function I/O */

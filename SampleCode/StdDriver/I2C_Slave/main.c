@@ -33,7 +33,7 @@ void I2C0_IRQHandler(void)
 
     u32Status = I2C_GET_STATUS(I2C0);
 
-    if (I2C_GET_TIMEOUT_FLAG(I2C0))
+    if(I2C_GET_TIMEOUT_FLAG(I2C0))
     {
         /* Clear I2C0 Timeout Flag */
         I2C_ClearTimeoutFlag(I2C0);
@@ -41,7 +41,7 @@ void I2C0_IRQHandler(void)
     }
     else
     {
-        if (s_I2C0HandlerFn != NULL)
+        if(s_I2C0HandlerFn != NULL)
             s_I2C0HandlerFn(u32Status);
     }
 }
@@ -52,12 +52,12 @@ void I2C0_IRQHandler(void)
 void I2C_SlaveTRx(uint32_t u32Status)
 {
     uint8_t u8data;
-    if (u32Status == 0x60)                      /* Own SLA+W has been receive; ACK has been return */
+    if(u32Status == 0x60)                       /* Own SLA+W has been receive; ACK has been return */
     {
         g_u8SlvDataLen = 0;
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI | I2C_CTL_AA);
     }
-    else if (u32Status == 0x80)                 /* Previously address with own SLA address
+    else if(u32Status == 0x80)                 /* Previously address with own SLA address
                                                    Data has been received; ACK has been returned*/
     {
         u8data = (unsigned char) I2C_GET_DATA(I2C0);
@@ -89,18 +89,18 @@ void I2C_SlaveTRx(uint32_t u32Status)
         slave_buff_addr++;
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
     }
-    else if (u32Status == 0xC0)                 /* Data byte or last data in I2CDAT has been transmitted
+    else if(u32Status == 0xC0)                 /* Data byte or last data in I2CDAT has been transmitted
                                                    Not ACK has been received */
     {
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI | I2C_CTL_AA);
     }
-    else if (u32Status == 0x88)                 /* Previously addressed with own SLA address; NOT ACK has
+    else if(u32Status == 0x88)                 /* Previously addressed with own SLA address; NOT ACK has
                                                    been returned */
     {
         g_u8SlvDataLen = 0;
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI | I2C_CTL_AA);
     }
-    else if (u32Status == 0xA0)                 /* A STOP or repeated START has been received while still
+    else if(u32Status == 0xA0)                 /* A STOP or repeated START has been received while still
                                                    addressed as Slave/Receiver*/
     {
         g_u8SlvDataLen = 0;
@@ -192,7 +192,7 @@ void I2C0_Init(void)
 }
 
 
-int32_t main (void)
+int main(void)
 {
     uint32_t i, u32TimeOutCnt;
 
@@ -227,13 +227,13 @@ int32_t main (void)
     /* I2C enter no address SLV mode */
     I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI | I2C_CTL_AA);
 
-    for (i = 0; i < 0x100; i++)
+    for(i = 0; i < 0x100; i++)
     {
         g_au8SlvData[i] = 0;
     }
 
     /* I2C function to Slave receive/transmit data */
-    s_I2C0HandlerFn=I2C_SlaveTRx;
+    s_I2C0HandlerFn = I2C_SlaveTRx;
 
     printf("\n");
     printf("I2C Slave Mode is Running.\n");

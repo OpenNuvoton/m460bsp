@@ -158,7 +158,7 @@ void SYS_Init(void)
 
     /* Select BPWM module clock source */
     CLK_SetModuleClock(BPWM0_MODULE, CLK_CLKSEL2_BPWM0SEL_PCLK0, 0);
-	CLK_SetModuleClock(BPWM1_MODULE, CLK_CLKSEL2_BPWM1SEL_PCLK1, 0);
+    CLK_SetModuleClock(BPWM1_MODULE, CLK_CLKSEL2_BPWM1SEL_PCLK1, 0);
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -187,7 +187,7 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
     uint32_t u32TimeOutCnt;
 
@@ -285,7 +285,7 @@ int32_t main(void)
         }
 
         /* Capture the Input Waveform Data */
-        if( CalPeriodTime(BPWM0, 0) < 0 )
+        if(CalPeriodTime(BPWM0, 0) < 0)
             goto lexit;
 
         /*------------------------------------------------------------------------------------------------------------*/

@@ -237,7 +237,7 @@ void PDMA_Init(void)
     NVIC_EnableIRQ(PDMA0_IRQn);
 }
 
-int32_t main(void)
+int main(void)
 {
     TCHAR sd_path[] = { '0', ':', 0 };    /* SD drive started from 0 */
 

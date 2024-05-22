@@ -226,7 +226,6 @@ void SYS_Init(void)
 #if (!CRYSTAL_LESS)
     /* Enable HXT clock */
     CLK_EnableXtalRC(CLK_PWRCTL_HXTEN_Msk);
-
     /* Wait for HXT clock ready */
     CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
 
@@ -864,7 +863,7 @@ void UART5_IRQHandler(void)
                 if(g_u16ComThead5 >= TXBUFSIZE)
                 {
                     g_u16ComThead5 = 0;
-                    }
+                }
                 g_u16ComTbytes5--;
                 i32Size--;
             }
@@ -1576,7 +1575,7 @@ void PowerDown(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
 #if CRYSTAL_LESS
     uint32_t u32TrimInit;

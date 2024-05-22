@@ -109,7 +109,7 @@ void I2C2_Init(void)
 }
 
 
-int32_t main(void)
+int main(void)
 {
     uint32_t volatile i;
 

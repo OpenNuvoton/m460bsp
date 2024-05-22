@@ -85,7 +85,7 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
     S_PSIO_NEC_CFG sConfig;
     uint32_t u32TimeOutCnt;
@@ -120,7 +120,7 @@ int32_t main(void)
 
     /* Wait transfer done */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while (PSIO_NEC_TransferDone(&sConfig))
+    while(PSIO_NEC_TransferDone(&sConfig))
     {
         if(--u32TimeOutCnt == 0)
         {
@@ -134,7 +134,7 @@ int32_t main(void)
 
     /* Wait transfer done */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while (PSIO_NEC_TransferDone(&sConfig))
+    while(PSIO_NEC_TransferDone(&sConfig))
     {
         if(--u32TimeOutCnt == 0)
         {
@@ -150,5 +150,5 @@ int32_t main(void)
 
 lexit:
 
-    while (1);
+    while(1);
 }

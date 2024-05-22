@@ -24,7 +24,7 @@ int IsDebugFifoEmpty(void);
 void ACMP01_IRQHandler(void);
 
 
-int32_t main(void)
+int main()
 {
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -62,7 +62,7 @@ int32_t main(void)
 
     /* Select CRV level */
     ACMP_CRV1_SEL(ACMP01, 16);
-    
+
     /* Enable CRV1 */
     ACMP_ENABLE_CRV1(ACMP01);
 
@@ -93,7 +93,7 @@ int32_t main(void)
     SET_CLKO_PB14();
 
     for(;;)
-    {   
+    {
         printf("Enter power-down ....\n");
         /* Wait message print out */
         WAIT_UART();
@@ -104,7 +104,7 @@ int32_t main(void)
         CLK_SysTickLongDelay(3000000);
 
     }
-    
+
 }
 
 void ACMP01_IRQHandler(void)
@@ -158,7 +158,7 @@ void SYS_Init(void)
 
     /* Disable digital input path of analog pin ACMP0_P0 to prevent leakage */
     GPIO_DISABLE_DIGITAL_PATH(PB, BIT4);
-    
+
 }
 
 
@@ -182,4 +182,3 @@ void PowerDownFunction(void)
 
     __WFI();
 }
-

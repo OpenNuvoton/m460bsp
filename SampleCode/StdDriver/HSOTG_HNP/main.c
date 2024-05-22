@@ -428,7 +428,7 @@ void USBOTG20_IRQHandler(void)
     }
 }
 
-int32_t main(void)
+int main(void)
 {
     HID_DEV_T    *hdev, *hdev_list;
 

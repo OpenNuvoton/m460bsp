@@ -27,7 +27,7 @@ void PowerDownFunction(void)
     /* Check if all the debug messages are finished */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     UART_WAIT_TX_EMPTY(DEBUG_PORT)
-        if(--u32TimeOutCnt == 0) break;
+    if(--u32TimeOutCnt == 0) break;
 
     /* Enable Power-down mode wake-up interrupt */
     CLK->PWRCTL |= CLK_PWRCTL_PDWKIEN_Msk;
@@ -116,7 +116,7 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
     /* Unlock protected registers */
     SYS_UnlockReg();

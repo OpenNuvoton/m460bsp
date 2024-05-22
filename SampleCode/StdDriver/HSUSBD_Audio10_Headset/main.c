@@ -108,7 +108,7 @@ void I2C2_Init(void)
     printf("I2C clock %d Hz\n", I2C_GetBusClockFreq(I2C2));
 }
 
-int32_t main(void)
+int main(void)
 {
     uint32_t volatile i;
 

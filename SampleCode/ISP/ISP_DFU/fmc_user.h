@@ -20,8 +20,8 @@
 /*  FMC Macro Definitions                                                                                  */
 /*---------------------------------------------------------------------------------------------------------*/
 
-int FMC_Read_User(unsigned int u32Addr, unsigned int *data);
-void ReadData(unsigned int addr_start, unsigned int addr_end, unsigned int *data);
-void WriteData(unsigned int addr_start, unsigned int addr_end, unsigned int *data);
+int FMC_Read_User(uint32_t u32Addr, uint32_t *data);
+void ReadData(uint32_t addr_start, uint32_t addr_end, uint32_t *data);
+void WriteData(uint32_t addr_start, uint32_t addr_end, uint32_t *data);
 
 #endif  /* FMC_USER_H */

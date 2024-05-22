@@ -32,7 +32,7 @@ void PSIO_IRQHandler(void)
     /* Get INT0 interrupt flag */
     u8INT0Flag = PSIO_GET_INT_FLAG(PSIO, PSIO_INTSTS_CON0IF_Msk);
 
-    if (u8INT0Flag)
+    if(u8INT0Flag)
     {
         /* Clear INT0 interrupt flag */
         PSIO_CLEAR_INT_FLAG(PSIO, PSIO_INTSTS_CON0IF_Msk);
@@ -43,13 +43,13 @@ void PSIO_IRQHandler(void)
     }
 
     /* Read data */
-    if (PSIO_PS2_GET_STATUS() == eDEVICE_READ)
+    if(PSIO_PS2_GET_STATUS() == eDEVICE_READ)
     {
         uint32_t u32Data;
 
         /* Wait input buffer full */
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-        while (!PSIO_GET_TRANSFER_STATUS(PSIO, PSIO_TRANSTS_INFULL0_Msk << (g_sConfig.u8DataPin * 4)))
+        while(!PSIO_GET_TRANSFER_STATUS(PSIO, PSIO_TRANSTS_INFULL0_Msk << (g_sConfig.u8DataPin * 4)))
         {
             if(--u32TimeOutCnt == 0)
             {
@@ -67,7 +67,7 @@ void PSIO_IRQHandler(void)
 
         /* Wait slot controller is not busy */
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-        while (PSIO_GET_BUSY_FLAG(PSIO, g_sConfig.u8DataSC))
+        while(PSIO_GET_BUSY_FLAG(PSIO, g_sConfig.u8DataSC))
         {
             if(--u32TimeOutCnt == 0)
             {
@@ -80,13 +80,13 @@ void PSIO_IRQHandler(void)
         PSIO_PS2_SET_STATUS(eDEVICE_IDLE);
         /* Write data */
     }
-    else if (PSIO_PS2_GET_STATUS() == eDEVICE_WRITE)
+    else if(PSIO_PS2_GET_STATUS() == eDEVICE_WRITE)
     {
-        if (u8BitNumber == 10)
+        if(u8BitNumber == 10)
         {
             /* Wait slot controller is not busy */
             u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-            while (PSIO_GET_BUSY_FLAG(PSIO, g_sConfig.u8DataSC))
+            while(PSIO_GET_BUSY_FLAG(PSIO, g_sConfig.u8DataSC))
             {
                 if(--u32TimeOutCnt == 0)
                 {
@@ -165,7 +165,7 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
     uint8_t u8RxData = 0x0, u8Parity = 0;
 
@@ -201,24 +201,24 @@ int32_t main(void)
     printf("PS/2 device ready, please enter any key to continue!\n");
     getchar();
 
-    while (1)
+    while(1)
     {
 
         /* Set PSIO on read signal state */
         PSIO_PS2_DeviceRead(&g_sConfig, &u8RxData, &u8Parity);
 
         /* Receiving data */
-        while (PSIO_PS2_GET_STATUS() == eDEVICE_READ);
+        while(PSIO_PS2_GET_STATUS() == eDEVICE_READ);
 
         /* Data was received */
-        if (g_u8Stop == 1)
+        if(g_u8Stop == 1)
         {
             g_u8Stop = 0;
             printf("[Data]0x%x, [Parity]0x%x\n", u8RxData, u8Parity);
         }
 
         /* Send data */
-        if (!(UART0->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk))
+        if(!(UART0->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk))
         {
             uint8_t u8TxData;
 
@@ -226,7 +226,7 @@ int32_t main(void)
             printf("Send[0x%x]\n", u8TxData);
             PSIO_PS2_DeviceSend(&g_sConfig, &u8TxData);
 
-            while (PSIO_PS2_GET_STATUS() == eDEVICE_WRITE);
+            while(PSIO_PS2_GET_STATUS() == eDEVICE_WRITE);
         }
     }
 

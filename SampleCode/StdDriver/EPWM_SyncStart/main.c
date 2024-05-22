@@ -78,7 +78,7 @@ void SYS_Init(void)
     SET_EPWM0_CH3_PE4();
     SET_EPWM0_CH4_PE3();
     SET_EPWM0_CH5_PE2();
-    
+
     SET_EPWM1_CH0_PC5();
     SET_EPWM1_CH1_PC4();
     SET_EPWM1_CH2_PC3();
@@ -101,7 +101,7 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
     /* Init System, IP clock and multi-function I/O
        In the end of SYS_Init() will issue SYS_LockReg()

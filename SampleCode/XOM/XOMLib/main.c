@@ -46,7 +46,7 @@ void SYS_Init(void)
     SET_UART0_TXD_PB13();
 }
 
-int32_t main(void)
+int main(void)
 {
     char ch;
     int32_t i, r;
@@ -151,5 +151,3 @@ lexit:
 }
 
 /*** (C) COPYRIGHT 2020 Nuvoton Technology Corp. ***/
-
-

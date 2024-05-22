@@ -128,7 +128,7 @@ int32_t SysTick_Delay(TIMER_T *dummy_for_compatible __attribute__((unused)), uin
  */
 S_HSUSBD_BC12_PD_STATUS HSUSBD_BC_Detect(TIMER_T *pu32TimerSrc)
 {
-/* TDCD_TIMEOUT (BC1.2 SPEC): 300ms ~ 900ms */
+    /* TDCD_TIMEOUT (BC1.2 SPEC): 300ms ~ 900ms */
 #define DCD_TIMEOUT_PERIOD_US 349000UL
 
 #define ENABLE_BC12_DBG_MSG 0
@@ -140,7 +140,7 @@ S_HSUSBD_BC12_PD_STATUS HSUSBD_BC_Detect(TIMER_T *pu32TimerSrc)
 
 #define BC_DELAY(us) pfnBC_Delay(pu32TimerSrc, us)
 
-    int32_t (*pfnBC_Delay)(TIMER_T *dummy, uint32_t us);
+    int32_t (*pfnBC_Delay)(TIMER_T * dummy, uint32_t us);
 
     if(pu32TimerSrc == NULL)
     {
@@ -401,7 +401,7 @@ void PowerDown(void)
     SYS_LockReg();
 }
 
-int32_t main(void)
+int main(void)
 {
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();

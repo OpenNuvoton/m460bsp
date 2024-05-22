@@ -35,7 +35,7 @@ void PowerDownFunction(void)
 
     /* Check if all the debug messages are finished */
     UART_WAIT_TX_EMPTY(DEBUG_PORT)
-        if(--u32TimeOutCnt == 0) break;
+    if(--u32TimeOutCnt == 0) break;
 
     /* Enter to Power-down mode */
     CLK_PowerDown();
@@ -120,7 +120,7 @@ void UART1_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
 
     /* Unlock protected registers */
@@ -168,7 +168,7 @@ void UART1_IRQHandler(void)
         printf("UART wake-up.\n");
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
         UART_WAIT_TX_EMPTY(DEBUG_PORT)
-            if(--u32TimeOutCnt == 0) break;
+        if(--u32TimeOutCnt == 0) break;
     }
     else if(UART_GET_INT_FLAG(UART1, UART_INTSTS_RDAINT_Msk | UART_INTSTS_RXTOINT_Msk))  /* UART receive data available flag */
     {

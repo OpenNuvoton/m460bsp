@@ -126,11 +126,11 @@ int32_t RTC_32KCalibration(int32_t i32FrequencyX10000)
     /* Judge Integer part is reasonable */
     if((i32RegInt >= 0) && (i32RegInt <= 31))
     {
-        u32TimeOutCnt = SystemCoreClock<<1; /* 2 second time-out */
+        u32TimeOutCnt = SystemCoreClock << 1; /* 2 second time-out */
         while((RTC->FREQADJ & RTC_FREQADJ_FCRBUSY_Msk) == RTC_FREQADJ_FCRBUSY_Msk)
             if(--u32TimeOutCnt == 0) return RTC_ERR_TIMEOUT;
         RTC->FREQADJ = (uint32_t)((i32RegInt << 8) | i32RegFra);
-        u32TimeOutCnt = SystemCoreClock<<1; /* 2 second time-out */
+        u32TimeOutCnt = SystemCoreClock << 1; /* 2 second time-out */
         while((RTC->FREQADJ & RTC_FREQADJ_FCRBUSY_Msk) == RTC_FREQADJ_FCRBUSY_Msk)
             if(--u32TimeOutCnt == 0) return RTC_ERR_TIMEOUT;
     }
@@ -1049,7 +1049,6 @@ void RTC_DynamicTamperConfig(uint32_t u32ChangeRate, uint32_t u32SeedReload, uin
   */
 uint32_t RTC_SetClockSource(uint32_t u32ClkSrc)
 {
-    uint32_t u32TrimDefault = inpw(SYS_BASE + 0x14Cul);
 
     if(u32ClkSrc == RTC_CLOCK_SOURCE_LXT)
     {

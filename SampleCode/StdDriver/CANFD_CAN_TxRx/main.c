@@ -33,7 +33,6 @@ CANFD_T * g_pCanfd = ((CANFD_MODULE == 0) ? CANFD0 : (CANFD_MODULE == 1) ? CANFD
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void);
 void SYS_Init(void);
 void CAN_Init(void);
 void CAN_TxRxTest(void);
@@ -177,8 +176,7 @@ void CAN_Init(void)
     /* Receive 0x222 (29-bit id) in CAN rx message buffer 1 by setting mask 3 */
     CANFD_SetXIDFltr(g_pCanfd, 0, CANFD_RX_BUFFER_EXT_LOW(0x222, 1), CANFD_RX_BUFFER_EXT_HIGH(0x222, 1));
     /* Receive 0x3333 (29-bit id) in CAN rx message buffer 1 by setting mask 3 */
-    CANFD_SetXIDFltr(g_pCanfd, 1, CANFD_RX_BUFFER_EXT_LOW(0x3333, 1), CANFD_RX_BUFFER_EXT_HIGH(0x3333, 1));
-    /* Receive 0x44444 (29-bit id) in CAN rx message buffer 1 by setting mask 3 */
+    CANFD_SetXIDFltr(g_pCanfd, 1, CANFD_RX_BUFFER_EXT_LOW(0x3333, 1), CANFD_RX_BUFFER_EXT_HIGH(0x3333, 1));    /* Receive 0x44444 (29-bit id) in CAN rx message buffer 1 by setting mask 3 */
     CANFD_SetXIDFltr(g_pCanfd, 2, CANFD_RX_BUFFER_EXT_LOW(0x44444, 1), CANFD_RX_BUFFER_EXT_HIGH(0x44444, 1));
     /* CAN Run to Normal mode */
     CANFD_RunToNormal(g_pCanfd, TRUE);
@@ -399,7 +397,7 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*                                         Main Function                                                   */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
     /* Unlock protected registers */
     SYS_UnlockReg();

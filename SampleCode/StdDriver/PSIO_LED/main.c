@@ -90,7 +90,7 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
 
     /* For library internal used, this memory size should be (data length)*3 word at least, */
@@ -135,7 +135,7 @@ int32_t main(void)
 
     do
     {
-        switch (eColor)
+        switch(eColor)
         {
             case eCASE_GREEN_BLUE:
                 /* PIN0 */                              /* PIN1 */
@@ -227,6 +227,7 @@ int32_t main(void)
 
         /* Delay 500 ms */
         CLK_SysTickLongDelay(500000);
-    } while (1);
+    }
+    while(1);
 
 }

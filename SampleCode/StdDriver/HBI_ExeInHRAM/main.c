@@ -58,7 +58,7 @@ extern uint32_t Image$$HRAM$$RO$$Base;
 //volatile uint32_t g_u32Ticks = 0;
 
 
-int32_t main(void)
+int main(void)
 {
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -76,7 +76,7 @@ int32_t main(void)
 
     /*
        This sample code demonstrates how to make a sub-routine code executed in SRAM.
-    
+
        Build option "HBI_ENABLE = 2" is defined to init HBI in SystemInit()
     */
 
@@ -87,7 +87,7 @@ int32_t main(void)
     printf("\nReturn to execute in APROM \n");
     printf("\nHyperRAM execute code test done \n");
 
-    while (1);
+    while(1);
 
 }
 

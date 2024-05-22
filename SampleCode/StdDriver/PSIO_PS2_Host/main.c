@@ -34,7 +34,7 @@ void PSIO_IRQHandler(void)
     /* Get INT0 interrupt flag */
     u8INT0Flag = PSIO_GET_INT_FLAG(PSIO, PSIO_INTSTS_CON0IF_Msk);
 
-    if (u8INT0Flag)
+    if(u8INT0Flag)
     {
         /* Clear INT0 interrupt flag */
         PSIO_CLEAR_INT_FLAG(PSIO, PSIO_INTSTS_CON0IF_Msk);
@@ -44,7 +44,7 @@ void PSIO_IRQHandler(void)
         printf("Unknown interrupt occur!!!\n");
     }
 
-    if ((PSIO_PS2_GET_STATUS() == eHOST_READ) || (PSIO_PS2_GET_STATUS() == eHOST_READY_TO_READ))
+    if((PSIO_PS2_GET_STATUS() == eHOST_READ) || (PSIO_PS2_GET_STATUS() == eHOST_READY_TO_READ))
     {
         static uint32_t u32RxBuffer = 0;
 
@@ -53,7 +53,7 @@ void PSIO_IRQHandler(void)
 
         /* Wait input buffer full */
         u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-        while (!PSIO_GET_TRANSFER_STATUS(PSIO, PSIO_TRANSTS_INFULL0_Msk << (g_sConfig.u8DataPin * 4)))
+        while(!PSIO_GET_TRANSFER_STATUS(PSIO, PSIO_TRANSTS_INFULL0_Msk << (g_sConfig.u8DataPin * 4)))
         {
             if(--u32TimeOutCnt == 0)
             {
@@ -65,7 +65,7 @@ void PSIO_IRQHandler(void)
         /* Receive 11 bit */
         u32RxBuffer |= (PSIO_GET_INPUT_DATA(PSIO, g_sConfig.u8DataPin) << u8BitNumber);
 
-        if (u8BitNumber == 10)
+        if(u8BitNumber == 10)
         {
             PSIO_PS2_SET_STATUS(eHOST_IDLE);
             u8BitNumber = 0;
@@ -78,16 +78,16 @@ void PSIO_IRQHandler(void)
             u8BitNumber++;
         }
     }
-    else if (PSIO_PS2_GET_STATUS() == eHOST_WRITE)
+    else if(PSIO_PS2_GET_STATUS() == eHOST_WRITE)
     {
-        if (u8BitNumber == 10)
+        if(u8BitNumber == 10)
         {
             /* Trigger slot controller */
             PSIO_START_SC(PSIO, g_sConfig.u8DataSC);
 
             /* Wait slot controller is not busy */
             u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-            while (PSIO_GET_BUSY_FLAG(PSIO, g_sConfig.u8DataSC))
+            while(PSIO_GET_BUSY_FLAG(PSIO, g_sConfig.u8DataSC))
             {
                 if(--u32TimeOutCnt == 0)
                 {
@@ -101,11 +101,11 @@ void PSIO_IRQHandler(void)
 
             /* Set pin interval status as high */
             PSIO->GNCT[g_sConfig.u8DataPin].GENCTL = (PSIO->GNCT[g_sConfig.u8DataPin].GENCTL & ~PSIO_GNCT_GENCTL_INTERVAL_Msk)
-                                                     | (PSIO_HIGH_LEVEL << PSIO_GNCT_GENCTL_INTERVAL_Pos);
+                    | (PSIO_HIGH_LEVEL << PSIO_GNCT_GENCTL_INTERVAL_Pos);
             PSIO_PS2_SET_STATUS(eHOST_IDLE);
             u8BitNumber = 0;
         }
-        else if (u8BitNumber == 9)
+        else if(u8BitNumber == 9)
         {
 
             PSIO_SET_OUTPUT_DATA(PSIO, g_sConfig.u8DataPin, g_u32TxData >> u8BitNumber);
@@ -115,7 +115,7 @@ void PSIO_IRQHandler(void)
 
             /* Wait slot controller is not busy */
             u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-            while (PSIO_GET_BUSY_FLAG(PSIO, g_sConfig.u8DataSC))
+            while(PSIO_GET_BUSY_FLAG(PSIO, g_sConfig.u8DataSC))
             {
                 if(--u32TimeOutCnt == 0)
                 {
@@ -202,7 +202,7 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
     uint32_t u32RxData = 0x0;
 
@@ -235,19 +235,19 @@ int32_t main(void)
     /* Initialize PSIO setting for PS/2 host protocol */
     PSIO_PS2_Open(&g_sConfig);
 
-    while (1)
+    while(1)
     {
         /* Set PSIO on read signal state */
-        if (PSIO_PS2_GET_STATUS() != eHOST_READY_TO_READ)
+        if(PSIO_PS2_GET_STATUS() != eHOST_READY_TO_READ)
         {
             PSIO_PS2_HostRead(&g_sConfig);
         }
 
         /* Receiving data */
-        while (PSIO_PS2_GET_STATUS() == eHOST_READ);
+        while(PSIO_PS2_GET_STATUS() == eHOST_READ);
 
         /* Data was received */
-        if (PSIO_PS2_GET_STATUS() == eHOST_IDLE)
+        if(PSIO_PS2_GET_STATUS() == eHOST_IDLE)
         {
             PSIO_PS2_SET_STATUS(eHOST_READY_TO_READ);
             u32RxData = g_u32RxData;
@@ -256,17 +256,17 @@ int32_t main(void)
         }
 
         /* Send data */
-        if (!(UART0->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk))
+        if(!(UART0->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk))
         {
             uint32_t u32Data;
 
             u32Data = UART0->DAT;
             g_u32TxData = PSIO_Encode_TxData(&u32Data);
             printf("[Host send to device]0x%x, 0x%x\n", u32Data, g_u32TxData);
-            if( PSIO_PS2_HostSend(&g_sConfig) < 0 )
+            if(PSIO_PS2_HostSend(&g_sConfig) < 0)
                 goto lexit;
 
-            while (PSIO_PS2_GET_STATUS() == eHOST_WRITE);
+            while(PSIO_PS2_GET_STATUS() == eHOST_WRITE);
         }
     }
 

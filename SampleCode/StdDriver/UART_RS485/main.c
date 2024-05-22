@@ -30,7 +30,6 @@ static uint8_t g_u8SendDataGroup4[10] = {0};
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
 extern char GetChar(void);
-int32_t main(void);
 void RS485_SendAddressByte(uint8_t u8data);
 void RS485_SendDataByte(uint8_t *pu8TxBuf, uint32_t u32WriteBytes);
 void RS485_9bitModeMaster(void);
@@ -386,7 +385,7 @@ void UART1_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
 
     /* Unlock protected registers */

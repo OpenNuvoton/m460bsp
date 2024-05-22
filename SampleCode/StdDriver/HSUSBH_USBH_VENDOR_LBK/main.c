@@ -513,7 +513,7 @@ void vendor_lbk_demo(void)
     }
 }
 
-int32_t main(void)
+int main(void)
 {
     SYS_Init();                        /* Init System, IP clock and multi-function I/O */
 

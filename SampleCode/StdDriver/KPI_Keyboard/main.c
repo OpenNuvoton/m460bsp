@@ -46,7 +46,7 @@ void SYS_Init(void)
     /* Select UART0 module clock source as HIRC and UART0 module clock divider as 1 */
     CLK_SetModuleClock(UART0_MODULE, CLK_CLKSEL1_UART0SEL_HIRC, CLK_CLKDIV0_UART0(1));
     CLK_SetModuleClock(KPI_MODULE, CLK_CLKSEL3_KPISEL_HIRC, CLK_CLKDIV2_KPI(0));
-    
+
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -74,7 +74,7 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
     KPI_KEY_T queue[32] = {0};
     KPI_KEY_T key;
@@ -94,12 +94,12 @@ int32_t main(void)
     printf("|          Keypad Interface Sample Code           |\n");
     printf("+-------------------------------------------------+\n\n");
     printf("  Key array board is necessary for this sample code\n");
-    
+
     SET_KPI_ROW0_PC5();
     SET_KPI_ROW1_PC4();
     SET_KPI_COL0_PB15();
-    
-    
+
+
     /* Init KPI */
     KPI_Open(2, 1, queue, 32);
     /* Key sampling time */
@@ -110,7 +110,7 @@ int32_t main(void)
     /* Interal pull-up is weak and needs to slowdown the timing */
     KPI_EnableSlowScan();
 #endif
-    
+
     /* Clear status */
     KPI->STATUS = KPI->STATUS;
     while(1)
@@ -119,7 +119,7 @@ int32_t main(void)
         if(KPI_kbhit())
         {
             key = KPI_GetKey();
-            printf("%d, %d, %s\n", key.x, key.y, (key.st == KPI_PRESS)?"PRESS":"RELEASE");
+            printf("%d, %d, %s\n", key.x, key.y, (key.st == KPI_PRESS) ? "PRESS" : "RELEASE");
         }
     }
 

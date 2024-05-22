@@ -21,7 +21,6 @@ static uint32_t g_u32SampleModuleNum = 0;
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void);
 void EADC_FunctionTest(void);
 void EADC00_IRQHandler(void);
 void SYS_Init(void);
@@ -220,14 +219,14 @@ void EADC_FunctionTest(void)
             i32Err = EADC_Open(EADC0, EADC_CTL_DIFFEN_SINGLE_END);
 
             /* Check EADC global error code. */
-            if (i32Err != 0)
+            if(i32Err != 0)
             {
-                if (i32Err == EADC_CAL_ERR)
+                if(i32Err == EADC_CAL_ERR)
                 {
                     printf("EADC has calibration error.\n");
                     return;
                 }
-                else if (i32Err == EADC_CLKDIV_ERR)
+                else if(i32Err == EADC_CLKDIV_ERR)
                 {
                     printf("EADC clock frequency is configured error.\n");
                     return;
@@ -273,14 +272,14 @@ void EADC_FunctionTest(void)
             i32Err = EADC_Open(EADC0, EADC_CTL_DIFFEN_DIFFERENTIAL);
 
             /* Check EADC global error code. */
-            if (i32Err != 0)
+            if(i32Err != 0)
             {
-                if (i32Err == EADC_CAL_ERR)
+                if(i32Err == EADC_CAL_ERR)
                 {
                     printf("EADC has calibration error.\n");
                     return;
                 }
-                else if (i32Err == EADC_CLKDIV_ERR)
+                else if(i32Err == EADC_CLKDIV_ERR)
                 {
                     printf("EADC clock frequency is configured error.\n");
                     return;
@@ -356,7 +355,7 @@ void PDMA0_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
     /* Unlock protected registers */
     SYS_UnlockReg();

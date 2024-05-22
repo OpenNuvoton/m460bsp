@@ -136,7 +136,7 @@ void UART1_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
     (void)g_u8SendData;
 
@@ -237,7 +237,7 @@ void UART_FunctionTest(void)
         switch(u32Item)
         {
             case '1':
-                if( LIN_Tx_FunctionTest() < 0 )
+                if(LIN_Tx_FunctionTest() < 0)
                     u32Item = 27;
                 break;
 

@@ -18,12 +18,12 @@ volatile uint32_t g_u32Ticks = 0;
 void SysTick_Handler()
 {
     g_u32Ticks++;
-    
+
     if((g_u32Ticks % 1000) == 0)
     {
         printf("Time elapse: %d\n", g_u32Ticks / 1000);
     }
-    
+
 }
 
 void SYS_Init(void)
@@ -59,11 +59,11 @@ void SYS_Init(void)
 }
 
 
-int32_t main(void)
+int main(void)
 {
     int32_t i;
     uint32_t *au32Vectors = (uint32_t *)0x0;
-    
+
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -71,12 +71,12 @@ int32_t main(void)
     SYS_Init();
 
     /* Init Vector Table to SRAM */
-    for(i=0;i<TOTAL_VECTORS;i++)
+    for(i = 0; i < TOTAL_VECTORS; i++)
     {
         g_au32Vector[i] = au32Vectors[i];
     }
     SCB->VTOR = (uint32_t)&g_au32Vector[0];
-    
+
     /* Configure UART0: 115200, 8-bit word, no parity bit, 1 stop bit. */
     UART_Open(UART0, 115200);
 
@@ -86,8 +86,8 @@ int32_t main(void)
     printf("+-----------------------------------------------------------+\n");
 
     /* SysTick used for test interrupts in SRAM */
-    SysTick_Config(SystemCoreClock/1000);
-    
+    SysTick_Config(SystemCoreClock / 1000);
+
     /*
        This sample code demonstrates how to make a sub-routine code executed in SRAM.
     */
@@ -105,6 +105,6 @@ int32_t main(void)
 
     printf("\nFMC Sample Code Completed.\n");
 
-    while (1);
+    while(1);
 
 }

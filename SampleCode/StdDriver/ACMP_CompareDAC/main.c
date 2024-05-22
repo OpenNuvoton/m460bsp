@@ -84,7 +84,7 @@ void SYS_Init(void)
  * number when detecting a transition of analog comparator's output.
  */
 
-int32_t main(void)
+int main(void)
 {
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -123,8 +123,6 @@ int32_t main(void)
     /* Enable ACMP01 interrupt */
     NVIC_EnableIRQ(ACMP01_IRQn);
 
-    while(1);
+    while(1) {}
 
 }
-
-

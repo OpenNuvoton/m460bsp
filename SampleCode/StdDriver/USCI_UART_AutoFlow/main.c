@@ -100,7 +100,7 @@ void USCI0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
 
     /* Unlock protected registers */
@@ -227,7 +227,7 @@ void USCI_AutoFlow_FunctionRxTest(void)
         }
     }
 
-    if( u32Err )
+    if(u32Err)
         printf("Compare Data Failed\n");
     else
         printf("\n Receive OK & Check OK\n");

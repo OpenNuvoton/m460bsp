@@ -669,7 +669,7 @@ int  go_to_flash(char *cmdline)
 }
 
 
-int32_t main(void)
+int main(void)
 {
     char        *ptr;                       /* str pointer                                */
 

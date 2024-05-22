@@ -89,11 +89,10 @@ void SYS_Init(void)
     SYS_LockReg();
 }
 
-int32_t main(void)
+int main(void)
 {
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
-
     /* Init UART to 115200-8n1 for print message */
     UART_Open(UART0, 115200);
 

@@ -47,7 +47,7 @@ void SYS_Init(void)
     SET_UART0_TXD_PB13();
 }
 
-int32_t main(void)
+int main(void)
 {
     uint8_t ch;
     uint32_t u32VECMAP;
@@ -90,7 +90,7 @@ int32_t main(void)
     u32VECMAP = FMC_GetVECMAP();
 
     /* Set Vector Table Offset Register */
-    if( u32VECMAP == 0x100000)
+    if(u32VECMAP == 0x100000)
         SCB->VTOR = FMC_LDROM_BASE;
     else
         SCB->VTOR = u32VECMAP;
@@ -130,35 +130,35 @@ int32_t main(void)
     switch(ch)
     {
 #if defined(__ARMCC_VERSION) || defined(__ICCARM__)
-    case '0':
-        FMC_SetVectorPageAddr(0x4000);
-        break;
-    case '1':
-        FMC_SetVectorPageAddr(0x8000);
-        break;
-    case '2':
-        FMC_SetVectorPageAddr(0xC000);
-        break;
-    case '3':
-        FMC_SetVectorPageAddr(0x10000);
-        break;
-    case '4':
-        FMC_SetVectorPageAddr(0xF100000);
-        break;
+        case '0':
+            FMC_SetVectorPageAddr(0x4000);
+            break;
+        case '1':
+            FMC_SetVectorPageAddr(0x8000);
+            break;
+        case '2':
+            FMC_SetVectorPageAddr(0xC000);
+            break;
+        case '3':
+            FMC_SetVectorPageAddr(0x10000);
+            break;
+        case '4':
+            FMC_SetVectorPageAddr(0xF100000);
+            break;
 #else
-    case '1':
-        FMC_SetVectorPageAddr(0x8000);
-        break;
-    case '3':
-        FMC_SetVectorPageAddr(0x10000);
-        break;
+        case '1':
+            FMC_SetVectorPageAddr(0x8000);
+            break;
+        case '3':
+            FMC_SetVectorPageAddr(0x10000);
+            break;
 #endif
-    default:
-        FMC_SetVectorPageAddr(0x0);
-        break;
+        default:
+            FMC_SetVectorPageAddr(0x0);
+            break;
     }
 
-    if (g_FMC_i32ErrCode != 0)
+    if(g_FMC_i32ErrCode != 0)
     {
         printf("FMC_SetVectorPageAddr failed!\n");
         goto lexit;
@@ -176,5 +176,3 @@ lexit:
 }
 
 /*** (C) COPYRIGHT 2021 Nuvoton Technology Corp. ***/
-
-

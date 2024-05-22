@@ -100,7 +100,7 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
 
     /* Unlock protected registers */
@@ -137,13 +137,13 @@ void TrimHIRC(void)
 
     /*  Enable IRC Trim, set HIRC clock and enable interrupt */
     SYS->IRCTIEN |= (SYS_IRCTIEN_CLKEIEN_Msk | SYS_IRCTIEN_TFAILIEN_Msk);
-    SYS->IRCTCTL = (SYS->IRCTCTL & ~SYS_IRCTCTL_FREQSEL_Msk)| 0x1;
+    SYS->IRCTCTL = (SYS->IRCTCTL & ~SYS_IRCTCTL_FREQSEL_Msk) | 0x1;
 
     CLK_SysTickDelay(2000); /* Waiting for HIRC Frequency Lock */
 
     /* Get HIRC Frequency Lock */
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-    while( (SYS->IRCTISTS & SYS_IRCTISTS_FREQLOCK_Msk) == 0 )
+    while((SYS->IRCTISTS & SYS_IRCTISTS_FREQLOCK_Msk) == 0)
     {
         if(--u32TimeOutCnt == 0)
         {

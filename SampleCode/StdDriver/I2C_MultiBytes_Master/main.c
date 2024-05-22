@@ -88,7 +88,7 @@ void I2C0_Close(void)
 }
 
 
-int32_t main(void)
+int main(void)
 {
     uint32_t i;
     uint8_t txbuf[256] = {0}, rDataBuf[256] = {0};
@@ -155,8 +155,6 @@ int32_t main(void)
 
 failExit:
     printf("Multi bytes Read access Fail.....\n");
-    while (1);
+    while(1);
 }
 /*** (C) COPYRIGHT 2021 Nuvoton Technology Corp. ***/
-
-

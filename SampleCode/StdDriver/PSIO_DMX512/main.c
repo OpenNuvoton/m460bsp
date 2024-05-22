@@ -76,7 +76,7 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
     S_PSIO_DMX512_CFG sConfig;
     uint16_t au16RxBuf[5];
@@ -115,10 +115,10 @@ int32_t main(void)
     PSIO_DMX512_Open(&sConfig);
     NVIC_EnableIRQ(PSIO_IRQn);
 
-    while (1)
+    while(1)
     {
 
-        for (i = 1 ; i < 6 ; i++)
+        for(i = 1 ; i < 6 ; i++)
         {
             PSIO_DMX512_getChannelData(&sConfig, i, &au16RxBuf[0]);
             printf("press any key to continue\n");
@@ -138,7 +138,7 @@ int32_t main(void)
             CLK_SysTickDelay(50);
 
             u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
-            while (!(*sConfig.pu8RcvDone))
+            while(!(*sConfig.pu8RcvDone))
             {
                 if(--u32TimeOutCnt == 0)
                 {

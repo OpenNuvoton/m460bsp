@@ -214,8 +214,7 @@ void VCOM_TransferData(void)
 {
     uint32_t i, u32Len;
 
-    /* Check whether USB is ready for next packet or not */
-    if(g_u32TxSize == 0)
+    /* Check whether USB is ready for next packet or not */    if(g_u32TxSize == 0)
     {
         if(g_u8EP2Ready == 1)
         {
@@ -354,7 +353,7 @@ void PowerDown(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
 #if CRYSTAL_LESS
     uint32_t u32TrimInit;

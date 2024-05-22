@@ -3,16 +3,34 @@
     "configurePresets": [
         {
             "name": "armclang",
-            "displayName": "build with armclang",
+            "displayName": "build with ARMCLANG",
             "description": "",
-            "generator": "Unix Makefiles",
+            "generator": "Ninja",
             "binaryDir": "${sourceDir}/build/${presetName}",
             "cacheVariables": {
-                "CMAKE_VERBOSE_MAKEFILE" : "OFF",
-                "CMAKE_C_COMPILER_WORKS" : true,
+                "CMAKE_VERBOSE_MAKEFILE": "OFF",
+                "CMAKE_C_COMPILER_WORKS": true,
                 "CMAKE_BUILD_TYPE": "Debug",
                 "CMAKE_TOOLCHAIN_FILE": "",
-                "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/install/${presetName}"
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/install/${presetName}",
+                "C_COMPILER_ID": "ARMCLANG",
+                "TOOLCHAIN_PATH": "C:/Keil_v5/ARM/ARMCLANG"
+            }
+        },
+        {
+            "name": "gcc",
+            "displayName": "build with GCC",
+            "description": "",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_VERBOSE_MAKEFILE": "OFF",
+                "CMAKE_C_COMPILER_WORKS": true,
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_TOOLCHAIN_FILE": "",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/install/${presetName}",
+                "C_COMPILER_ID": "GCC",
+                "TOOLCHAIN_PATH": "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10 2021.10/bin"
             }
         }
     ]

@@ -73,10 +73,10 @@
 /*
  * Initialize a context
  */
-void mbedtls_gcm_init( mbedtls_gcm_context *ctx )
+void mbedtls_gcm_init(mbedtls_gcm_context *ctx)
 {
-    GCM_VALIDATE( ctx != NULL );
-    memset( ctx, 0, sizeof( mbedtls_gcm_context ) );
+    GCM_VALIDATE(ctx != NULL);
+    memset(ctx, 0, sizeof(mbedtls_gcm_context));
 
     /* Reset Crypto */
     SYS->IPRST0 |= SYS_IPRST0_CRPTRST_Msk;
@@ -127,19 +127,19 @@ static int32_t ToBigEndian(uint8_t *pbuf, uint32_t u32Size)
 
 
 
-int mbedtls_gcm_setkey( mbedtls_gcm_context *ctx,
-                        mbedtls_cipher_id_t cipher,
-                        const unsigned char *key,
-                        unsigned int keybits )
+int mbedtls_gcm_setkey(mbedtls_gcm_context *ctx,
+                       mbedtls_cipher_id_t cipher,
+                       const unsigned char *key,
+                       unsigned int keybits)
 {
 
     uint32_t au32Buf[8];
     int32_t i, klen;
     uint32_t keySizeOpt;
 
-    GCM_VALIDATE_RET( ctx != NULL );
-    GCM_VALIDATE_RET( key != NULL );
-    GCM_VALIDATE_RET( keybits == 128 || keybits == 192 || keybits == 256 );
+    GCM_VALIDATE_RET(ctx != NULL);
+    GCM_VALIDATE_RET(key != NULL);
+    GCM_VALIDATE_RET(keybits == 128 || keybits == 192 || keybits == 256);
 
     klen = keybits / 8;
     ctx->keySize = klen;
@@ -164,7 +164,7 @@ int mbedtls_gcm_setkey( mbedtls_gcm_context *ctx,
                     GCM_MODE |
                     keySizeOpt;
 
-    return( 0 );
+    return(0);
 }
 
 
@@ -316,7 +316,6 @@ static int32_t _GCM(mbedtls_gcm_context *ctx, const uint8_t *iv, uint32_t ivlen,
     uint32_t u32OptBasic;
     uint32_t plen_aligned;
     uint32_t size;
-    uint32_t key[8];
 
     SYS->IPRST0 = SYS_IPRST0_CRPTRST_Msk;
     SYS->IPRST0 = 0;
@@ -429,7 +428,7 @@ static int32_t _GCM(mbedtls_gcm_context *ctx, const uint8_t *iv, uint32_t ivlen,
             pout += len;
         }
 
-        memcpy(tag, ctx->out_buf+len_aligned, tag_len);
+        memcpy(tag, ctx->out_buf + len_aligned, tag_len);
     }
 
     return 0;
@@ -437,10 +436,10 @@ static int32_t _GCM(mbedtls_gcm_context *ctx, const uint8_t *iv, uint32_t ivlen,
 
 
 
-int mbedtls_gcm_starts( mbedtls_gcm_context *ctx,
-                        int mode,
-                        const unsigned char *iv,
-                        size_t iv_len)
+int mbedtls_gcm_starts(mbedtls_gcm_context *ctx,
+                       int mode,
+                       const unsigned char *iv,
+                       size_t iv_len)
 {
 
 
@@ -460,7 +459,7 @@ int mbedtls_gcm_starts( mbedtls_gcm_context *ctx,
     AES_GCMPacker(iv, iv_len, 0, 0, 0, 0, ctx->gcm_buf, &size);
     ctx->gcm_buf_bytes = size;
 
-    return( 0 );
+    return(0);
 }
 
 
@@ -481,8 +480,8 @@ int mbedtls_gcm_starts( mbedtls_gcm_context *ctx,
  *     * len > 0 && len % 16 == 0:      the authentication tag is correct if
  *                                      the data ends now.
  */
-int mbedtls_gcm_update_ad( mbedtls_gcm_context *ctx,
-                           const unsigned char *add, size_t add_len )
+int mbedtls_gcm_update_ad(mbedtls_gcm_context *ctx,
+                          const unsigned char *add, size_t add_len)
 {
     uint32_t size;
     size_t *pSz;
@@ -502,7 +501,7 @@ int mbedtls_gcm_update_ad( mbedtls_gcm_context *ctx,
     CRPT->AES_CNT   = ctx->gcm_buf_bytes;
 
     /* Set a big number for unknown P length */
-    CRPT->AES_GCM_PCNT[0] = (uint32_t)-1;
+    CRPT->AES_GCM_PCNT[0] = (uint32_t) - 1;
     CRPT->AES_GCM_PCNT[1] = 0;
 
     /* Start with cascade mode */
@@ -513,14 +512,14 @@ int mbedtls_gcm_update_ad( mbedtls_gcm_context *ctx,
 
     ctx->firstFlag = 1;
 
-    return( 0 );
+    return(0);
 }
 
 
-int mbedtls_gcm_update( mbedtls_gcm_context *ctx,
-                        const unsigned char *input, size_t input_length,
-                        unsigned char *output, size_t output_size,
-                        size_t *output_length )
+int mbedtls_gcm_update(mbedtls_gcm_context *ctx,
+                       const unsigned char *input, size_t input_length,
+                       unsigned char *output, size_t output_size,
+                       size_t *output_length)
 {
 
 
@@ -529,27 +528,27 @@ int mbedtls_gcm_update( mbedtls_gcm_context *ctx,
     uint32_t u32Size;
 
 
-    GCM_VALIDATE_RET( ctx != NULL );
-    GCM_VALIDATE_RET( length == 0 || input != NULL );
-    GCM_VALIDATE_RET( length == 0 || output != NULL );
-    GCM_VALIDATE_RET( (length & 0xf) == 0 );
+    GCM_VALIDATE_RET(ctx != NULL);
+    GCM_VALIDATE_RET(length == 0 || input != NULL);
+    GCM_VALIDATE_RET(length == 0 || output != NULL);
+    GCM_VALIDATE_RET((length & 0xf) == 0);
 
-    if( input_length > output_size )
-        return( MBEDTLS_ERR_GCM_BAD_INPUT );
+    if(input_length > output_size)
+        return(MBEDTLS_ERR_GCM_BAD_INPUT);
 
 
     len = (int32_t)input_length;
     /* Error if length too large */
     if(len != input_length)
-        return( MBEDTLS_ERR_GCM_BAD_INPUT );
+        return(MBEDTLS_ERR_GCM_BAD_INPUT);
 
     if(len + ctx->gcm_buf_bytes > MAX_GCM_BUF)
         return (MBEDTLS_ERR_GCM_BAD_INPUT);
 
 
-    len_aligned = (len & 0xf)?(len & (~0xful))+16:len;
+    len_aligned = (len & 0xf) ? (len & (~0xful)) + 16 : len;
     *output_length = len;
-    
+
     if(len == 0)
     {
         CRPT->AES_GCM_PCNT[0] = ctx->len;
@@ -583,7 +582,7 @@ int mbedtls_gcm_update( mbedtls_gcm_context *ctx,
             *output_length = len;
 
             /* Output tag */
-            memcpy(ctx->tag, ctx->out_buf+len_aligned, 16);
+            memcpy(ctx->tag, ctx->out_buf + len_aligned, 16);
         }
     }
     else
@@ -631,25 +630,25 @@ int mbedtls_gcm_update( mbedtls_gcm_context *ctx,
         if(ctx->endFlag)
         {
             /* Output tag */
-            memcpy(ctx->tag, ctx->out_buf+len_aligned, 16);
+            memcpy(ctx->tag, ctx->out_buf + len_aligned, 16);
         }
     }
 
-    return( 0 );
+    return(0);
 }
 
 
-int mbedtls_gcm_finish( mbedtls_gcm_context *ctx,
-                        unsigned char *output, size_t output_size,
-                        size_t *output_length,
-                        unsigned char *tag, size_t tag_len )
+int mbedtls_gcm_finish(mbedtls_gcm_context *ctx,
+                       unsigned char *output, size_t output_size,
+                       size_t *output_length,
+                       unsigned char *tag, size_t tag_len)
 {
 
 
     int32_t ret;
 
-    GCM_VALIDATE_RET( ctx != NULL );
-    GCM_VALIDATE_RET( tag != NULL );
+    GCM_VALIDATE_RET(ctx != NULL);
+    GCM_VALIDATE_RET(tag != NULL);
 
     if(ctx->endFlag == 0)
     {
@@ -664,7 +663,7 @@ int mbedtls_gcm_finish( mbedtls_gcm_context *ctx,
 
         /* The tag should be in out_buf if P len is 0 */
 
-        memcpy(ctx->tag, ctx->out_buf+ctx->gcm_buf_bytes, 16);
+        memcpy(ctx->tag, ctx->out_buf + ctx->gcm_buf_bytes, 16);
     }
 
 
@@ -676,30 +675,30 @@ int mbedtls_gcm_finish( mbedtls_gcm_context *ctx,
 
     *output_length = 0;
 
-    return( 0 );
+    return(0);
 }
 
 
-int mbedtls_gcm_crypt_and_tag( mbedtls_gcm_context *ctx,
-                               int mode,
-                               size_t length,
-                               const unsigned char *iv,
-                               size_t iv_len,
-                               const unsigned char *add,
-                               size_t add_len,
-                               const unsigned char *input,
-                               unsigned char *output,
-                               size_t tag_len,
-                               unsigned char *tag )
+int mbedtls_gcm_crypt_and_tag(mbedtls_gcm_context *ctx,
+                              int mode,
+                              size_t length,
+                              const unsigned char *iv,
+                              size_t iv_len,
+                              const unsigned char *add,
+                              size_t add_len,
+                              const unsigned char *input,
+                              unsigned char *output,
+                              size_t tag_len,
+                              unsigned char *tag)
 {
     int ret;
 
-    GCM_VALIDATE_RET( ctx != NULL );
-    GCM_VALIDATE_RET( iv != NULL );
-    GCM_VALIDATE_RET( add_len == 0 || add != NULL );
-    GCM_VALIDATE_RET( length == 0 || input != NULL );
-    GCM_VALIDATE_RET( length == 0 || output != NULL );
-    GCM_VALIDATE_RET( tag != NULL );
+    GCM_VALIDATE_RET(ctx != NULL);
+    GCM_VALIDATE_RET(iv != NULL);
+    GCM_VALIDATE_RET(add_len == 0 || add != NULL);
+    GCM_VALIDATE_RET(length == 0 || input != NULL);
+    GCM_VALIDATE_RET(length == 0 || output != NULL);
+    GCM_VALIDATE_RET(tag != NULL);
 
     ctx->mode = mode;
 
@@ -718,55 +717,55 @@ int mbedtls_gcm_crypt_and_tag( mbedtls_gcm_context *ctx,
     return (ret);
 }
 
-int mbedtls_gcm_auth_decrypt( mbedtls_gcm_context *ctx,
-                              size_t length,
-                              const unsigned char *iv,
-                              size_t iv_len,
-                              const unsigned char *add,
-                              size_t add_len,
-                              const unsigned char *tag,
-                              size_t tag_len,
-                              const unsigned char *input,
-                              unsigned char *output )
+int mbedtls_gcm_auth_decrypt(mbedtls_gcm_context *ctx,
+                             size_t length,
+                             const unsigned char *iv,
+                             size_t iv_len,
+                             const unsigned char *add,
+                             size_t add_len,
+                             const unsigned char *tag,
+                             size_t tag_len,
+                             const unsigned char *input,
+                             unsigned char *output)
 {
     int ret;
     unsigned char check_tag[16];
     size_t i;
     int diff;
 
-    GCM_VALIDATE_RET( ctx != NULL );
-    GCM_VALIDATE_RET( iv != NULL );
-    GCM_VALIDATE_RET( add_len == 0 || add != NULL );
-    GCM_VALIDATE_RET( tag != NULL );
-    GCM_VALIDATE_RET( length == 0 || input != NULL );
-    GCM_VALIDATE_RET( length == 0 || output != NULL );
+    GCM_VALIDATE_RET(ctx != NULL);
+    GCM_VALIDATE_RET(iv != NULL);
+    GCM_VALIDATE_RET(add_len == 0 || add != NULL);
+    GCM_VALIDATE_RET(tag != NULL);
+    GCM_VALIDATE_RET(length == 0 || input != NULL);
+    GCM_VALIDATE_RET(length == 0 || output != NULL);
 
-    if( ( ret = mbedtls_gcm_crypt_and_tag( ctx, MBEDTLS_GCM_DECRYPT, length,
-                                           iv, iv_len, add, add_len,
-                                           input, output, tag_len, check_tag ) ) != 0 )
+    if((ret = mbedtls_gcm_crypt_and_tag(ctx, MBEDTLS_GCM_DECRYPT, length,
+                                        iv, iv_len, add, add_len,
+                                        input, output, tag_len, check_tag)) != 0)
     {
-        return( ret );
+        return(ret);
     }
 
     /* Check tag in "constant-time" */
-    for( diff = 0, i = 0; i < tag_len; i++ )
+    for(diff = 0, i = 0; i < tag_len; i++)
         diff |= tag[i] ^ check_tag[i];
 
-    if( diff != 0 )
+    if(diff != 0)
     {
-        mbedtls_platform_zeroize( output, length );
-        return( MBEDTLS_ERR_GCM_AUTH_FAILED );
+        mbedtls_platform_zeroize(output, length);
+        return(MBEDTLS_ERR_GCM_AUTH_FAILED);
     }
 
-    return( 0 );
+    return(0);
 }
 
-void mbedtls_gcm_free( mbedtls_gcm_context *ctx )
+void mbedtls_gcm_free(mbedtls_gcm_context *ctx)
 {
-    if( ctx == NULL )
+    if(ctx == NULL)
         return;
-    mbedtls_cipher_free( &ctx->cipher_ctx );
-    mbedtls_platform_zeroize( ctx, sizeof( mbedtls_gcm_context ) );
+    mbedtls_cipher_free(&ctx->cipher_ctx);
+    mbedtls_platform_zeroize(ctx, sizeof(mbedtls_gcm_context));
 }
 
 #endif /* MBEDTLS_GCM_ALT */

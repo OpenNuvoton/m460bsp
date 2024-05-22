@@ -184,7 +184,7 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
     uint32_t u32TimeOutCnt;
 
@@ -314,7 +314,7 @@ int32_t main(void)
         }
 
         /* Capture the Input Waveform Data */
-        if( CalPeriodTime(EPWM1, 2) < 0 )
+        if(CalPeriodTime(EPWM1, 2) < 0)
             goto lexit;
         /*------------------------------------------------------------------------------------------------------------*/
         /* Stop EPWM1 channel 0 (Recommended procedure method 1)                                                      */

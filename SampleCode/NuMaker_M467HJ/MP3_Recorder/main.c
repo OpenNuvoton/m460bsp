@@ -323,7 +323,7 @@ static int32_t ClearHyperRAM(uint32_t u32StartAddr, uint32_t u32EndAddr)
 
 #endif
 
-int32_t main(void)
+int main(void)
 {
     int32_t i32Written;
     uint8_t *pu8Data;

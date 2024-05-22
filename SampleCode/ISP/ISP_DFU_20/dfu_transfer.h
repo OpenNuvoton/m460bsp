@@ -129,7 +129,7 @@ typedef enum
 
 
 #define APP_LOADED_ADDR 0x1000000
-#pragma pack(1)
+#pragma pack(push, 1)
 typedef struct
 {
     uint8_t buf[TRANSFER_SIZE];
@@ -137,7 +137,7 @@ typedef struct
     uint16_t block_num;
     uint32_t base_addr;
 } s_prog_struct;
-#pragma POP
+#pragma pack(pop)
 
 /*-------------------------------------------------------------*/
 extern uint8_t gu8DeviceDescriptor[];

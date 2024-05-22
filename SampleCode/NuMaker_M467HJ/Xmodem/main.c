@@ -12,7 +12,7 @@
 
 void SYS_Init(void);
 void UART0_Init(void);
-int32_t main(void);
+
 
 void SYS_Init(void)
 {
@@ -60,7 +60,7 @@ void UART0_Init(void)
     UART_Open(UART0, 115200);
 }
 
-int32_t main(void)
+int main(void)
 {
     int32_t i32Err;
     uint32_t u32TimeOutCnt;

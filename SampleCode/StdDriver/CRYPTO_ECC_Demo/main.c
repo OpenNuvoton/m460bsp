@@ -131,7 +131,7 @@ void DEBUG_PORT_Init()
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
     int32_t j, m, err;
     uint32_t time, i, nbits;
@@ -162,7 +162,7 @@ int32_t main(void)
     /* Init Timer */
     SysTick->LOAD  = 0xfffffful;                                              /* set reload register */
     SysTick->CTRL  = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;    /* Enable SysTick IRQ and SysTick Timer */
-    
+
     au8r = (uint8_t *)&au32r[0];
     do
     {

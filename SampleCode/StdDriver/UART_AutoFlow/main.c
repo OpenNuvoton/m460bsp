@@ -99,7 +99,7 @@ void UART1_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
 
     /* Unlock protected registers */
@@ -234,7 +234,7 @@ void AutoFlow_FunctionRxTest(void)
         }
     }
 
-    if( u32Err )
+    if(u32Err)
         printf("Compare Data Failed\n");
     else
         printf("\n Receive OK & Check OK\n");

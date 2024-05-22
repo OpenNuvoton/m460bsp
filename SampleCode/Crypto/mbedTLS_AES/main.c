@@ -30,9 +30,9 @@
 #define MBEDTLS_EXIT_SUCCESS    0
 #define MBEDTLS_EXIT_FAILURE    -1
 
-extern int mbedtls_aes_self_test( int verbose );
-extern int mbedtls_gcm_self_test( int verbose );
-extern int mbedtls_ccm_self_test( int verbose );
+extern int mbedtls_aes_self_test(int verbose);
+extern int mbedtls_gcm_self_test(int verbose);
+extern int mbedtls_ccm_self_test(int verbose);
 void SYS_Init(void);
 
 
@@ -95,7 +95,7 @@ void SysTick_Handler()
 }
 
 
-int32_t main(void)
+int main(void)
 {
     int  i32Ret = MBEDTLS_EXIT_SUCCESS;
 
@@ -122,7 +122,7 @@ int32_t main(void)
     g_u32Ticks = 0;
     i32Ret = mbedtls_aes_self_test(1);
     printf("Total elapsed time is %d ms\n", g_u32Ticks);
-#endif    
+#endif
 
 #ifdef TEST_GCM
     g_u32Ticks = 0;

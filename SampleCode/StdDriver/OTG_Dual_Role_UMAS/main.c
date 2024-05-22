@@ -942,7 +942,7 @@ void USBH_Process(void)
     }
 }
 
-int32_t main(void)
+int main(void)
 {
     SYS_Init();                        /* Init System, IP clock and multi-function I/O */
     UART_Open(UART0, 115200);          /* Configure UART0 and set UART0 baud rate */

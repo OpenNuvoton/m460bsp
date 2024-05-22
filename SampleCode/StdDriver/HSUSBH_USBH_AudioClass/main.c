@@ -322,7 +322,6 @@ void uac_control_example(UAC_DEV_T *uac_dev)
         printf("    Speaker L(F) minimum volume is 0x%x.\n", u16Val);
     else
         printf("    Failed to get speaker L(F) minimum volume!\n");
-
     /*--------------------------------------------------------------------------*/
     /*  Get maximum volume value of UAC device's speaker left channel.          */
     /*--------------------------------------------------------------------------*/
@@ -509,7 +508,7 @@ void uac_control_example(UAC_DEV_T *uac_dev)
         printf("    Failed to get microphone's current sampling rate!\n");
 }
 
-int32_t main(void)
+int main(void)
 {
     UAC_DEV_T *uac_dev = NULL;
     int i8Ch;

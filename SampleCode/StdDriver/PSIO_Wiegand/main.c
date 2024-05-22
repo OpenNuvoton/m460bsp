@@ -76,7 +76,7 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
     S_PSIO_HZ1050 sConfig;
     uint32_t u32Data = 0;
@@ -120,6 +120,7 @@ int32_t main(void)
         printf("[Even Parity]:0x%x, [Odd Parity]:0x%x, [Facility Code]:0x%x, [Card Code]:0x%x \n"
                , (u32Data & EVEN_PARITY_MSK) >> EVEN_PARITY_POS, (u32Data & ODD_PARITY_MSK) >> ODD_PARITY_POS
                , (u32Data & FACILITY_CODE_MSK) >> FACILITY_CODE_POS, (u32Data & CARD_CODE_MSK) >> CARD_CODE_POS);
-    } while (1);
+    }
+    while(1);
 
 }

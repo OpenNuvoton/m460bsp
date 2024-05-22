@@ -63,14 +63,14 @@ void ECAP0_IRQHandler(void)
     if((u32Status & ECAP_STATUS_CAPCMPF_Msk) == ECAP_STATUS_CAPCMPF_Msk)
     {
         /* Clear input capture compare-match flag */
-        ECAP_CLR_CAPTURE_FLAG(ECAP0,ECAP_STATUS_CAPCMPF_Msk);
+        ECAP_CLR_CAPTURE_FLAG(ECAP0, ECAP_STATUS_CAPCMPF_Msk);
     }
 
     /* Check input capture overflow flag */
     if((u32Status & ECAP_STATUS_CAPOVF_Msk) == ECAP_STATUS_CAPOVF_Msk)
     {
         /* Clear input capture overflow flag */
-        ECAP_CLR_CAPTURE_FLAG(ECAP0,ECAP_STATUS_CAPOVF_Msk);
+        ECAP_CLR_CAPTURE_FLAG(ECAP0, ECAP_STATUS_CAPOVF_Msk);
     }
 }
 
@@ -140,7 +140,7 @@ void ECAP0_Init(void)
     ECAP_Open(ECAP0, ECAP_DISABLE_COMPARE);
 
     /* Select Reload function */
-    ECAP_SET_CNT_CLEAR_EVENT(ECAP0, (ECAP_CTL1_CAP0RLDEN_Msk|ECAP_CTL1_CAP1RLDEN_Msk));
+    ECAP_SET_CNT_CLEAR_EVENT(ECAP0, (ECAP_CTL1_CAP0RLDEN_Msk | ECAP_CTL1_CAP1RLDEN_Msk));
 
     /* Enable ECAP0 Input Channel 0*/
     ECAP_ENABLE_INPUT_CHANNEL(ECAP0, ECAP_CTL0_IC0EN_Msk);
@@ -157,14 +157,14 @@ void ECAP0_Init(void)
 
 void EQEI0_Init(void)
 {
-    EQEI_Open(EQEI0,EQEI_CTL_X4_FREE_COUNTING_MODE,0);
+    EQEI_Open(EQEI0, EQEI_CTL_X4_FREE_COUNTING_MODE, 0);
     EQEI_Start(EQEI0);
 }
 
 void Timer0_Init(void)
 {
     /* Open Timer0 in periodic mode, enable interrupt and 1 interrupt tick per second */
-    TIMER_Open(TIMER0,TIMER_PERIODIC_MODE,10000);
+    TIMER_Open(TIMER0, TIMER_PERIODIC_MODE, 10000);
     TIMER_EnableInt(TIMER0);
 
     /* Enable Timer0 NVIC */
@@ -172,9 +172,9 @@ void Timer0_Init(void)
 
 }
 
-int32_t main(void)
+int main(void)
 {
-    uint32_t u32Hz=0, u32Hz_DET=0;
+    uint32_t u32Hz = 0, u32Hz_DET = 0;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -228,7 +228,7 @@ int32_t main(void)
             u32Status = 0;
 
             /* Calculate the IC0 input frequency */
-            u32Hz_DET = (SystemCoreClock/2) / (u32IC0Hold + 1);
+            u32Hz_DET = (SystemCoreClock / 2) / (u32IC0Hold + 1);
 
             if(u32Hz != u32Hz_DET)
             {
@@ -237,7 +237,7 @@ int32_t main(void)
             }
             else
             {
-                printf("\nECAP0_IC0 input frequency is %d (Hz),u32IC0Hold=0x%08x\n", u32Hz,u32IC0Hold);
+                printf("\nECAP0_IC0 input frequency is %d (Hz),u32IC0Hold=0x%08x\n", u32Hz, u32IC0Hold);
                 TIMER_Stop(TIMER0); //Disable timer Counting.
                 break;
             }

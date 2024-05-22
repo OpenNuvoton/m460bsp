@@ -70,7 +70,7 @@ void SYS_Init(void)
     SYS_LockReg();
 }
 
-int32_t main(void)
+int main(void)
 {
     uint32_t au32Config[2];
 

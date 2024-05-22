@@ -485,7 +485,7 @@ void UART0_Init(void)
     UART_Open(UART0, 115200);
 }
 
-int32_t main(void)
+int main(void)
 {
     UAC_DEV_T *uac_dev = NULL;
     int i8Ch;

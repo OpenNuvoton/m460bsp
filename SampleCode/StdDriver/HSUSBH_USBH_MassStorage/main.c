@@ -486,7 +486,7 @@ void UART0_Init(void)
     UART_Open(UART0, 115200);
 }
 
-int32_t main(void)
+int main(void)
 {
     char *ptr, *ptr2;
     long p1, p2, p3;
@@ -1135,8 +1135,7 @@ int32_t main(void)
                     _T("fg <path> - Change current directory\n")
                     _T("fj <ld#> - Change current drive. For example: <fj 4:>\n")
                     _T("fm <ld#> <rule> <cluster size> - Create file system\n")
-                    _T("\n")
-                );
+                    _T("\n"));
                 break;
         }
     }

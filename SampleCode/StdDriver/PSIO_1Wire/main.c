@@ -44,7 +44,7 @@ void SYS_Init(void)
     /* Enable PSIO module clock */
     CLK_EnableModuleClock(PSIO_MODULE);
 
-   /* Set PCLK1 to HCLK/8 */
+    /* Set PCLK1 to HCLK/8 */
     CLK->PCLKDIV = (CLK->PCLKDIV & ~CLK_PCLKDIV_APB1DIV_Msk) | CLK_PCLKDIV_APB1DIV_DIV8;
 
     /* Select PSIO module clock source as PCLK1 and PSIO module clock divider as 250 */
@@ -78,7 +78,7 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
     S_PSIO_DS18B20_CFG sConfig;
     uint8_t au8Data[2] = {0};
@@ -116,7 +116,7 @@ int32_t main(void)
     {
         /* Reset DS18B20 */
         PSIO_DS18B20_Reset(&sConfig);
-            
+
         /* Write command to DS18B20 */
         PSIO_DS18B20_Write_Command(&sConfig, ONEWIRE_SKIP_ROM);
         PSIO_DS18B20_Write_Command(&sConfig, ONEWIRE_CONVT);
@@ -139,5 +139,6 @@ int32_t main(void)
         /* Delay 50000 us */
         CLK_SysTickDelay(50000);
 
-    } while (1);
+    }
+    while(1);
 }

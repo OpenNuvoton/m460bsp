@@ -39,7 +39,6 @@ uint8_t g_u8RxFIFO1MsgIndex = 0;
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void);
 void SYS_Init(void);
 void CANFD_MonitorMode_Init(uint32_t u32NormBitRate, uint32_t u32DataBitRate);
 uint32_t Get_CANFD_NominalBitRate(CANFD_T *psCanfd);
@@ -354,7 +353,7 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*                                         Main Function                                                   */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
     /* Unlock protected registers */
     SYS_UnlockReg();

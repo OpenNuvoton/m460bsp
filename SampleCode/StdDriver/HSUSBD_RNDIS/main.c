@@ -86,7 +86,7 @@ void SYS_Init(void)
 
     /* Enable HSUSBD module clock */
     CLK_EnableModuleClock(HSUSBD_MODULE);
-    
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -99,13 +99,13 @@ void SYS_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main (void)
+int main(void)
 {
     unsigned int i;
 
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();
-    
+
     /* Init UART to 115200-8n1 for print message */
     UART_Open(UART0, 115200);
 
@@ -120,7 +120,7 @@ int32_t main (void)
     RNDIS_Init();
     NVIC_EnableIRQ(USBD20_IRQn);
 
-    for (i = 0; i < EMAC_RX_DESC_SIZE + 1; i++)
+    for(i = 0; i < EMAC_RX_DESC_SIZE + 1; i++)
     {
         *(uint32_t *)&rndis_indata[i][0] = 0x00000001; /* message type */
         *(uint32_t *)&rndis_indata[i][8] = 0x24;       /* data offset */
@@ -130,7 +130,7 @@ int32_t main (void)
     /* Start transaction */
     while(1)
     {
-        if (HSUSBD_IS_ATTACHED())
+        if(HSUSBD_IS_ATTACHED())
         {
             HSUSBD_Start();
             break;
@@ -141,7 +141,7 @@ int32_t main (void)
     {
         // Rx
         // Check if there any Rx packet queued in RX descriptor, if yes, move to USBD
-        if ((i = EMAC_ReceivePkt()) > 0)
+        if((i = EMAC_ReceivePkt()) > 0)
         {
             RNDIS_InData(i);
             u32CurrentRxBuf++;

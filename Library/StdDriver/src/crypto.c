@@ -9,6 +9,9 @@
 
 #include <stdio.h>
 #include <string.h>
+#if defined(__GNUC__) && !defined(__ARMCC_VERSION)
+#include <strings.h>
+#endif
 #include "NuMicro.h"
 
 #define ENABLE_DEBUG    0
@@ -106,7 +109,7 @@ int32_t PRNG_Start(CRPT_T *crpt)
     /* Waiting for PRNG Busy */
     while(crpt->PRNG_CTL & CRPT_PRNG_CTL_BUSY_Msk)
     {
-        if( i32TimeOutCnt-- <= 0)
+        if(i32TimeOutCnt-- <= 0)
         {
             return -1;
         }
@@ -127,7 +130,7 @@ void PRNG_Read(CRPT_T *crpt, uint32_t u32RandKey[])
     uint32_t au32WcntTbl[7] = {4, 6, 6, 7, 8, 8, 8};
 
     wcnt = ((crpt->PRNG_CTL & CRPT_PRNG_CTL_KEYSZ_Msk) >> CRPT_PRNG_CTL_KEYSZ_Pos);
-    if( wcnt > 6 ) return;
+    if(wcnt > 6) return;
     else wcnt = au32WcntTbl[wcnt];
 
     for(i = 0U; i < wcnt; i++)
@@ -1170,7 +1173,7 @@ int32_t  ECC_GeneratePublicKey(CRPT_T *crpt, E_ECC_CURVE ecc_curve, char *privat
         i32TimeOutCnt = TIMEOUT_ECC;
         while(g_ECC_done == 0UL)
         {
-            if( (i32TimeOutCnt-- <= 0) || g_ECCERR_done )
+            if((i32TimeOutCnt-- <= 0) || g_ECCERR_done)
             {
                 ret = -1;
                 break;
@@ -1238,7 +1241,7 @@ int32_t  ECC_GeneratePublicKey_KS(CRPT_T *crpt, E_ECC_CURVE ecc_curve, KS_MEM_Ty
         i32TimeOutCnt = TIMEOUT_ECC;
         while(g_ECC_done == 0UL)
         {
-            if( (i32TimeOutCnt-- <= 0) || g_ECCERR_done )
+            if((i32TimeOutCnt-- <= 0) || g_ECCERR_done)
             {
                 ret = -1;
                 break;
@@ -1314,7 +1317,7 @@ int32_t  ECC_Mutiply(CRPT_T *crpt, E_ECC_CURVE ecc_curve, char x1[], char y1[], 
         i32TimeOutCnt = TIMEOUT_ECC;
         while(g_ECC_done == 0UL)
         {
-            if( (i32TimeOutCnt-- <= 0) || g_ECCERR_done )
+            if((i32TimeOutCnt-- <= 0) || g_ECCERR_done)
             {
                 ret = -1;
                 break;
@@ -1396,7 +1399,7 @@ int32_t  ECC_GenerateSecretZ(CRPT_T *crpt, E_ECC_CURVE ecc_curve, char *private_
         i32TimeOutCnt = TIMEOUT_ECC;
         while(g_ECC_done == 0UL)
         {
-            if( (i32TimeOutCnt-- <= 0) || g_ECCERR_done )
+            if((i32TimeOutCnt-- <= 0) || g_ECCERR_done)
             {
                 ret = -1;
                 break;
@@ -1466,7 +1469,7 @@ int32_t ECC_GenerateSecretZ_KS(CRPT_T *crpt, E_ECC_CURVE ecc_curve, KS_MEM_Type 
     i32TimeOutCnt = TIMEOUT_ECC;
     while(g_ECC_done == 0UL)
     {
-        if( (i32TimeOutCnt-- <= 0) || g_ECCERR_done )
+        if((i32TimeOutCnt-- <= 0) || g_ECCERR_done)
         {
             return -1;
         }
@@ -1534,7 +1537,7 @@ static int32_t run_ecc_codec(CRPT_T *crpt, uint32_t mode)
     i32TimeOutCnt = TIMEOUT_ECC;
     while(g_ECC_done == 0UL)
     {
-        if( (i32TimeOutCnt-- <= 0) || g_ECCERR_done )
+        if((i32TimeOutCnt-- <= 0) || g_ECCERR_done)
         {
             goto lexit;
         }
@@ -1543,7 +1546,7 @@ static int32_t run_ecc_codec(CRPT_T *crpt, uint32_t mode)
     i32TimeOutCnt = TIMEOUT_ECC;
     while(crpt->ECC_STS & CRPT_ECC_STS_BUSY_Msk)
     {
-        if( i32TimeOutCnt-- <= 0)
+        if(i32TimeOutCnt-- <= 0)
         {
             goto lexit;
         }

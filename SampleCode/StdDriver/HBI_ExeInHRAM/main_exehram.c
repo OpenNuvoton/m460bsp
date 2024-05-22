@@ -26,12 +26,12 @@ volatile uint32_t g_u32Ticks = 0;
 void SysTick_Handler()
 {
     g_u32Ticks++;
-    
+
     if((g_u32Ticks % 1000) == 0)
     {
         printf("Time elapse: %d\n", g_u32Ticks / 1000);
     }
-    
+
 }
 
 void HBI_IRQHandler(void)
@@ -85,7 +85,7 @@ void SYS_Init(void)
     NVIC_EnableIRQ(HBI_IRQn);
 }
 
-int32_t main(void)
+int main(void)
 {
     FUNC_PTR *ori_func, *new_func;
 
@@ -111,20 +111,20 @@ int32_t main(void)
     */
 
     /* SysTick used for test interrupts in HyperRAM */
-    SysTick_Config(SystemCoreClock/1000);
+    SysTick_Config(SystemCoreClock / 1000);
 
     /* Unlock protected registers */
     SYS_UnlockReg();
 
     printf("HyperRAM R/W test in APROM ==>\n");
 
-    if (FlashAccess_OnHRAM() < 0)
+    if(FlashAccess_OnHRAM() < 0)
     {
         printf("APROM access on HyperRAM failed.\n");
         goto lexit;
     }
 
-    if (CopyToHyperRAM(HRAM_CODE_BASE, (HRAM_CODE_BASE + HRAM_CODE_SIZE)) < 0)
+    if(CopyToHyperRAM(HRAM_CODE_BASE, (HRAM_CODE_BASE + HRAM_CODE_SIZE)) < 0)
     {
         printf("Copy to HyperRAM failed.\n");
         goto lexit;
@@ -144,5 +144,3 @@ lexit:
     while(1);
 }
 /*** (C) COPYRIGHT 2020 Nuvoton Technology Corp. ***/
-
-

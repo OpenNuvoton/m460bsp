@@ -74,9 +74,8 @@ void SYS_Init(void)
 }
 
 
-int32_t main(void)
+int main()
 {
-    uint32_t volatile i;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -98,7 +97,7 @@ int32_t main(void)
 
     /* Select VDDA as CRV source */
     ACMP_SELECT_CRV_SRC(ACMP01, ACMP_VREF_CRV0SSEL_VDDA);
-    
+
     /* Select CRV level: VDDA * 9 / 63 */
     ACMP_CRV_SEL(ACMP01, 9);
 
@@ -137,5 +136,3 @@ int32_t main(void)
     while(1);
 
 }
-
-

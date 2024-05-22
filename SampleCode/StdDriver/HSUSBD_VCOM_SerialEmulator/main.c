@@ -245,7 +245,7 @@ void VCOM_TransferData(void)
     }
 }
 
-int32_t main(void)
+int main(void)
 {
     /* Init System, peripheral clock and multi-function I/O */
     SYS_Init();

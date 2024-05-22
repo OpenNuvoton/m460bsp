@@ -38,19 +38,19 @@ void CCAP_IRQHandler(void)
 {
     uint32_t u32CapInt;
     u32CapInt = CCAP->INT;
-    if( (u32CapInt & (CCAP_INT_VIEN_Msk | CCAP_INT_VINTF_Msk )) == (CCAP_INT_VIEN_Msk | CCAP_INT_VINTF_Msk))
+    if((u32CapInt & (CCAP_INT_VIEN_Msk | CCAP_INT_VINTF_Msk)) == (CCAP_INT_VIEN_Msk | CCAP_INT_VINTF_Msk))
     {
         CCAPInterruptHandler();
         CCAP->INT |= CCAP_INT_VINTF_Msk;     /* Clear Frame end interrupt */
-        u32EscapeFrame = u32EscapeFrame+1;
+        u32EscapeFrame = u32EscapeFrame + 1;
     }
 
-    if((u32CapInt & (CCAP_INT_ADDRMIEN_Msk|CCAP_INT_ADDRMINTF_Msk)) == (CCAP_INT_ADDRMIEN_Msk|CCAP_INT_ADDRMINTF_Msk))
+    if((u32CapInt & (CCAP_INT_ADDRMIEN_Msk | CCAP_INT_ADDRMINTF_Msk)) == (CCAP_INT_ADDRMIEN_Msk | CCAP_INT_ADDRMINTF_Msk))
     {
         CCAP->INT |= CCAP_INT_ADDRMINTF_Msk; /* Clear Address match interrupt */
     }
 
-    if ((u32CapInt & (CCAP_INT_MEIEN_Msk|CCAP_INT_MEINTF_Msk)) == (CCAP_INT_MEIEN_Msk|CCAP_INT_MEINTF_Msk))
+    if((u32CapInt & (CCAP_INT_MEIEN_Msk | CCAP_INT_MEINTF_Msk)) == (CCAP_INT_MEIEN_Msk | CCAP_INT_MEINTF_Msk))
     {
         CCAP->INT |= CCAP_INT_MEINTF_Msk;    /* Clear Memory error interrupt */
     }
@@ -76,9 +76,9 @@ void CCAPSetFreq(uint32_t u32ModFreqKHz, uint32_t u32SensorFreq)
 
     /* Specified sensor clock */
     CLK->CLKSEL0 = (CLK->CLKSEL0 & ~CLK_CLKSEL0_CCAPSEL_Msk) | CLK_CLKSEL0_CCAPSEL_HCLK ;
-    i32Div = CLK_GetHCLKFreq()/u32SensorFreq-1;
+    i32Div = CLK_GetHCLKFreq() / u32SensorFreq - 1;
     if(i32Div < 0) i32Div = 0;
-    CLK->CLKDIV3 = (CLK->CLKDIV3 & ~CLK_CLKDIV3_VSENSEDIV_Msk) | i32Div<<CLK_CLKDIV3_VSENSEDIV_Pos;
+    CLK->CLKDIV3 = (CLK->CLKDIV3 & ~CLK_CLKDIV3_VSENSEDIV_Msk) | i32Div << CLK_CLKDIV3_VSENSEDIV_Pos;
 
     /* Lock protected registers */
     SYS_LockReg();
@@ -88,14 +88,14 @@ void CCAPSetFreq(uint32_t u32ModFreqKHz, uint32_t u32SensorFreq)
 #define SENSOR_IN_HEIGHT            240
 #define SYSTEM_WIDTH                160
 #define SYSTEM_HEIGHT               120
-uint8_t u8FrameBuffer[SYSTEM_WIDTH*SYSTEM_HEIGHT*2];
+uint8_t u8FrameBuffer[SYSTEM_WIDTH * SYSTEM_HEIGHT * 2];
 
 void PacketFormatDownScale(void)
 {
     uint32_t u32Frame;
 
     /* Initialize HM01B0 sensor and set HM01B0 output YUV422 format */
-    if(InitHM01B0_4BIT_YUV422()==FALSE) return;
+    if(InitHM01B0_4BIT_YUV422() == FALSE) return;
 
     /* Enable External CCAP Interrupt */
     NVIC_EnableIRQ(CCAP_IRQn);
@@ -104,16 +104,16 @@ void PacketFormatDownScale(void)
     CCAP_EnableInt(CCAP_INT_VIEN_Msk);
 
     /* Set Vsync polarity, Hsync polarity, pixel clock polarity, Sensor Format and Order */
-    CCAP_Open(HM01B0SensorPolarity | HM01B0DataFormatAndOrder, CCAP_CTL_PKTEN );
+    CCAP_Open(HM01B0SensorPolarity | HM01B0DataFormatAndOrder, CCAP_CTL_PKTEN);
 
     /* Set Cropping Window Vertical/Horizontal Starting Address and Cropping Window Size */
-    CCAP_SetCroppingWindow(0,0,SENSOR_IN_HEIGHT,SENSOR_IN_WIDTH);
+    CCAP_SetCroppingWindow(0, 0, SENSOR_IN_HEIGHT, SENSOR_IN_WIDTH);
 
     /* Set System Memory Packet Base Address Register */
     CCAP_SetPacketBuf((uint32_t)u8FrameBuffer);
 
     /* Set Packet Scaling Vertical/Horizontal Factor Register */
-    CCAP_SetPacketScaling(SYSTEM_HEIGHT,SENSOR_IN_HEIGHT,SYSTEM_WIDTH,SENSOR_IN_WIDTH);
+    CCAP_SetPacketScaling(SYSTEM_HEIGHT, SENSOR_IN_HEIGHT, SYSTEM_WIDTH, SENSOR_IN_WIDTH);
 
     /* Set Packet Frame Output Pixel Stride Width */
     CCAP_SetPacketStride(SYSTEM_WIDTH);
@@ -127,13 +127,13 @@ void PacketFormatDownScale(void)
     /* Start Image Capture Interface */
     CCAP_Start();
 
-    u32Frame=u32FramePass;
+    u32Frame = u32FramePass;
     while(1)
     {
-        if(u32Frame!=u32FramePass)
+        if(u32Frame != u32FramePass)
         {
-            u32Frame=u32FramePass;
-            printf("Get frame %d\n",u32Frame);
+            u32Frame = u32FramePass;
+            printf("Get frame %d\n", u32Frame);
         }
     }
 
@@ -202,7 +202,7 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
 
     /* Unlock protected registers */

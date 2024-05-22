@@ -77,7 +77,7 @@ void UART0_Init()
     UART_Open(UART0, 115200);
 }
 
-int32_t main(void)
+int main(void)
 {
 
     /* Unlock protected registers */

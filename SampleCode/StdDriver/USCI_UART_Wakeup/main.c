@@ -14,7 +14,6 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void);
 void USCI_UART_DataWakeUp(void);
 void USCI_UART_CTSWakeUp(void);
 void USCI_UART_PowerDown_TestItem(void);
@@ -34,7 +33,7 @@ void PowerDownFunction(void)
 
     /* Check if all the debug messages are finished */
     UART_WAIT_TX_EMPTY(DEBUG_PORT)
-        if(--u32TimeOutCnt == 0) break;
+    if(--u32TimeOutCnt == 0) break;
 
     /* Enter to Power-down mode */
     CLK_PowerDown();
@@ -110,7 +109,7 @@ void USCI0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
 
     /* Unlock protected registers */

@@ -108,14 +108,14 @@ void EADC_FunctionTest()
     i32Err = EADC_Open(EADC0, EADC_CTL_DIFFEN_SINGLE_END);
 
     /* Check EADC global error code. */
-    if (i32Err != 0)
+    if(i32Err != 0)
     {
-        if (i32Err == EADC_CAL_ERR)
+        if(i32Err == EADC_CAL_ERR)
         {
             printf("EADC has calibration error.\n");
             return;
         }
-        else if (i32Err == EADC_CLKDIV_ERR)
+        else if(i32Err == EADC_CLKDIV_ERR)
         {
             printf("EADC clock frequency is configured error.\n");
             return;
@@ -135,9 +135,9 @@ void EADC_FunctionTest()
         printf("  Other keys: exit EADC test\n");
         u8Option = getchar();
 
-        if (u8Option == '1')
+        if(u8Option == '1')
             u32ChannelNum = 0;
-        else if (u8Option == '2')
+        else if(u8Option == '2')
             u32ChannelNum = 1;
         else
             break;  /* exit while loop */
@@ -200,7 +200,7 @@ void EADC00_IRQHandler(void)
     EADC_CLR_INT_FLAG(EADC0, EADC_STATUS2_ADIF0_Msk);      /* Clear the A/D ADINT0 interrupt flag */
 }
 
-int32_t main(void)
+int main(void)
 {
 
     /* Unlock protected registers */

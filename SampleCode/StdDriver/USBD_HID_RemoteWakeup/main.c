@@ -130,7 +130,7 @@ void GPA_IRQHandler(void)
 }
 
 void PowerDown(void)
-{   
+{
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -163,7 +163,7 @@ void PowerDown(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
 #if CRYSTAL_LESS
     uint32_t u32TrimInit;

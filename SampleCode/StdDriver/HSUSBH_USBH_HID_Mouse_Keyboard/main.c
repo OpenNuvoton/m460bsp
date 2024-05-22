@@ -265,7 +265,7 @@ void UART0_Init(void)
     UART_Open(UART0, 115200);
 }
 
-int32_t main(void)
+int main(void)
 {
     HID_DEV_T *hdev, *hdev_list;
 

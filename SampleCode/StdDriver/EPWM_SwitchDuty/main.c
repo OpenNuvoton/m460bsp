@@ -126,7 +126,7 @@ uint32_t CalNewDutyCMR(EPWM_T *epwm, uint32_t u32ChannelNum, uint32_t u32DutyCyc
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
     uint8_t  u8Option;
     uint32_t u32NewDutyCycle = 0, u32NewCMR = 0;

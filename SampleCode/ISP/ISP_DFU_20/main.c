@@ -105,13 +105,13 @@ void USBD20_IRQHandler(void);
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
     /* Unlock write-protected registers */
     SYS_UnlockReg();
 
     /* Init System, peripheral clock and multi-function I/O */
-    if( SYS_Init() < 0 )
+    if(SYS_Init() < 0)
         goto _APROM;
 
     /* Enable ISP */

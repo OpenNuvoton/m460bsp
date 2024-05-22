@@ -36,7 +36,6 @@ volatile uint8_t   g_u8RxFIFO1CompleteFlag = 0;
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void);
 void SYS_Init(void);
 void CANFD_ShowRecvMessage(void);
 void CANFD_RxTest(void);
@@ -472,7 +471,7 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*                                         Main Function                                                   */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -491,4 +490,5 @@ int32_t main(void)
     CANFD_TxRxINTTest();
 
     while(1) {}
+
 }

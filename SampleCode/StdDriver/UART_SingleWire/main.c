@@ -26,7 +26,6 @@ static volatile int32_t  g_i32RecOK  = FALSE;
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void);
 void UART1_TEST_HANDLE(void);
 void UART2_TEST_HANDLE(void);
 void UART_FunctionTest(void);
@@ -82,8 +81,8 @@ void SYS_Init(void)
 
     /* The RX pin needs to pull-high for single-wire */
     /* If the external circuit doesn't pull-high, set GPIO pin as pull-high for this purpose here */
-    PA->PUSEL = (PA->PUSEL & (~GPIO_PUSEL_PUSEL2_Msk)) | (GPIO_PUSEL_PULL_UP<<GPIO_PUSEL_PUSEL2_Pos);
-    PB->PUSEL = (PB->PUSEL & (~GPIO_PUSEL_PUSEL0_Msk)) | (GPIO_PUSEL_PULL_UP<<GPIO_PUSEL_PUSEL0_Pos);
+    PA->PUSEL = (PA->PUSEL & (~GPIO_PUSEL_PUSEL2_Msk)) | (GPIO_PUSEL_PULL_UP << GPIO_PUSEL_PUSEL2_Pos);
+    PB->PUSEL = (PB->PUSEL & (~GPIO_PUSEL_PUSEL0_Msk)) | (GPIO_PUSEL_PULL_UP << GPIO_PUSEL_PUSEL0_Pos);
 
 }
 
@@ -139,7 +138,7 @@ void UART2_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
 
     /* Unlock protected registers */

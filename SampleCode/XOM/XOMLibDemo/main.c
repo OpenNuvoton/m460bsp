@@ -47,7 +47,7 @@ void SYS_Init(void)
     SET_UART0_TXD_PB13();
 }
 
-int32_t main(void)
+int main(void)
 {
     extern void func(void);
     int32_t NumArray[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
@@ -92,5 +92,3 @@ int32_t main(void)
     while(1);
 }
 /*** (C) COPYRIGHT 2020 Nuvoton Technology Corp. ***/
-
-

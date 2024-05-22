@@ -315,8 +315,7 @@ void SYS_Init(void)
 
 void I2C2_Init(void)
 {
-    /* Open I2C2 and set clock to 100k */
-    I2C_Open(I2C2, 100000);
+    /* Open I2C2 and set clock to 100k */    I2C_Open(I2C2, 100000);
 
     /* Get I2C2 Bus Clock */
     printf("I2C clock %d Hz\n", I2C_GetBusClockFreq(I2C2));
@@ -325,7 +324,7 @@ void I2C2_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
     uint32_t u32startFlag = 1;
 

@@ -80,7 +80,7 @@ void SysTick_Handler()
 }
 
 
-int32_t main(void)
+int main(void)
 {
     int  i32Ret = MBEDTLS_EXIT_SUCCESS;
 
@@ -119,16 +119,16 @@ int32_t main(void)
 
 void show(void)
 {
-    int i,j;
+    int i, j;
     int n = 128;
     uint8_t *pu8;
 
     printf("\n");
-    for(i=0;i<3;i++)
+    for(i = 0; i < 3; i++)
     {
         printf("SADDR[%d]", i);
         pu8 = (uint8_t *)CRPT->RSA_SADDR[i];
-        for(j=0;j<n;j++)
+        for(j = 0; j < n; j++)
         {
             if((j & 0xf) == 0)
                 printf("\n");
@@ -139,7 +139,7 @@ void show(void)
 
     printf("DADDR");
     pu8 = (uint8_t *)CRPT->RSA_DADDR;
-    for(j=0;j<n;j++)
+    for(j = 0; j < n; j++)
     {
         if((j & 0xf) == 0)
             printf("\n");
@@ -153,7 +153,7 @@ void dump(uint8_t *p, uint32_t size)
 {
     int i;
 
-    for(i=0;i<size;i++)
+    for(i = 0; i < size; i++)
     {
         if((i & 0xf) == 0)
             printf("\n");
@@ -166,9 +166,8 @@ void dump(uint8_t *p, uint32_t size)
 
 
 
-int mbedtls_platform_entropy_poll( void *data,
-                           unsigned char *output, size_t len, size_t *olen )
+int mbedtls_platform_entropy_poll(void *data,
+                                  unsigned char *output, size_t len, size_t *olen)
 {
     return 0;
 }
-

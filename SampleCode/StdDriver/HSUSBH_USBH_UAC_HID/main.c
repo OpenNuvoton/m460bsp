@@ -615,7 +615,7 @@ void uac_control_example(UAC_DEV_T *uac_dev)
         printf("    Failed to get microphone's current sampling rate!\n");
 }
 
-int32_t main(void)
+int main(void)
 {
     UAC_DEV_T *uac_dev = NULL;
     HID_DEV_T *hdev, *hdev_list;

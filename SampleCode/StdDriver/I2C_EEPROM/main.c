@@ -31,14 +31,14 @@ void I2C0_IRQHandler(void)
 
     u32Status = I2C_GET_STATUS(I2C0);
 
-    if (I2C_GET_TIMEOUT_FLAG(I2C0))
+    if(I2C_GET_TIMEOUT_FLAG(I2C0))
     {
         /* Clear I2C0 Timeout Flag */
         I2C_ClearTimeoutFlag(I2C0);
     }
     else
     {
-        if (s_I2C0HandlerFn != NULL)
+        if(s_I2C0HandlerFn != NULL)
             s_I2C0HandlerFn(u32Status);
     }
 }
@@ -48,23 +48,23 @@ void I2C0_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 void I2C_MasterRx(uint32_t u32Status)
 {
-    if (u32Status == 0x08)                      /* START has been transmitted and prepare SLA+W */
+    if(u32Status == 0x08)                       /* START has been transmitted and prepare SLA+W */
     {
         I2C_SET_DATA(I2C0, (g_u8DeviceAddr << 1)); /* Write SLA+W to Register I2CDAT */
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
     }
-    else if (u32Status == 0x18)                 /* SLA+W has been transmitted and ACK has been received */
+    else if(u32Status == 0x18)                  /* SLA+W has been transmitted and ACK has been received */
     {
         I2C_SET_DATA(I2C0, g_au8TxData[g_u8DataLen++]);
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
     }
-    else if (u32Status == 0x20)                 /* SLA+W has been transmitted and NACK has been received */
+    else if(u32Status == 0x20)                  /* SLA+W has been transmitted and NACK has been received */
     {
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STO | I2C_CTL_SI);
     }
-    else if (u32Status == 0x28)                 /* DATA has been transmitted and ACK has been received */
+    else if(u32Status == 0x28)                  /* DATA has been transmitted and ACK has been received */
     {
-        if (g_u8DataLen < 2)
+        if(g_u8DataLen < 2)
         {
             I2C_SET_DATA(I2C0, g_au8TxData[g_u8DataLen++]);
             I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
@@ -74,16 +74,16 @@ void I2C_MasterRx(uint32_t u32Status)
             I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STA | I2C_CTL_SI);
         }
     }
-    else if (u32Status == 0x10)                 /* Repeat START has been transmitted and prepare SLA+R */
+    else if(u32Status == 0x10)                  /* Repeat START has been transmitted and prepare SLA+R */
     {
         I2C_SET_DATA(I2C0, (g_u8DeviceAddr << 1) | 0x01);  /* Write SLA+R to Register I2CDAT */
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
     }
-    else if (u32Status == 0x40)                 /* SLA+R has been transmitted and ACK has been received */
+    else if(u32Status == 0x40)                  /* SLA+R has been transmitted and ACK has been received */
     {
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
     }
-    else if (u32Status == 0x58)                 /* DATA has been received and NACK has been returned */
+    else if(u32Status == 0x58)                  /* DATA has been received and NACK has been returned */
     {
         g_u8RxData = I2C_GET_DATA(I2C0);
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STO | I2C_CTL_SI);
@@ -101,23 +101,23 @@ void I2C_MasterRx(uint32_t u32Status)
 /*---------------------------------------------------------------------------------------------------------*/
 void I2C_MasterTx(uint32_t u32Status)
 {
-    if (u32Status == 0x08)                      /* START has been transmitted */
+    if(u32Status == 0x08)                       /* START has been transmitted */
     {
         I2C_SET_DATA(I2C0, g_u8DeviceAddr << 1);  /* Write SLA+W to Register I2CDAT */
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
     }
-    else if (u32Status == 0x18)                 /* SLA+W has been transmitted and ACK has been received */
+    else if(u32Status == 0x18)                  /* SLA+W has been transmitted and ACK has been received */
     {
         I2C_SET_DATA(I2C0, g_au8TxData[g_u8DataLen++]);
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
     }
-    else if (u32Status == 0x20)                 /* SLA+W has been transmitted and NACK has been received */
+    else if(u32Status == 0x20)                  /* SLA+W has been transmitted and NACK has been received */
     {
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STA | I2C_CTL_STO | I2C_CTL_SI);
     }
-    else if (u32Status == 0x28)                 /* DATA has been transmitted and ACK has been received */
+    else if(u32Status == 0x28)                  /* DATA has been transmitted and ACK has been received */
     {
-        if (g_u8DataLen != 3)
+        if(g_u8DataLen != 3)
         {
             I2C_SET_DATA(I2C0, g_au8TxData[g_u8DataLen++]);
             I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
@@ -190,7 +190,7 @@ void I2C0_Init(void)
 }
 
 
-int32_t main (void)
+int main(void)
 {
     uint32_t i;
     uint32_t u32TimeOutCnt;
@@ -218,7 +218,7 @@ int32_t main (void)
 
     g_u8DeviceAddr = 0x50;
 
-    for (i = 0; i < 2; i++)
+    for(i = 0; i < 2; i++)
     {
         g_au8TxData[0] = (uint8_t)((i & 0xFF00) >> 8);
         g_au8TxData[1] = (uint8_t)(i & 0x00FF);
@@ -235,7 +235,7 @@ int32_t main (void)
 
         /* Wait I2C Tx Finish */
         u32TimeOutCnt = I2C_TIMEOUT;
-        while (g_u8EndFlag == 0)
+        while(g_u8EndFlag == 0)
         {
             if(--u32TimeOutCnt == 0)
             {
@@ -269,7 +269,7 @@ int32_t main (void)
 
         /* Wait I2C Rx Finish */
         u32TimeOutCnt = I2C_TIMEOUT;
-        while (g_u8EndFlag == 0)
+        while(g_u8EndFlag == 0)
         {
             if(--u32TimeOutCnt == 0)
             {
@@ -290,7 +290,7 @@ int32_t main (void)
         }
 
         /* Compare data */
-        if (g_u8RxData != g_au8TxData[2])
+        if(g_u8RxData != g_au8TxData[2])
         {
             printf("I2C Byte Write/Read Failed, Data 0x%x\n", g_u8RxData);
             goto lexit;

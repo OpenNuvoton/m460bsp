@@ -38,7 +38,7 @@ void SYS_Init(void)
     CLK_SetCoreClock(200000000);
 
     /* Enable all GPIO clock */
-    CLK->AHBCLK0 |= CLK_AHBCLK0_GPACKEN_Msk | CLK_AHBCLK0_GPBCKEN_Msk | CLK_AHBCLK0_GPCCKEN_Msk | CLK_AHBCLK0_GPDCKEN_Msk | 
+    CLK->AHBCLK0 |= CLK_AHBCLK0_GPACKEN_Msk | CLK_AHBCLK0_GPBCKEN_Msk | CLK_AHBCLK0_GPCCKEN_Msk | CLK_AHBCLK0_GPDCKEN_Msk |
                     CLK_AHBCLK0_GPECKEN_Msk | CLK_AHBCLK0_GPFCKEN_Msk | CLK_AHBCLK0_GPGCKEN_Msk | CLK_AHBCLK0_GPHCKEN_Msk;
     CLK->AHBCLK1 |= CLK_AHBCLK1_GPICKEN_Msk | CLK_AHBCLK1_GPJCKEN_Msk;
 
@@ -91,7 +91,7 @@ void UART1_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
 
     /* Unlock protected registers */
@@ -274,7 +274,7 @@ uint32_t GetUartBaudrate(UART_T* uart)
 
     /* Get PLL/2 clock frequency if UART clock source selection is PLL/2 */
     if(u8UartClkSrcSel == 1)
-        au32ClkTbl[u8UartClkSrcSel] = CLK_GetPLLClockFreq()>>1;
+        au32ClkTbl[u8UartClkSrcSel] = CLK_GetPLLClockFreq() >> 1;
 
     /* Get UART baud rate divider */
     u32BaudDiv = (uart->BAUD & UART_BAUD_BRD_Msk) >> UART_BAUD_BRD_Pos;

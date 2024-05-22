@@ -20,7 +20,7 @@ void CCAPSetFreq(uint32_t u32ModFreqKHz, uint32_t u32SensorFreq);
 int32_t PacketFormatDownScale(void);
 void UART0_Init(void);
 void SYS_Init(void);
-extern void JpegEncode(unsigned char* image, unsigned char* jBuf,unsigned long *jSize,int width,int height);
+extern void JpegEncode(unsigned char* image, unsigned char* jBuf, unsigned long *jSize, int width, int height);
 
 
 
@@ -38,25 +38,25 @@ void CCAP_IRQHandler(void)
 {
     uint32_t u32CapInt;
     u32CapInt = CCAP->INT;
-    if( (u32CapInt & (CCAP_INT_VIEN_Msk | CCAP_INT_VINTF_Msk )) == (CCAP_INT_VIEN_Msk | CCAP_INT_VINTF_Msk))
+    if((u32CapInt & (CCAP_INT_VIEN_Msk | CCAP_INT_VINTF_Msk)) == (CCAP_INT_VIEN_Msk | CCAP_INT_VINTF_Msk))
     {
         CCAPInterruptHandler();
         CCAP->INT |= CCAP_INT_VINTF_Msk;     /* Clear Frame end interrupt */
     }
 
-    if((u32CapInt & (CCAP_INT_ADDRMIEN_Msk|CCAP_INT_ADDRMINTF_Msk)) == (CCAP_INT_ADDRMIEN_Msk|CCAP_INT_ADDRMINTF_Msk))
+    if((u32CapInt & (CCAP_INT_ADDRMIEN_Msk | CCAP_INT_ADDRMINTF_Msk)) == (CCAP_INT_ADDRMIEN_Msk | CCAP_INT_ADDRMINTF_Msk))
     {
         CCAP->INT |= CCAP_INT_ADDRMINTF_Msk; /* Clear Address match interrupt */
     }
 
-    if ((u32CapInt & (CCAP_INT_MEIEN_Msk|CCAP_INT_MEINTF_Msk)) == (CCAP_INT_MEIEN_Msk|CCAP_INT_MEINTF_Msk))
+    if((u32CapInt & (CCAP_INT_MEIEN_Msk | CCAP_INT_MEINTF_Msk)) == (CCAP_INT_MEIEN_Msk | CCAP_INT_MEINTF_Msk))
     {
         CCAP->INT |= CCAP_INT_MEINTF_Msk;    /* Clear Memory error interrupt */
     }
     CCAP->CTL = CCAP->CTL | CCAP_CTL_UPDATE;
 }
 
-void CCAPSetFreq(uint32_t u32ModFreqKHz,uint32_t u32SensorFreq)
+void CCAPSetFreq(uint32_t u32ModFreqKHz, uint32_t u32SensorFreq)
 {
     int32_t i32Div;
 
@@ -74,9 +74,9 @@ void CCAPSetFreq(uint32_t u32ModFreqKHz,uint32_t u32SensorFreq)
 
     /* Specified sensor clock */
     CLK->CLKSEL0 = (CLK->CLKSEL0 & ~CLK_CLKSEL0_CCAPSEL_Msk) | CLK_CLKSEL0_CCAPSEL_HCLK ;
-    i32Div = CLK_GetHCLKFreq()/u32SensorFreq-1;
+    i32Div = CLK_GetHCLKFreq() / u32SensorFreq - 1;
     if(i32Div < 0) i32Div = 0;
-    CLK->CLKDIV3 = (CLK->CLKDIV3 & ~CLK_CLKDIV3_VSENSEDIV_Msk) | i32Div<<CLK_CLKDIV3_VSENSEDIV_Pos;
+    CLK->CLKDIV3 = (CLK->CLKDIV3 & ~CLK_CLKDIV3_VSENSEDIV_Msk) | i32Div << CLK_CLKDIV3_VSENSEDIV_Pos;
 
     /* Lock protected registers */
     SYS_LockReg();
@@ -86,7 +86,7 @@ void CCAPSetFreq(uint32_t u32ModFreqKHz,uint32_t u32SensorFreq)
 #define SENSOR_IN_HEIGHT            480
 #define SYSTEM_WIDTH                160
 #define SYSTEM_HEIGHT               120
-uint8_t u8FrameBuffer[SYSTEM_WIDTH*SYSTEM_HEIGHT+SYSTEM_WIDTH];
+uint8_t u8FrameBuffer[SYSTEM_WIDTH * SYSTEM_HEIGHT + SYSTEM_WIDTH];
 
 #define DataFormatAndOrder (CCAP_PAR_INDATORD_YUYV | CCAP_PAR_INFMT_YUV422 | CCAP_PAR_OUTFMT_ONLY_Y)
 
@@ -95,7 +95,7 @@ int32_t PacketFormatDownScale(void)
     uint32_t u32Frame;
 
     /* Initialize NT99141 sensor and set NT99141 output YUV422 format */
-    if(InitNT99141_VGA_YUV422()==FALSE) return -1;
+    if(InitNT99141_VGA_YUV422() == FALSE) return -1;
 
     /* Enable External CCAP Interrupt */
     NVIC_EnableIRQ(CCAP_IRQn);
@@ -104,16 +104,16 @@ int32_t PacketFormatDownScale(void)
     CCAP_EnableInt(CCAP_INT_VIEN_Msk);
 
     /* Set Vsync polarity, Hsync polarity, pixel clock polarity, Sensor Format and Order */
-    CCAP_Open(NT99141SensorPolarity | DataFormatAndOrder, CCAP_CTL_PKTEN );
+    CCAP_Open(NT99141SensorPolarity | DataFormatAndOrder, CCAP_CTL_PKTEN);
 
     /* Set Cropping Window Vertical/Horizontal Starting Address and Cropping Window Size */
-    CCAP_SetCroppingWindow(0,0,SENSOR_IN_HEIGHT,SENSOR_IN_WIDTH);
+    CCAP_SetCroppingWindow(0, 0, SENSOR_IN_HEIGHT, SENSOR_IN_WIDTH);
 
     /* Set System Memory Packet Base Address Register */
     CCAP_SetPacketBuf((uint32_t)u8FrameBuffer);
 
     /* Set Packet Scaling Vertical/Horizontal Factor Register */
-    CCAP_SetPacketScaling(SYSTEM_HEIGHT,SENSOR_IN_HEIGHT,SYSTEM_WIDTH,SENSOR_IN_WIDTH);
+    CCAP_SetPacketScaling(SYSTEM_HEIGHT, SENSOR_IN_HEIGHT, SYSTEM_WIDTH, SENSOR_IN_WIDTH);
 
     /* Set Packet Frame Output Pixel Stride Width */
     CCAP_SetPacketStride(SYSTEM_WIDTH);
@@ -121,14 +121,15 @@ int32_t PacketFormatDownScale(void)
     /* Start Image Capture Interface */
     CCAP_Start();
 
-    u32Frame=u32FramePass;
+    u32Frame = u32FramePass;
     while(1)
     {
-        if(u32FramePass!=(u32Frame)){
+        if(u32FramePass != (u32Frame))
+        {
             u32Frame = u32FramePass;
-            printf("u32FramePass=%d\n",u32FramePass);
+            printf("u32FramePass=%d\n", u32FramePass);
         }
-        if(u32FramePass>10)
+        if(u32FramePass > 10)
             break;
     }
 
@@ -200,9 +201,9 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-uint8_t u8JpegBuffer[SYSTEM_WIDTH*SYSTEM_HEIGHT];
+uint8_t u8JpegBuffer[SYSTEM_WIDTH * SYSTEM_HEIGHT];
 
-int32_t main(void)
+int main(void)
 {
     unsigned long u32JpegSize = sizeof(u8JpegBuffer);
 
@@ -222,7 +223,8 @@ int32_t main(void)
     CCAPSetFreq(12000000, 12000000);
 
     /* Using Packet format to Image down scale */
-    if(PacketFormatDownScale()>=0){
+    if(PacketFormatDownScale() >= 0)
+    {
         /* jpeg encode */
         JpegEncode(u8FrameBuffer, u8JpegBuffer, &u32JpegSize, SYSTEM_WIDTH, SYSTEM_HEIGHT);
     }

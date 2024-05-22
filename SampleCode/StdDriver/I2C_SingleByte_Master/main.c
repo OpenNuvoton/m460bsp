@@ -82,7 +82,7 @@ void I2C0_Close(void)
 }
 
 
-int32_t main(void)
+int main(void)
 {
     uint32_t i, u32TimeOutCnt;
     uint8_t u8data, u8tmp, err;
@@ -154,5 +154,3 @@ int32_t main(void)
     while(1);
 }
 /*** (C) COPYRIGHT 2021 Nuvoton Technology Corp. ***/
-
-

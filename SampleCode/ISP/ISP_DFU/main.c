@@ -72,7 +72,7 @@ int32_t SYS_Init(void)
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     while(!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk))
     {
-        if( --u32TimeOutCnt == 0)
+        if(--u32TimeOutCnt == 0)
             return -1;
     }
 
@@ -83,7 +83,7 @@ int32_t SYS_Init(void)
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     while(!(CLK->STATUS & CLK_STATUS_HIRC48MSTB_Msk))
     {
-        if( --u32TimeOutCnt == 0)
+        if(--u32TimeOutCnt == 0)
             return -1;
     }
 
@@ -100,7 +100,7 @@ int32_t SYS_Init(void)
     u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
     while(!(CLK->STATUS & CLK_STATUS_PLLSTB_Msk))
     {
-        if( --u32TimeOutCnt == 0)
+        if(--u32TimeOutCnt == 0)
             return -1;
     }
 
@@ -152,7 +152,7 @@ void USBD_IRQHandler(void);
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Main Function                                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void)
+int main(void)
 {
     uint32_t u32TrimInit;
 
@@ -160,7 +160,7 @@ int32_t main(void)
     SYS_UnlockReg();
 
     /* Init System, peripheral clock and multi-function I/O */
-    if( SYS_Init() < 0 )
+    if(SYS_Init() < 0)
         goto _APROM;
 
     /* Enable ISP */
