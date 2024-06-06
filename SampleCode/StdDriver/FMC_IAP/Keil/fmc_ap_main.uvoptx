@@ -226,8 +226,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\ap_image.s</PathWithFileName>
-      <FilenameWithoutPath>ap_image.s</FilenameWithoutPath>
+      <PathWithFileName>.\ap_image.S</PathWithFileName>
+      <FilenameWithoutPath>ap_image.S</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

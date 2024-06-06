@@ -405,9 +405,9 @@
               <FilePath>..\APROM_main.c</FilePath>
             </File>
             <File>
-              <FileName>ap_image.s</FileName>
+              <FileName>ap_image.S</FileName>
               <FileType>2</FileType>
-              <FilePath>.\ap_image.s</FilePath>
+              <FilePath>.\ap_image.S</FilePath>
             </File>
           </Files>
         </Group>

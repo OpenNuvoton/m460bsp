@@ -1,19 +1,28 @@
-;/*---------------------------------------------------------------------------------------------------------*/
-;/*                                                                                                         */
-;/* Copyright(c) 2015 Nuvoton Technology Corp. All rights reserved.                                         */
-;/*                                                                                                         */
-;/*---------------------------------------------------------------------------------------------------------*/
+;/**************************************************************************//**
+; * @file     ap_image.S
+; * @version  V1.00
+; * @brief    Assembly code include AP image.
+; *
+; *
+; * @copyright (C) 2024 Nuvoton Technology Corp. All rights reserved.
+;*****************************************************************************/
+    .syntax unified
+    .arch armv7-m
 
 
-    AREA _image, DATA, READONLY
+    .global  loaderImage1Base
+    .global  loaderImage1Limit
 
-    EXPORT  loaderImage1Base
-    EXPORT  loaderImage1Limit
-    
-    ALIGN   4
-        
-loaderImage1Base
-    INCBIN ./fmc_ld_code.bin
-loaderImage1Limit
+    .align   4
 
-    END
+    .text
+
+loaderImage1Base:
+#ifndef BIN_FILE
+    .incbin "./fmc_ld_code.bin"
+#else
+    .incbin BIN_FILE
+#endif
+loaderImage1Limit:
+    .space  4
+    .end
