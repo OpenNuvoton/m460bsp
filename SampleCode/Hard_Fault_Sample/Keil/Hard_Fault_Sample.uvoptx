@@ -161,7 +161,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\..\..\Library\Device\Nuvoton\m460\Source\ARM\startup_m460.s</Filename>
+          <Filename>D:\MCU\LAG048_LAG052_M460\m460bsp\SampleCode\Library\Device\Nuvoton\m460\Source\ARM\startup_m460.s</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\Hard_Fault_Sample\../../../Library/Device/Nuvoton/m460/Source/ARM/startup_m460.s\234</Expression>
         </Bp>
@@ -177,7 +177,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\main.c</Filename>
+          <Filename>&lt;1&gt;..\main.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\Hard_Fault_Sample\../main.c\235</Expression>
         </Bp>

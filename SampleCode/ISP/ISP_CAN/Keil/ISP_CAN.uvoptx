@@ -161,7 +161,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\..\..\..\Library\Device\Nuvoton\m460\Source\ARM\startup_m460.s</Filename>
+          <Filename>&lt;1&gt;..\..\..\..\Library\Device\Nuvoton\M460\Source\ARM\startup_M460.s</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\ISP_CAN\../../../../Library/Device/Nuvoton/m460/Source/ARM/startup_m460.s\215</Expression>
         </Bp>
@@ -177,7 +177,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\..\..\..\Library\Device\Nuvoton\m460\Source\ARM\startup_m460.s</Filename>
+          <Filename>&lt;1&gt;..\..\..\..\Library\Device\Nuvoton\M460\Source\ARM\startup_M460.s</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\ISP_CAN\../../../../Library/Device/Nuvoton/m460/Source/ARM/startup_m460.s\234</Expression>
         </Bp>
@@ -360,6 +360,18 @@
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\..\Library\StdDriver\src\fmc.c</PathWithFileName>
       <FilenameWithoutPath>fmc.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>3</GroupNumber>
+      <FileNumber>6</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\..\..\Library\StdDriver\src\sys.c</PathWithFileName>
+      <FilenameWithoutPath>sys.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

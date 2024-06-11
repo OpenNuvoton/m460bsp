@@ -156,7 +156,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\main.c</Filename>
+          <Filename>&lt;1&gt;..\main.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\RNG_EntropyPoll\../main.c\146</Expression>
         </Bp>

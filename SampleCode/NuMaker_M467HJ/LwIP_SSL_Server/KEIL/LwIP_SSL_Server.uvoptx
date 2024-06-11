@@ -10,7 +10,7 @@
     <aExt>*.s*; *.src; *.a*</aExt>
     <oExt>*.obj; *.o</oExt>
     <lExt>*.lib</lExt>
-    <tExt>*.txt; *.h; *.inc</tExt>
+    <tExt>*.txt; *.h; *.inc; *.md</tExt>
     <pExt>*.plm</pExt>
     <CppX>*.cpp</CppX>
     <nMigrate>0</nMigrate>
@@ -156,7 +156,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\..\..\..\ThirdParty\mbedtls-3.1.0\library\ctr_drbg.c</Filename>
+          <Filename>&lt;24&gt;..\..\..\..\ThirdParty\mbedtls-3.1.0\library\ctr_drbg.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\LwIP_SSL_Server\../../../../ThirdParty/mbedtls-3.1.0/library/ctr_drbg.c\474</Expression>
         </Bp>

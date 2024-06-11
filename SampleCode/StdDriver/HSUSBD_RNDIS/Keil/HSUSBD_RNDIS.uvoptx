@@ -156,7 +156,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\rndis.c</Filename>
+          <Filename>D:\MCU\LAG048_LAG052_M460\m460bsp\SampleCode\CortexM4\BitBand\rndis.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\HSUSBD_RNDIS\../rndis.c\628</Expression>
         </Bp>
@@ -172,7 +172,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\..\..\..\Library\StdDriver\src\retarget.c</Filename>
+          <Filename>&lt;1&gt;..\..\..\..\Library\StdDriver\src\retarget.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\HSUSBD_RNDIS\../../../../Library/StdDriver/src/retarget.c\380</Expression>
         </Bp>
@@ -188,7 +188,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\..\..\..\Library\StdDriver\src\retarget.c</Filename>
+          <Filename>&lt;1&gt;..\..\..\..\Library\StdDriver\src\retarget.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\HSUSBD_RNDIS\../../../../Library/StdDriver/src/retarget.c\455</Expression>
         </Bp>
