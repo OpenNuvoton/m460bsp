@@ -172,7 +172,7 @@ int main(void)
            sGetTime.u32Year, sGetTime.u32Month, sGetTime.u32Day, sGetTime.u32Hour, sGetTime.u32Minute, sGetTime.u32Second);
     printf("# Please connect (tamper0 & tamper1) and (tamper2 & tamper3) and (tamper4 & tamper5) first.\n");
     printf("                    (PF.6 to PF.7)          (PF.8 to PF.9)         (PF.10 to PF.11)\n");
-    printf("# Press any key to start test:\n\n");
+    printf("# Press any key to start test: (Disconnect any pair pins to generate tamper event)\n\n");
     getchar();
 
     printf("# Check tamper date/time when tamper event occurred:\n\n");
