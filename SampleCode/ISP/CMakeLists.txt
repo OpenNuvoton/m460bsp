@@ -1,0 +1,63 @@
+create_project(ISP_CAN ${CMAKE_CURRENT_LIST_DIR}/ISP_CAN/main.c)
+create_project(ISP_DFU
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_DFU/main.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_DFU/dfu_transfer.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_DFU/fmc_user.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_DFU/usbd_user.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_DFU/descriptors.c
+)
+create_project(ISP_DFU_20
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_DFU_20/main.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_DFU_20/dfu_transfer.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_DFU_20/fmc_user.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_DFU_20/isp_user.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_DFU_20/descriptors.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_DFU_20/targetdev.c
+)
+target_compile_options(ISP_DFU_20 PRIVATE -Wno-pragma-pack)
+create_project(ISP_HID
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_HID/main.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_HID/fmc_user.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_HID/isp_user.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_HID/usbd_user.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_HID/descriptors.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_HID/targetdev.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_HID/hid_transfer.c
+)
+create_project(ISP_HID_20
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_HID_20/main.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_HID_20/fmc_user.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_HID_20/isp_user.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_HID_20/hsusbd_user.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_HID_20/descriptors.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_HID_20/targetdev.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_HID_20/hid_transfer.c
+)
+create_project(ISP_I2C
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_I2C/main.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_I2C/fmc_user.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_I2C/isp_user.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_I2C/targetdev.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_I2C/i2c_transfer.c
+)
+create_project(ISP_RS485
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_RS485/main.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_RS485/fmc_user.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_RS485/isp_user.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_RS485/targetdev.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_RS485/uart_transfer.c
+)
+create_project(ISP_SPI
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_SPI/main.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_SPI/fmc_user.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_SPI/isp_user.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_SPI/targetdev.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_SPI/spi_transfer.c
+)
+create_project(ISP_UART
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_UART/main.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_UART/fmc_user.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_UART/isp_user.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_UART/targetdev.c
+    ${CMAKE_CURRENT_LIST_DIR}/ISP_UART/uart_transfer.c
+)
