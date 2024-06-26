@@ -331,9 +331,9 @@ typedef struct
      * |        |          |1 = Spare register content is cleared.
      * |        |          |Note 1: Writes 1 to clear this bit.
      * |        |          |Note 2: This bit keep 1 when RTC_INTSTS[13:8] or RTC_INTSTS[25:24] are not equal zero.
-     * |[16]    |LXTFCLR   |LXT Clock Fail/Stop to Clear Spare Enable Bit
-     * |        |          |0 = LXT Fail/Stop to clear Spare register content Disabled.
-     * |        |          |1 = LXT Fail/Stop to clear Spare register content Enabled.
+     * |[8]     |KSTRIGEN  |Key Store Trigger Enable Bit 
+     * |        |          |0 = Tamper event is detected and to trigger Key Store Disabled.
+     * |        |          |1 = Tamper event is detected and to trigger Key Store Enabled..
      * @var RTC_T::SPR[20]
      * Offset: 0x40 ~ 0x8C  RTC Spare Register 0 ~ 19
      * ---------------------------------------------------------------------------------------------------
@@ -932,6 +932,9 @@ typedef struct
 
 #define RTC_SPRCTL_SPRCSTS_Pos           (5)                                               /*!< RTC_T::SPRCTL: SPRCSTS Position        */
 #define RTC_SPRCTL_SPRCSTS_Msk           (0x1ul << RTC_SPRCTL_SPRCSTS_Pos)                 /*!< RTC_T::SPRCTL: SPRCSTS Mask            */
+
+#define RTC_SPRCTL_KSTRIGEN_Pos       	 (8)                                               /*!< RTC_T::SPRCTL: KSTRIGEN Position       */
+#define RTC_SPRCTL_KSTRIGEN_Msk      	 (0x1ul << RTC_SPRCTL_KSTRIGEN_Pos)                /*!< RTC_T::SPRCTL: KSTRIGEN Mask           */
 
 #define RTC_SPR0_SPARE_Pos               (0)                                               /*!< RTC_T::SPR0: SPARE Position            */
 #define RTC_SPR0_SPARE_Msk               (0xfffffffful << RTC_SPR0_SPARE_Pos)              /*!< RTC_T::SPR0: SPARE Mask                */

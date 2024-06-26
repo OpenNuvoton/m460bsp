@@ -167,7 +167,7 @@ int main(void)
     printf("# Initial data/time is: %d/%02d/%02d %02d:%02d:%02d.\n",
            sGetTime.u32Year, sGetTime.u32Month, sGetTime.u32Day, sGetTime.u32Hour, sGetTime.u32Minute, sGetTime.u32Second);
     printf("# Please connect TAMPER2/3(PF.8/9) pins to High first.\n");
-    printf("# Press any key to start test:\n\n");
+    printf("# Press any key to start test: (Pull TAMPER2/3 pin Low to generate tamper event)\n\n");
     getchar();
 
     printf("# Check tamper date/time when tamper event occurred:\n\n");
