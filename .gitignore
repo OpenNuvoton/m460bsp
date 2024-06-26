@@ -9,7 +9,7 @@
 *.clangd
 *.yml
 *.cprj
-
+!CMakeLists.txt
 
 # Folders
 Obj/

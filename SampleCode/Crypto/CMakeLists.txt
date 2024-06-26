@@ -1,0 +1,5 @@
+create_project(mbedTLS_AES ${CMAKE_CURRENT_LIST_DIR}/mbedTLS_AES/main.c)
+create_project(mbedTLS_ECDH ${CMAKE_CURRENT_LIST_DIR}/mbedTLS_ECDH/main.c)
+create_project(mbedTLS_ECDSA ${CMAKE_CURRENT_LIST_DIR}/mbedTLS_ECDSA/test_suite_ecdsa.c)
+create_project(mbedTLS_RSA ${CMAKE_CURRENT_LIST_DIR}/mbedTLS_RSA/main.c)
+create_project(mbedTLS_SHA256 ${CMAKE_CURRENT_LIST_DIR}/mbedTLS_SHA256/main.c)

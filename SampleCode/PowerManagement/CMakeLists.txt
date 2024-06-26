@@ -1,0 +1,5 @@
+create_project(SYS_DPDMode_Wakeup ${CMAKE_CURRENT_LIST_DIR}/SYS_DPDMode_Wakeup/main.c)
+create_project(SYS_PowerDown_MinCurrent ${CMAKE_CURRENT_LIST_DIR}/SYS_PowerDown_MinCurrent/main.c)
+create_project(SYS_PowerDownMode ${CMAKE_CURRENT_LIST_DIR}/SYS_PowerDownMode/main.c)
+create_project(SYS_PowerMode ${CMAKE_CURRENT_LIST_DIR}/SYS_PowerMode/main.c)
+create_project(SYS_SPDMode_Wakeup ${CMAKE_CURRENT_LIST_DIR}/SYS_SPDMode_Wakeup/main.c)
