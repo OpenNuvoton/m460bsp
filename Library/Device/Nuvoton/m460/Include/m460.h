@@ -45,7 +45,7 @@
   *
   * <b>Copyright Notice</b>
   *
-  * Copyright (C) 2022~2023 Nuvoton Technology Corp. All rights reserved.
+  * Copyright (C) 2022~2024 Nuvoton Technology Corp. All rights reserved.
   */
 #ifndef __M460_H__
 #define __M460_H__
