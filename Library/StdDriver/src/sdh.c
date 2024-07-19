@@ -394,7 +394,7 @@ void SDH_Set_clock(SDH_T *sdh, uint32_t sd_clock_khz)
     /* transfer state, clock source use sys_init() */
     else
     {
-        CLK->PWRCTL = u32SD_PwrCtl;
+
         if(sdh == SDH0)
         {
             CLK->CLKSEL0 = (CLK->CLKSEL0 & ~CLK_CLKSEL0_SDH0SEL_Msk) | u32SD_ClkSrc;
