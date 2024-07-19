@@ -44,17 +44,17 @@ if(C_COMPILER_ID STREQUAL GCC)
     )
 
     add_custom_command(TARGET ${PRJ} POST_BUILD
-        COMMAND ${ARM_OBJCOPY} -O binary ${PRJ} ${PRJ}.bin
+        COMMAND ${ARM_OBJCOPY} -O binary ${PRJ} fmc_ld_code.bin
         VERBATIM
     )
 endif()
 
+# #####################################################################################################
 set(PRJ FMC_IAP)
 
 if(C_COMPILER_ID STREQUAL ARMCLANG)
     add_executable(${PRJ} APROM_main.c ${CMAKE_CURRENT_LIST_DIR}/Keil/ap_image.S)
     target_link_libraries(${PRJ} system_startup standard_driver)
-    target_compile_definitions(${PRJ} PUBLIC -DBIN_FILE="${CMAKE_BINARY_DIR}/SampleCode/StdDriver/FMC_IAP/fmc_ld_code.bin")
 
     target_link_options(${PRJ}
         PUBLIC
@@ -87,8 +87,7 @@ endif()
 if(C_COMPILER_ID STREQUAL GCC)
     add_executable(${PRJ} APROM_main.c ${CMAKE_CURRENT_LIST_DIR}/GCC/ap_image.S)
     target_link_libraries(${PRJ} system_startup standard_driver)
-    target_compile_definitions(${PRJ} PUBLIC -D_ARM_VSCODE_)
-    target_compile_definitions(${PRJ} PUBLIC -DBIN_FILE="${CMAKE_BINARY_DIR}/SampleCode/StdDriver/FMC_IAP/LDROM_iap.bin")
+    target_compile_definitions(${PRJ} PUBLIC _ARM_VSCODE_)
 
     target_link_options(${PRJ}
         PUBLIC
@@ -104,3 +103,7 @@ if(C_COMPILER_ID STREQUAL GCC)
         VERBATIM
     )
 endif()
+
+target_compile_definitions(${PRJ} PUBLIC BIN_FILE="${CMAKE_BINARY_DIR}/SampleCode/StdDriver/FMC_IAP/fmc_ld_code.bin")
+
+add_dependencies(FMC_IAP FMC_IAP_LDROM_iap)
