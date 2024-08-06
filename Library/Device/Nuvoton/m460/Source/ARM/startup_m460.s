@@ -12,7 +12,7 @@
 
 
 
-    .section STACK, "awx"
+    .section .bss.STACK, "aw", %nobits
     .align 3
     .global __initial_sp
 #ifndef Stack_Size
@@ -24,7 +24,7 @@ Stack_Mem:
 __initial_sp:
 
 
-    .section HEAP, "awx"
+    .section .bss.HEAP, "aw", %nobits
     .align  3
     .global Heap_Mem
     .global __heap_base
@@ -520,4 +520,3 @@ EADC21_IRQHandler:
 EADC22_IRQHandler:
 EADC23_IRQHandler:
         B       .
-
