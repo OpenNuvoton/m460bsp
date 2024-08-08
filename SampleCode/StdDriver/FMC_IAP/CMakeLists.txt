@@ -53,7 +53,7 @@ endif()
 set(PRJ FMC_IAP)
 
 if(C_COMPILER_ID STREQUAL ARMCLANG)
-    add_executable(${PRJ} APROM_main.c ${CMAKE_CURRENT_LIST_DIR}/Keil/ap_image.S)
+    add_executable(${PRJ} APROM_main.c ${CMAKE_CURRENT_LIST_DIR}/GCC/ap_image.S)
     target_link_libraries(${PRJ} system_startup standard_driver)
 
     target_link_options(${PRJ}
