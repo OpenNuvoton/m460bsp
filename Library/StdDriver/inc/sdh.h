@@ -69,9 +69,9 @@ extern "C"
 
 /* SDH Define Error Code */
 #define SDH_TIMEOUT_CNT     2000000        /*!< SDH time-out counter \hideinitializer */
-#define SDH_OK              ( 0L)          /*!< SDH operation OK \hideinitializer */
-#define SDH_ERR_FAIL        (-1L)          /*!< SDH operation failed \hideinitializer */
-#define SDH_ERR_TIMEOUT     (-2L)          /*!< SDH operation abort due to timeout error \hideinitializer */
+#define SDH_OK              ( 0UL)          /*!< SDH operation OK \hideinitializer */
+#define SDH_ERR_FAIL        (-1UL)          /*!< SDH operation failed \hideinitializer */
+#define SDH_ERR_TIMEOUT     (-2UL)          /*!< SDH operation abort due to timeout error \hideinitializer */
 
 
 /*@}*/ /* end of group SDH_EXPORTED_CONSTANTS */
