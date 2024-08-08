@@ -52,7 +52,7 @@
 		<link>
 			<name>Library/NuMaker</name>
 			<type>2</type>
-			<locationURI>PARENT-4-PROJECT_LOC/Library/NuMaker/common</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/Library/NuMaker/xmodem</locationURI>
 		</link>
 		<link>
 			<name>User/main.c</name>
@@ -125,7 +125,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1686539618694</id>
+			<id>1723083097055</id>
 			<name>Library/NuMaker</name>
 			<type>5</type>
 			<matcher>
