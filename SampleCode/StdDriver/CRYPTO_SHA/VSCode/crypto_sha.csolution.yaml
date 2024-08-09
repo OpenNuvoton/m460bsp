@@ -45,4 +45,4 @@ solution:
           - --specs=nano.specs
           - -Wl,--gc-sections,-Map=$elf()$.map
   projects:
-    - project: CRYPTO_SHA.cproject.yaml
+    - project: crypto_sha.cproject.yaml

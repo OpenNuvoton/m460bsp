@@ -149,7 +149,7 @@ void str2bin(const char *pstr, uint8_t *buf, uint32_t size)
     for(i = 0; i < size; i++)
     {
         c = *pstr++;
-        if(c == NULL)
+        if(c == '\0')
             break;
 
         if((c >= 'a') && (c <= 'f'))
@@ -161,7 +161,7 @@ void str2bin(const char *pstr, uint8_t *buf, uint32_t size)
         u8Ch = (uint8_t)c << 4;
 
         c = *pstr++;
-        if(c == NULL)
+        if(c == '\0')
         {
             buf[i] = u8Ch;
             break;
