@@ -3,7 +3,7 @@
 ; * @version  V1.00
 ; * @brief    Assembly code include AP image.
 ; *
-; *
+; * SPDX-License-Identifier: Apache-2.0
 ; * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 ;*****************************************************************************/
     .syntax unified
@@ -17,10 +17,10 @@
     .text
 
 loaderImage1Base:
-#ifndef BIN_FILE
+#ifndef _ARM_VSCODE_
     .incbin  "../../LDROM_iap.bin"
 #else
-    .incbin   BIN_FILE
+    .incbin   "./LDROM_iap.bin"
 #endif
 loaderImage1Limit:
     .space   4
