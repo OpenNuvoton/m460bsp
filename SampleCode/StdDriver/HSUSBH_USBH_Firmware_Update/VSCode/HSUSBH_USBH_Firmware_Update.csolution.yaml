@@ -9,7 +9,7 @@ solution:
       processor:
         trustzone: non-secure
       add-path:
-        - ../../../../Library/Device/Nuvoton/M460/Include
+        - ../../../../Library/Device/Nuvoton/m460/Include
         - ../../../../Library/CMSIS/Include
         - ../../../../Library/StdDriver/inc
         - ../../../../ThirdParty/FatFs/source
