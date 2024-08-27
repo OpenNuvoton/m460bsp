@@ -7,7 +7,7 @@ solution:
     - type: GCC
       device: M467HJHAE
       processor:
-        trustzone: non-secure
+        fpu: sp
       add-path:
         - ../../../../Library/Device/Nuvoton/m460/Include
         - ../../../../Library/StdDriver/inc
