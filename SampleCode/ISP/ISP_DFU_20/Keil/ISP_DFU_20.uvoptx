@@ -255,8 +255,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\startup_M460_user.s</PathWithFileName>
-      <FilenameWithoutPath>startup_M460_user.s</FilenameWithoutPath>
+      <PathWithFileName>..\startup_m460_user.s</PathWithFileName>
+      <FilenameWithoutPath>startup_m460_user.s</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

@@ -390,9 +390,9 @@
               <FilePath>..\..\..\..\Library\Device\Nuvoton\M460\Source\system_M460.c</FilePath>
             </File>
             <File>
-              <FileName>startup_M460.s</FileName>
+              <FileName>startup_m460.s</FileName>
               <FileType>2</FileType>
-              <FilePath>..\..\..\..\Library\Device\Nuvoton\M460\Source\ARM\startup_M460.s</FilePath>
+              <FilePath>..\..\..\..\Library\Device\Nuvoton\M460\Source\ARM\startup_m460.s</FilePath>
             </File>
           </Files>
         </Group>

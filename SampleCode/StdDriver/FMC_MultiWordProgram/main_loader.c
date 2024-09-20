@@ -17,7 +17,6 @@ typedef void (FUNC_PTR)(void);
 
 extern uint32_t  loaderImage1Base, loaderImage1Limit;   /* symbol of image start and end */
 
-
 void SYS_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
@@ -59,9 +58,6 @@ void UART0_Init(void)
 
 int main()
 {
-#ifdef __GNUC__                        /* for GNU C compiler */
-    uint32_t    u32Data;
-#endif
     FUNC_PTR    *func;                 /* function pointer */
 
     SYS_UnlockReg();                   /* Unlock protected registers */
@@ -84,9 +80,9 @@ int main()
     func = (FUNC_PTR *)*(uint32_t *)(SRAM_IMAGE_BASE+4);
 
     /* Get and set the SP (Stack Pointer Base) of multi_word_prog.bin. */
-    
+
     __set_MSP(SRAM_IMAGE_BASE);
-    
+
     /*
      *  Branch to the multi_word_prog.bin's reset handler in way of function call.
      */

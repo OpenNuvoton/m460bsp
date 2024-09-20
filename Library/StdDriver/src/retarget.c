@@ -12,12 +12,12 @@
 #include "NuMicro.h"
 
 #if(defined(__ICCARM__) && (__VER__ >= 9020000))
-#include <LowLevelIOInterface.h>
+    #include <LowLevelIOInterface.h>
 #endif
 
 
 #if defined (__ICCARM__)
-# pragma diag_suppress=Pm150
+    #pragma diag_suppress=Pm150
 #endif
 
 int kbhit(void);
@@ -38,26 +38,26 @@ size_t __write(int handle, const unsigned char *buf, size_t bufSize)
 {
     size_t nChars = 0;
 
-    /* Check for the command to flush all handles */  
-    if (handle == -1)
+    /* Check for the command to flush all handles */
+    if(handle == -1)
     {
         return 0;
     }
 
-    /* Check for stdout and stderr      (only necessary if FILE descriptors are enabled.) */  
+    /* Check for stdout and stderr      (only necessary if FILE descriptors are enabled.) */
 
-    if (handle != 1 && handle != 2)  
-    {    
-        return -1;  
-    }   
-    
-    for (/* Empty */; bufSize > 0; --bufSize)
-    {    
+    if(handle != 1 && handle != 2)
+    {
+        return -1;
+    }
+
+    for(/* Empty */; bufSize > 0; --bufSize)
+    {
         SendChar(*buf);
         ++buf;
-        ++nChars;  
-    }   
-    
+        ++nChars;
+    }
+
     return nChars;
 }
 
@@ -71,7 +71,7 @@ size_t __read(int handle, unsigned char* buf, size_t bufSize)
         return -1;
     }
 
-    for( ; bufSize > 0; --bufSize)
+    for(; bufSize > 0; --bufSize)
     {
         unsigned char c;
         c = GetChar();
@@ -80,23 +80,23 @@ size_t __read(int handle, unsigned char* buf, size_t bufSize)
         *buf++ = c;
         ++nChars;
     }
-    return nChars; 
+    return nChars;
 }
 # endif
 #endif
 
 
 #if (defined(__ARMCC_VERSION) || defined(__ICCARM__))
-int fgetc(FILE* stream);
-int fputc(int ch, FILE* stream);
-int ferror(FILE* stream);
+    int fgetc(FILE* stream);
+    int fputc(int ch, FILE* stream);
+    int ferror(FILE* stream);
 #endif
 
 
 
 #if (defined(__ARMCC_VERSION ) && (__ARMCC_VERSION >= 400000) &&  (__ARMCC_VERSION < 600000))
-/* Insist on keeping widthprec, to avoid X propagation by benign code in C-lib */
-#pragma import _printf_widthprec
+    /* Insist on keeping widthprec, to avoid X propagation by benign code in C-lib */
+    #pragma import _printf_widthprec
 #endif
 
 #if (defined(__ARMCC_VERSION) && (__ARMCC_VERSION < 6040000)) || (defined(__ICCARM__) && (__VER__ >= 8000000))
@@ -164,8 +164,8 @@ void _sys_exit(int return_code)
 
 
 #if (defined(__ARMCC_VERSION) || defined(__ICCARM__))
-__WEAK
-uint32_t ProcessHardFault(uint32_t lr, uint32_t msp, uint32_t psp);
+    __WEAK
+    uint32_t ProcessHardFault(uint32_t lr, uint32_t msp, uint32_t psp);
 #endif
 
 
@@ -216,7 +216,7 @@ uint32_t ProcessHardFault(uint32_t lr, uint32_t msp, uint32_t psp)
 #endif
 
     /* Get the instruction caused the hardfault */
-    if( sp != NULL )
+    if(sp != NULL)
         inst = M16(sp[6]);
 
 
@@ -254,7 +254,7 @@ uint32_t ProcessHardFault(uint32_t lr, uint32_t msp, uint32_t psp)
 static int32_t SH_DoCommand(int32_t n32In_R0, int32_t n32In_R1)
 {
     __BKPT(0xAB);
-    
+
     return n32In_R0;
 }
 
@@ -328,7 +328,7 @@ label:
 __WEAK uint32_t ProcessHardFault(uint32_t lr, uint32_t msp, uint32_t psp)
 {
     uint32_t *sp = NULL;
-    uint32_t inst, addr, taddr, tdata;
+    uint32_t inst = 0, addr = 0, taddr, tdata;
     int32_t secure;
     uint32_t rm, rn, rt, imm5, imm8;
 
@@ -377,7 +377,7 @@ __WEAK uint32_t ProcessHardFault(uint32_t lr, uint32_t msp, uint32_t psp)
 
     printf("HardFault @ 0x%08x\n", sp[6]);
     /* Get the instruction caused the hardfault */
-    if( sp != NULL )
+    if(sp != NULL)
     {
         addr = sp[6];
         inst = M16(addr);
@@ -510,7 +510,7 @@ void SendChar(int ch)
         }
         else
         {
-# if (DEBUG_ENABLE_SEMIHOST == 2) // Re-direct to UART Debug Port only when DEBUG_ENABLE_SEMIHOST=2           
+# if (DEBUG_ENABLE_SEMIHOST == 2) // Re-direct to UART Debug Port only when DEBUG_ENABLE_SEMIHOST=2
             int i;
 
             for(i = 0; i < g_buf_len; i++)
@@ -549,7 +549,7 @@ char GetChar(void)
     }
 # else
     while(SH_kbhit())
-    { 
+    {
         if((nRet = SH_ReadC()) != 0)
             return nRet;
     }
@@ -565,7 +565,7 @@ char GetChar(void)
         }
     }
 # endif
-    
+
     return (0);
 #else
 

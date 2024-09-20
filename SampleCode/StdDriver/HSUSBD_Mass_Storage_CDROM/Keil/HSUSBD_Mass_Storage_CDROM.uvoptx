@@ -250,8 +250,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\Library\Device\Nuvoton\M460\Source\ARM\startup_M460.s</PathWithFileName>
-      <FilenameWithoutPath>startup_M460.s</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\..\Library\Device\Nuvoton\M460\Source\ARM\startup_m460.s</PathWithFileName>
+      <FilenameWithoutPath>startup_m460.s</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

@@ -34,7 +34,7 @@ volatile uint32_t g_u32WriteRTC_Ticks, g_u32ReadRTC_Ticks;
  *
  * @return      None
  *
- * @details     The RTC_IRQHandler is default IRQ of RTC, declared in startup_M460.s.
+ * @details     The RTC_IRQHandler is default IRQ of RTC, declared in startup_m460.s.
  */
 void RTC_IRQHandler(void)
 {
@@ -69,7 +69,7 @@ void RTC_IRQHandler(void)
  *
  * @return      None
  *
- * @details     The PB default IRQ, declared in startup_M460.s.
+ * @details     The PB default IRQ, declared in startup_m460.s.
  */
 void GPB_IRQHandler(void)
 {

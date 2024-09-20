@@ -1,0 +1,20 @@
+{
+    "cmsis-csolution.actions": [
+        {
+            "path": "FMC_IAP.csolution.yml",
+            "target": "ARMCLANG",
+            "config": {
+                "run": "arm-debugger.flash: Flash Device",
+                "debug": "Embedded Debug",
+            }
+        },
+        {
+            "path": "fmc_ld_code.cproject.yml",
+            "target": "ARMCLANG",
+            "config": {
+                "run": "arm-debugger.flash: Flash Device",
+                "debug": "Embedded Debug",
+            }
+        }
+    ]
+}

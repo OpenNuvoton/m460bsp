@@ -60,9 +60,9 @@
 			<locationURI>PARENT-1-PROJECT_LOC/LDROM_iap.ld</locationURI>
 		</link>
 		<link>
-			<name>User/startup_M460_tiny.S</name>
+			<name>User/startup_m460_tiny.S</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/startup_M460_tiny.S</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/startup_m460_tiny.S</locationURI>
 		</link>
 	</linkedResources>
 	<filteredResources>
@@ -117,7 +117,7 @@
 			<type>6</type>
 			<matcher>
 				<id>org.eclipse.ui.ide.multiFilter</id>
-				<arguments>1.0-name-matches-false-false-startup_M460.S</arguments>
+				<arguments>1.0-name-matches-false-false-startup_m460.S</arguments>
 			</matcher>
 		</filter>
 	</filteredResources>

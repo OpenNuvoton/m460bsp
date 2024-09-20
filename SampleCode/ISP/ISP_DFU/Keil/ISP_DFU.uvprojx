@@ -374,7 +374,7 @@
             <ScatterFile></ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
-            <Misc>--map --first='startup_M460_user.o(RESET)' --datacompressor=off --info=inline --entry Reset_Handler</Misc>
+            <Misc>--map --first='startup_m460_user.o(RESET)' --datacompressor=off --info=inline --entry Reset_Handler</Misc>
             <LinkerInputFile></LinkerInputFile>
             <DisabledWarnings></DisabledWarnings>
           </LDads>
@@ -410,9 +410,9 @@
               <FilePath>..\fmc_user.c</FilePath>
             </File>
             <File>
-              <FileName>startup_M460_user.s</FileName>
+              <FileName>startup_m460_user.s</FileName>
               <FileType>2</FileType>
-              <FilePath>..\startup_M460_user.s</FilePath>
+              <FilePath>..\startup_m460_user.s</FilePath>
             </File>
             <File>
               <FileName>usbd_user.c</FileName>

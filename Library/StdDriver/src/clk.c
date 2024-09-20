@@ -182,19 +182,19 @@ uint32_t CLK_GetPCLK0Freq(void)
     }
     else if((CLK->PCLKDIV & CLK_PCLKDIV_APB0DIV_Msk) == CLK_PCLKDIV_APB0DIV_DIV2)
     {
-        u32Freq = SystemCoreClock>>1;
+        u32Freq = SystemCoreClock >> 1;
     }
     else if((CLK->PCLKDIV & CLK_PCLKDIV_APB0DIV_Msk) == CLK_PCLKDIV_APB0DIV_DIV4)
     {
-        u32Freq = SystemCoreClock>>2;
+        u32Freq = SystemCoreClock >> 2;
     }
     else if((CLK->PCLKDIV & CLK_PCLKDIV_APB0DIV_Msk) == CLK_PCLKDIV_APB0DIV_DIV8)
     {
-        u32Freq = SystemCoreClock>>3;
+        u32Freq = SystemCoreClock >> 3;
     }
     else if((CLK->PCLKDIV & CLK_PCLKDIV_APB0DIV_Msk) == CLK_PCLKDIV_APB0DIV_DIV16)
     {
-        u32Freq = SystemCoreClock>>4;
+        u32Freq = SystemCoreClock >> 4;
     }
     else
     {
@@ -222,19 +222,19 @@ uint32_t CLK_GetPCLK1Freq(void)
     }
     else if((CLK->PCLKDIV & CLK_PCLKDIV_APB1DIV_Msk) == CLK_PCLKDIV_APB1DIV_DIV2)
     {
-        u32Freq = SystemCoreClock>>1;
+        u32Freq = SystemCoreClock >> 1;
     }
     else if((CLK->PCLKDIV & CLK_PCLKDIV_APB1DIV_Msk) == CLK_PCLKDIV_APB1DIV_DIV4)
     {
-        u32Freq = SystemCoreClock>>2;
+        u32Freq = SystemCoreClock >> 2;
     }
     else if((CLK->PCLKDIV & CLK_PCLKDIV_APB1DIV_Msk) == CLK_PCLKDIV_APB1DIV_DIV8)
     {
-        u32Freq = SystemCoreClock>>3;
+        u32Freq = SystemCoreClock >> 3;
     }
     else if((CLK->PCLKDIV & CLK_PCLKDIV_APB1DIV_Msk) == CLK_PCLKDIV_APB1DIV_DIV16)
     {
-        u32Freq = SystemCoreClock>>4;
+        u32Freq = SystemCoreClock >> 4;
     }
     else
     {
@@ -379,7 +379,7 @@ void CLK_SetHCLK(uint32_t u32ClkSrc, uint32_t u32ClkDiv)
     /* Update System Core Clock */
     SystemCoreClockUpdate();
 
-   /* Set power level according to new HCLK */
+    /* Set power level according to new HCLK */
     if(SystemCoreClock <= FREQ_180MHZ)
     {
         SYS->PLCTL = (SYS->PLCTL & (~SYS_PLCTL_PLSEL_Msk)) | SYS_PLCTL_PLSEL_PL1;
@@ -391,31 +391,31 @@ void CLK_SetHCLK(uint32_t u32ClkSrc, uint32_t u32ClkDiv)
     }
 
     /* Switch flash access cycle to suitable value base on HCLK */
-    if (SystemCoreClock >= FREQ_175MHZ)
+    if(SystemCoreClock >= FREQ_175MHZ)
     {
         FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (8);
     }
-    else if (SystemCoreClock >= FREQ_150MHZ)
+    else if(SystemCoreClock >= FREQ_150MHZ)
     {
         FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (7);
     }
-    else if (SystemCoreClock >= FREQ_125MHZ)
+    else if(SystemCoreClock >= FREQ_125MHZ)
     {
         FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (6);
     }
-    else if (SystemCoreClock >= FREQ_100MHZ)
+    else if(SystemCoreClock >= FREQ_100MHZ)
     {
         FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (5);
     }
-     else if (SystemCoreClock >= FREQ_75MHZ)
+    else if(SystemCoreClock >= FREQ_75MHZ)
     {
         FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (4);
     }
-    else if (SystemCoreClock >= FREQ_50MHZ)
+    else if(SystemCoreClock >= FREQ_50MHZ)
     {
         FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (3);
     }
-    else if (SystemCoreClock >= FREQ_25MHZ)
+    else if(SystemCoreClock >= FREQ_25MHZ)
     {
         FMC->CYCCTL = (FMC->CYCCTL & (~FMC_CYCCTL_CYCLE_Msk)) | (2);
     }
@@ -487,8 +487,8 @@ void CLK_SetHCLK(uint32_t u32ClkSrc, uint32_t u32ClkDiv)
   * |\ref CANFD3_MODULE  |\ref CLK_CLKSEL0_CANFD3SEL_HXT         |\ref CLK_CLKDIV5_CANFD3(x)     |
   * |\ref CANFD3_MODULE  |\ref CLK_CLKSEL0_CANFD3SEL_PLL_DIV2    |\ref CLK_CLKDIV5_CANFD3(x)     |
   * |\ref CANFD3_MODULE  |\ref CLK_CLKSEL0_CANFD3SEL_HCLK        |\ref CLK_CLKDIV5_CANFD3(x)     |
-  * |\ref CANFD3_MODULE  |\ref CLK_CLKSEL0_CANFD3SEL_HIRC        |\ref CLK_CLKDIV5_CANFD3(x)     |  
-  * |\ref EMAC0_MODULE   | x                                     | x                             |  
+  * |\ref CANFD3_MODULE  |\ref CLK_CLKSEL0_CANFD3SEL_HIRC        |\ref CLK_CLKDIV5_CANFD3(x)     |
+  * |\ref EMAC0_MODULE   | x                                     | x                             |
   * |\ref WDT_MODULE     |\ref CLK_CLKSEL1_WDTSEL_LXT            | x                             |
   * |\ref WDT_MODULE     |\ref CLK_CLKSEL1_WDTSEL_HCLK_DIV2048   | x                             |
   * |\ref WDT_MODULE     |\ref CLK_CLKSEL1_WDTSEL_LIRC           | x                             |
@@ -603,7 +603,7 @@ void CLK_SetHCLK(uint32_t u32ClkSrc, uint32_t u32ClkDiv)
   * |\ref SPI2_MODULE    |\ref CLK_CLKSEL3_SPI2SEL_PCLK1         | x                             |
   * |\ref SPI2_MODULE    |\ref CLK_CLKSEL3_SPI2SEL_HIRC          | x                             |
   * |\ref SPI2_MODULE    |\ref CLK_CLKSEL3_SPI2SEL_HIRC48M       | x                             |
-  * |\ref SPI2_MODULE    |\ref CLK_CLKSEL3_SPI2SEL_PLLFN_DIV2    | x                             | 
+  * |\ref SPI2_MODULE    |\ref CLK_CLKSEL3_SPI2SEL_PLLFN_DIV2    | x                             |
   * |\ref SPI3_MODULE    |\ref CLK_CLKSEL3_SPI3SEL_HXT           | x                             |
   * |\ref SPI3_MODULE    |\ref CLK_CLKSEL3_SPI3SEL_PLL_DIV2      | x                             |
   * |\ref SPI3_MODULE    |\ref CLK_CLKSEL3_SPI3SEL_PCLK0         | x                             |
@@ -700,17 +700,39 @@ void CLK_SetModuleClock(uint32_t u32ModuleIdx, uint32_t u32ClkSrc, uint32_t u32C
         switch(u32ModuleIdx)
         {
             /* For 8 bits divider */
-            case EADC0_MODULE: CLK->CLKDIV0 = (CLK->CLKDIV0 & (~CLK_CLKDIV0_EADC0DIV_Msk)) | (u32ClkDiv);  break;
-            case SDH0_MODULE:  CLK->CLKDIV0 = (CLK->CLKDIV0 & (~CLK_CLKDIV0_SDH0DIV_Msk)) | (u32ClkDiv);   break;
-            case SC0_MODULE:   CLK->CLKDIV1 = (CLK->CLKDIV1 & (~CLK_CLKDIV1_SC0DIV_Msk)) | (u32ClkDiv);    break;
-            case SC1_MODULE:   CLK->CLKDIV1 = (CLK->CLKDIV1 & (~CLK_CLKDIV1_SC1DIV_Msk)) | (u32ClkDiv);    break;
-            case SC2_MODULE:   CLK->CLKDIV1 = (CLK->CLKDIV1 & (~CLK_CLKDIV1_SC2DIV_Msk)) | (u32ClkDiv);    break;
-            case PSIO_MODULE:  CLK->CLKDIV1 = (CLK->CLKDIV1 & (~CLK_CLKDIV1_PSIODIV_Msk)) | (u32ClkDiv);   break;
-            case KPI_MODULE:   CLK->CLKDIV2 = (CLK->CLKDIV2 & (~CLK_CLKDIV2_KPIDIV_Msk)) | (u32ClkDiv);    break;
-            case EADC1_MODULE: CLK->CLKDIV2 = (CLK->CLKDIV2 & (~CLK_CLKDIV2_EADC1DIV_Msk)) | (u32ClkDiv);  break;
-            case SEN_MODULE:   CLK->CLKDIV3 = (CLK->CLKDIV3 & (~CLK_CLKDIV3_VSENSEDIV_Msk)) | (u32ClkDiv); break;
-            case SDH1_MODULE:  CLK->CLKDIV3 = (CLK->CLKDIV3 & (~CLK_CLKDIV3_SDH1DIV_Msk)) | (u32ClkDiv);   break;
-            case EADC2_MODULE: CLK->CLKDIV5 = (CLK->CLKDIV5 & (~CLK_CLKDIV5_EADC2DIV_Msk)) | (u32ClkDiv);  break;
+            case EADC0_MODULE:
+                CLK->CLKDIV0 = (CLK->CLKDIV0 & (~CLK_CLKDIV0_EADC0DIV_Msk)) | (u32ClkDiv);
+                break;
+            case SDH0_MODULE:
+                CLK->CLKDIV0 = (CLK->CLKDIV0 & (~CLK_CLKDIV0_SDH0DIV_Msk)) | (u32ClkDiv);
+                break;
+            case SC0_MODULE:
+                CLK->CLKDIV1 = (CLK->CLKDIV1 & (~CLK_CLKDIV1_SC0DIV_Msk)) | (u32ClkDiv);
+                break;
+            case SC1_MODULE:
+                CLK->CLKDIV1 = (CLK->CLKDIV1 & (~CLK_CLKDIV1_SC1DIV_Msk)) | (u32ClkDiv);
+                break;
+            case SC2_MODULE:
+                CLK->CLKDIV1 = (CLK->CLKDIV1 & (~CLK_CLKDIV1_SC2DIV_Msk)) | (u32ClkDiv);
+                break;
+            case PSIO_MODULE:
+                CLK->CLKDIV1 = (CLK->CLKDIV1 & (~CLK_CLKDIV1_PSIODIV_Msk)) | (u32ClkDiv);
+                break;
+            case KPI_MODULE:
+                CLK->CLKDIV2 = (CLK->CLKDIV2 & (~CLK_CLKDIV2_KPIDIV_Msk)) | (u32ClkDiv);
+                break;
+            case EADC1_MODULE:
+                CLK->CLKDIV2 = (CLK->CLKDIV2 & (~CLK_CLKDIV2_EADC1DIV_Msk)) | (u32ClkDiv);
+                break;
+            case SEN_MODULE:
+                CLK->CLKDIV3 = (CLK->CLKDIV3 & (~CLK_CLKDIV3_VSENSEDIV_Msk)) | (u32ClkDiv);
+                break;
+            case SDH1_MODULE:
+                CLK->CLKDIV3 = (CLK->CLKDIV3 & (~CLK_CLKDIV3_SDH1DIV_Msk)) | (u32ClkDiv);
+                break;
+            case EADC2_MODULE:
+                CLK->CLKDIV5 = (CLK->CLKDIV5 & (~CLK_CLKDIV5_EADC2DIV_Msk)) | (u32ClkDiv);
+                break;
 
             /* Others */
             default:
@@ -1044,7 +1066,7 @@ uint32_t CLK_EnablePLL(uint32_t u32PllClkSrc, uint32_t u32PllFreq)
     uint32_t u32Tmp, u32Tmp2, u32Tmp3, u32Min, u32MinNF, u32MinNR;
 
     /* Check if HCLK is PLL before configure PLL */
-    if( (CLK->CLKSEL0 & CLK_CLKSEL0_HCLKSEL_Msk) == CLK_CLKSEL0_HCLKSEL_PLL )
+    if((CLK->CLKSEL0 & CLK_CLKSEL0_HCLKSEL_Msk) == CLK_CLKSEL0_HCLKSEL_PLL)
     {
         /* Return PLL frequency directly if HCLK is PLL */
         return CLK_GetPLLClockFreq();
@@ -1112,7 +1134,7 @@ uint32_t CLK_EnablePLL(uint32_t u32PllClkSrc, uint32_t u32PllFreq)
             if((u32Tmp >= FREQ_4MHZ) && (u32Tmp <= FREQ_8MHZ))  /* Constraint 2: 4MHz < FREF < 8MHz. */
             {
                 for(u32NF = 2UL; u32NF <= 100UL; u32NF++)       /* NF = 2~513 since NF = FBDIV+2 and FBDIV = 0~511 */
-                                                                /* max NF = 100 to avoid calculation overflow */
+                    /* max NF = 100 to avoid calculation overflow */
                 {
                     u32Tmp2 = (u32Tmp * u32NF) << 1;                            /* FVCO = FREF*2*NF */
                     if((u32Tmp2 >= FREQ_200MHZ) && (u32Tmp2 <= FREQ_500MHZ))    /* Constraint 3: 200MHz < FVCO < 500MHz */
@@ -1189,7 +1211,7 @@ uint32_t CLK_EnablePLL(uint32_t u32PllClkSrc, uint32_t u32PllFreq)
   */
 void CLK_DisablePLL(void)
 {
-    if( (CLK->CLKSEL0 & CLK_CLKSEL0_HCLKSEL_Msk) != CLK_CLKSEL0_HCLKSEL_PLL )
+    if((CLK->CLKSEL0 & CLK_CLKSEL0_HCLKSEL_Msk) != CLK_CLKSEL0_HCLKSEL_PLL)
         CLK->PLLCTL |= CLK_PLLCTL_PD_Msk;
 }
 
@@ -1210,7 +1232,7 @@ void CLK_DisablePLL(void)
   */
 uint32_t CLK_WaitClockReady(uint32_t u32ClkMask)
 {
-    uint32_t u32TimeOutCnt = SystemCoreClock>>1; /* 500ms time-out */
+    uint32_t u32TimeOutCnt = SystemCoreClock >> 1; /* 500ms time-out */
     uint32_t u32Ret = 1U;
 
     while((CLK->STATUS & u32ClkMask) != u32ClkMask)
@@ -1245,7 +1267,7 @@ void CLK_EnableSysTick(uint32_t u32ClkSrc, uint32_t u32Count)
     SysTick->CTRL = 0UL;
 
     /* Set System Tick clock source */
-    if( u32ClkSrc == CLK_CLKSEL0_STCLKSEL_HCLK )
+    if(u32ClkSrc == CLK_CLKSEL0_STCLKSEL_HCLK)
     {
         /* Disable System Tick clock source from external reference clock */
         CLK->AHBCLK0 &= ~CLK_AHBCLK0_STCKEN_Msk;
@@ -1503,7 +1525,7 @@ uint32_t CLK_GetPLLClockFreq(void)
   *             - \ref UART6_MODULE
   *             - \ref UART7_MODULE
   *             - \ref UART8_MODULE
-  *             - \ref UART9_MODULE  
+  *             - \ref UART9_MODULE
   *             - \ref EPWM0_MODULE
   *             - \ref EPWM1_MODULE
   *             - \ref BPWM0_MODULE
@@ -1603,17 +1625,39 @@ uint32_t CLK_GetModuleClockDivider(uint32_t u32ModuleIdx)
     switch(u32ModuleIdx)
     {
         /* For 8 bits divider */
-        case EADC0_MODULE: u32DivVal = (CLK->CLKDIV0 & CLK_CLKDIV0_EADC0DIV_Msk) >> CLK_CLKDIV0_EADC0DIV_Pos;   break;
-        case SDH0_MODULE:  u32DivVal = (CLK->CLKDIV0 & CLK_CLKDIV0_SDH0DIV_Msk) >> CLK_CLKDIV0_SDH0DIV_Pos;     break;
-        case SC0_MODULE:   u32DivVal = (CLK->CLKDIV1 & CLK_CLKDIV1_SC0DIV_Msk) >> CLK_CLKDIV1_SC0DIV_Pos;       break;
-        case SC1_MODULE:   u32DivVal = (CLK->CLKDIV1 & CLK_CLKDIV1_SC1DIV_Msk) >> CLK_CLKDIV1_SC1DIV_Pos;       break;
-        case SC2_MODULE:   u32DivVal = (CLK->CLKDIV1 & CLK_CLKDIV1_SC2DIV_Msk) >> CLK_CLKDIV1_SC2DIV_Pos;       break;
-        case PSIO_MODULE:  u32DivVal = (CLK->CLKDIV1 & CLK_CLKDIV1_PSIODIV_Msk) >> CLK_CLKDIV1_PSIODIV_Pos;     break;
-        case KPI_MODULE:   u32DivVal = (CLK->CLKDIV2 & CLK_CLKDIV2_KPIDIV_Msk) >> CLK_CLKDIV2_KPIDIV_Pos;       break;
-        case EADC1_MODULE: u32DivVal = (CLK->CLKDIV2 & CLK_CLKDIV2_EADC1DIV_Msk) >> CLK_CLKDIV2_EADC1DIV_Pos;   break;
-        case SEN_MODULE:   u32DivVal = (CLK->CLKDIV3 & CLK_CLKDIV3_VSENSEDIV_Msk) >> CLK_CLKDIV3_VSENSEDIV_Pos; break;
-        case SDH1_MODULE:  u32DivVal = (CLK->CLKDIV3 & CLK_CLKDIV3_SDH1DIV_Msk) >> CLK_CLKDIV3_SDH1DIV_Pos;     break;
-        case EADC2_MODULE: u32DivVal = (CLK->CLKDIV5 & CLK_CLKDIV5_EADC2DIV_Msk) >> CLK_CLKDIV5_EADC2DIV_Pos;   break;
+        case EADC0_MODULE:
+            u32DivVal = (CLK->CLKDIV0 & CLK_CLKDIV0_EADC0DIV_Msk) >> CLK_CLKDIV0_EADC0DIV_Pos;
+            break;
+        case SDH0_MODULE:
+            u32DivVal = (CLK->CLKDIV0 & CLK_CLKDIV0_SDH0DIV_Msk) >> CLK_CLKDIV0_SDH0DIV_Pos;
+            break;
+        case SC0_MODULE:
+            u32DivVal = (CLK->CLKDIV1 & CLK_CLKDIV1_SC0DIV_Msk) >> CLK_CLKDIV1_SC0DIV_Pos;
+            break;
+        case SC1_MODULE:
+            u32DivVal = (CLK->CLKDIV1 & CLK_CLKDIV1_SC1DIV_Msk) >> CLK_CLKDIV1_SC1DIV_Pos;
+            break;
+        case SC2_MODULE:
+            u32DivVal = (CLK->CLKDIV1 & CLK_CLKDIV1_SC2DIV_Msk) >> CLK_CLKDIV1_SC2DIV_Pos;
+            break;
+        case PSIO_MODULE:
+            u32DivVal = (CLK->CLKDIV1 & CLK_CLKDIV1_PSIODIV_Msk) >> CLK_CLKDIV1_PSIODIV_Pos;
+            break;
+        case KPI_MODULE:
+            u32DivVal = (CLK->CLKDIV2 & CLK_CLKDIV2_KPIDIV_Msk) >> CLK_CLKDIV2_KPIDIV_Pos;
+            break;
+        case EADC1_MODULE:
+            u32DivVal = (CLK->CLKDIV2 & CLK_CLKDIV2_EADC1DIV_Msk) >> CLK_CLKDIV2_EADC1DIV_Pos;
+            break;
+        case SEN_MODULE:
+            u32DivVal = (CLK->CLKDIV3 & CLK_CLKDIV3_VSENSEDIV_Msk) >> CLK_CLKDIV3_VSENSEDIV_Pos;
+            break;
+        case SDH1_MODULE:
+            u32DivVal = (CLK->CLKDIV3 & CLK_CLKDIV3_SDH1DIV_Msk) >> CLK_CLKDIV3_SDH1DIV_Pos;
+            break;
+        case EADC2_MODULE:
+            u32DivVal = (CLK->CLKDIV5 & CLK_CLKDIV5_EADC2DIV_Msk) >> CLK_CLKDIV5_EADC2DIV_Pos;
+            break;
 
         /* Others */
         default:
@@ -1653,7 +1697,7 @@ void CLK_DisablePLLFN(void)
   */
 uint32_t CLK_EnablePLLFN(uint32_t u32PllClkSrc, uint32_t u32PllFreq)
 {
-    uint32_t u32FIN, u32FVCO, u32FREF, u32PllClk;
+    uint32_t u32FIN, u32FVCO, u32FREF, u32PllClk = 0;
     uint32_t u32NR = 0UL, u32NF = 0UL, u32NO, u32X = 0UL;
     float fNX_X = 0.0, fX = 0.0;
 
@@ -1713,13 +1757,13 @@ uint32_t CLK_EnablePLLFN(uint32_t u32PllClkSrc, uint32_t u32PllFreq)
 
             if((u32FREF >= FREQ_1MHZ) && (u32FREF <= FREQ_8MHZ))    /* Constraint 2: 1MHz <= FREF <= 8MHz. */
             {
-                fNX_X = (float)((u32FVCO * u32NR)>>1)/u32FIN;
+                fNX_X = (float)((u32FVCO * u32NR) >> 1) / u32FIN;
                 u32NF = (uint32_t)fNX_X;
 
                 if((u32NF >= 12) && (u32NF <= 255))    /* Constraint 4: 12<= NF <= 255. */
                 {
                     fX = fNX_X - u32NF;
-                    u32X = (uint32_t)(fX*4096);
+                    u32X = (uint32_t)(fX * 4096);
                     break;
                 }
             }
@@ -1735,11 +1779,11 @@ uint32_t CLK_EnablePLLFN(uint32_t u32PllClkSrc, uint32_t u32PllFreq)
             CLK->PLLFNCTL1 = u32PllClkSrc;
 
             /* Actual PLLFN output clock frequency. FOUT = (FIN/NR)*2*(NF.X)*(1/NO) */
-            u32PllClk = (uint32_t)((float)u32FIN / (((u32NO + 1UL) * u32NR)<<11) * ((u32NF<<12)+u32X));
+            u32PllClk = (uint32_t)((float)u32FIN / (((u32NO + 1UL) * u32NR) << 11) * ((u32NF << 12) + u32X));
         }
     }
 
-    if((u32PllFreq > FREQ_500MHZ) || (u32PllFreq < FREQ_50MHZ) || (u32NR==33) )
+    if((u32PllFreq > FREQ_500MHZ) || (u32PllFreq < FREQ_50MHZ) || (u32NR == 33))
     {
         if(u32PllClkSrc == CLK_PLLFNCTL1_PLLSRC_HXT)
         {
@@ -1793,7 +1837,7 @@ uint32_t CLK_GetPLLFNClockFreq(void)
     u32PllReg0 = CLK->PLLFNCTL0;
     u32PllReg1 = CLK->PLLFNCTL1;
 
-    if(u32PllReg1 & (CLK_PLLFNCTL1_PD_Msk|CLK_PLLFNCTL1_OE_Msk) )
+    if(u32PllReg1 & (CLK_PLLFNCTL1_PD_Msk | CLK_PLLFNCTL1_OE_Msk))
     {
         u32PllFreq = 0UL;       /* PLLFN is in power down mode or fix low */
     }
@@ -1822,7 +1866,7 @@ uint32_t CLK_GetPLLFNClockFreq(void)
             u32NR = ((u32PllReg0 & CLK_PLLFNCTL0_INDIV_Msk) >> CLK_PLLFNCTL0_INDIV_Pos) + 1UL;
             u32X  = ((u32PllReg0 & CLK_PLLFNCTL0_FRDIV_Msk) >> CLK_PLLFNCTL0_FRDIV_Pos);
 
-            u32PllFreq = (uint32_t)((float)u32FIN / ((u32NO * u32NR)<<11) * ( ((u32NF<<12)+u32X)));
+            u32PllFreq = (uint32_t)((float)u32FIN / ((u32NO * u32NR) << 11) * (((u32NF << 12) + u32X)));
         }
     }
 

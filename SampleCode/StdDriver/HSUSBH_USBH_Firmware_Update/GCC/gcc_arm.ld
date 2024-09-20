@@ -48,7 +48,7 @@ SECTIONS
 	.text :
 	{
 		/* *(.text*)*/
-		*(EXCLUDE_FILE(./CMSIS/CMSIS/GCC/startup_M460.o) .text*)
+		*(EXCLUDE_FILE(./CMSIS/CMSIS/GCC/startup_m460.o) .text*)
 
 		KEEP(*(.init))
 		KEEP(*(.fini))
@@ -119,16 +119,16 @@ SECTIONS
 	*/
 
 	. = 0xF100000;
-	
+
 	/*.ldrom : AT (__exidx_end)*/
-	.ldrom : 
+	.ldrom :
 	{
 		KEEP(*(.vectors))
 		__Vectors_End = .;
 		__Vectors_Size = __Vectors_End - __Vectors;
 		__end__ = .;
 
-		./CMSIS/CMSIS/GCC/startup_M460.o(.text*)
+		./CMSIS/CMSIS/GCC/startup_m460.o(.text*)
 
 	} > FLASH2
 

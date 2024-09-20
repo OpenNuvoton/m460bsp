@@ -1,0 +1,12 @@
+{
+    "cmsis-csolution.actions": [
+        {
+            "path": "PSIO_PS2_Device.csolution.yml",
+            "target": "ARMCLANG",
+            "config": {
+                "run": "arm-debugger.flash: Flash Device",
+                "debug": "Embedded Debug",
+            }
+        }
+    ]
+}
