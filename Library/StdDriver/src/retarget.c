@@ -255,6 +255,7 @@ static int32_t SH_DoCommand(int32_t n32In_R0, int32_t n32In_R1)
 {
     __BKPT(0xAB);
 
+
     return n32In_R0;
 }
 
@@ -550,9 +551,10 @@ char GetChar(void)
 # else
     while(SH_kbhit())
     {
-        if((nRet = SH_ReadC()) != 0)
-            return nRet;
-    }
+        {
+            if((nRet = SH_ReadC()) != 0)
+                return nRet;
+        }
 # endif
 
 # if (DEBUG_ENABLE_SEMIHOST == 2) // Re-direct to UART Debug Port only when DEBUG_ENABLE_SEMIHOST=2
@@ -565,6 +567,7 @@ char GetChar(void)
         }
     }
 # endif
+
 
     return (0);
 #else
