@@ -14,7 +14,6 @@ project:
         - --gc-sections
         - --specs=nano.specs
         - -Wl,-Map,$OutDir()$/$Project$.map
-
   setups:
     - output:
         type: ["elf", "bin"]
@@ -25,7 +24,7 @@ project:
     - ../../../../Library/Device/Nuvoton/m460/Include
     - ../../../../Library/StdDriver/inc
     - ../../../../Library/CMSIS/Include
-    - ../VSCode
+    - ..
   groups:
     - group: CMSIS
       files:
@@ -38,9 +37,10 @@ project:
       files:
         - file: ../main.c
         - file: ../vector_parser.c
-        - file: ../vector.S
+        - file: ../sha_test_vector
+        - file: ../vector.vsac6.S
           for-compiler: AC6
-        - file: ../vector.gnu.S
+        - file: ../vector.vsgnu.S
           for-compiler: GCC
     - group: Library
       files:
@@ -49,3 +49,4 @@ project:
         - file: ../../../../Library/StdDriver/src/retarget.c
         - file: ../../../../Library/StdDriver/src/crypto.c
         - file: ../../../../Library/StdDriver/src/uart.c
+        - file: ../../../../Library/StdDriver/src/rng.c

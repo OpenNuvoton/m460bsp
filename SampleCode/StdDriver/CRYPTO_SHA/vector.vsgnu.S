@@ -1,6 +1,6 @@
 ;/*---------------------------------------------------------------------------------------------------------*/
 ;/* @copyright SPDX-License-Identifier: Apache-2.0                                                          */
-;/* @copyright Copyright (C) 2020 Nuvoton Technology Corp. All rights reserved.                             */
+;/* @copyright Copyright (C) 2024 Nuvoton Technology Corp. All rights reserved.                             */
 ;/*---------------------------------------------------------------------------------------------------------*/
 
 	.section .rodata
@@ -12,7 +12,7 @@
 	.text
 
 g_u32VectorDataBase:
-    .incbin  "../../sha_test_vector"
+    .incbin  "../../../sha_test_vector"
 g_u32VectorDataLimit:
     .space   4
 

@@ -29,7 +29,7 @@ project:
       files:
         - file: ../../../Library/Device/Nuvoton/m460/Source/ARM/startup_m460.S
           for-compiler: AC6
-        - file: ../../../Library/Device/Nuvoton/m460/Source/GCC/startup_M460.S
+        - file: ../../../Library/Device/Nuvoton/m460/Source/GCC/startup_m460.S
           for-compiler: GCC
         - file: ../../../Library/Device/Nuvoton/m460/Source/system_m460.c
     - group: User

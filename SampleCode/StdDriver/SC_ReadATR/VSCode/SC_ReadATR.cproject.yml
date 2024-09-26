@@ -3,7 +3,7 @@ project:
     - pack: Nuvoton::NuMicro_DFP
   misc:
     - for-compiler: AC6
-      C: [-std=c99, -fno-rtti, -funsigned-char, -fshort-enums, -fno-short-wchar, -ffunction-sections, -fdata-sections, -D__MICROLIB, -o0, -gdwarf-4]
+      C: [-std=c99, -fno-rtti, -funsigned-char, -fshort-enums, -fshort-wchar, -ffunction-sections, -fdata-sections -w, -D__MICROLIB, -o0, -gdwarf-4]
       ASM: [-D__MICROLIB]
       Link: [--library_type=microlib, --map, --load_addr_map_info, --symbols, --info sizes, --info totals, --entry Reset_Handler, --summary_stderr, --info summarysizes, --diag_suppress=6314]
     - for-compiler: GCC
@@ -44,4 +44,6 @@ project:
         - file: ../../../../Library/StdDriver/src/uart.c
         - file: ../../../../Library/StdDriver/src/sc.c
         - file: ../../../../Library/SmartcardLib/libsmartcard.a
+          for-compiler: GCC
         - file: ../../../../Library/SmartcardLib/SmartCardLib_Keil.lib
+          for-compiler: AC6
