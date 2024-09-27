@@ -1,7 +1,7 @@
 {
     "cmsis-csolution.actions": [
         {
-            "path": "Z.csolution.yml",
+            "path": "FMC_MultiWordProgram.csolution.yml",
             "target": "ARMCLANG",
             "config": {
                 "run": "arm-debugger.flash: Flash Device",

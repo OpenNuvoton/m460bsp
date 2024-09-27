@@ -4,7 +4,7 @@
  * @brief    This sample run on SRAM to show FMC multi word program function.
  *
  *
- * @copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2024 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
 
@@ -13,7 +13,7 @@
 #define USE_DRIVER_API
 
 
-uint32_t    page_buff[FMC_FLASH_PAGE_SIZE/4];
+uint32_t    page_buff[FMC_FLASH_PAGE_SIZE / 4];
 
 
 void SYS_Init(void)
@@ -68,10 +68,10 @@ int  multi_word_program(uint32_t start_addr)
     FMC->ISPCMD  = FMC_ISPCMD_PROGRAM_MUL;
     FMC->ISPTRG  = FMC_ISPTRG_ISPGO_Msk;
 
-    for (i = 4; i < FMC_MULTI_WORD_PROG_LEN/4; )
+    for(i = 4; i < FMC_MULTI_WORD_PROG_LEN / 4;)
     {
         u32TimeOutCnt = FMC_TIMEOUT_WRITE;
-        while (FMC->MPSTS & (FMC_MPSTS_D0_Msk | FMC_MPSTS_D1_Msk))
+        while(FMC->MPSTS & (FMC_MPSTS_D0_Msk | FMC_MPSTS_D1_Msk))
         {
             if(--u32TimeOutCnt == 0)
             {
@@ -80,7 +80,7 @@ int  multi_word_program(uint32_t start_addr)
             }
         }
 
-        if (!(FMC->MPSTS & FMC_MPSTS_MPBUSY_Msk))
+        if(!(FMC->MPSTS & FMC_MPSTS_MPBUSY_Msk))
         {
             printf("    [WARNING] busy cleared after D0D1 cleared!\n");
             i += 2;
@@ -90,11 +90,11 @@ int  multi_word_program(uint32_t start_addr)
         FMC->MPDAT0 = page_buff[i++];
         FMC->MPDAT1 = page_buff[i++];
 
-        if (i == FMC_MULTI_WORD_PROG_LEN/4)
+        if(i == FMC_MULTI_WORD_PROG_LEN / 4)
             return 0;           // done
 
         u32TimeOutCnt = FMC_TIMEOUT_WRITE;
-        while (FMC->MPSTS & (FMC_MPSTS_D2_Msk | FMC_MPSTS_D3_Msk))
+        while(FMC->MPSTS & (FMC_MPSTS_D2_Msk | FMC_MPSTS_D3_Msk))
         {
             if(--u32TimeOutCnt == 0)
             {
@@ -103,7 +103,7 @@ int  multi_word_program(uint32_t start_addr)
             }
         }
 
-        if (!(FMC->MPSTS & FMC_MPSTS_MPBUSY_Msk))
+        if(!(FMC->MPSTS & FMC_MPSTS_MPBUSY_Msk))
         {
             printf("    [WARNING] busy cleared after D2D3 cleared!\n");
             i += 2;
@@ -114,14 +114,14 @@ int  multi_word_program(uint32_t start_addr)
         FMC->MPDAT3 = page_buff[i++];
     }
 
-    if (i != FMC_MULTI_WORD_PROG_LEN/4)
+    if(i != FMC_MULTI_WORD_PROG_LEN / 4)
     {
         printf("    [WARNING] Multi-word program interrupted at 0x%x !!\n", i);
         return -1;
     }
 
     u32TimeOutCnt = FMC_TIMEOUT_WRITE;
-    while (FMC->MPSTS & FMC_MPSTS_MPBUSY_Msk)
+    while(FMC->MPSTS & FMC_MPSTS_MPBUSY_Msk)
     {
         if(--u32TimeOutCnt == 0)
         {
@@ -152,11 +152,11 @@ int main()
 
     FMC_ENABLE_AP_UPDATE();            /* Enable APROM erase/program */
 
-    for (addr = 0; addr < 0x20000; addr += FMC_FLASH_PAGE_SIZE)
+    for(addr = 0x4000; addr < 0x20000; addr += FMC_FLASH_PAGE_SIZE)
     {
         printf("Multiword program APROM page 0x%x =>\n", addr);
 
-        if (FMC_Erase(addr) < 0)
+        if(FMC_Erase(addr) < 0)
         {
             printf("    Erase failed!!\n");
             goto err_out;
@@ -164,15 +164,15 @@ int main()
 
         printf("    Program...\n");
 
-        for (maddr = addr; maddr < addr + FMC_FLASH_PAGE_SIZE; maddr += FMC_MULTI_WORD_PROG_LEN)
+        for(maddr = addr; maddr < addr + FMC_FLASH_PAGE_SIZE; maddr += FMC_MULTI_WORD_PROG_LEN)
         {
             /* Prepare test pattern */
-            for (i = 0; i < FMC_MULTI_WORD_PROG_LEN; i+=4)
-                page_buff[i/4] = maddr + i;
+            for(i = 0; i < FMC_MULTI_WORD_PROG_LEN; i += 4)
+                page_buff[i / 4] = maddr + i;
 
 #ifdef USE_DRIVER_API
             i = FMC_WriteMultiple(maddr, page_buff, FMC_MULTI_WORD_PROG_LEN);
-            if (i <= 0)
+            if(i <= 0)
             {
                 printf("FMC_WriteMultiple failed: %d\n", i);
                 goto err_out;
@@ -180,7 +180,7 @@ int main()
             printf("programmed length = %d\n", i);
 #else
             /* execute multi-word program */
-            if (multi_word_program(maddr) < 0)
+            if(multi_word_program(maddr) < 0)
                 goto err_out;
 #endif
         }
@@ -188,19 +188,19 @@ int main()
 
         printf("    Verify...");
 
-        for (i = 0; i < FMC_FLASH_PAGE_SIZE; i+=4)
-            page_buff[i/4] = addr + i;
+        for(i = 0; i < FMC_FLASH_PAGE_SIZE; i += 4)
+            page_buff[i / 4] = addr + i;
 
-        for (i = 0; i < FMC_FLASH_PAGE_SIZE; i+=4)
+        for(i = 0; i < FMC_FLASH_PAGE_SIZE; i += 4)
         {
-            if (FMC_Read(addr+i) != page_buff[i/4])
+            if(FMC_Read(addr + i) != page_buff[i / 4])
             {
-                printf("\n[FAILED] Data mismatch at address 0x%x, expect: 0x%x, read: 0x%x!\n", addr+i, page_buff[i/4], FMC_Read(addr+i));
+                printf("\n[FAILED] Data mismatch at address 0x%x, expect: 0x%x, read: 0x%x!\n", addr + i, page_buff[i / 4], FMC_Read(addr + i));
                 goto err_out;
             }
-            if (g_FMC_i32ErrCode != 0)
+            if(g_FMC_i32ErrCode != 0)
             {
-                printf("FMC_Read address 0x%x failed!\n", addr+i);
+                printf("FMC_Read address 0x%x failed!\n", addr + i);
                 goto err_out;
             }
         }
@@ -220,7 +220,5 @@ err_out:
     {
         printf("\n\nERROR!\n");
     }
-    while (1);
+    while(1);
 }
-
-/*** (C) COPYRIGHT 2021 Nuvoton Technology Corp. ***/

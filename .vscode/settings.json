@@ -54,6 +54,13 @@
                 "debug": "Embedded Debug",
                 "run": "arm-debugger.flash: Flash Device"
             }
+        },
+        {
+            "path": "SampleCode/StdDriver/FMC_MultiWordProgram/VSCode/FMC_MultiWordProgram.csolution.yml",
+            "target": "ARMCLANG",
+            "config": {
+                "run": "arm-debugger.flash: Flash Device"
+            }
         }
     ]
 }

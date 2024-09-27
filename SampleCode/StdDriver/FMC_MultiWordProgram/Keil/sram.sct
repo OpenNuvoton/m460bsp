@@ -1,0 +1,20 @@
+LOAD_ROM  0x0
+{
+	FLASH  +0
+	{
+		startup_m460.o (RESET, +FIRST)
+		startup_m460.o
+		system_m460.o
+		init*.o
+		entry*.o
+		anon$$*.o
+		handler*.o
+	}
+
+	SRAM  0x20000000 0x10000
+	{
+		*.o (+RO)
+		* (+RW, +ZI)
+	}
+
+}

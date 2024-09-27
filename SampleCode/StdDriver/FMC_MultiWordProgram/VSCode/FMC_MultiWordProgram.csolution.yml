@@ -18,3 +18,4 @@ solution:
       device: Nuvoton::M467HJHAE
   projects:
     - project: FMC_MultiWordProgram.cproject.yml
+    - project: FMC_MainLoader.cproject.yml
