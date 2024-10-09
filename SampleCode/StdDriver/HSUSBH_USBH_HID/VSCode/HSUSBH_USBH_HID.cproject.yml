@@ -13,10 +13,12 @@ project:
         - --gc-sections
         - --specs=nano.specs
         - -Wl,-Map,$OutDir()$/$Project$.map
-
   setups:
     - output:
         type: ["elf", "bin"]
+    -define:
+        - Stack_Size: "0x800"
+        - Heap_Size: "0x4000"
   linker:
     - for-compiler: GCC
       script: ../../../../Library/Device/Nuvoton/m460/Source/GCC/gcc_arm.ld
