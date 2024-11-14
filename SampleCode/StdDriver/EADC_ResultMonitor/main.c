@@ -205,7 +205,7 @@ void EADC_FunctionTest(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /* EADC interrupt handler                                                                                  */
 /*---------------------------------------------------------------------------------------------------------*/
-void EADC3_IRQHandler(void)
+void EADC03_IRQHandler(void)
 {
     if(EADC_GET_INT_FLAG(EADC0, EADC_STATUS2_ADCMPF0_Msk))
     {

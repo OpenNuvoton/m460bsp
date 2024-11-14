@@ -17,7 +17,7 @@
     .global __initial_sp
 #ifndef Stack_Size
 // <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
-    .equ    Stack_Size, 0x00000100
+    .equ    Stack_Size, 0x00001000
 #endif
 Stack_Mem:
     .space   Stack_Size
