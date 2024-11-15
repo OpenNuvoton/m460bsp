@@ -252,7 +252,7 @@ void CANFD_CANFD_Loopback(void)
     /* Receive 0x44444 (29-bit id) in CAN FD rx FIFO1 buffer by setting mask 2 */
     CANFD_SetXIDFltr(g_pCanfd, 2, CANFD_RX_FIFO1_EXT_MASK_LOW(0x44444), CANFD_RX_FIFO1_EXT_MASK_HIGH(0x1FFFFFFF));
     /* Reject Non-Matching Standard ID and Extended ID Filter(RX FIFO1)*/
-    CANFD_SetGFC(g_pCanfd, eCANFD_ACC_NON_MATCH_FRM_RX_FIFO1, eCANFD_ACC_NON_MATCH_FRM_RX_FIFO1, 1, 1);
+    CANFD_SetGFC(g_pCanfd, eCANFD_REJ_NON_MATCH_FRM, eCANFD_REJ_NON_MATCH_FRM, 1, 1);
     /* Enable RX FIFO1 new message interrupt using interrupt line 0 */
     CANFD_EnableInt(g_pCanfd, (CANFD_IE_TOOE_Msk | CANFD_IE_RF1NE_Msk), 0, 0, 0);
     /* CAN FD Run to Normal mode */
