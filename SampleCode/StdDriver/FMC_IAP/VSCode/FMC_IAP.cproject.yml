@@ -13,7 +13,7 @@ project:
       Link:
         - -Xlinker
         - --gc-sections
-        - -Wl,--gc-sections,-Map=$elf()$.map
+        - -Wl,--gc-sections,-Map="$elf()$.map"
   linker:
       - for-compiler: GCC
         script: ../../../../Library/Device/Nuvoton/m460/Source/GCC/gcc_arm.ld

@@ -12,11 +12,11 @@ project:
         - -Xlinker
         - --gc-sections
         - --specs=nano.specs
-        - -Wl,-Map,$OutDir()$/$Project$.map
+        - -Wl,-Map,"$OutDir()$/$Project$.map"
   setups:
     - output:
         type: ["elf", "bin"]
-    -define:
+    - define:
         - Stack_Size: "0x800"
         - Heap_Size: "0x4000"
   linker:
