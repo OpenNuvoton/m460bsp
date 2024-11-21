@@ -20,7 +20,7 @@ project:
         type: ["elf", "bin"]
   linker:
     - for-compiler: GCC
-      script: ../../../../Library/Device/Nuvoton/m460/Source/GCC/gcc_arm.ld
+      script: ../../../../Library/Device/Nuvoton/m460/Source/GCC/LDROM.ld
   add-path:
         - ../../../../Library/CMSIS/Include
         - ../../../../Library/Device/Nuvoton/m460/Include
