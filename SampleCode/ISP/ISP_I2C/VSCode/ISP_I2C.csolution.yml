@@ -6,7 +6,7 @@ solution:
     - compiler: GCC@>=10.3.1
   build-types:
     - type: debug
-      optimize: none
+      optimize: size
     - type: release
       optimize: size
   target-types:
