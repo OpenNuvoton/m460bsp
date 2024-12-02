@@ -13,13 +13,18 @@ project:
         - --gc-sections
         - --specs=nano.specs
         - -Wl,-Map,"$OutDir()$/$Project$.map"
+      ASM: [-D__STARTUP_COPY_MULTIPLE, -D__STARTUP_CLEAR_BSS_MULTIPLE]
+  define:
+    - HBI_ENABLE: 2
 
   setups:
     - output:
         type: ["elf", "bin"]
   linker:
     - for-compiler: GCC
-      script: ../../../../Library/Device/Nuvoton/m460/Source/GCC/gcc_arm.ld
+      script: HBI_ExeInHRAM.ld
+    - for-compiler: AC6
+      script: HBI_ExeInHRAM.sct
   add-path:
     - ../../../../Library/Device/Nuvoton/m460/Include
     - ../../../../Library/StdDriver/inc
