@@ -13,7 +13,9 @@ project:
         - --gc-sections
         - --specs=nano.specs
         - -Wl,-Map,"$OutDir()$/$Project$.map"
-
+  define:
+    - MBEDTLS_CONFIG_FILE: mbedtls_config.h
+    - Stack_Size: "0x3000"
   setups:
     - output:
         type: ["elf", "bin"]
