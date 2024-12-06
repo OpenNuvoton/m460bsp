@@ -13,7 +13,10 @@ project:
         - --gc-sections
         - --specs=nano.specs
         - -Wl,-Map,"$OutDir()$/$Project$.map"
-
+  define:
+    - MBEDTLS_CONFIG_FILE: mbedtls_config.h
+    - Stack_Size: "0x3000"
+    - Heap_Size: "0x10000"
   setups:
     - output:
         type: ["elf", "bin"]
@@ -34,8 +37,6 @@ project:
         - file: ../../../../Library/Device/Nuvoton/m460/Source/ARM/startup_m460.S
           for-compiler: AC6
         - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/startup_m460.S
-          define:
-          - __STACK_SIZE: 0x3000
           for-compiler: GCC
         - file: ../../../../Library/Device/Nuvoton/m460/Source/system_m460.c
     - group: User
