@@ -1,7 +1,7 @@
 /* Linker script to configure memory regions. */
 MEMORY
 {
-  FLASH (rx) : ORIGIN = 0x00008000, LENGTH = 0x4000    /* 16k */
+  FLASH (rx) : ORIGIN = FLASH_BASE, LENGTH = 0x100000  /* 1024k */
   RAM (rwx)  : ORIGIN = 0x20000000, LENGTH = 0x80000   /* 512k */
 }
 
@@ -120,6 +120,8 @@ SECTIONS
 		__zero_table_end__ = .;
 	} > FLASH
 	*/
+	
+	
 
 	__etext = .;
 

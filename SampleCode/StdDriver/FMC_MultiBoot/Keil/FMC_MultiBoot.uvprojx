@@ -10,13 +10,13 @@
       <TargetName>FMC_MultiBoot</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6190000::V6.19::ARMCLANG</pCCUsed>
+      <pCCUsed>6220000::V6.22::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>M467HJHAE</Device>
           <Vendor>Nuvoton</Vendor>
-          <PackID>Nuvoton.NuMicro_DFP.1.3.24</PackID>
+          <PackID>Nuvoton.NuMicro_DFP.1.3.25</PackID>
           <PackURL>https://github.com/OpenNuvoton/cmsis-packs/raw/master/Nuvoton_DFP/</PackURL>
           <Cpu>IRAM(0x20000000-0x20027FFF) IROM(0-0x7FFFF) CLOCK(50000000) CPUTYPE("Cortex-M4") FPU2</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -134,7 +134,7 @@
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
             <Capability>1</Capability>
-            <DriverSelection>4107</DriverSelection>
+            <DriverSelection>4106</DriverSelection>
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>Bin\Nu_Link.dll</Flash2>
@@ -338,7 +338,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define></Define>
+              <Define>__BASE__</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\..\Library\Device\Nuvoton\M460\Include;..\..\..\..\Library\CMSIS\Include;..\..\..\..\Library\StdDriver\inc</IncludePath>
             </VariousControls>
@@ -442,13 +442,13 @@
       <TargetName>FMC_Boot0</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6190000::V6.19::ARMCLANG</pCCUsed>
+      <pCCUsed>6220000::V6.22::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>M467HJHAE</Device>
           <Vendor>Nuvoton</Vendor>
-          <PackID>Nuvoton.NuMicro_DFP.1.3.24</PackID>
+          <PackID>Nuvoton.NuMicro_DFP.1.3.25</PackID>
           <PackURL>https://github.com/OpenNuvoton/cmsis-packs/raw/master/Nuvoton_DFP/</PackURL>
           <Cpu>IRAM(0x20000000-0x20027FFF) IROM(0-0x7FFFF) CLOCK(50000000) CPUTYPE("Cortex-M4") FPU2</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -746,7 +746,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>0</Optim>
+            <Optim>2</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -770,7 +770,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define></Define>
+              <Define>__BOOT0__</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\..\Library\Device\Nuvoton\M460\Include;..\..\..\..\Library\CMSIS\Include;..\..\..\..\Library\StdDriver\inc</IncludePath>
             </VariousControls>
@@ -874,13 +874,13 @@
       <TargetName>FMC_Boot1</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6190000::V6.19::ARMCLANG</pCCUsed>
+      <pCCUsed>6220000::V6.22::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>M467HJHAE</Device>
           <Vendor>Nuvoton</Vendor>
-          <PackID>Nuvoton.NuMicro_DFP.1.3.24</PackID>
+          <PackID>Nuvoton.NuMicro_DFP.1.3.25</PackID>
           <PackURL>https://github.com/OpenNuvoton/cmsis-packs/raw/master/Nuvoton_DFP/</PackURL>
           <Cpu>IRAM(0x20000000-0x20027FFF) IROM(0-0x7FFFF) CLOCK(50000000) CPUTYPE("Cortex-M4") FPU2</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -1178,7 +1178,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>0</Optim>
+            <Optim>2</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -1202,7 +1202,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define></Define>
+              <Define>__BOOT1__</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\..\Library\Device\Nuvoton\M460\Include;..\..\..\..\Library\CMSIS\Include;..\..\..\..\Library\StdDriver\inc</IncludePath>
             </VariousControls>
@@ -1306,13 +1306,13 @@
       <TargetName>FMC_Boot2</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6190000::V6.19::ARMCLANG</pCCUsed>
+      <pCCUsed>6220000::V6.22::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>M467HJHAE</Device>
           <Vendor>Nuvoton</Vendor>
-          <PackID>Nuvoton.NuMicro_DFP.1.3.24</PackID>
+          <PackID>Nuvoton.NuMicro_DFP.1.3.25</PackID>
           <PackURL>https://github.com/OpenNuvoton/cmsis-packs/raw/master/Nuvoton_DFP/</PackURL>
           <Cpu>IRAM(0x20000000-0x20027FFF) IROM(0-0x7FFFF) CLOCK(50000000) CPUTYPE("Cortex-M4") FPU2</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -1610,7 +1610,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>0</Optim>
+            <Optim>2</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -1634,7 +1634,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define></Define>
+              <Define>__BOOT2__</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\..\Library\Device\Nuvoton\M460\Include;..\..\..\..\Library\CMSIS\Include;..\..\..\..\Library\StdDriver\inc</IncludePath>
             </VariousControls>
@@ -1738,13 +1738,13 @@
       <TargetName>FMC_Boot3</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6190000::V6.19::ARMCLANG</pCCUsed>
+      <pCCUsed>6220000::V6.22::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>M467HJHAE</Device>
           <Vendor>Nuvoton</Vendor>
-          <PackID>Nuvoton.NuMicro_DFP.1.3.24</PackID>
+          <PackID>Nuvoton.NuMicro_DFP.1.3.25</PackID>
           <PackURL>https://github.com/OpenNuvoton/cmsis-packs/raw/master/Nuvoton_DFP/</PackURL>
           <Cpu>IRAM(0x20000000-0x20027FFF) IROM(0-0x7FFFF) CLOCK(50000000) CPUTYPE("Cortex-M4") FPU2</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -2042,7 +2042,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>0</Optim>
+            <Optim>2</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -2066,7 +2066,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define></Define>
+              <Define>__BOOT3__</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\..\Library\Device\Nuvoton\M460\Include;..\..\..\..\Library\CMSIS\Include;..\..\..\..\Library\StdDriver\inc</IncludePath>
             </VariousControls>
@@ -2170,13 +2170,13 @@
       <TargetName>FMC_BootLD</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6190000::V6.19::ARMCLANG</pCCUsed>
+      <pCCUsed>6220000::V6.22::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>M467HJHAE</Device>
           <Vendor>Nuvoton</Vendor>
-          <PackID>Nuvoton.NuMicro_DFP.1.3.24</PackID>
+          <PackID>Nuvoton.NuMicro_DFP.1.3.25</PackID>
           <PackURL>https://github.com/OpenNuvoton/cmsis-packs/raw/master/Nuvoton_DFP/</PackURL>
           <Cpu>IRAM(0x20000000-0x20027FFF) IROM(0-0x7FFFF) CLOCK(50000000) CPUTYPE("Cortex-M4") FPU2</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -2474,7 +2474,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>0</Optim>
+            <Optim>7</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
