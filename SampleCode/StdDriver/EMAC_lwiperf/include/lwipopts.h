@@ -38,6 +38,8 @@
 #ifndef __LWIPOPTS_H__
 #define __LWIPOPTS_H__
 
+#include <stdlib.h>
+
 /*
  * Include user defined options first. Anything not defined in these files
  * will be set to standard values. Override anything you dont like!
@@ -49,7 +51,8 @@
 #define LWIP_SOCKET_SET_ERRNO           0
 #define LWIP_NETCONN                    0
 #define LWIP_SOCKET                     0
-    
+
+#if !defined(__IPV6_SLACC_DEMO__)
 /* TCP Maximum segment size. */
 #define TCP_MSS                         1460
 
@@ -64,7 +67,35 @@
 
 #define LWIP_DHCP                       1
 
-#define LWIP_USING_HW_CHECKSUM          1
+#else
+/* TCP Maximum segment size. */
+#define TCP_MSS                         1460
+
+#define MEMP_NUM_NETCONN                64
+#define MEM_SIZE                        1600
+#define MEMP_NUM_PBUF                   64
+#define PBUF_POOL_SIZE                  128
+#define TCP_WND                         40960 //Max: 65535
+#define TCP_SND_BUF                     8192
+#define TCP_SND_QUEUELEN                (4 * TCP_SND_BUF/TCP_MSS)
+#define MEMP_NUM_TCP_SEG                64
+
+#define MEMP_NUM_UDP_PCB                16
+#define MEMP_NUM_TCP_PCB                32
+#define MEMP_NUM_TCP_PCB_LISTEN         8
+
+#define LWIP_IPV4                       1
+#define LWIP_DHCP                       1
+#define LWIP_IPV6                       1
+#define LWIP_IPV6_DHCP6                 1
+#define LWIP_RAND()                     ((uint32_t)rand())
+#define LWIP_NETIF_STATUS_CALLBACK      1
+#define LWIP_IPV6_MLD                   0
+#define LWIP_DNS                        0
+
+#endif
+
+#define LWIP_USING_HW_CHECKSUM          0
 /* ---------- Checksum options ---------- */
 #if (LWIP_USING_HW_CHECKSUM == 1)
 #define CHECKSUM_GEN_IP                 0
