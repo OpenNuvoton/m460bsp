@@ -36,7 +36,7 @@ extern "C"
 #define FREQ_75MHZ         75000000UL   /*!< 75 MHz \hideinitializer */
 #define FREQ_100MHZ        100000000UL  /*!< 100 MHz \hideinitializer */
 #define FREQ_125MHZ        125000000UL  /*!< 125 MHz \hideinitializer */
-#define FREQ_150MHZ        150000000UL  /*!< 50 MHz \hideinitializer */
+#define FREQ_150MHZ        150000000UL  /*!< 150 MHz \hideinitializer */
 #define FREQ_175MHZ        175000000UL  /*!< 175 MHz \hideinitializer */
 #define FREQ_180MHZ        180000000UL  /*!< 180 MHz \hideinitializer */
 #define FREQ_192MHZ        192000000UL  /*!< 192 MHz \hideinitializer */
@@ -484,7 +484,7 @@ extern "C"
 #define MODULE_NoMsk            0x0UL                   /*!< Not mask on MODULE index \hideinitializer */
 #define NA                      MODULE_NoMsk            /*!< Not Available \hideinitializer */
 
-#define MODULE_APBCLK_ENC(x)        (((x) & 0x07UL) << 29)   /*!< MODULE index, 0x0:AHBCLK0, 0x1:APBCLK0, 0x2:APBCLK1, 0x3:APBCLK2 0x4:AHBCLK1 \hideinitializer */
+#define MODULE_APBCLK_ENC(x)        (((x) & 0x07UL) << 29)   /*!< MODULE index, 0x0:AHBCLK0, 0x1:APBCLK0, 0x2:APBCLK1, 0x3:APBCLK2, 0x4:AHBCLK1 \hideinitializer */
 #define MODULE_CLKSEL_ENC(x)        (((x) & 0x07UL) << 26)   /*!< CLKSEL offset on MODULE index, 0x0:CLKSEL0, 0x1:CLKSEL1, 0x2:CLKSEL2, 0x3:CLKSEL3, 0x4:CLKSEL4, 0x5:CLKSEL5 \hideinitializer */
 #define MODULE_CLKSEL_Msk_ENC(x)    (((x) & 0x0fUL) << 22)   /*!< CLKSEL mask offset on MODULE index \hideinitializer */
 #define MODULE_CLKSEL_Pos_ENC(x)    (((x) & 0x1fUL) << 17)   /*!< CLKSEL position offset on MODULE index \hideinitializer */
