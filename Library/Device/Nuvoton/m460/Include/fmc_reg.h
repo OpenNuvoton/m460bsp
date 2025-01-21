@@ -557,7 +557,7 @@ typedef struct
 #define FMC_XOMR2STS_SIZE_Msk            (0xfful << FMC_XOMR2STS_SIZE_Pos)                 /*!< FMC_T::XOMR2STS: SIZE Mask             */
 
 #define FMC_XOMR2STS_BASE_Pos            (8)                                               /*!< FMC_T::XOMR2STS: BASE Position         */
-#define FMC_XOMR2STS_BASE_Msk            (0xfffffful << FMC_XOM20STS_BASE_Pos)             /*!< FMC_T::XOMR2STS: BASE Mask             */
+#define FMC_XOMR2STS_BASE_Msk            (0xfffffful << FMC_XOM2STS_BASE_Pos)              /*!< FMC_T::XOMR2STS: BASE Mask             */
 
 #define FMC_XOMR3STS_SIZE_Pos            (0)                                               /*!< FMC_T::XOMR3STS: SIZE Position         */
 #define FMC_XOMR3STS_SIZE_Msk            (0xfful << FMC_XOMR3STS_SIZE_Pos)                 /*!< FMC_T::XOMR3STS: SIZE Mask             */

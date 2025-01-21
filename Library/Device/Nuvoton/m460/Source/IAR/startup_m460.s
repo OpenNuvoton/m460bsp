@@ -170,10 +170,10 @@ __vector_table_0x1c
         DCD     CANFD21_IRQHandler        ; 113: CANFD2 interrupt source 1
         DCD     CANFD30_IRQHandler        ; 114: CANFD3 interrupt source 0
         DCD     CANFD31_IRQHandler        ; 115: CANFD4 interrupt source 1
-        DCD     EADC20_IRQHandler         ; 104: EADC2 interrupt source 0
-        DCD     EADC21_IRQHandler         ; 105: EADC2 interrupt source 1
-        DCD     EADC22_IRQHandler         ; 106: EADC2 interrupt source 2
-        DCD     EADC23_IRQHandler         ; 107: EADC2 interrupt source 3
+        DCD     EADC20_IRQHandler         ; 116: EADC2 interrupt source 0
+        DCD     EADC21_IRQHandler         ; 117: EADC2 interrupt source 1
+        DCD     EADC22_IRQHandler         ; 118: EADC2 interrupt source 2
+        DCD     EADC23_IRQHandler         ; 119: EADC2 interrupt source 3
 __Vectors_End
 
 __Vectors       EQU   __vector_table
