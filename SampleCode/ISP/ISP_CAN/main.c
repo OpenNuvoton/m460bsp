@@ -76,6 +76,47 @@ void CLK_DisableModuleClock(uint32_t u32ModuleIdx)
     *(uint32_t *)u32TmpAddr &= u32TmpVal;
 }
 
+uint32_t CLK_GetModuleClockSource(uint32_t u32ModuleIdx)
+{
+    uint32_t u32TmpVal = 0UL, u32TmpAddr = 0UL;
+    uint32_t au32SelTbl[5] = {0x0UL, 0x4UL, 0x8UL, 0xCUL, 0x4CUL}; /* CLK_CLKSEL0~4 */
+    uint32_t u32RTCCKEN = CLK->APBCLK0 & CLK_APBCLK0_RTCCKEN_Msk;
+
+    /* Get clock source selection setting */
+    if(u32ModuleIdx == RTC_MODULE)
+    {
+        if(u32RTCCKEN == 0UL)
+        {
+            /* Enable RTC clock to get LXT clock source */
+            CLK->APBCLK0 |= CLK_APBCLK0_RTCCKEN_Msk;
+        }
+
+        u32TmpVal = ((RTC->LXTCTL & RTC_LXTCTL_RTCCKSEL_Msk) >> RTC_LXTCTL_RTCCKSEL_Pos);
+
+        if(u32RTCCKEN == 0UL)
+        {
+            /* Disable RTC clock if it is disabled before */
+            CLK->APBCLK0 &= (~CLK_APBCLK0_RTCCKEN_Msk);
+        }
+
+    }
+    else if(MODULE_CLKSEL_Msk(u32ModuleIdx) != MODULE_NoMsk)
+    {
+        /* Get clock select control register address */
+        u32TmpAddr = (uint32_t)&CLK->CLKSEL0 + (au32SelTbl[MODULE_CLKSEL(u32ModuleIdx)]);
+
+        /* Get clock source selection setting */
+        u32TmpVal = ((inpw((uint32_t *)u32TmpAddr) & (MODULE_CLKSEL_Msk(u32ModuleIdx) << MODULE_CLKSEL_Pos(u32ModuleIdx))) >> MODULE_CLKSEL_Pos(u32ModuleIdx));
+    }
+
+    return u32TmpVal;
+}
+
+uint32_t CLK_GetHCLKFreq(void)
+{
+    SystemCoreClockUpdate();
+    return SystemCoreClock;
+}
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* ISR to handle CAN FD0 Line0 interrupt event                                                             */
