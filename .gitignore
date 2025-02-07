@@ -7,7 +7,6 @@
 *.dep
 *.ewt
 *.clangd
-*.yml
 *.cprj
 !CMakeLists.txt
 
