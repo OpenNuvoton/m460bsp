@@ -181,30 +181,42 @@ void VCOM_TransferData(void)
 {
     int32_t i, i32Len;
 
-    /* Check if any data to send to USB & USB is ready to send them out */
-    if(comRbytes && (gu32TxSize == 0))
+    /* Check whether USB is ready for next packet or not */
+    if(gu32TxSize == 0)
     {
-        i32Len = comRbytes;
-        if(i32Len > EPA_MAX_PKT_SIZE)
-            i32Len = EPA_MAX_PKT_SIZE;
-
-        for(i = 0; i < i32Len; i++)
+        /* Check whether we have new COM Rx data to send to USB or not */
+        if(comRbytes)
         {
-            gRxBuf[i] = comRbuf[comRhead++];
-            if(comRhead >= RXBUFSIZE)
-                comRhead = 0;
+            i32Len = comRbytes;
+            if(i32Len > EPA_MAX_PKT_SIZE)
+                i32Len = EPA_MAX_PKT_SIZE;
+
+            for(i = 0; i < i32Len; i++)
+            {
+                gRxBuf[i] = comRbuf[comRhead++];
+                if(comRhead >= RXBUFSIZE)
+                    comRhead = 0;
+            }
+
+            NVIC_DisableIRQ(UART0_IRQn);
+            comRbytes -= i32Len;
+            NVIC_EnableIRQ(UART0_IRQn);
+
+            gu32TxSize = i32Len;
+            for(i = 0; i < i32Len; i++)
+                HSUSBD->EP[EPA].EPDAT_BYTE = gRxBuf[i];
+            HSUSBD->EP[EPA].EPRSPCTL = HSUSBD_EP_RSPCTL_SHORTTXEN;    // packet end
+            HSUSBD->EP[EPA].EPTXCNT = i32Len;
+            HSUSBD_ENABLE_EP_INT(EPA, HSUSBD_EPINTEN_INTKIEN_Msk);
         }
-
-        NVIC_DisableIRQ(UART0_IRQn);
-        comRbytes -= i32Len;
-        NVIC_EnableIRQ(UART0_IRQn);
-
-        gu32TxSize = i32Len;
-        for(i = 0; i < i32Len; i++)
-            HSUSBD->EP[EPA].EPDAT_BYTE = gRxBuf[i];
-        HSUSBD->EP[EPA].EPRSPCTL = HSUSBD_EP_RSPCTL_SHORTTXEN;    // packet end
-        HSUSBD->EP[EPA].EPTXCNT = i32Len;
-        HSUSBD_ENABLE_EP_INT(EPA, HSUSBD_EPINTEN_INTKIEN_Msk);
+        else
+        {
+            /* Prepare a zero packet if previous packet size is EPA_MAX_PKT_SIZE and
+               no more data to send at this moment to note Host the transfer has been done */
+            HSUSBD->EP[EPA].EPRSPCTL = HSUSBD_EP_RSPCTL_SHORTTXEN | HSUSBD_EP_RSPCTL_ZEROLEN;    // packet end
+            HSUSBD->EP[EPA].EPTXCNT = 0;
+            HSUSBD_ENABLE_EP_INT(EPA, HSUSBD_EPINTEN_INTKIEN_Msk);
+        }
     }
 
     /* Process the Bulk out data when bulk out data is ready. */
