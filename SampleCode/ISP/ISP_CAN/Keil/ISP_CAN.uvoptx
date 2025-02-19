@@ -30,8 +30,8 @@
       <OPTTT>
         <gFlags>1</gFlags>
         <BeepAtEnd>1</BeepAtEnd>
-        <RunSim>1</RunSim>
-        <RunTarget>0</RunTarget>
+        <RunSim>0</RunSim>
+        <RunTarget>1</RunTarget>
         <RunAbUc>0</RunAbUc>
       </OPTTT>
       <OPTHX>
@@ -119,6 +119,11 @@
       <TargetDriverDllRegistry>
         <SetRegEntry>
           <Number>0</Number>
+          <Key>UL2V8M</Key>
+          <Name>UL2V8M(-S0 -C0 -P0 -FD20000000 -FC40000 -FN1 -FF0M460_AP_1M -FS00 -FL0100000 -FP0($$Device:M467HJHAE$Flash\M460_AP_1M.FLM))</Name>
+        </SetRegEntry>
+        <SetRegEntry>
+          <Number>0</Number>
           <Key>Nu_Link</Key>
           <Name></Name>
         </SetRegEntry>
@@ -161,7 +166,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\..\..\Library\Device\Nuvoton\M460\Source\ARM\startup_m460.s</Filename>
+          <Filename>&lt;3&gt;..\..\..\..\Library\Device\Nuvoton\m460\Source\ARM\startup_m460.s</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\ISP_CAN\../../../../Library/Device/Nuvoton/m460/Source/ARM/startup_m460.s\215</Expression>
         </Bp>
@@ -177,7 +182,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>&lt;1&gt;..\..\..\..\Library\Device\Nuvoton\M460\Source\ARM\startup_m460.s</Filename>
+          <Filename>&lt;3&gt;..\..\..\..\Library\Device\Nuvoton\m460\Source\ARM\startup_m460.s</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\ISP_CAN\../../../../Library/Device/Nuvoton/m460/Source/ARM/startup_m460.s\234</Expression>
         </Bp>
