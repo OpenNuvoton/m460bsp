@@ -1,7 +1,7 @@
 /******************************************************************************
  * @file     xom_add.c
  * @version  V3.00
- * @brief    Show how to use XOM Lirbary
+ * @brief    Show how to use XOM Library
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.

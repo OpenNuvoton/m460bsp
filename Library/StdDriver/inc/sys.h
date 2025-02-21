@@ -6366,6 +6366,7 @@ extern int32_t g_SYS_i32ErrCode;
 #define SET_SPI1_MOSI_PC6()      SYS->GPC_MFP1 = (SYS->GPC_MFP1 & (~SPI1_MOSI_PC6_Msk)) | SPI1_MOSI_PC6          /*!< Set PC6 function to SPI1_MOSI        */
 #define SET_SPI1_MOSI_PB4()      SYS->GPB_MFP1 = (SYS->GPB_MFP1 & (~SPI1_MOSI_PB4_Msk)) | SPI1_MOSI_PB4          /*!< Set PB4 function to SPI1_MOSI        */
 #define SET_SPI1_SS_PA6()        SYS->GPA_MFP1 = (SYS->GPA_MFP1 & (~SPI1_SS_PA6_Msk)) | SPI1_SS_PA6              /*!< Set PA6 function to SPI1_SS          */
+#define SET_SPI1_SS_PB6()        SYS->GPB_MFP1 = (SYS->GPB_MFP1 & (~SPI1_SS_PB6_Msk)) | SPI1_SS_PB6              /*!< Set PB6 function to SPI1_SS          */
 #define SET_SPI1_SS_PH9()        SYS->GPH_MFP2 = (SYS->GPH_MFP2 & (~SPI1_SS_PH9_Msk)) | SPI1_SS_PH9              /*!< Set PH9 function to SPI1_SS          */
 #define SET_SPI1_SS_PC0()        SYS->GPC_MFP0 = (SYS->GPC_MFP0 & (~SPI1_SS_PC0_Msk)) | SPI1_SS_PC0              /*!< Set PC0 function to SPI1_SS          */
 #define SET_SPI1_SS_PB2()        SYS->GPB_MFP0 = (SYS->GPB_MFP0 & (~SPI1_SS_PB2_Msk)) | SPI1_SS_PB2              /*!< Set PB2 function to SPI1_SS          */

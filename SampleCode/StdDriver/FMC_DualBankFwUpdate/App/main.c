@@ -263,7 +263,7 @@ int main()
             else
             {
                 printf("Xomdem transfer done!\n");
-                printf("Total trnasfer size is %d\n", i32Err);
+                printf("Total transfer size is %d\n", i32Err);
             }
 
             printf("\n Firmware download completed!!\n");

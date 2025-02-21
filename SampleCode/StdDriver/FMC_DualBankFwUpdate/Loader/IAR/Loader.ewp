@@ -656,7 +656,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state>FMC_RW.bin</state>
+                    <state>Loader.bin</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -711,7 +711,7 @@
                 </option>
                 <option>
                     <name>IlinkOutputFile</name>
-                    <state>FMC_RW.out</state>
+                    <state>Loader.out</state>
                 </option>
                 <option>
                     <name>IlinkDebugInfoEnable</name>
