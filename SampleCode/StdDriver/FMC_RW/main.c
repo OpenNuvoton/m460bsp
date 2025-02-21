@@ -294,7 +294,7 @@ int main()
     if (flash_test(APROM_TEST_BASE, DATA_FLASH_TEST_BASE, TEST_PATTERN) < 0)
     {
         printf("\n\nAPROM test failed!\n");        /* debug message */
-        goto lexit;                                /* LDROM test failed. Program aborted. */
+        goto lexit;                                /* APROM test failed. Program aborted. */
     }
 
     printf("\n\nData Flash test =>\n");            /* information message */
