@@ -1,7 +1,7 @@
 {
     "cmsis-csolution.actions": [
         {
-            "path": "CRYPTO_RSA_CRTBAKS.csolution.yml",
+            "path": "CRYPTO_RSA_CRTBypassAccessKeyStore.csolution.yml",
             "target": "ARMCLANG",
             "config": {
                 "run": "arm-debugger.flash: Flash Device",

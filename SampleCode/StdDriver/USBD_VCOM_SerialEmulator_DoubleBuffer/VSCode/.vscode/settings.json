@@ -1,7 +1,7 @@
 {
     "cmsis-csolution.actions": [
         {
-            "path": "USBD_VCOM_SE_DBuffer.csolution.yml",
+            "path": "USBD_VCOM_SerialEmulator_DoubleBuffer.csolution.yml",
             "target": "ARMCLANG",
             "config": {
                 "run": "arm-debugger.flash: Flash Device",

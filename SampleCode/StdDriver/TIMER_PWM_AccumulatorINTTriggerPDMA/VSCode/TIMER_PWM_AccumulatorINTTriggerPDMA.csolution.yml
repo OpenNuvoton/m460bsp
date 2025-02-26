@@ -17,4 +17,4 @@ solution:
       compiler: GCC
       device: Nuvoton::M467HJHAE
   projects:
-    - project: PDMA_SG_PPBuffer.cproject.yml
+    - project: TIMER_PWM_AccumulatorINTTriggerPDMA.cproject.yml

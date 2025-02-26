@@ -17,4 +17,4 @@ solution:
       compiler: GCC
       device: Nuvoton::M467HJHAE
   projects:
-    - project: USBD_VCOM_SE_DBuffer.cproject.yml
+    - project: USBD_VCOM_SerialEmulator_DoubleBuffer.cproject.yml

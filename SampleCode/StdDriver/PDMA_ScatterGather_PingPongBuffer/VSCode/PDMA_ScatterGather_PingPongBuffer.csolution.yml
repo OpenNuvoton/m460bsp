@@ -17,4 +17,4 @@ solution:
       compiler: GCC
       device: Nuvoton::M467HJHAE
   projects:
-    - project: TIMER_PWM_AlNTTPDMA.cproject.yml
+    - project: PDMA_ScatterGather_PingPongBuffer.cproject.yml
