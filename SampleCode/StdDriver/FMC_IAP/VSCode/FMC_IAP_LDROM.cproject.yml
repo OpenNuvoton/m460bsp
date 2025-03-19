@@ -44,10 +44,10 @@ project:
         - file: ../LDROM_iap.c
   # The execute: node is processed only for an application build when no --context option is specified.
   executes:
-    - execute: Copy bin file
+    - execute: Copy_Bin_File
       run: ${CMAKE_COMMAND} -E copy $input$ $output$
       always:
       input:
         - $bin()$
       output:
-        - $SolutionDir()$/bin/fmc_ld_iap.bin
+        - $SolutionDir()$/bin/$TargetType$

@@ -12,8 +12,9 @@
 	.text
 
 g_u32VectorDataBase:
-    .incbin "../../sha_test_vector"
+    .incbin  "../../sha_test_vector"
 g_u32VectorDataLimit:
     .space   4
 
     .end
+

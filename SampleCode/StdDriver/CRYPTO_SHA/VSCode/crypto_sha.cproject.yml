@@ -24,7 +24,9 @@ project:
     - ../../../../Library/Device/Nuvoton/m460/Include
     - ../../../../Library/StdDriver/inc
     - ../../../../Library/CMSIS/Include
-    - ..
+  add-path-asm:
+    #- ./bin/$TargetType$
+    - ../
   groups:
     - group: CMSIS
       files:
@@ -33,15 +35,6 @@ project:
         - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/startup_m460.S
           for-compiler: GCC
         - file: ../../../../Library/Device/Nuvoton/m460/Source/system_m460.c
-    - group: User
-      files:
-        - file: ../main.c
-        - file: ../vector_parser.c
-        - file: ../sha_test_vector
-        - file: ../vector.vsac6.S
-          for-compiler: AC6
-        - file: ../vector.vsgnu.S
-          for-compiler: GCC
     - group: Library
       files:
         - file: ../../../../Library/StdDriver/src/sys.c
@@ -50,3 +43,9 @@ project:
         - file: ../../../../Library/StdDriver/src/crypto.c
         - file: ../../../../Library/StdDriver/src/uart.c
         - file: ../../../../Library/StdDriver/src/rng.c
+    - group: User
+      files:
+        - file: ../main.c
+        - file: ../vector_parser.c
+        - file: ../vector.vs.S
+        - file: ../sha_test_vector
