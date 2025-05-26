@@ -1071,6 +1071,10 @@ void iaad_remove_qh()
             if(utr->func)
                 utr->func(utr);             /* call back                                  */
         }
+
+        if(qh->dummy)
+            free_ehci_qTD(qh->dummy);
+
         free_ehci_QH(qh);                   /* free the QH                                */
     }
 

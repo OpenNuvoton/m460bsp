@@ -103,6 +103,57 @@ void HSUSBD_Start(void)
 }
 
 /**
+ * @brief       Disconnect from the USB host using software settings
+ *
+ * @param[in]   None
+ *
+ * @return      None
+ *
+ * @details     This function is used to disable the High-Speed USB PHY to disconnect HSUSBD from the USB host.
+ *              The register write-protection function should be disabled before using this function.
+ */
+void HSUSBD_SwDisconnect(void)
+{
+    uint32_t u32RegLockLevel = SYS_IsRegLocked();
+
+    if(u32RegLockLevel)
+        SYS_UnlockReg();
+
+    /* Disable HSUSB PHY */
+    SYS->USBPHY &= ~(SYS_USBPHY_HSUSBEN_Msk | SYS_USBPHY_HSUSBACT_Msk);
+
+    if(u32RegLockLevel)
+        SYS_LockReg();
+}
+
+/**
+ * @brief       Reconnect to the USB host using software settings
+ *
+ * @param[in]   None
+ *
+ * @return      None
+ *
+ * @details     This function is used to enable the High-Speed USB PHY to reconnect HSUSBD to the USB host.
+ *              The register write-protection function should be disabled before using this function.
+ */
+void HSUSBD_SwReconnect(void)
+{
+    uint32_t u32RegLockLevel = SYS_IsRegLocked();
+    uint32_t volatile i;
+
+    if(u32RegLockLevel)
+        SYS_UnlockReg();
+
+    /* Enable HSUSB PHY */
+    SYS->USBPHY = (SYS->USBPHY & ~(SYS_USBPHY_HSUSBROLE_Msk | SYS_USBPHY_HSUSBACT_Msk)) | SYS_USBPHY_HSUSBEN_Msk;
+    for(i = 0; i < 0x1000; i++);   // delay > 10 us
+    SYS->USBPHY |= SYS_USBPHY_HSUSBACT_Msk;
+
+    if(u32RegLockLevel)
+        SYS_LockReg();
+}
+
+/**
  * @brief       Process Setup Packet
  *
  * @param[in]   None

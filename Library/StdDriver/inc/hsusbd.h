@@ -385,6 +385,8 @@ typedef void (*HSUSBD_SET_INTERFACE_REQ)(uint32_t u32AltInterface); /*!<USB Stan
 
 int32_t HSUSBD_Open(S_HSUSBD_INFO_T *param, HSUSBD_CLASS_REQ pfnClassReq, HSUSBD_SET_INTERFACE_REQ pfnSetInterface);
 void HSUSBD_Start(void);
+void HSUSBD_SwDisconnect(void);
+void HSUSBD_SwReconnect(void);
 void HSUSBD_ProcessSetupPacket(void);
 void HSUSBD_StandardRequest(void);
 void HSUSBD_UpdateDeviceState(void);
