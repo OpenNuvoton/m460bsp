@@ -12,8 +12,7 @@
 
 #include "config.h"
 
-extern volatile uint8_t aPCMBuffer_Full[2];
-volatile uint8_t u8PCMBuffer_Playing = 0;
+extern uint32_t aPCMBuffer[2][PCM_BUFFER_SIZE];
 
 void PDMA0_IRQHandler(void)
 {
@@ -21,12 +20,16 @@ void PDMA0_IRQHandler(void)
 
     if(u32Status & 0x2)    /* done */
     {
-        if(PDMA_GET_TD_STS(PDMA0) & 0x4)
+        /* Monitor SA register to check PDMA is working on which buffer */
+        if(PDMA0->DSCT[2].SA == (uint32_t)&aPCMBuffer[1][0])
         {
-            if(aPCMBuffer_Full[u8PCMBuffer_Playing ^ 1] != 1)
-                printf("underflow!!\n");
-            aPCMBuffer_Full[u8PCMBuffer_Playing] = 0;       /* Set empty flag */
-            u8PCMBuffer_Playing ^= 1;
+            /* Buffer 0 is empty */
+            PB8 = 1;
+        }
+        else
+        {
+            /* Buffer 1 is empty */
+            PB9 = 1;
         }
         PDMA_CLR_TD_FLAG(PDMA0, PDMA_TDSTS_TDIF2_Msk);
     }

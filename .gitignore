@@ -9,6 +9,7 @@
 *.clangd
 *.cprj
 !CMakeLists.txt
+compile_commands.json
 
 # Folders
 Obj/
@@ -26,3 +27,9 @@ build/
 .metadata/
 tmp/
 RTE/
+
+*.cbuild-run.yml
+*.cbuild-idx.yml
+*.cbuild-pack.yml
+*.cbuild-set.yml
+*.cbuild.yml

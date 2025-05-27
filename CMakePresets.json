@@ -14,7 +14,8 @@
                 "CMAKE_TOOLCHAIN_FILE": "",
                 "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/install/${presetName}",
                 "C_COMPILER_ID": "ARMCLANG",
-                "TOOLCHAIN_PATH": "C:/Keil_v5/ARM/ARMCLANG"
+                "TOOLCHAIN_PATH": "C:/Keil_v5/ARM/ARMCLANG",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
             }
         },
         {
@@ -30,7 +31,8 @@
                 "CMAKE_TOOLCHAIN_FILE": "",
                 "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/install/${presetName}",
                 "C_COMPILER_ID": "GCC",
-                "TOOLCHAIN_PATH": "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10 2021.10/bin"
+                "TOOLCHAIN_PATH": "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10 2021.10/bin",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
             }
         }
     ]

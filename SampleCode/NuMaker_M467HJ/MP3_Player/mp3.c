@@ -52,11 +52,9 @@ size_t          Remaining;
 size_t          ReturnSize;
 
 // I2S PCM buffer x2
-signed int aPCMBuffer[2][PCM_BUFFER_SIZE];
+uint32_t aPCMBuffer[2][PCM_BUFFER_SIZE] = {0};
 // File IO buffer for MP3 library
 unsigned char MadInputBuffer[FILE_IO_BUFFER_SIZE + MAD_BUFFER_GUARD];
-// buffer full flag x2
-volatile uint8_t aPCMBuffer_Full[2] = {0, 0};
 // audio information structure
 struct AudioInfoObject audioInfo;
 
@@ -119,6 +117,7 @@ void StartPlay(void)
 
     // enable sound output
     audioInfo.mp3Playing = 1;
+    PD3 = 0;
 }
 
 // Disable I2S TX with PDMA function
@@ -131,8 +130,25 @@ void StopPlay(void)
 
     // disable sound output
     audioInfo.mp3Playing = 0;
+    PD3 = 1;
     printf("Stop ...\n");
 }
+
+int32_t PcmCopy(short i16PcmBuf[2][1152], uint32_t u32PcmBuf[PCM_BUFFER_SIZE])
+{
+    int32_t i;
+
+    if(u32PcmBuf == NULL || i16PcmBuf == NULL)
+        return -1;
+
+    for(i = 0; i < 1152; i++)
+    {
+        u32PcmBuf[i] = (i16PcmBuf[0][i] & 0xFFFF) | ((i16PcmBuf[1][i] & 0xFFFF) << 16);
+    }
+
+    return 0;
+}
+
 
 // MP3 decode player
 void MP3Player(void)
@@ -144,13 +160,17 @@ void MP3Player(void)
     volatile uint32_t pcmbuf_idx, i;
     volatile unsigned int Mp3FileOffset = 0;
     uint16_t sampleL, sampleR;
+    uint32_t u32IdleCnt, u32FrameCnt;
+    uint32_t u32Timeout;
 
     pcmbuf_idx = 0;
-    u8PCMBuffer_Playing = 0;
     memset((void *)&audioInfo, 0, sizeof(audioInfo));
     memset((void *)MadInputBuffer, 0, sizeof(MadInputBuffer));
     memset((void *)aPCMBuffer, 0, sizeof(aPCMBuffer));
-    memset((void *)aPCMBuffer_Full, 0, sizeof(aPCMBuffer_Full));
+
+    /* Mark buffer 0, 1 to be available */
+    PB8 = 1;
+    PB9 = 1;
 
     /* Parse MP3 header */
     MP3_ParseHeaderInfo((uint8_t *)MP3_FILE);
@@ -164,7 +184,7 @@ void MP3Player(void)
     res = f_open(&mp3FileObject, MP3_FILE, FA_OPEN_EXISTING | FA_READ);
     if(res != FR_OK)
     {
-        //printf("Open file error \r\n");
+        printf("Open file error: %s\n", MP3_FILE);
         return;
     }
 
@@ -177,10 +197,9 @@ void MP3Player(void)
     I2S_Open(I2S0, I2S_MODE_SLAVE, 16000, I2S_DATABIT_16, I2S_DISABLE_MONO, I2S_FORMAT_I2S);
     NVIC_EnableIRQ(I2S0_IRQn);
 
-    /* Set PD3 low to enable phone jack on NuMaker board. */
-    SYS->GPD_MFP0 &= ~(SYS_GPD_MFP0_PD3MFP_Msk);
+    PD3 = 1;
+    SET_GPIO_PD3();
     GPIO_SetMode(PD, BIT3, GPIO_MODE_OUTPUT);
-    PD3 = 0;
 
     /* Set MCLK and enable MCLK */
     I2S_EnableMCLK(I2S0, 12000000);
@@ -203,6 +222,12 @@ void MP3Player(void)
     NAU88L25_ConfigSampleRate(audioInfo.mp3SampleRate);
 #endif
 
+
+    u32IdleCnt = 0;
+    u32FrameCnt = 0;
+
+    u32IdleCnt = 0;
+    u32FrameCnt = 0;
     while(1)
     {
         if(Stream.buffer == NULL || Stream.error == MAD_ERROR_BUFLEN)
@@ -289,45 +314,56 @@ void MP3Player(void)
         //
         // decode finished, try to copy pcm data to audio buffer
         //
-
-        if(audioInfo.mp3Playing)
+        /* Wait if no buffer available */
+        u32Timeout = 1000000;
+        while((PB8 == 0) && (PB9 == 0) && (u32Timeout-- > 0))
         {
-            //if next buffer is still full (playing), wait until it's empty
-            if(aPCMBuffer_Full[u8PCMBufferTargetIdx] == 1)
-                while(aPCMBuffer_Full[u8PCMBufferTargetIdx]);
+            u32IdleCnt++;
+        }
+
+        if(u32Timeout == 0)
+        {
+            printf("I2S/PDMA play timeout!\n");
+            goto stop;
+        }
+
+        /* Copy PCM data to available audio buffer */
+        if(PB8)
+        {
+            PcmCopy(Synth.pcm.samples, aPCMBuffer[0]);
+            PB8 = 0;
+        }
+        else if(PB9)
+        {
+            PcmCopy(Synth.pcm.samples, aPCMBuffer[1]);
+            PB9 = 0;
+        }
+
+        if(!audioInfo.mp3Playing)
+        {
+            StartPlay();
+        }
+
+        /* Show idle count to monitor CPU usage */
+        if(u32FrameCnt >= 40)
+        {
+            u32FrameCnt = 0;
+            if(audioInfo.mp3Playing)
+            {
+                /* Show the idle count */
+                printf("Idle count = %d\n", u32IdleCnt);
+                u32IdleCnt = 0;
+            }
         }
         else
         {
-
-            if((aPCMBuffer_Full[0] == 1) && (aPCMBuffer_Full[1] == 1))          //all buffers are full, wait
-            {
-                StartPlay();
-            }
+            u32FrameCnt++;
         }
 
-        for(i = 0; i < (int)Synth.pcm.length; i++)
-        {
-            /* Get the left/right samples */
-            sampleL = Synth.pcm.samples[0][i];
-            sampleR = Synth.pcm.samples[1][i];
-
-            /* Fill PCM data to I2S(PDMA) buffer */
-            aPCMBuffer[u8PCMBufferTargetIdx][pcmbuf_idx++] = sampleR | (sampleL << 16);
-
-            /* Need change buffer ? */
-            if(pcmbuf_idx == PCM_BUFFER_SIZE)
-            {
-                aPCMBuffer_Full[u8PCMBufferTargetIdx] = 1;      //set full flag
-                u8PCMBufferTargetIdx ^= 1;
-
-                pcmbuf_idx = 0;
-                //printf("change to ==>%d ..\n", u8PCMBufferTargetIdx);
-                /* if next buffer is still full (playing), wait until it's empty */
-                if((aPCMBuffer_Full[u8PCMBufferTargetIdx] == 1) && (audioInfo.mp3Playing))
-                    while(aPCMBuffer_Full[u8PCMBufferTargetIdx]);
-            }
-        }
     }
+
+    /* Waiting for all buffer play out */
+    while(PB8 && PB9){}
 
 stop:
 

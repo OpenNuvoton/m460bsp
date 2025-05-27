@@ -17,8 +17,8 @@
 #define USE_SDH
 //#define USE_USBH
 
-#define PCM_BUFFER_SIZE        2304
-#define FILE_IO_BUFFER_SIZE    4096
+#define PCM_BUFFER_SIZE        (1152)
+#define FILE_IO_BUFFER_SIZE    (4096)
 
 struct mp3Header
 {

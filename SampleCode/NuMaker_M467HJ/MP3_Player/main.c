@@ -233,7 +233,7 @@ void PDMA_Init(void)
     PDMA_Open(PDMA0, 1 << 2);
     PDMA_SetTransferMode(PDMA0, 2, PDMA_I2S0_TX, 1, (uint32_t)&DMA_DESC[0]);
 
-    PDMA_EnableInt(PDMA0, 2, 0);
+    PDMA_EnableInt(PDMA0, 2, PDMA_INT_TRANS_DONE);
     NVIC_EnableIRQ(PDMA0_IRQn);
 }
 
@@ -252,6 +252,14 @@ int main(void)
 
     /* Init UART to 115200-8n1 for print message */
     UART_Open(UART0, 115200);
+
+
+    /* Init GPIO to monitor the buffer usage */
+		SET_GPIO_PB8();
+		SET_GPIO_PB9();
+    PB8 = 1; // LED GREEN
+    PB9 = 0; // LED RED
+    GPIO_SetMode(PB, BIT8 | BIT9, GPIO_MODE_OUTPUT);
 
     printf("+-----------------------------------------------------------------------+\n");
     printf("|                   MP3 Player Sample with audio codec                  |\n");

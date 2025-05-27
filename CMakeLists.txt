@@ -167,6 +167,8 @@ include_directories(${BSP_DIR}/Library/CryptoAccelerator)
 include_directories(${BSP_DIR}/Library/NuMaker/xmodem)
 include_directories(${BSP_DIR}/ThirdParty/mbedtls-3.1.0/include)
 include_directories(${BSP_DIR}/ThirdParty/mbedtls-3.1.0/library)
+include_directories(${BSP_DIR}/ThirdParty/FatFs/source)
+include_directories(${BSP_DIR}/ThirdParty/LibMAD/inc)
 
 # Build library
 add_subdirectory(${BSP_DIR}/Library/StdDriver/src)
@@ -174,6 +176,8 @@ add_subdirectory(${BSP_DIR}/Library/Device/Nuvoton/m460/Source)
 add_subdirectory(${BSP_DIR}/Library/CryptoAccelerator)
 add_subdirectory(${BSP_DIR}/Library/NuMaker/xmodem)
 add_subdirectory(${BSP_DIR}/ThirdParty/mbedtls-3.1.0/library)
+add_subdirectory(${BSP_DIR}/ThirdParty/FatFs/source)
+add_subdirectory(${BSP_DIR}/ThirdParty/LibMAD)
 
 target_include_directories(mbedcrypto
     PUBLIC
@@ -196,5 +200,6 @@ add_subdirectory(${BSP_DIR}/SampleCode/CortexM4)
 add_subdirectory(${BSP_DIR}/SampleCode/StdDriver)
 add_subdirectory(${BSP_DIR}/SampleCode/ISP)
 add_subdirectory(${BSP_DIR}/SampleCode/PowerManagement)
+add_subdirectory(${BSP_DIR}/SampleCode/NuMaker_M467HJ)
 create_project(Hard_Fault_Sample ${BSP_DIR}/SampleCode/Hard_Fault_Sample/main.c)
 create_project(Template ${BSP_DIR}/SampleCode/Template/main.c)

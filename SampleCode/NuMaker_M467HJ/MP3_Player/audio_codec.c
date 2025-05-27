@@ -113,6 +113,10 @@ void NAU8822_Setup(void)
     I2C_WriteNAU8822(50, 0x001);   /* Left DAC connected to LMIX */
     I2C_WriteNAU8822(51, 0x001);   /* Right DAC connected to RMIX */
 
+    I2C_WriteNAU8822(52, 0x090);                 // LHP: Update=1, ZC=1, Mute=0
+    I2C_WriteNAU8822(53, 0x190);                 // RHP
+
+
     printf("[OK]\n");
 }
 
