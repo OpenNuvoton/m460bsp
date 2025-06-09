@@ -450,7 +450,13 @@ extern "C"
 #define CLK_PLLCTL_192MHz_HXT   (CLK_PLLCTL_PLLSRC_HXT  | CLK_PLLCTL_NR(2UL) | CLK_PLLCTL_NF( 32UL) | CLK_PLLCTL_NO_2) /*!< Predefined PLLCTL setting for 192MHz PLL output with HXT(12MHz X'tal) \hideinitializer */
 #define CLK_PLLCTL_200MHz_HXT   (CLK_PLLCTL_PLLSRC_HXT  | CLK_PLLCTL_NR(3UL) | CLK_PLLCTL_NF( 25UL) | CLK_PLLCTL_NO_1) /*!< Predefined PLLCTL setting for 200MHz PLL output with HXT(12MHz X'tal) \hideinitializer */
 #else
-# error "The PLL pre-definitions are only valid when external crystal is 12MHz"
+#define CLK_PLLCTL_72MHz_HXT    CLK_CalculatePLLSetting(CLK_PLLCTL_PLLSRC_HXT, 72000000)  /*!< PLLCTL setting for 72MHz PLL output with HXT */
+#define CLK_PLLCTL_80MHz_HXT    CLK_CalculatePLLSetting(CLK_PLLCTL_PLLSRC_HXT, 80000000)  /*!< PLLCTL setting for 80MHz PLL output with HXT */
+#define CLK_PLLCTL_144MHz_HXT   CLK_CalculatePLLSetting(CLK_PLLCTL_PLLSRC_HXT, 144000000) /*!< PLLCTL setting for 144MHz PLL output with HXT */
+#define CLK_PLLCTL_160MHz_HXT   CLK_CalculatePLLSetting(CLK_PLLCTL_PLLSRC_HXT, 160000000) /*!< PLLCTL setting for 160MHz PLL output with HXT */
+#define CLK_PLLCTL_180MHz_HXT   CLK_CalculatePLLSetting(CLK_PLLCTL_PLLSRC_HXT, 180000000) /*!< PLLCTL setting for 180MHz PLL output with HXT */
+#define CLK_PLLCTL_192MHz_HXT   CLK_CalculatePLLSetting(CLK_PLLCTL_PLLSRC_HXT, 192000000) /*!< PLLCTL setting for 192MHz PLL output with HXT */
+#define CLK_PLLCTL_200MHz_HXT   CLK_CalculatePLLSetting(CLK_PLLCTL_PLLSRC_HXT, 200000000) /*!< PLLCTL setting for 200MHz PLL output with HXT */
 #endif
 #define CLK_PLLCTL_72MHz_HIRC   (CLK_PLLCTL_PLLSRC_HIRC | CLK_PLLCTL_NR(3UL) | CLK_PLLCTL_NF( 36UL) | CLK_PLLCTL_NO_4) /*!< Predefined PLLCTL setting for 72MHz PLL output with HIRC(12MHz IRC) \hideinitializer */
 #define CLK_PLLCTL_80MHz_HIRC   (CLK_PLLCTL_PLLSRC_HIRC | CLK_PLLCTL_NR(3UL) | CLK_PLLCTL_NF( 40UL) | CLK_PLLCTL_NO_4) /*!< Predefined PLLCTL setting for 80MHz PLL output with HIRC(12MHz IRC) \hideinitializer */
@@ -1223,6 +1229,99 @@ __STATIC_INLINE void CLK_SysTickLongDelay(uint32_t us)
     }while(us > 0UL);
 }
 
+/**
+  * @brief      Calculate PLL Setting
+  * @param[in]  u32PllClkSrc is PLL clock source. Including :
+  *             - \ref CLK_PLLCTL_PLLSRC_HXT
+  *             - \ref CLK_PLLCTL_PLLSRC_HIRC
+  * @param[in]  u32PllFreq is PLL frequency. The range of u32PllFreq is 50 MHz ~ 500 MHz.
+  * @return     PLL setting for CLK_PLLCTL register
+  * @details    This function is used to calculate CLK_PLLCTL register setting for specified PLL clock source and frequency.
+  */
+__STATIC_INLINE uint32_t CLK_CalculatePLLSetting(uint32_t u32PllClkSrc, uint32_t u32PllFreq)
+{
+    uint32_t u32PllSrcFreq, u32NR, u32NF, u32NO;
+    uint32_t u32Tmp, u32Tmp2, u32Tmp3, u32Min, u32MinNF, u32MinNR;
+
+    /* PLL source clock is from HXT */
+    if(u32PllClkSrc == CLK_PLLCTL_PLLSRC_HXT)
+    {
+        /* Select PLL source clock from HXT */
+        u32PllSrcFreq = __HXT;
+    }
+
+    /* PLL source clock is from HIRC */
+    else
+    {
+        /* Select PLL source clock from HIRC */
+        u32PllSrcFreq = __HIRC;
+    }
+
+    /* Check PLL frequency range */
+    /* Constraint 1: 50MHz < FOUT < 500MHz */
+    if((u32PllFreq <= FREQ_500MHZ) && (u32PllFreq >= FREQ_50MHZ))
+    {
+        /* Select "NO" according to request frequency */
+        if((u32PllFreq < FREQ_100MHZ) && (u32PllFreq >= FREQ_50MHZ))
+        {
+            u32NO = 3UL;
+            u32PllFreq = u32PllFreq << 2;
+        }
+        else if((u32PllFreq < FREQ_200MHZ) && (u32PllFreq >= FREQ_100MHZ))
+        {
+            u32NO = 1UL;
+            u32PllFreq = u32PllFreq << 1;
+        }
+        else
+        {
+            u32NO = 0UL;
+        }
+
+        /* Find best solution */
+        u32Min = (uint32_t) - 1;    /* initial u32Min to max value of uint32_t (0xFFFFFFFF) */
+        u32MinNR = 0UL;
+        u32MinNF = 0UL;
+
+        for(u32NR = 1UL; u32NR <= 32UL; u32NR++)   /* NR = 1~32 since NR = INDIV+1 and INDIV = 0~31 */
+        {
+            u32Tmp = u32PllSrcFreq / u32NR;                     /* FREF = FIN/NR */
+            if((u32Tmp >= FREQ_1MHZ) && (u32Tmp <= FREQ_8MHZ))  /* Constraint 2: 1MHz < FREF < 8MHz. */
+            {
+                for(u32NF = 2UL; u32NF <= 100UL; u32NF++)       /* NF = 2~255. NF = FBDIV+2 and FBDIV = 0~511 */
+                                                                /* max NF = 100 to avoid calculation overflow */
+                {
+                    u32Tmp2 = (u32Tmp * u32NF) << 1;                            /* FVCO = FREF*2*NF */
+                    if((u32Tmp2 >= FREQ_200MHZ) && (u32Tmp2 <= FREQ_500MHZ))    /* Constraint 3: 200MHz < FVCO < 500MHz */
+                    {
+                        u32Tmp3 = (u32Tmp2 > u32PllFreq) ? u32Tmp2 - u32PllFreq : u32PllFreq - u32Tmp2;
+                        if(u32Tmp3 < u32Min)
+                        {
+                            u32Min = u32Tmp3;
+                            u32MinNR = u32NR;
+                            u32MinNF = u32NF;
+
+                            /* Break when get good results */
+                            if(u32Min == 0)
+                                break;
+                        }
+                    }
+                }
+                if(u32Min == 0)
+                    break;
+            }
+        }
+
+        /* Return PLL setting for CLK_PLLCTL register */
+        return ( u32PllClkSrc |
+                 (u32NO << CLK_PLLCTL_OUTDIV_Pos) |
+                 ((u32MinNR - 1UL) << CLK_PLLCTL_INDIV_Pos) |
+                 ((u32MinNF - 2UL) << CLK_PLLCTL_FBDIV_Pos) );
+    }
+    else
+        /* Return PLL power-down setting if input PLL frquency parameter is out of range */
+        return CLK_PLLCTL_PD_Msk;
+
+}
 
 void CLK_DisableCKO(void);
 void CLK_EnableCKO(uint32_t u32ClkSrc, uint32_t u32ClkDiv, uint32_t u32ClkDivBy1En);

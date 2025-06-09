@@ -1134,7 +1134,7 @@ uint32_t CLK_EnablePLL(uint32_t u32PllClkSrc, uint32_t u32PllFreq)
             if((u32Tmp >= FREQ_4MHZ) && (u32Tmp <= FREQ_8MHZ))  /* Constraint 2: 4MHz < FREF < 8MHz. */
             {
                 for(u32NF = 2UL; u32NF <= 100UL; u32NF++)       /* NF = 2~513 since NF = FBDIV+2 and FBDIV = 0~511 */
-                    /* max NF = 100 to avoid calculation overflow */
+                                                                /* max NF = 100 to avoid calculation overflow */
                 {
                     u32Tmp2 = (u32Tmp * u32NF) << 1;                            /* FVCO = FREF*2*NF */
                     if((u32Tmp2 >= FREQ_200MHZ) && (u32Tmp2 <= FREQ_500MHZ))    /* Constraint 3: 200MHz < FVCO < 500MHz */
@@ -1170,16 +1170,12 @@ uint32_t CLK_EnablePLL(uint32_t u32PllClkSrc, uint32_t u32PllFreq)
     {
         if(u32PllClkSrc == CLK_PLLCTL_PLLSRC_HXT)
         {
-#if (__HXT == 12000000)
+
             /* Apply default PLL setting and return */
             CLK->PLLCTL = CLK_PLLCTL_192MHz_HXT;
 
             /* Actual PLL output clock frequency */
             u32PllClk = FREQ_192MHZ;
-#else
-            /* No default PLL setting */
-            u32PllClk = 0;
-#endif
         }
         else
         {
@@ -1699,7 +1695,8 @@ uint32_t CLK_EnablePLLFN(uint32_t u32PllClkSrc, uint32_t u32PllFreq)
 {
     uint32_t u32FIN, u32FVCO, u32FREF, u32PllClk = 0;
     uint32_t u32NR = 0UL, u32NF = 0UL, u32NO, u32X = 0UL;
-    float fNX_X = 0.0, fX = 0.0;
+    uint32_t u32FVCO_NF, u32FVCO_X, u32FRDIV;
+    uint32_t u32Tmp3, u32Min, u32MinNF, u32MinNR, u32MinFRDIV, u32PllFreq_temp;
 
     /* Disable PLLFN first to avoid unstable when setting PLLFN */
     CLK->PLLFNCTL1 |= CLK_PLLFNCTL1_PD_Msk;
@@ -1751,39 +1748,52 @@ uint32_t CLK_EnablePLLFN(uint32_t u32PllClkSrc, uint32_t u32PllFreq)
             u32FVCO = u32PllFreq;
         }
 
+        /* Find best solution */
+        u32Min = (uint32_t) - 1;    /* initial u32Min to max value of uint32_t (0xFFFFFFFF) */
+        u32MinNR = 0UL;
+        u32MinNF = 0UL;
+        u32MinFRDIV = 0UL;
+
         for(u32NR = 1UL; u32NR <= 32UL; u32NR++)   /* NR = 1~32 since NR = INDIV+1 and INDIV = 0~31 */
         {
             u32FREF = u32FIN / u32NR;                               /* FREF = FIN/NR */
 
             if((u32FREF >= FREQ_1MHZ) && (u32FREF <= FREQ_8MHZ))    /* Constraint 2: 1MHz <= FREF <= 8MHz. */
-            {
-                fNX_X = (float)((u32FVCO * u32NR) >> 1) / u32FIN;
-                u32NF = (uint32_t)fNX_X;
-
-                if((u32NF >= 12) && (u32NF <= 255))    /* Constraint 4: 12<= NF <= 255. */
+            {                                                       /* FVCO = FREF * 2 * (NF.x) */
+                u32NF = (u32FVCO>>1) / u32FREF;                     /* NF.x = FVCO * (1/FREF) * (1/2) */
+                if( (u32NF >= 12) && (u32NF <=255) )                /* NF = 12~255 */
                 {
-                    fX = fNX_X - u32NF;
-                    u32X = (uint32_t)(fX * 4096);
-                    break;
+                    u32FVCO_NF = (u32FREF*u32NF)<<1;                /* FVCO_NF = FREF * 2 * (NF) */
+                    u32FVCO_X = u32FVCO - u32FVCO_NF;               /* FVCO_X = FVCO - FVCO_NF */
+
+                                                                    /* FVCO_X = FREF * 2 * (x) */
+                                                                    /* x = FVCO_X * (1/FREF) * (1/2) */
+                    u32FRDIV = (u32FVCO_X<<9) / (u32FREF>>2);       /* FRDIV = 4096 * x */
+
+                    u32PllFreq_temp = ((((u32FIN/u32NR)<<1)*u32NF ) / (u32NO+1)) + ((((u32FIN/u32NR)*u32FRDIV )>>11) / (u32NO+1));
+
+                    u32Tmp3 = (u32PllFreq_temp > u32PllFreq) ? u32PllFreq_temp - u32PllFreq : u32PllFreq - u32PllFreq_temp;
+
+                    if(u32Tmp3 < u32Min)
+                    {
+                        u32Min = u32Tmp3;
+                        u32MinNR = u32NR;
+                        u32MinNF = u32NF;
+                        u32MinFRDIV = u32FRDIV;
+                        u32PllClk = u32PllFreq_temp;
+
+                        /* Break when get good results */
+                        if(u32Min == 0UL)
+                        {
+                            break;
+                        }
+                    }
                 }
             }
         }
-
-        if(u32NR <= 32UL)
-        {
-            /* Enable and apply new PLLFN setting. */
-            CLK->PLLFNCTL0 = (u32X << CLK_PLLFNCTL0_FRDIV_Pos) |
-                             (u32NO << CLK_PLLFNCTL0_OUTDIV_Pos) |
-                             ((u32NR - 1UL) << CLK_PLLFNCTL0_INDIV_Pos) |
-                             ((u32NF - 2UL) << CLK_PLLFNCTL0_FBDIV_Pos);
-            CLK->PLLFNCTL1 = u32PllClkSrc;
-
-            /* Actual PLLFN output clock frequency. FOUT = (FIN/NR)*2*(NF.X)*(1/NO) */
-            u32PllClk = (uint32_t)((float)u32FIN / (((u32NO + 1UL) * u32NR) << 11) * ((u32NF << 12) + u32X));
-        }
     }
 
-    if((u32PllFreq > FREQ_500MHZ) || (u32PllFreq < FREQ_50MHZ) || (u32NR == 33))
+    if((u32PllFreq > FREQ_500MHZ) || (u32PllFreq < FREQ_50MHZ) || (u32Min == (uint32_t) - 1))
     {
         if(u32PllClkSrc == CLK_PLLFNCTL1_PLLSRC_HXT)
         {
@@ -1809,6 +1819,15 @@ uint32_t CLK_EnablePLLFN(uint32_t u32PllClkSrc, uint32_t u32PllFreq)
             u32PllClk = FREQ_192MHZ;
         }
     }
+    else
+    {
+        /* Enable and apply new PLLFN setting. */
+        CLK->PLLFNCTL0 = (u32MinFRDIV << CLK_PLLFNCTL0_FRDIV_Pos) |
+                         (u32NO << CLK_PLLFNCTL0_OUTDIV_Pos) |
+                         ((u32MinNR - 1UL) << CLK_PLLFNCTL0_INDIV_Pos) |
+                         ((u32MinNF - 2UL) << CLK_PLLFNCTL0_FBDIV_Pos);
+        CLK->PLLFNCTL1 = u32PllClkSrc;
+    }
 
     if(u32PllClk != 0)
     {
@@ -1830,7 +1849,7 @@ uint32_t CLK_EnablePLLFN(uint32_t u32PllClkSrc, uint32_t u32PllFreq)
 uint32_t CLK_GetPLLFNClockFreq(void)
 {
     uint32_t u32PllFreq = 0UL, u32PllReg0, u32PllReg1;
-    uint32_t u32FIN, u32NF, u32NR, u32NO, u32X;
+    uint32_t u32FIN, u32NF, u32NR, u32NO, u32FRDIV;
     uint8_t au8NoTbl[4] = {1U, 2U, 2U, 4U};
 
     /* Get PLLFN configuration */
@@ -1864,9 +1883,9 @@ uint32_t CLK_GetPLLFNClockFreq(void)
             u32NO = au8NoTbl[((u32PllReg0 & CLK_PLLFNCTL0_OUTDIV_Msk) >> CLK_PLLFNCTL0_OUTDIV_Pos)];
             u32NF = ((u32PllReg0 & CLK_PLLFNCTL0_FBDIV_Msk) >> CLK_PLLFNCTL0_FBDIV_Pos) + 2UL;
             u32NR = ((u32PllReg0 & CLK_PLLFNCTL0_INDIV_Msk) >> CLK_PLLFNCTL0_INDIV_Pos) + 1UL;
-            u32X  = ((u32PllReg0 & CLK_PLLFNCTL0_FRDIV_Msk) >> CLK_PLLFNCTL0_FRDIV_Pos);
+            u32FRDIV = ((u32PllReg0 & CLK_PLLFNCTL0_FRDIV_Msk) >> CLK_PLLFNCTL0_FRDIV_Pos);
 
-            u32PllFreq = (uint32_t)((float)u32FIN / ((u32NO * u32NR) << 11) * (((u32NF << 12) + u32X)));
+            u32PllFreq = ((((u32FIN/u32NR)<<1)*u32NF ) / (u32NO)) + ((((u32FIN/u32NR)*u32FRDIV )>>11) / (u32NO));
         }
     }
 
