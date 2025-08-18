@@ -37,6 +37,7 @@
 #include "NuMicro.h"
 #include "synopGMAC_network_interface.h"
 
+#include "../rndis.h"
 
 void synopGMAC_powerup_mac(synopGMACdevice *gmacdev)
 {
@@ -45,7 +46,7 @@ void synopGMAC_powerup_mac(synopGMACdevice *gmacdev)
         TR("GMAC wokeup due to Magic Pkt Received\n");
     if (synopGMAC_is_wakeup_frame_received(gmacdev))
         TR("GMAC wokeup due to Wakeup Frame Received\n");
-    
+
     //Disable the assertion of PMT interrupt
     synopGMAC_pmt_int_disable(gmacdev);
     //Enable the mac and Dma rx and tx paths
@@ -376,6 +377,8 @@ void synop_handle_transmit_over(synopGMACdevice *gmacdev)
                 gmacdev->synopGMACNetStats.tx_aborted_errors += synopGMAC_is_tx_aborted(status);
                 gmacdev->synopGMACNetStats.tx_carrier_errors += synopGMAC_is_tx_carrier_error(status);
             }
+
+            _rtxq.eth_done_idx = (_rtxq.eth_done_idx + 1) % RQ_SZ;
         }
         gmacdev->synopGMACNetStats.collisions += synopGMAC_get_tx_collision_count(status);
     }

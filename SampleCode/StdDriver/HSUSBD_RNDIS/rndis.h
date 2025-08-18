@@ -227,6 +227,35 @@
 #define NDIS_MAC_OPTION_8021P_PRIORITY                0x00000040
 #define NDIS_MAC_OPTION_RESERVED                      0x80000000
 
+typedef struct rndis_msg_header
+{
+    uint32_t MessageType;           /* Message type (e.g., 0x01 for data packet) */
+    uint32_t MessageLength;         /* Total length including header, data, and padding */
+    uint32_t DataOffset;            /* Offset to payload data from start of header (in bytes) */
+    uint32_t DataLength;            /* Length of network payload data */
+    uint32_t OOBDataOffset;         /* Offset to Out-Of-Band data block */
+    uint32_t OOBDataLength;         /* Length of Out-Of-Band data */
+    uint32_t NumOOBDataElements;    /* Number of OOB data elements */
+    uint32_t PerPacketInfoOffset;   /* Offset to per-packet information */
+    uint32_t PerPacketInfoLength;   /* Length of per-packet information */
+    uint32_t VcHandle;              /* Virtual channel handle for connection-oriented media */
+    uint32_t Reserved;              /* Must be set to zero */
+} RNDIS_MSG_HDR;
+
+#define RQ_SZ   8   /* must be <= EMAC_TX_DESC_SIZE */
+
+typedef struct rndis_msg_queue
+{
+    uint8_t data[RQ_SZ][1580];
+    uint32_t data_len[RQ_SZ];
+    uint32_t usb_idx;
+    uint32_t eth_idx;
+    uint32_t eth_done_idx;
+    uint32_t dummy;
+} RNDIS_MSG_Q;
+
+extern volatile RNDIS_MSG_Q _rtxq;
+extern volatile RNDIS_MSG_Q _rrxq;
 
 /*-------------------------------------------------------------*/
 extern uint8_t volatile gRndisCmd, gRndisAck;

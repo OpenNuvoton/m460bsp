@@ -13,12 +13,14 @@
 #include "m460_emac.h"
 #include "m460_mii.h"
 
-
-extern uint8_t rndis_outdata[EMAC_TX_DESC_SIZE + 1][1580];
-extern uint8_t rndis_indata[EMAC_RX_DESC_SIZE + 1][1580];
-extern uint32_t u32CurrentTxBuf;
-extern uint32_t u32CurrentRxBuf;
-
+#ifdef __ICCARM__
+#pragma data_alignment=32
+volatile RNDIS_MSG_Q _rtxq = { 0 };
+volatile RNDIS_MSG_Q _rrxq = { 0 };
+#else
+volatile RNDIS_MSG_Q _rtxq __attribute__((aligned(32))) = { 0 };
+volatile RNDIS_MSG_Q _rrxq __attribute__((aligned(32))) = { 0 };
+#endif
 
 #ifdef __ICCARM__
 #pragma data_alignment=4
@@ -67,12 +69,12 @@ uint32_t rndis_oidbuffer[] __attribute__((aligned(4))) =
     OID_802_3_XMIT_MORE_COLLISIONS  //0x01020103
 };
 
-uint8_t volatile gRndisOutData = 0, gRndisInData = 0;
+uint8_t volatile gRndisInData = 0;
 
 extern uint8_t g_au8MacAddr[6];
 
 extern uint32_t u32TxCnt, u32RxCnt;
-uint32_t volatile linkStatus, outdatalen = 0;
+uint32_t volatile linkStatus;
 
 /*--------------------------------------------------------------------------*/
 /* MS OS Feature descriptor */
@@ -295,14 +297,57 @@ void USBD20_IRQHandler(void)
     /* bulk out */
     if (IrqStL & HSUSBD_GINTSTS_EPBIF_Msk)
     {
-        volatile int i, len;
+        volatile int i, len, acc_len;
+        volatile uint8_t *dptr;
+        RNDIS_MSG_HDR *hdr;
+
         HSUSBD_ENABLE_EP_INT(EPB, 0);
         IrqSt = HSUSBD->EP[EPB].EPINTSTS & HSUSBD->EP[EPB].EPINTEN;
         len = HSUSBD->EP[EPB].EPDATCNT & 0xffff;
-        for (i=0; i<len; i++)
-            rndis_outdata[u32CurrentTxBuf][outdatalen+i] = HSUSBD->EP[EPB].EPDAT_BYTE;
-        outdatalen += len;
-        gRndisOutData = 1;
+
+        if (len > 0)
+        {
+            acc_len = _rtxq.data_len[_rtxq.usb_idx];
+            hdr = (RNDIS_MSG_HDR *)&_rtxq.data[_rtxq.usb_idx][0];
+
+            if ((acc_len >= 44) &&
+               ((acc_len + len > 1580) || (hdr->MessageType != REMOTE_NDIS_PACKET_MSG)))
+            {
+                // printf("Drop 0x%x, %d\n", hdr->MessageType, hdr->MessageLength);
+
+                dptr = &_rtxq.data[_rtxq.usb_idx][512];
+                for (i = 0; i < len; i++)
+                    *dptr = HSUSBD->EP[EPB].EPDAT_BYTE;
+                _rtxq.data_len[_rtxq.usb_idx] = 0;
+            }
+            else
+            {
+                dptr = &_rtxq.data[_rtxq.usb_idx][acc_len];
+                for (i = 0; i < len; i++)
+                    *dptr++ = HSUSBD->EP[EPB].EPDAT_BYTE;
+                _rtxq.data_len[_rtxq.usb_idx] += len;
+            }
+
+            if ((hdr->MessageType == REMOTE_NDIS_PACKET_MSG) &&
+                (_rtxq.data_len[_rtxq.usb_idx] >= hdr->MessageLength))
+            {
+                if (_rtxq.data_len[_rtxq.usb_idx] > hdr->MessageLength)
+                    printf("Long tx rmsg!\n");
+
+                if (((_rtxq.usb_idx + 1) % RQ_SZ) == _rtxq.eth_done_idx)
+                {
+                    // printf("! %d %d %d\n", _rtxq.usb_idx, _rtxq.eth_idx, _rtxq.eth_done_idx);   /* drop the current packet */
+                    _rtxq.data_len[_rtxq.usb_idx] = 0;
+                }
+                else
+                {
+                    // printf("TX: %d\n", hdr->MessageLength);
+                    _rtxq.usb_idx = (_rtxq.usb_idx + 1) % RQ_SZ;
+                    _rtxq.data_len[_rtxq.usb_idx] = 0;
+                }
+            }
+        }
+
         HSUSBD_CLR_EP_INT_FLAG(EPB, IrqSt);
     }
     /* interrupt in */
@@ -601,54 +646,33 @@ void My_MemCopy(uint8_t dest[], uint8_t src[], uint32_t size)
         i++;
     }
 }
+
 void RNDIS_ProcessOutData(void)
 {
-    volatile uint32_t size = *(uint32_t *)((uint32_t) &rndis_outdata[u32CurrentTxBuf][0xC]), size2;
-    uint32_t offset = size + 44;
+    RNDIS_MSG_HDR *hdr;
+    uint8_t *ppkt;
 
     HSUSBD_ENABLE_EP_INT(EPB, HSUSBD_EPINTEN_RXPKIEN_Msk | HSUSBD_EPINTEN_SHORTRXIEN_Msk);
-    if (gRndisOutData)
+
+    while (_rtxq.eth_idx != _rtxq.usb_idx)
     {
-__retry_mac_tx_:
-        if (outdatalen >= offset)
+        hdr = (RNDIS_MSG_HDR *)&_rtxq.data[_rtxq.eth_idx][0];
+        ppkt = (uint8_t *)&_rtxq.data[_rtxq.eth_idx][hdr->DataOffset + 8];
+
+        if (My_EMAC_SendPkt(ppkt, hdr->DataLength) == 1)
         {
-            if (My_EMAC_SendPkt(&rndis_outdata[u32CurrentTxBuf][rndis_outdata[u32CurrentTxBuf][8] + 8], size) == 1)
-            {
-                // data successfully hook to EMAC descriptor, use next free buffer
-                u32CurrentTxBuf++;
-                if (u32CurrentTxBuf == EMAC_TX_DESC_SIZE + 1)
-                    u32CurrentTxBuf = 0;
-                if ((outdatalen - offset) > 0)
-                {
-                    size2 = *(uint32_t *)((uint32_t) &rndis_outdata[u32CurrentTxBuf-1][offset+0xC]);
-                    //printf("size[%d, %d] outdatalen[%d] offset[%d] [%d]\n", size, size2, outdatalen, offset, u32CurrentTxBuf);      
-                    if(size2 > 1580)
-                        size2 = 1580;
-                    memcpy(&rndis_outdata[u32CurrentTxBuf][0], &rndis_outdata[u32CurrentTxBuf-1][offset], size2);
-                    outdatalen -= offset;
-                    if (My_EMAC_SendPkt(&rndis_outdata[u32CurrentTxBuf][rndis_outdata[u32CurrentTxBuf][8] + 8], size2) == 1)
-                    {
-                        u32CurrentTxBuf++;
-                        if (u32CurrentTxBuf == EMAC_TX_DESC_SIZE + 1)
-                            u32CurrentTxBuf = 0;
-                    }
-                }
-                gRndisOutData = 0;
-                outdatalen = 0;
-                u32TxCnt++;
-            }
-            else
-            {
-                HSUSBD_ENABLE_EP_INT(EPB, 0);
-                goto __retry_mac_tx_;
-            }
+            _rtxq.eth_idx = (_rtxq.eth_idx + 1) % RQ_SZ;
+        }
+        else
+        {
+            HSUSBD_ENABLE_EP_INT(EPB, 0);
         }
     }
 }
 
 void RNDIS_InData(unsigned int u32PktLen)
 {
-    uint32_t *ptr = (uint32_t *)rndis_indata[u32CurrentRxBuf];
+    uint32_t *ptr = (uint32_t *)&(_rrxq.data[_rrxq.usb_idx][0]);
     uint32_t msglen;
 
     *(ptr+1) = msglen = u32PktLen + 44;  /* message len = data len + 44 */
@@ -657,7 +681,9 @@ void RNDIS_InData(unsigned int u32PktLen)
     /* active usbd DMA to send data to FIFO */
     HSUSBD_SET_DMA_READ(BULK_IN_EP_NUM);
     HSUSBD_ENABLE_BUS_INT(HSUSBD_BUSINTEN_DMADONEIEN_Msk|HSUSBD_BUSINTEN_SUSPENDIEN_Msk|HSUSBD_BUSINTEN_RSTIEN_Msk|HSUSBD_BUSINTEN_VBUSDETIEN_Msk);
-    HSUSBD_SET_DMA_ADDR((uint32_t)rndis_indata[u32CurrentRxBuf]);
+
+    HSUSBD_SET_DMA_ADDR((uint32_t)&(_rrxq.data[_rrxq.usb_idx][0]));
+
     HSUSBD_SET_DMA_LEN(msglen);
     g_hsusbd_DmaDone = 0;
     g_hsusbd_ShortPacket = 1;
@@ -689,7 +715,7 @@ void RNDIS_IsAvaiable(void)
     if (acnt++ == 0)
     {
         //printf("acnt=0\n");
-        linkStatus = EMAC_CheckLinkStatus();       
+        linkStatus = EMAC_CheckLinkStatus();
     }
     acnt &= 0x1ff;
 

@@ -1747,10 +1747,10 @@ s32 synopGMAC_get_rx_qptr(synopGMACdevice *gmacdev, u32 *Status, u32 *Buffer1, u
     /* Ring */
     gmacdev->RxBusyDesc = synopGMAC_is_last_rx_desc(gmacdev, rxdesc) ? gmacdev->RxDesc : (rxdesc + 1);
 
-#if 1    
+#if 1
     /* Wayne's modification */
     synopGMAC_rx_desc_init_ring(rxdesc, synopGMAC_is_last_rx_desc(gmacdev, rxdesc));
-#else    
+#else
     // why init here.... should change onwer to DMA --ya
     rxdesc->status = DescOwnByDma;
     rxdesc->extstatus = 0;
@@ -1758,7 +1758,7 @@ s32 synopGMAC_get_rx_qptr(synopGMACdevice *gmacdev, u32 *Status, u32 *Buffer1, u
     rxdesc->timestamplow = 0;
     rxdesc->timestamphigh = 0;
     //TR("%02d %08x %08x %08x %08x %08x %08x %08x\n", rxnext, (u32)rxdesc, rxdesc->status, rxdesc->length, rxdesc->buffer1, rxdesc->buffer2, rxdesc->data1, rxdesc->data2);
-#endif    
+#endif
 
     TR("%02d %08x %08x %08x %08x %08x\n", rxnext, (u32)rxdesc, rxdesc->status, rxdesc->length, rxdesc->buffer1, rxdesc->buffer2);
     (gmacdev->BusyRxDesc)--; //busy tx descriptor is reduced by one as it will be handed over to Processor now
@@ -2282,7 +2282,7 @@ bool synopGMAC_ES_is_IP_header_error(synopGMACdevice *gmacdev, u32 ext_status)  
   */
 bool synopGMAC_ES_is_rx_checksum_bypassed(synopGMACdevice *gmacdev, u32 ext_status)    // Hardware engine bypassed the checksum computation/checking
 {
-  
+
   return ((ext_status & DescRxChkSumBypass) != 0);  // if checksum offloading bypassed return 1
 }
 

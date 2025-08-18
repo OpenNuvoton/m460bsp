@@ -10,6 +10,7 @@
 #include "m460_emac.h"
 #include "m460_mii.h"
 
+#include "../rndis.h"
 
 #if (LWIP_USING_HW_CHECKSUM == 1)
 #define USING_HW_CHECKSUM
@@ -18,17 +19,16 @@
 static synopGMACdevice GMACdev = {0};
 static DmaDesc tx_desc[TRANSMIT_DESC_SIZE] __attribute__((aligned(32))) = {0};
 static DmaDesc rx_desc[RECEIVE_DESC_SIZE] __attribute__((aligned(32))) = {0};
-static PKT_FRAME_T tx_buf[TRANSMIT_DESC_SIZE] __attribute__((aligned(32))) = {0};
 static PKT_FRAME_T rx_buf[RECEIVE_DESC_SIZE] __attribute__((aligned(32))) = {0};
 
 
 static void EMAC_ModuleInit(void)
 {
     SYS_ResetModule(EMAC0_RST);
-    
+
     /* Enable EMAC module clock */
     CLK_EnableModuleClock(EMAC0_MODULE);
-        
+
     /* Configure pins for EMAC module */
     SET_EMAC0_RMII_MDC_PE8();
     SET_EMAC0_RMII_MDIO_PE9();
@@ -44,15 +44,15 @@ static void EMAC_ModuleInit(void)
 }
 
 void EMAC_Open(uint8_t *macaddr)
-{        
+{
     uint32_t i;
 
     EMAC_ModuleInit();
-  
+
     /* Attach the device to MAC struct This will configure all the required base addresses
       such as Mac base, configuration base, phy base address(out of 32 possible phys) */
-   	synopGMAC_attach(&GMACdev, (EMAC_BASE + MACBASE), (EMAC_BASE + DMABASE), DEFAULT_PHY_BASE, macaddr );
-  
+    synopGMAC_attach(&GMACdev, (EMAC_BASE + MACBASE), (EMAC_BASE + DMABASE), DEFAULT_PHY_BASE, macaddr );
+
     synopGMAC_reset(&GMACdev);
 
     memcpy((void*)&GMACdev.mac_addr[0], (void*)&macaddr[0], 6);
@@ -73,7 +73,7 @@ void EMAC_Open(uint8_t *macaddr)
         synopGMAC_set_mdc_clk_div(&GMACdev, GmiiCsrClk3);
     else
         synopGMAC_set_mdc_clk_div(&GMACdev, GmiiCsrClk2);
-    GMACdev.ClockDivMdc = synopGMAC_get_mdc_clk_div(&GMACdev);    
+    GMACdev.ClockDivMdc = synopGMAC_get_mdc_clk_div(&GMACdev);
     if(mii_check_phy_init(&GMACdev) < 0)
     {
         printf("emac:: Init PHY FAIL.\n");
@@ -83,7 +83,7 @@ void EMAC_Open(uint8_t *macaddr)
 
     /* Set up the tx and rx descriptor queue/ring */
     synopGMAC_setup_tx_desc_queue(&GMACdev, &tx_desc[0], TRANSMIT_DESC_SIZE, RINGMODE);
-    synopGMAC_init_tx_desc_base(&GMACdev);	// Program the transmit descriptor base address in to DmaTxBase addr
+    synopGMAC_init_tx_desc_base(&GMACdev);  // Program the transmit descriptor base address in to DmaTxBase addr
     TR("DmaTxBaseAddr = %08x\n", synopGMACReadReg(GMACdev.DmaBase, DmaTxBaseAddr));
 
     synopGMAC_setup_rx_desc_queue(&GMACdev, &rx_desc[0], RECEIVE_DESC_SIZE, RINGMODE);
@@ -105,7 +105,7 @@ void EMAC_Open(uint8_t *macaddr)
     synopGMAC_rx_tcpip_chksum_drop_enable(&GMACdev); // This is default configuration, DMA drops the packets if error in encapsulated ethernet payload
 #endif
 
-    for(i=0; i<RECEIVE_DESC_SIZE; i ++) 
+    for(i=0; i<RECEIVE_DESC_SIZE; i ++)
     {
         synopGMAC_set_rx_qptr(&GMACdev, (u32)&rx_buf[i], PKT_FRAME_BUF_SIZE, 0);
     }
@@ -114,7 +114,7 @@ void EMAC_Open(uint8_t *macaddr)
     synopGMAC_clear_interrupt(&GMACdev);
     synopGMAC_disable_interrupt_all(&GMACdev);
     synopGMAC_enable_interrupt(&GMACdev, DmaIntEnable);
-    
+
     /* Enable DMA */
     synopGMAC_enable_dma_rx(&GMACdev);
     synopGMAC_enable_dma_tx(&GMACdev);
@@ -163,7 +163,7 @@ void EMAC0_IRQHandler(void)
         TR("dma_status ==0 \n");
         return;
     }
-    
+
     if (dma_status_reg & GmacPmtIntr)
     {
         TR("%s:: Interrupt due to PMT module\n", __FUNCTION__);
@@ -257,68 +257,59 @@ void EMAC0_IRQHandler(void)
             TR("%s::Transmission Resumed\n", __FUNCTION__);
         }
     }
-    
+
     /* Enable the interrrupt before returning from ISR */
     synopGMAC_enable_interrupt(&GMACdev, u32GmacDmaIE);
-    
+
     //if (interrupt & synopGMACDmaRxNormal)
     //{
     //    EMAC_ReceivePkt();
     //}
 }
 
-extern uint8_t rndis_indata[EMAC_RX_DESC_SIZE + 1][1580];
-extern uint32_t u32CurrentRxBuf;
 uint32_t EMAC_ReceivePkt(void)
 {
     uint32_t len = 0;
-    
+
     PKT_FRAME_T* psPktFrame;
-	
+
     if ( (len = synop_handle_received_data(&GMACdev, &psPktFrame)) > 0 )
-    {		
+    {
         synopGMAC_set_rx_qptr(&GMACdev, (u32)psPktFrame, PKT_FRAME_BUF_SIZE, 0);
-        memcpy((uint8_t *)&rndis_indata[u32CurrentRxBuf][44], psPktFrame, len);
+
+        memcpy((uint8_t *)&_rrxq.data[_rrxq.eth_idx][44], psPktFrame, len);
+        _rrxq.eth_idx = (_rrxq.eth_idx + 1) % RQ_SZ;
+
         synopGMAC_enable_interrupt(&GMACdev, DmaIntEnable);
     }
-    
-    return len;
-}
 
-uint8_t* EMAC_AllocatePktBuf(void)
-{
-    u32 index = GMACdev.TxNext;
-    return &tx_buf[index].au8Buf[0];
+    return len;
 }
 
 int32_t EMAC_TransmitPkt(uint8_t *pbuf, uint32_t len)
 {
     u32 offload_needed;
-    
+
     if ((pbuf != NULL) && (len > 0) &&
         !synopGMAC_is_desc_owned_by_dma(GMACdev.TxNextDesc)  )
     {
-	
+
 #if defined(USING_HW_CHECKSUM)
         offload_needed = 1;
 #else
         offload_needed = 0;
 #endif
         return synopGMAC_xmit_frames(&GMACdev, pbuf, len, offload_needed, 0);
-  	}
-		
+    }
+
     return -1;
 }
 
 uint32_t My_EMAC_SendPkt(uint8_t *pu8Data, uint32_t u32Size)
-{     
+{
     int32_t ret = -1;
-    uint8_t *buf = NULL;
-    
-    buf = EMAC_AllocatePktBuf();
-    
-    memcpy((uint8_t *)buf, pu8Data, u32Size);
-    ret = EMAC_TransmitPkt((uint8_t *)buf, u32Size);
+
+    ret = EMAC_TransmitPkt(pu8Data, u32Size);
     if(ret == -1)
         return 0;
     else
@@ -328,9 +319,9 @@ uint32_t My_EMAC_SendPkt(uint8_t *pu8Data, uint32_t u32Size)
 uint32_t EMAC_CheckLinkStatus(void)
 {
     uint32_t linkstatus;
-    
+
     linkstatus = (uint32_t)mii_ethtool_gset(&GMACdev, 0);
-    
+
     if(GMACdev.LinkState == LINKDOWN)
         return LINKDOWN;
 
