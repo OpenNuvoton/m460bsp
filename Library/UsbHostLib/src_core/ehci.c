@@ -309,6 +309,48 @@ static int  ehci_init(void)
     return 0;
 }
 
+static int  ehci_reinit(void)
+{
+    int      timeout = 250 * 1000;          /* EHCI reset time-out 250 ms                */
+    HSUSBH_T ehci_backup;
+
+    memcpy(&ehci_backup, _ehci, sizeof(ehci_backup));
+
+    /*------------------------------------------------------------------------------------*/
+    /*  Reset EHCI host controller                                                        */
+    /*------------------------------------------------------------------------------------*/
+    _ehci->UCMDR = HSUSBH_UCMDR_HCRST_Msk;
+    while((_ehci->UCMDR & HSUSBH_UCMDR_HCRST_Msk) && (timeout > 0))
+    {
+        delay_us(1000);
+        timeout -= 1000;
+    }
+    if(_ehci->UCMDR & HSUSBH_UCMDR_HCRST_Msk)
+        return USBH_ERR_EHCI_INIT;
+
+    _ehci->UCMDR = ehci_backup.UCMDR & ~HSUSBH_UCMDR_IAAD_Msk;;
+
+    _ehci->UCALAR = ehci_backup.UCALAR;
+
+    _ehci->UPFLBAR = ehci_backup.UPFLBAR;
+
+    /*------------------------------------------------------------------------------------*/
+    /*  start run                                                                         */
+    /*------------------------------------------------------------------------------------*/
+
+    _ehci->UCFGR = 0x1;                          /* enable port routing to EHCI           */
+    _ehci->UIENR = HSUSBH_UIENR_USBIEN_Msk | HSUSBH_UIENR_UERRIEN_Msk | HSUSBH_UIENR_HSERREN_Msk | HSUSBH_UIENR_IAAEN_Msk;
+
+    delay_us(1000);                              /* delay 1 ms                            */
+
+    _ehci->UPSCR[0] = HSUSBH_UPSCR_PP_Msk;      /* enable port 1 port power               */
+    _ehci->UPSCR[1] = HSUSBH_UPSCR_PP_Msk | HSUSBH_UPSCR_PO_Msk;     /* set port 2 owner to OHCI              */
+
+    delay_us(10 * 1000);                        /* delay 10 ms                            */
+
+    return 0;
+}
+
 static void ehci_suspend(void)
 {
     if(_ehci->UPSCR[0] & 0x1)
@@ -329,6 +371,7 @@ static void ehci_shutdown(void)
 static void move_qh_to_remove_list(QH_T *qh)
 {
     QH_T       *q;
+    qTD_T      *qtd;
 
     // USB_debug("move_qh_to_remove_list - 0x%x (0x%x)\n", (int)qh, qh->Chrst);
 
@@ -343,7 +386,11 @@ static void move_qh_to_remove_list(QH_T *qh)
         q = q->next;
     }
 
-    DISABLE_EHCI_IRQ();
+    /*------------------------------------------------------------------------------------*/
+    /*  deactive the QH                                                                   */
+    /*------------------------------------------------------------------------------------*/
+    qh->Chrst |= QH_RCLM_LIST_HEAD;
+    qh->OL_Token = (qh->OL_Token & ~QTD_STS_ACTIVE) | QTD_STS_HALT;
 
     /*------------------------------------------------------------------------------------*/
     /*  Search asynchronous frame list and remove qh if found in list.                    */
@@ -353,16 +400,13 @@ static void move_qh_to_remove_list(QH_T *qh)
     {
         if(QH_PTR(q->HLink) == qh)
         {
-            /* q's next QH is qh, found...           */
+            /* q's next QH is qh, found...       */
             q->HLink = qh->HLink;                /* remove qh from list                   */
-
             qh->next = qh_remove_list;           /* add qh to qh_remove_list              */
             qh_remove_list = qh;
-            _ehci->UCMDR |= HSUSBH_UCMDR_IAAD_Msk;   /* trigger IAA interrupt             */
-            ENABLE_EHCI_IRQ();
             return;                              /* done                                  */
         }
-        q = QH_PTR(q->HLink);               /* advance to next QH in asynchronous list    */
+        q = QH_PTR(q->HLink);                    /* advance to next QH in asyn list       */
     }
 
     /*------------------------------------------------------------------------------------*/
@@ -373,18 +417,22 @@ static void move_qh_to_remove_list(QH_T *qh)
     {
         if(QH_PTR(q->HLink) == qh)
         {
-            /* q's next QH is qh, found...           */
+            /* q's next QH is qh, found...       */
             q->HLink = qh->HLink;                /* remove qh from list                   */
-
             qh->next = qh_remove_list;           /* add qh to qh_remove_list              */
             qh_remove_list = qh;
-            _ehci->UCMDR |= HSUSBH_UCMDR_IAAD_Msk;   /* trigger IAA interrupt             */
-            ENABLE_EHCI_IRQ();
             return;                              /* done                                  */
         }
-        q = QH_PTR(q->HLink);               /* advance to next QH in asynchronous list    */
+        q = QH_PTR(q->HLink);                    /* advance to next QH in asyn list       */
     }
+}
+
+static void remove_queue_head(QH_T *qh)
+{
+    DISABLE_EHCI_IRQ();
+    move_qh_to_remove_list(qh);
     ENABLE_EHCI_IRQ();
+    _ehci->UCMDR |= HSUSBH_UCMDR_IAAD_Msk;
 }
 
 static void append_to_qtd_list_of_QH(QH_T *qh, qTD_T *qtd)
@@ -635,9 +683,6 @@ static int ehci_bulk_xfer(UTR_T *utr)
     uint32_t   token;
     int        is_new_qh = 0;
 
-    //USB_debug("Bulk XFER =>\n");
-    // dump_ehci_asynclist_simple();
-
     udev = utr->udev;
 
     if(ep->hw_pipe != NULL)
@@ -846,8 +891,7 @@ static int ehci_int_xfer(UTR_T *utr)
 static int ehci_quit_xfer(UTR_T *utr, EP_INFO_T *ep)
 {
     QH_T       *qh;
-
-    // USB_debug("ehci_quit_xfer - utr: 0x%x, ep: 0x%x\n", (int)utr, (int)ep);
+    uint32_t   t0;
 
     DISABLE_EHCI_IRQ();
     if(ehci_quit_iso_xfer(utr, ep) == 0)
@@ -863,24 +907,34 @@ static int ehci_quit_xfer(UTR_T *utr, EP_INFO_T *ep)
             return USBH_ERR_NOT_FOUND;
 
         qh = (QH_T *)(utr->ep->hw_pipe);
-
         if(!qh)
             return USBH_ERR_NOT_FOUND;
 
         /* add the QH to remove list, it will be removed on the next IAAD interrupt       */
-        move_qh_to_remove_list(qh);
+        remove_queue_head(qh);
         utr->ep->hw_pipe = NULL;
     }
 
-    if((ep != NULL) && (ep->hw_pipe != NULL))
+    if ((ep != NULL) && (ep->hw_pipe != NULL))
     {
         qh = (QH_T *)(ep->hw_pipe);
         /* add the QH to remove list, it will be removed on the next IAAD interrupt       */
-        move_qh_to_remove_list(qh);
+        remove_queue_head(qh);
         ep->hw_pipe = NULL;
     }
-    delay_us(2000);
 
+    /* wait until IAAD interrupt processed */
+    t0 = get_ticks();
+    while ((_ehci->UCMDR & HSUSBH_UCMDR_IAAD_Msk) || (_ehci->USTSR & HSUSBH_USTSR_IAA_Msk))
+    {
+        if (get_ticks() - t0 > 2)
+        {
+            USB_error("%s - IAAD lost!!  UCMDR:0x%x, USTSR: 0x%x, UIENR: 0x%x\n", __func__, _ehci->UCMDR, _ehci->USTSR, _ehci->UIENR);
+            ehci_reinit();
+            _ehci->UCMDR |= HSUSBH_UCMDR_IAAD_Msk;
+            break;
+        }
+    }
     return 0;
 }
 
@@ -1195,9 +1249,9 @@ port_reset_done:
 
 static int ehci_rh_polling(void)
 {
-    UDEV_T    *udev;
-    int       ret;
-    int       connect_status, t0;
+    UDEV_T    *udev = NULL;
+    int       ret = 0;
+    int       connect_status = 0, t0 = 0;
 
     if(!(_ehci->UPSCR[0] & HSUSBH_UPSCR_CSC_Msk))
         return 0;
