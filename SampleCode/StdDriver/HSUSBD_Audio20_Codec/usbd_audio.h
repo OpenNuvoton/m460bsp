@@ -63,15 +63,15 @@
 /*!<Define Audio Class Specific Request */
 #define UAC_REQUEST_CODE_UNDEFINED  0x00
 #define UAC_SET_CUR                 0x01
-#define UAC_GET_CUR                 0x01
+#define UAC_GET_CUR                 0x81
 #define UAC_SET_MIN                 0x02
-#define UAC_GET_MIN                 0x02
+#define UAC_GET_MIN                 0x82
 #define UAC_SET_MAX                 0x03
-#define UAC_GET_MAX                 0x03
+#define UAC_GET_MAX                 0x83
 #define UAC_SET_RES                 0x04
-#define UAC_GET_RES                 0x04
+#define UAC_GET_RES                 0x84
 #define UAC_SET_MEM                 0x05
-#define UAC_GET_MEM                 0x05
+#define UAC_GET_MEM                 0x85
 #define UAC_GET_STAT                0xFF
 
 #define MUTE_CONTROL                0x01

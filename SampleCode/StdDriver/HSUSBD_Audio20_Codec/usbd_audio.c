@@ -296,8 +296,6 @@ void USBD20_IRQHandler(void)
     {
         /* Isochronous in */
         IrqSt = HSUSBD->EP[EPA].EPINTSTS & HSUSBD->EP[EPA].EPINTEN;
-        HSUSBD_ENABLE_EP_INT(EPA, 0);
-        HSUSBD_ENABLE_EP_INT(EPB, HSUSBD_EPINTEN_RXPKIEN_Msk | HSUSBD_EPINTEN_SHORTRXIEN_Msk);
         EPA_IsoInHandler();
         HSUSBD_CLR_EP_INT_FLAG(EPA, IrqSt);
     }
@@ -306,8 +304,6 @@ void USBD20_IRQHandler(void)
     {
         /* Isochronous out */
         IrqSt = HSUSBD->EP[EPB].EPINTSTS & HSUSBD->EP[EPB].EPINTEN;
-        HSUSBD_ENABLE_EP_INT(EPB, 0);
-        HSUSBD_ENABLE_EP_INT(EPA, HSUSBD_EPINTEN_INTKIEN_Msk);
         EPB_IsoOutHandler();
         HSUSBD_CLR_EP_INT_FLAG(EPB, IrqSt);
     }
@@ -849,7 +845,7 @@ void UAC_GetPlayData(void)
         if(i8TxDataCntInBuffer > PDMA_TXBUFFER_CNT)
             i8TxDataCntInBuffer = 7;
     }
-    PDMA_EnableInt(PDMA0, PDMA_I2S_TX_CH, 0);
+    PDMA_EnableInt(PDMA0, PDMA_I2S_TX_CH, PDMA_INT_TRANS_DONE);
 
     /* active usbd DMA to read data from FIFO and then send to I2S */
     HSUSBD_SET_DMA_WRITE(ISO_OUT_EP_NUM);
@@ -934,7 +930,7 @@ void UAC_SendRecData(void)
         /* send zero packet when no data */
         HSUSBD->EP[EPA].EPRSPCTL = HSUSBD_EPRSPCTL_ZEROLEN_Msk;
     }
-    PDMA_EnableInt(PDMA0, PDMA_I2S_RX_CH, 0);
+    PDMA_EnableInt(PDMA0, PDMA_I2S_RX_CH, PDMA_INT_TRANS_DONE);
 }
 
 void AudioStartRecord(uint32_t u32SampleRate)
