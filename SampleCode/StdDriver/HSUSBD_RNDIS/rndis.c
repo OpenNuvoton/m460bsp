@@ -94,6 +94,8 @@ const unsigned char OS_feature_dsc[] =
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* reserve 6 bytes */
 };
 
+void RNDIS_OutData_DMA(uint32_t *dst_buff, unsigned int u32PktLen);
+
 /*--------------------------------------------------------------------------*/
 void USBD20_IRQHandler(void)
 {
@@ -323,8 +325,33 @@ void USBD20_IRQHandler(void)
             else
             {
                 dptr = &_rtxq.data[_rtxq.usb_idx][acc_len];
-                for (i = 0; i < len; i++)
-                    *dptr++ = HSUSBD->EP[EPB].EPDAT_BYTE;
+
+                if ((uint32_t)dptr & 0x3)
+                {
+                    for (i = 0; i < len; i++)
+                        *dptr++ = HSUSBD->EP[EPB].EPDAT_BYTE;
+                }
+                else if (!gRndisInData)  /* DMA is idle? */
+                {
+                    RNDIS_OutData_DMA((uint32_t *)dptr, len);
+                }
+                else
+                {
+                    uint32_t w, *wptr = (uint32_t *)dptr;
+                    int r = len % 4;
+
+                    for (i = 0; i < len / 4; i++)
+                    {
+                        w = HSUSBD->EP[EPB].EPDAT;
+                        *wptr++ = w;
+                    }
+
+                    if (r)
+                    {
+                        for (i = len - r; i < len; i++)
+                            dptr[i] = HSUSBD->EP[EPB].EPDAT_BYTE;
+                    }
+                }
                 _rtxq.data_len[_rtxq.usb_idx] += len;
             }
 
@@ -675,6 +702,8 @@ void RNDIS_InData(unsigned int u32PktLen)
     uint32_t *ptr = (uint32_t *)&(_rrxq.data[_rrxq.usb_idx][0]);
     uint32_t msglen;
 
+    gRndisInData = 1;
+
     *(ptr+1) = msglen = u32PktLen + 44;  /* message len = data len + 44 */
     *(ptr+3) = u32PktLen;                /* data len */
 
@@ -704,8 +733,54 @@ void RNDIS_InData(unsigned int u32PktLen)
     while (HSUSBD->EP[EPA].EPDATCNT & 0xFFFF)
     {
         if (!HSUSBD_IS_ATTACHED())
+        {
+            gRndisInData = 0;
+            return;
+        }
+    }
+
+    gRndisInData = 0;
+}
+
+/*
+ *  !! Note! This function is expected to be called from interrupt context.
+ */
+void RNDIS_OutData_DMA(uint32_t *dst_buff, unsigned int u32PktLen)
+{
+    __IO uint32_t IrqStL, IrqSt;
+
+    /* active usbd DMA to send data to FIFO */
+    HSUSBD_SET_DMA_WRITE(BULK_OUT_EP_NUM);
+    HSUSBD_ENABLE_BUS_INT(HSUSBD_BUSINTEN_DMADONEIEN_Msk|HSUSBD_BUSINTEN_SUSPENDIEN_Msk|HSUSBD_BUSINTEN_RSTIEN_Msk|HSUSBD_BUSINTEN_VBUSDETIEN_Msk);
+
+    HSUSBD_SET_DMA_ADDR((uint32_t)dst_buff);
+
+    HSUSBD_SET_DMA_LEN(u32PktLen);
+    g_hsusbd_ShortPacket = 1;
+    HSUSBD_ENABLE_DMA();
+
+    /* wait usbd dma complete */
+    while (1)
+    {
+        if (HSUSBD->BUSINTSTS & HSUSBD_BUSINTSTS_DMADONEIF_Msk)
+        {
+            break;
+        }
+
+        if (!HSUSBD_IS_ATTACHED())
+            break;
+
+        if ((HSUSBD->DMACTL & HSUSBD_DMACTL_DMAEN_Msk) == 0)
+            break;
+    }
+    while (HSUSBD->EP[EPB].EPDATCNT & 0xFFFF)
+    {
+        if (!HSUSBD_IS_ATTACHED())
             return;
     }
+
+    HSUSBD_CLR_BUS_INT_FLAG(HSUSBD_BUSINTSTS_DMADONEIF_Msk);
+    HSUSBD->EP[EPB].EPRSPCTL = (HSUSBD->EP[EPB].EPRSPCTL & 0x10) | HSUSBD_EP_RSPCTL_SHORTTXEN;    // packet end
 }
 
 void RNDIS_IsAvaiable(void)
