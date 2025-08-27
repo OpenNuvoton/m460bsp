@@ -40,13 +40,13 @@ set(CMAKE_SYSTEM_VERSION "5")
 set(CMAKE_SYSTEM_PROCESSOR ARM)
 
 if(C_COMPILER_ID STREQUAL ARMCLANG)
-    # set(TOOLCHAIN_PATH C:/Keil_v5/ARM/ARMCLANG)
-    find_program(ARM_CC NAMES armclang PATHS ${TOOLCHAIN_PATH}/bin REQUIRED NO_DEFAULT_PATH)
-    find_program(ARM_CXX NAMES armclang PATHS ${TOOLCHAIN_PATH}/bin REQUIRED NO_DEFAULT_PATH)
-    find_program(ARM_ASM NAMES armclang PATHS ${TOOLCHAIN_PATH}/bin REQUIRED NO_DEFAULT_PATH)
-    find_program(ARM_AR NAMES armar PATHS ${TOOLCHAIN_PATH}/bin REQUIRED NO_DEFAULT_PATH)
-    find_program(ARM_LINK NAMES armlink PATHS ${TOOLCHAIN_PATH}/bin REQUIRED NO_DEFAULT_PATH)
-    find_program(ARM_FROMELF NAMES fromelf PATHS ${TOOLCHAIN_PATH}/bin REQUIRED NO_DEFAULT_PATH)
+
+    find_program(ARM_CC NAMES armclang REQUIRED)
+    find_program(ARM_CXX NAMES armclang REQUIRED)
+    find_program(ARM_ASM NAMES armclang REQUIRED)
+    find_program(ARM_AR NAMES armar REQUIRED)
+    find_program(ARM_LINK NAMES armlink REQUIRED)
+    find_program(ARM_FROMELF NAMES fromelf REQUIRED)
 
     set(CMAKE_C_COMPILER ${ARM_CC} CACHE STRING "")
     set(CMAKE_CXX_COMPILER ${ARM_CXX} CACHE STRING "")
@@ -61,15 +61,10 @@ if(C_COMPILER_ID STREQUAL ARMCLANG)
 
     set(LINK_MCU_CORE "Cortex-M4.fp.sp")
 
-    set(STACK_SIZE 0x4000)
-    set(HEAP_SIZE 0x20000)
-
-    # SET(CMAKE_C_FLAGS    "-mcpu=cortex-m4 -Wno-ignored-optimization-argument -Wno-unused-command-line-argument -Wall    -Wno-error=cpp    -c    -fdata-sections    -ffunction-sections        -fshort-enums    -fshort-wchar -funsigned-char -masm=auto -nostdlib -mfpu=none -g -std=c99 -D__MICROLIB")
-    # SET(CMAKE_CXX_FLAGS  "-mcpu=cortex-m4 -Wno-ignored-optimization-argument -Wno-unused-command-line-argument -Wall    -Wno-error=cpp    -c    -fdata-sections    -ffunction-sections        -fshort-enums    -fshort-wchar -funsigned-char -masm=auto -nostdlib -mfpu=none -g -D__MICROLIB")
     set(C_FLAGS "--target=arm-arm-none-eabi -mcpu=cortex-m4+fp -mfloat-abi=hard -c -fno-rtti -funsigned-char -fshort-enums -fshort-wchar -D__MICROLIB -gdwarf-3 -O2 -fno-function-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -D__MICROLIB -DMBEDTLS_CONFIG_FILE=mbedtls_config.h -Ic:/Keil_v5/ARM/ARMCLANG/include")
     set(CMAKE_C_FLAGS "-xc -std=c99  ${C_FLAGS}")
     set(CMAKE_CXX_FLAGS ${C_FLAGS})
-    set(CMAKE_ASM_FLAGS "--target=arm-arm-none-eabi -mcpu=cortex-m4  -mfpu=fpv4-sp-d16 ") # -D__MICROLIB=1 -DStack_Size=${STACK_SIZE} -DHeap_Size=${HEAP_SIZE}
+    set(CMAKE_ASM_FLAGS "--target=arm-arm-none-eabi -mcpu=cortex-m4  -mfpu=fpv4-sp-d16 ")
     set(CMAKE_EXECUTABLE_SUFFIX ".axf")
 endif()
 
@@ -79,12 +74,9 @@ if(C_COMPILER_ID STREQUAL GCC)
     set(CMAKE_C_COMPILER_FORCED 1)
     set(CMAKE_CXX_COMPILER_FORCED 1)
 
-    # set(TOOLCHAIN_PATH "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10 2021.10/bin")
-
-    # set(TOOLCHAIN_PATH "${ENV_USER}/.vcpkg/artifacts/fd3d78d7/compilers.arm.arm.none.eabi.gcc/12.3.1/bin")
-    find_program(ARM_CC NAMES arm-none-eabi-gcc PATHS ${TOOLCHAIN_PATH} REQUIRED NO_DEFAULT_PATH)
-    find_program(ARM_CXX NAMES arm-none-eabi-gcc PATHS ${TOOLCHAIN_PATH} REQUIRED NO_DEFAULT_PATH)
-    find_program(ARM_OBJCOPY NAMES arm-none-eabi-objcopy PATHS ${TOOLCHAIN_PATH} REQUIRED NO_DEFAULT_PATH)
+    find_program(ARM_CC NAMES arm-none-eabi-gcc REQUIRED)
+    find_program(ARM_CXX NAMES arm-none-eabi-gcc REQUIRED)
+    find_program(ARM_OBJCOPY NAMES arm-none-eabi-objcopy REQUIRED)
 
     set(CMAKE_C_COMPILER ${ARM_CC} CACHE STRING "")
     set(CMAKE_CXX_COMPILER ${ARM_CXX} CACHE STRING "")
