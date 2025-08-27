@@ -3,7 +3,7 @@ project:
     - pack: Nuvoton::NuMicroM4_DFP
   misc:
     - for-compiler: AC6
-      C: [-std=c99, -fno-rtti, -funsigned-char, -fshort-enums, -fshort-wchar, -ffunction-sections, -fdata-sections -w, -D__MICROLIB, -o0, -gdwarf-4]
+      C: [-std=c99, -fno-rtti, -funsigned-char, -fshort-enums, -fshort-wchar, -ffunction-sections, -fdata-sections -w, -D__MICROLIB, -o0, -gdwarf-4, -fno-inline]
       ASM: [-D__MICROLIB]
       Link: [--library_type=microlib, --map, --load_addr_map_info, --symbols, --info sizes, --info totals, --entry Reset_Handler, --summary_stderr, --info summarysizes, --diag_suppress=6314]
     - for-compiler: GCC
