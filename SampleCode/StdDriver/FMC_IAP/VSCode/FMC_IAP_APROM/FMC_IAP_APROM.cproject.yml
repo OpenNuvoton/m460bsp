@@ -15,39 +15,32 @@ project:
         - -Wl,--gc-sections,-Map="$elf()$.map"
   linker:
       - for-compiler: GCC
-        script: gcc_arm_ldrom.ld
-      - regions: regions_ld.h
+        script: ../../../../../Library/Device/Nuvoton/m460/Source/GCC/gcc_arm.ld
   setups:
     - output:
         type: ["elf", "bin"]
   add-path:
-    - ../../../../Library/Device/Nuvoton/m460/Include
-    - ../../../../Library/StdDriver/inc
-    - ../../../../Library/CMSIS/Include
+    - ../../../../../Library/Device/Nuvoton/m460/Include
+    - ../../../../../Library/StdDriver/inc
+    - ../../../../../Library/CMSIS/Include
+  add-path-asm:
+    - ../bin/$TargetType$
   groups:
     - group: CMSIS
       files:
-        - file: ../../../../Library/Device/Nuvoton/m460/Source/ARM/startup_m460.S
+        - file: ../../../../../Library/Device/Nuvoton/m460/Source/ARM/startup_m460.S
           for-compiler: AC6
-        - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/startup_m460.S
+        - file: ../../../../../Library/Device/Nuvoton/m460/Source/GCC/startup_m460.S
           for-compiler: GCC
-        - file: ../../../../Library/Device/Nuvoton/m460/Source/system_m460.c
+        - file: ../../../../../Library/Device/Nuvoton/m460/Source/system_m460.c
     - group: Library
       files:
-        - file: ../../../../Library/StdDriver/src/clk.c
-        - file: ../../../../Library/StdDriver/src/sys.c
-        - file: ../../../../Library/StdDriver/src/uart.c
-        - file: ../../../../Library/StdDriver/src/retarget.c
-        - file: ../../../../Library/StdDriver/src/fmc.c
+        - file: ../../../../../Library/StdDriver/src/clk.c
+        - file: ../../../../../Library/StdDriver/src/sys.c
+        - file: ../../../../../Library/StdDriver/src/uart.c
+        - file: ../../../../../Library/StdDriver/src/retarget.c
+        - file: ../../../../../Library/StdDriver/src/fmc.c
     - group: User
       files:
-        - file: ../LDROM_iap.c
-  # The execute: node is processed only for an application build when no --context option is specified.
-  executes:
-    - execute: Copy_Bin_File
-      run: ${CMAKE_COMMAND} -E copy $input$ $output$
-      always:
-      input:
-        - $bin()$
-      output:
-        - $SolutionDir()$/bin/$TargetType$
+        - file: ../../APROM_main.c
+        - file: ./ap_image.S

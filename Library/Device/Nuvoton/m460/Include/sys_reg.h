@@ -4710,8 +4710,8 @@ typedef struct
      * |        |          |0 = External Interrupt from INT5 interrupt is deasserted.
      * |        |          |1 = External Interrupt from INT5 interrupt is asserted.
      * |[14]    |UART0INT  |UART0 Interrupt Flag (Read Only)
-     * |        |          |0 = UART1 interrupt is deasserted.
-     * |        |          |1 = UART1 interrupt is asserted.
+     * |        |          |0 = UART0 interrupt is deasserted.
+     * |        |          |1 = UART0 interrupt is asserted.
      * |[15]    |UART1INT  |UART1 Interrupt Flag (Read Only)
      * |        |          |0 = UART1 interrupt is deasserted.
      * |        |          |1 = UART1 interrupt is asserted.
