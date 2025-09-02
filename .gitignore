@@ -26,7 +26,6 @@ out/
 build/
 .metadata/
 tmp/
-RTE/
 
 *.cbuild-run.yml
 *.cbuild-idx.yml
