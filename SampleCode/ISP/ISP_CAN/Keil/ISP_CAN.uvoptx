@@ -166,9 +166,9 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>&lt;3&gt;..\..\..\..\Library\Device\Nuvoton\m460\Source\ARM\startup_m460.s</Filename>
+          <Filename>&lt;3&gt;..\..\..\..\Library\Device\Nuvoton\m460\Source\ARM\startup_m460.S</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\ISP_CAN\../../../../Library/Device/Nuvoton/m460/Source/ARM/startup_m460.s\215</Expression>
+          <Expression>\\ISP_CAN\../../../../Library/Device/Nuvoton/m460/Source/ARM/startup_m460.S\215</Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
@@ -182,9 +182,9 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>&lt;3&gt;..\..\..\..\Library\Device\Nuvoton\m460\Source\ARM\startup_m460.s</Filename>
+          <Filename>&lt;3&gt;..\..\..\..\Library\Device\Nuvoton\m460\Source\ARM\startup_m460.S</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\ISP_CAN\../../../../Library/Device/Nuvoton/m460/Source/ARM/startup_m460.s\234</Expression>
+          <Expression>\\ISP_CAN\../../../../Library/Device/Nuvoton/m460/Source/ARM/startup_m460.S\234</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -299,8 +299,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\Library\Device\Nuvoton\m460\Source\ARM\startup_m460.s</PathWithFileName>
-      <FilenameWithoutPath>startup_m460.s</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\..\Library\Device\Nuvoton\m460\Source\ARM\startup_m460.S</PathWithFileName>
+      <FilenameWithoutPath>startup_m460.S</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

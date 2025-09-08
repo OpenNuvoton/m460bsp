@@ -390,9 +390,9 @@
               <FilePath>..\..\..\..\Library\Device\Nuvoton\m460\Source\system_m460.c</FilePath>
             </File>
             <File>
-              <FileName>startup_m460.s</FileName>
+              <FileName>startup_m460.S</FileName>
               <FileType>2</FileType>
-              <FilePath>..\..\..\..\Library\Device\Nuvoton\m460\Source\ARM\startup_m460.s</FilePath>
+              <FilePath>..\..\..\..\Library\Device\Nuvoton\m460\Source\ARM\startup_m460.S</FilePath>
             </File>
           </Files>
         </Group>
@@ -822,9 +822,9 @@
               <FilePath>..\..\..\..\Library\Device\Nuvoton\m460\Source\system_m460.c</FilePath>
             </File>
             <File>
-              <FileName>startup_m460.s</FileName>
+              <FileName>startup_m460.S</FileName>
               <FileType>2</FileType>
-              <FilePath>..\..\..\..\Library\Device\Nuvoton\m460\Source\ARM\startup_m460.s</FilePath>
+              <FilePath>..\..\..\..\Library\Device\Nuvoton\m460\Source\ARM\startup_m460.S</FilePath>
             </File>
           </Files>
         </Group>
@@ -1254,9 +1254,9 @@
               <FilePath>..\..\..\..\Library\Device\Nuvoton\m460\Source\system_m460.c</FilePath>
             </File>
             <File>
-              <FileName>startup_m460.s</FileName>
+              <FileName>startup_m460.S</FileName>
               <FileType>2</FileType>
-              <FilePath>..\..\..\..\Library\Device\Nuvoton\m460\Source\ARM\startup_m460.s</FilePath>
+              <FilePath>..\..\..\..\Library\Device\Nuvoton\m460\Source\ARM\startup_m460.S</FilePath>
             </File>
           </Files>
         </Group>
@@ -1686,9 +1686,9 @@
               <FilePath>..\..\..\..\Library\Device\Nuvoton\m460\Source\system_m460.c</FilePath>
             </File>
             <File>
-              <FileName>startup_m460.s</FileName>
+              <FileName>startup_m460.S</FileName>
               <FileType>2</FileType>
-              <FilePath>..\..\..\..\Library\Device\Nuvoton\m460\Source\ARM\startup_m460.s</FilePath>
+              <FilePath>..\..\..\..\Library\Device\Nuvoton\m460\Source\ARM\startup_m460.S</FilePath>
             </File>
           </Files>
         </Group>
@@ -2118,9 +2118,9 @@
               <FilePath>..\..\..\..\Library\Device\Nuvoton\m460\Source\system_m460.c</FilePath>
             </File>
             <File>
-              <FileName>startup_m460.s</FileName>
+              <FileName>startup_m460.S</FileName>
               <FileType>2</FileType>
-              <FilePath>..\..\..\..\Library\Device\Nuvoton\m460\Source\ARM\startup_m460.s</FilePath>
+              <FilePath>..\..\..\..\Library\Device\Nuvoton\m460\Source\ARM\startup_m460.S</FilePath>
             </File>
           </Files>
         </Group>
@@ -2550,9 +2550,9 @@
               <FilePath>..\..\..\..\Library\Device\Nuvoton\m460\Source\system_m460.c</FilePath>
             </File>
             <File>
-              <FileName>startup_m460.s</FileName>
+              <FileName>startup_m460.S</FileName>
               <FileType>2</FileType>
-              <FilePath>..\..\..\..\Library\Device\Nuvoton\m460\Source\ARM\startup_m460.s</FilePath>
+              <FilePath>..\..\..\..\Library\Device\Nuvoton\m460\Source\ARM\startup_m460.S</FilePath>
             </File>
           </Files>
         </Group>
