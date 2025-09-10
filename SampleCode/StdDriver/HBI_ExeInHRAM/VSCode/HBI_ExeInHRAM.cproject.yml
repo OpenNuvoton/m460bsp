@@ -9,6 +9,7 @@ project:
     - for-compiler: GCC
       C: [-std=gnu11, --specs=nano.specs, -Wno-return-type, -Wno-unused-but-set-variable, -fdata-sections, -ffunction-sections, -fno-builtin, -fshort-enums, -funsigned-char, -mthumb, -Wno-main, -gdwarf-4]
       Link:
+        - -Wl,--no-warn-rwx-segment
         - -Xlinker
         - --gc-sections
         - --specs=nano.specs

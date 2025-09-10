@@ -54,6 +54,7 @@
 
 #if defined ( __GNUC__ ) && !(__CC_ARM) && !(__ICCARM__) && !defined(__ARMCC_VERSION)
 #define LWIP_TIMEVAL_PRIVATE            0
+#include <sys/time.h>   //Include the correct header file that defines struct timeval.
 #endif
 
 #define TCPIP_THREAD_STACKSIZE          2048
