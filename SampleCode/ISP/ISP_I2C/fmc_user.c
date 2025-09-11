@@ -128,8 +128,6 @@ void WriteData(uint32_t addr_start, uint32_t addr_end, uint32_t *data)  // Write
     return;
 }
 
-#define FMC_BLOCK_SIZE           (FMC_FLASH_PAGE_SIZE * 4UL)
-
 int EraseAP(uint32_t addr_start, uint32_t size)
 {
     uint32_t u32Addr, u32Cmd, u32Size;
@@ -142,11 +140,6 @@ int EraseAP(uint32_t addr_start, uint32_t size)
         {
             u32Cmd = FMC_ISPCMD_BANK_ERASE;
             u32Size = FMC_BANK_SIZE;
-        }
-        else if((size >= FMC_BLOCK_SIZE) && !(u32Addr & (FMC_BLOCK_SIZE - 1)))
-        {
-            u32Cmd = FMC_ISPCMD_BLOCK_ERASE;
-            u32Size = FMC_BLOCK_SIZE;
         }
         else
         {
