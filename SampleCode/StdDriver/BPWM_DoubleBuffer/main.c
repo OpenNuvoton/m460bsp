@@ -29,6 +29,9 @@ void BPWM0_IRQHandler(void)
 {
     static uint32_t u32Toggle = 0;
 
+    // Clear channel 0 period interrupt flag
+    BPWM_ClearPeriodIntFlag(BPWM0, 0);
+
     // Update BPWM0 channel 0 period and duty
     if(u32Toggle == 0)
     {
@@ -41,8 +44,6 @@ void BPWM0_IRQHandler(void)
         BPWM_SET_CMR(BPWM0, 0, 200);
     }
     u32Toggle ^= 1;
-    // Clear channel 0 period interrupt flag
-    BPWM_ClearPeriodIntFlag(BPWM0, 0);
 }
 
 void SYS_Init(void)
