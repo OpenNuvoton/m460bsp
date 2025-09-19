@@ -20,7 +20,7 @@ project:
         type: ["elf", "bin"]
   linker:
     - for-compiler: GCC
-      script: ../../../../Library/Device/Nuvoton/m460/Source/GCC/gcc_arm.ld
+      script: multi_word_prog.ld
     - for-compiler: AC6
       script: sram.sct
   add-path:

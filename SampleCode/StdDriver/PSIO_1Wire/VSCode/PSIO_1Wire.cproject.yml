@@ -13,6 +13,7 @@ project:
         - --gc-sections
         - --specs=nano.specs
         - -Wl,-Map,"$OutDir()$/$Project$.map"
+        - -Wl,-u _printf_float
 
   setups:
     - output:
