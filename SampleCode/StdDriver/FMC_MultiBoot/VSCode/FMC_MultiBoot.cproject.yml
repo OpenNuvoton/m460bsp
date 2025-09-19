@@ -106,6 +106,19 @@ project:
           for-compiler: GCC
           define:
           - FLASH_BASE: 0x10000
+    - setup: Options for FMC_MultiBoot_BootLD
+      output :
+        base-name: FMC_MultiBoot_BootLD
+      for-context: .BootLD
+      define:
+        - __BOOTLD__
+      linker:
+        - script: ../../../../Library/Device/Nuvoton/m460/Source/ARM/LDROM.sct
+          for-compiler: AC6
+        - script: ./FMC_MultiBoot.ld
+          for-compiler: GCC
+          define:
+          - FLASH_BASE: 0x20000
   groups:
     - group: CMSIS
       files:

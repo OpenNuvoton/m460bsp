@@ -36,7 +36,10 @@ void EPWM0P0_IRQHandler(void)
 {
     static int32_t i32Toggle = 0;
 
-    /* Update EPWM0 channel 0 period and duty */
+    /* Clear channel 0 period interrupt flag */
+    EPWM_ClearPeriodIntFlag(EPWM0, 0);
+
+	/* Update EPWM0 channel 0 period and duty */
     if(i32Toggle == 0)
     {
         EPWM_SET_CNR(EPWM0, 0, 99);
@@ -48,8 +51,6 @@ void EPWM0P0_IRQHandler(void)
         EPWM_SET_CMR(EPWM0, 0, 200);
     }
     i32Toggle ^= 1;
-    /* Clear channel 0 period interrupt flag */
-    EPWM_ClearPeriodIntFlag(EPWM0, 0);
 }
 
 void SYS_Init(void)
