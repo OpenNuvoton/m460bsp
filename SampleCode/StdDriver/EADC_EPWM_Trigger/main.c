@@ -298,9 +298,9 @@ void EADC_FunctionTest(void)
                 /* Reset the ADC interrupt indicator */
                 g_u32AdcIntFlag = 0;
 
-                u32COVNUMFlag = g_u32COVNUMFlag - 1;
                 /* Get the conversion result of the sample module 0   */
-                ai32ConversionData[u32COVNUMFlag - 1] = EADC_GET_CONV_DATA(EADC0, 0);
+                u32COVNUMFlag = g_u32COVNUMFlag - 1;
+                ai32ConversionData[u32COVNUMFlag] = EADC_GET_CONV_DATA(EADC0, 0);
 
                 if(g_u32COVNUMFlag > 6)
                     break;
