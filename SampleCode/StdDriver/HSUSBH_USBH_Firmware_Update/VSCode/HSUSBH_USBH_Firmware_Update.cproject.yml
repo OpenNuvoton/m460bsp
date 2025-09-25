@@ -18,9 +18,9 @@ project:
         type: ["elf", "bin"]
   linker:
     - for-compiler: GCC
-      script: ../../../../Library/Device/Nuvoton/m460/Source/GCC/gcc_arm.ld
+      script: HSUSBH_USBH_Firmware_Update.ld
     - for-compiler: AC6
-      script: usbh_firmware_update.sct
+      script: HSUSBH_USBH_Firmware_Update.sct
   add-path:
         - ../../../../Library/Device/Nuvoton/m460/Include
         - ../../../../Library/CMSIS/Include

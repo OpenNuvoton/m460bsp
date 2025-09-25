@@ -4,7 +4,7 @@
  * @brief    Audio codec setting.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (c) 2025 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
 #include <string.h>
@@ -92,26 +92,60 @@ void NAU8822_Setup(void)
 {
     printf("\nConfigure NAU8822 ...");
 
-    I2C_WriteNAU8822(0,  0x000);   /* Reset all registers */
-    CLK_SysTickDelay(10000);
 
-    I2C_WriteNAU8822(1,  0x02F);
-    I2C_WriteNAU8822(2,  0x1B3);   /* Enable L/R Headphone, ADC Mix/Boost, ADC */
-    I2C_WriteNAU8822(3,  0x07F);   /* Enable L/R main mixer, DAC */
-    I2C_WriteNAU8822(4,  0x010);   /* 16-bit word length, I2S format, Stereo */
-    I2C_WriteNAU8822(5,  0x000);   /* Companding control and loop back mode (all disable) */
-    I2C_WriteNAU8822(6,  0x14D);   /* Divide by 2, 48K */
-    I2C_WriteNAU8822(7,  0x000);   /* 48K for internal filter coefficients */
-    I2C_WriteNAU8822(10, 0x008);   /* DAC soft mute is disabled, DAC oversampling rate is 128x */
-    I2C_WriteNAU8822(14, 0x108);   /* ADC HP filter is disabled, ADC oversampling rate is 128x */
-    I2C_WriteNAU8822(15, 0x1EF);   /* ADC left digital volume control */
-    I2C_WriteNAU8822(16, 0x1EF);   /* ADC right digital volume control */
+    // 0) Full reset
+    I2C_WriteNAU8822(0,  0x000);                 // R0: Software Reset
+    CLK_SysTickDelay(10000);                     // >100us to ensure internal POR completes
 
-    I2C_WriteNAU8822(44, 0x000);   /* LLIN/RLIN is not connected to PGA */
-    I2C_WriteNAU8822(47, 0x050);   /* LLIN connected, and its Gain value */
-    I2C_WriteNAU8822(48, 0x050);   /* RLIN connected, and its Gain value */
-    I2C_WriteNAU8822(50, 0x001);   /* Left DAC connected to LMIX */
-    I2C_WriteNAU8822(51, 0x001);   /* Right DAC connected to RMIX */
+    // 1) Depending on VDDSPK, disable boost if VDDSPK <= 3.6V
+    I2C_WriteNAU8822(49, 0x000);                 // R49: SPKBST/AUX1BST/AUX2BST = 0 (low voltage mode)
+
+    // 2) Enable DC tie-off/IO buffer to slowly charge coupling capacitors
+    I2C_WriteNAU8822(1,  0x124);                 // R1: IOBUFEN=1 (DC/IO buffer enable)
+    I2C_WriteNAU8822(1,  0x12D);                 // R1: REFIMP=80kOhm, ABIASEN=1, slow charge reference
+    CLK_SysTickDelay(250000);                    // Wait ~250ms (longer depending on external caps)
+
+    // 3) Set all analog outputs to "mute + minimum gain + ZC" (no update yet)
+    //    Format: Bit8=Update, Bit7=ZC, Bit6=Mute, Bits5:0=Gain(-57dB->0x00)
+    //    Value = (0<<8) | (1<<7) | (1<<6) | 0x00 = 0x0C0
+    I2C_WriteNAU8822(52, 0x0C0);                 // R52 LHP: ZC=1, Mute=1, Gain=-57dB
+    I2C_WriteNAU8822(53, 0x0C0);                 // R53 RHP
+    I2C_WriteNAU8822(54, 0x0C0);                 // R54 LSPK
+    I2C_WriteNAU8822(55, 0x0C0);                 // R55 RSPK
+
+    // 4) Other digital/interface settings (keep DAC soft-mute ON until last step)
+    I2C_WriteNAU8822(4,  0x010);                 // R4: I2S, 16bit
+    I2C_WriteNAU8822(5,  0x000);                 // R5: no companding
+    I2C_WriteNAU8822(6,  0x14D);                 // R6: 48k
+    I2C_WriteNAU8822(7,  0x000);                 // R7: filter coeffs for 48k
+    // Recommend: R10 enable DAC soft-mute here
+    I2C_WriteNAU8822(10, 0x009);                 // R10: soft-mute ON
+    // ADC settings
+    I2C_WriteNAU8822(14, 0x108);
+    I2C_WriteNAU8822(15, 0x1EF);
+    I2C_WriteNAU8822(16, 0x1EF);
+
+    // 5) Do not connect LIN directly to ADC MIX if using DAC playback (avoid multi-path transients)
+    I2C_WriteNAU8822(44, 0x000);                 // R44: disconnect PGA source
+
+    // 6) Power on but keep outputs muted
+    I2C_WriteNAU8822(2,  0x1B3);                 // R2: enable L/R HP, ADC Mix/Boost, ADC
+    I2C_WriteNAU8822(3,  0x07F);                 // R3: enable L/R main mixer, DAC (DAC still soft-muted)
+    I2C_WriteNAU8822(50, 0x001);                 // R50: LMIX connect to DAC
+    I2C_WriteNAU8822(51, 0x001);                 // R51: RMIX connect to DAC
+
+    // *** Important: after enabling HP/SPK and MCLK/sample rate ready, wait >=250ms before sending I2S ***
+    CLK_SysTickDelay(250000);
+
+    // 7) Use "Update" to simultaneously bring gain from -57dB to target (e.g. 0dB), and unmute
+    //    Target 0dB -> Gain_code=0x39; Value = (1<<8)|(1<<7)|(0<<6)|0x39 = 0x1B9
+    I2C_WriteNAU8822(52, 0x090);                 // LHP: Update=1, ZC=1, Mute=0, 0dB
+    I2C_WriteNAU8822(53, 0x190);                 // RHP
+    I2C_WriteNAU8822(54, 0x090);                 // LSPK
+    I2C_WriteNAU8822(55, 0x190);                 // RSPK
+
+    // 8) Finally disable DAC soft-mute to start normal playback
+    I2C_WriteNAU8822(10, 0x008);                 // R10: soft-mute OFF
 
     printf("[OK]\n");
 }

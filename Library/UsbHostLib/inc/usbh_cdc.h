@@ -28,8 +28,8 @@ extern "C"
 #define CDC_DBGMSG(...)
 #endif
 
-#define CDC_STATUS_BUFF_SIZE    64
-#define CDC_RX_BUFF_SIZE        64
+#define CDC_STATUS_BUFF_SIZE    512
+#define CDC_RX_BUFF_SIZE        512
 
 /* Interface Class Codes (defined in usbh.h) */
 //#define USB_CLASS_COMM        0x02

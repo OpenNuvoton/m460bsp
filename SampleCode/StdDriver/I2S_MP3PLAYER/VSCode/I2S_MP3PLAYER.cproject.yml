@@ -28,7 +28,6 @@ project:
         - ../../../../Library/Device/Nuvoton/m460/Include
         - ../../../../ThirdParty/LibMAD/inc
         - ../../../../Library/StdDriver/inc
-        - ../../../../ThirdParty/FatFs/source
   groups:
     - group: CMSIS
       files:
@@ -40,12 +39,11 @@ project:
     - group: Source
       files:
         - file: ../main.c
-        - file: ../diskio.c
-        - file: ../sdglue.c
         - file: ../mp3.c
         - file: ../mp3headerparser.c
         - file: ../isr.c
         - file: ../audio_codec.c
+        - file: ../pseudofile.c
     - group: Library
       files:
         - file: ../../../../Library/StdDriver/src/sys.c
@@ -55,11 +53,7 @@ project:
         - file: ../../../../Library/StdDriver/src/uart.c
         - file: ../../../../Library/StdDriver/src/retarget.c
         - file: ../../../../Library/StdDriver/src/pdma.c
-        - file: ../../../../Library/StdDriver/src/sdh.c
         - file: ../../../../Library/StdDriver/src/gpio.c
-    - group: FATFS
-      files:
-        - file: ../../../../ThirdParty/FatFs/source/ff.c
     - group: MP3Lib
       files:
         - file: ../../../../ThirdParty/LibMAD/src/version.c
