@@ -90,6 +90,19 @@ DEV_REQ_T;
 #define USB_DT_DEVICE_QUALIFIER        0x06
 #define USB_DT_OTHER_SPEED_CONF        0x07
 #define USB_DT_IFACE_POWER             0x08
+#define USB_DT_IAD                     0x0B
+
+#define USB_DT_CS_STRING               0x23
+#define USB_DT_CS_INTERFACE            0x24 
+#define USB_DT_CS_ENDPOINT             0x25 
+
+#define CS_INTERFACE_HEADER            0x01      
+#define CS_INTERFACE_AS_GENERAL        0x01
+#define CS_INTERFACE_CLOCK_SOURCE      0x0A
+#define CS_INTERFACE_INPUT_TERMINAL    0x02
+#define CS_INTERFACE_FORMAT_TYPE       0x02
+#define CS_INTERFACE_FEATURE_UNIT      0x06
+#define CS_INTERFACE_OUTPUT_TERMINAL   0x03
 
 /*----------------------------------------------------------------------------------*/
 /*  USB standard descriptors                                                        */

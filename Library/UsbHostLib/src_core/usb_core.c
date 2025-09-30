@@ -402,15 +402,118 @@ void usbh_dump_endpoint_descriptor(DESC_EP_T *ep_desc)
     USB_debug("\n        [Endpoint Descriptor]\n");
     USB_debug("        ----------------------------------------------\n");
     USB_debug("          Length              = %2d\n",  ep_desc->bLength);
-    USB_debug("          DescriptorType      = %02x\n", ep_desc->bDescriptorType);
+    USB_debug("          DescriptorType      = 0x%02x\n", ep_desc->bDescriptorType);
     USB_debug("          bEndpointAddress    = 0x%02x\n", ep_desc->bEndpointAddress);
     USB_debug("          bmAttributes        = 0x%02x\n", ep_desc->bmAttributes);
     USB_debug("          wMaxPacketSize      = %d\n", ep_desc->wMaxPacketSize);
     USB_debug("          bInterval           = %d\n", ep_desc->bInterval);
-    USB_debug("          bRefresh            = %d\n", ep_desc->bRefresh);
-    USB_debug("          bSynchAddress       = %d\n", ep_desc->bSynchAddress);
+    if(ep_desc->bLength > 0x7)
+    {
+        USB_debug("          bRefresh            = %d\n", ep_desc->bRefresh);
+        USB_debug("          bSynchAddress       = %d\n", ep_desc->bSynchAddress);
+    }
 }
 
+void usbh_dump_class_interface_descriptor(uint8_t *bptr)
+{
+    if((bptr[2] == CS_INTERFACE_HEADER) && (bptr[0] == 0x09))
+    {
+        USB_debug("\n    [Class Interface Descriptor]\n");
+        USB_debug("    ----------------------------------------------\n");
+        USB_debug("      Length              = %2d\n",  *bptr);
+        USB_debug("      DescriptorType      = 0x%02x [CS_INTERFACE]\n", *(bptr+1));
+        USB_debug("      DescriptorSubType   = 0x%02x [HEADER]\n",  *(bptr+2));
+        USB_debug("      bcdADC              = 0x%04x\n",   *(uint16_t*)(bptr+3));
+        USB_debug("      Category            = 0x%02x\n",   *(bptr+5));
+        USB_debug("      TotalLength         = 0x%04x\n",   *(uint16_t*)(bptr+6));
+        USB_debug("      bmControls          = 0x%02x\n",   *(bptr+7));
+    }
+    else if((bptr[2] == CS_INTERFACE_AS_GENERAL) && (bptr[0] == 0x10))
+    {
+        USB_debug("\n    [Class Interface Descriptor]\n");
+        USB_debug("    ----------------------------------------------\n");
+        USB_debug("      Length              = %2d\n",  *bptr);
+        USB_debug("      DescriptorType      = 0x%02x [CS_INTERFACE]\n", *(bptr+1));
+        USB_debug("      DescriptorSubType   = 0x%02x [AS_GENERAL]\n",  *(bptr+2));
+        USB_debug("      bTerminalLink       = 0x%02x\n",   *(bptr+3));
+        USB_debug("      bmControls          = 0x%02x\n",   *(bptr+4));
+        USB_debug("      bFormatType         = 0x%02x\n",   *(bptr+5));
+        USB_debug("      bmFormats           = 0x%08x\n",   *(uint32_t*)(bptr+6));                          
+        USB_debug("      bNrChannels         = 0x%02x\n",   *(bptr+10));
+        USB_debug("      bmChannelConfig     = 0x%08x\n",   *(uint32_t*)(bptr+11));
+        USB_debug("      iChannelNames       = 0x%02x\n",   *(bptr+15));
+    }
+    else if(bptr[2] == CS_INTERFACE_CLOCK_SOURCE)
+    {
+        USB_debug("\n    [Class Interface Descriptor]\n");
+        USB_debug("    ----------------------------------------------\n");
+        USB_debug("      Length              = %2d\n",  *bptr);
+        USB_debug("      DescriptorType      = 0x%02x [CS_INTERFACE]\n", *(bptr+1));
+        USB_debug("      DescriptorSubType   = 0x%02x [CLOCK_SOURCE]\n",  *(bptr+2));
+        USB_debug("      bClockID            = 0x%02x\n",   *(bptr+3));
+        USB_debug("      bmAttrButes         = 0x%02x\n",   *(bptr+4));
+        USB_debug("      bmControls          = 0x%02x\n",   *(bptr+5));
+        USB_debug("      bAssocTerminal      = 0x%02x\n",   *(bptr+6));
+        USB_debug("      iClockSource        = 0x%02x\n",   *(bptr+7));
+    }
+    else if((bptr[2] == CS_INTERFACE_INPUT_TERMINAL)  && (bptr[0] == 0x11))
+    {
+        USB_debug("\n    [Class Interface Descriptor]\n");
+        USB_debug("    ----------------------------------------------\n");
+        USB_debug("      Length              = %2d\n",  *bptr);
+        USB_debug("      DescriptorType      = 0x%02x [CS_INTERFACE]\n", *(bptr+1));
+        USB_debug("      DescriptorSubType   = 0x%02x [INPUT_TERMINAL]\n",  *(bptr+2));
+        USB_debug("      bTerminalID         = 0x%02x\n",   *(bptr+3));
+        USB_debug("      wTerminalType       = 0x%04x\n",   *(uint16_t*)(bptr+4));
+        USB_debug("      bAssocTerminal      = 0x%02x\n",   *(bptr+6));
+        USB_debug("      bCSourceID          = 0x%02x\n",   *(bptr+7));       
+        USB_debug("      bNrChannels         = 0x%02x\n",   *(bptr+8));           
+        USB_debug("      bmChannelConfig     = 0x%08x\n",   *(uint32_t *)(bptr+9));          
+        USB_debug("      iChannelNames       = 0x%02x\n",   *(bptr+13));           
+        USB_debug("      bmControls          = 0x%04x\n",   *(uint16_t *)(bptr+14));              
+        USB_debug("      iTerminal           = 0x%02x\n",   *(bptr+16));
+    }
+    else if((bptr[2] == CS_INTERFACE_FORMAT_TYPE)  && (bptr[0] == 0x06))
+    {
+        USB_debug("\n    [Class Interface Descriptor]\n");
+        USB_debug("    ----------------------------------------------\n");
+        USB_debug("      Length              = %2d\n",  *bptr);
+        USB_debug("      DescriptorType      = 0x%02x [CS_INTERFACE]\n", *(bptr+1));
+        USB_debug("      DescriptorSubType   = 0x%02x [FORMAT_TYPE]\n",  *(bptr+2));
+        USB_debug("      bFormatType         = 0x%02x\n",   *(bptr+3));
+        USB_debug("      bSubslotSize        = 0x%02x\n",   *(bptr+4));     
+        USB_debug("      bBitResolution      = 0x%02x\n",   *(bptr+5));    
+    }
+    else if(bptr[2] == CS_INTERFACE_FEATURE_UNIT)
+    {
+        USB_debug("\n    [Class Interface Descriptor]\n");
+        USB_debug("    ----------------------------------------------\n");
+        USB_debug("      Length              = %2d\n",  *bptr);
+        USB_debug("      DescriptorType      = 0x%02x [CS_INTERFACE]\n", *(bptr+1));
+        USB_debug("      DescriptorSubType   = 0x%02x [FEATURE_UNIT]\n",  *(bptr+2));
+        USB_debug("      bUnitID             = 0x%02x\n",   *(bptr+3));
+        USB_debug("      bSourceID           = 0x%02x\n",   *(bptr+4));
+        USB_debug("      bmaControls(0)      = 0x%08x\n",   *(uint32_t *)(bptr+5));
+        USB_debug("      bmaControls(1)      = 0x%08x\n",   *(uint32_t *)(bptr+9));
+        USB_debug("      bmaControls(2)      = 0x%08x\n",   *(uint32_t *)(bptr+13));
+        USB_debug("      iFeature            = 0x%02x\n",   *(bptr+17));
+    }
+    else if(bptr[2] == CS_INTERFACE_OUTPUT_TERMINAL)
+    {
+        USB_debug("\n    [Class Interface Descriptor]\n");
+        USB_debug("    ----------------------------------------------\n");
+        USB_debug("      Length              = %2d\n",  *bptr);
+        USB_debug("      DescriptorType      = 0x%02x [CS_INTERFACE]\n", *(bptr+1));
+        USB_debug("      DescriptorSubType   = 0x%02x [OUTPUT_TERMINAL]\n",  *(bptr+2));
+        USB_debug("      bTerminalID         = 0x%02x\n",   *(bptr+3));
+        USB_debug("      wTerminalType       = 0x%04x\n",   *(uint16_t*)(bptr+4));
+        USB_debug("      bAssocTerminal      = 0x%02x\n",   *(bptr+6));
+        USB_debug("      bSourceID           = 0x%02x\n",   *(bptr+7));       
+        USB_debug("      bCSourceID          = 0x%02x\n",   *(bptr+8));           
+        USB_debug("      bmControls          = 0x%04x\n",   *(uint16_t *)(bptr+9));        
+        USB_debug("      iTerminal           = 0x%02x\n",   *(bptr+11));
+    }
+}
 void  dump_config_descriptor(DESC_CONF_T *desc)
 {
     uint8_t     *bptr = (uint8_t *)desc;
@@ -425,7 +528,7 @@ void  dump_config_descriptor(DESC_CONF_T *desc)
                 USB_debug("\n[Configuration Descriptor]\n");
                 USB_debug("----------------------------------------------\n");
                 USB_debug("  Length              = %2d\n",  desc->bLength);
-                USB_debug("  DescriptorType      = %02x\n", desc->bDescriptorType);
+                USB_debug("  DescriptorType      = 0x%02x\n", desc->bDescriptorType);
                 USB_debug("  wTotalLength        = %2d\n", desc->wTotalLength);
                 USB_debug("  bNumInterfaces      = %d\n", desc->bNumInterfaces);
                 USB_debug("  bConfigurationValue = %d\n", desc->bConfigurationValue);
@@ -440,6 +543,33 @@ void  dump_config_descriptor(DESC_CONF_T *desc)
 
             case USB_DT_ENDPOINT:
                 usbh_dump_endpoint_descriptor((DESC_EP_T *)bptr);
+                break;
+            case USB_DT_IAD:
+                USB_debug("\n    [Interface Association Descriptor]\n");
+                USB_debug("    ----------------------------------------------\n");
+                USB_debug("      Length              = %2d\n",  *bptr);
+                USB_debug("      DescriptorType      = 0x%02x\n", *(bptr+1));
+                USB_debug("      FirstInterface      = %2d\n",  *(bptr+2));
+                USB_debug("      InterfaceCount      = %d\n",   *(bptr+3));
+                USB_debug("      FunctionClass       = %d\n",   *(bptr+4));
+                USB_debug("      FunctionSubClass    = %d\n",   *(bptr+5));
+                USB_debug("      bFunctionProtocol   = 0x%02x\n", *(bptr+6));
+                USB_debug("      iFunction           = %d\n", *(bptr+7));
+                break;
+            case USB_DT_CS_INTERFACE:
+                usbh_dump_class_interface_descriptor(bptr);
+                break;
+            case USB_DT_CS_ENDPOINT:
+                USB_debug("\n        [Class Endpoint Descriptor]\n");
+                USB_debug("        ----------------------------------------------\n");
+                USB_debug("          Length              = %2d\n",  *bptr);
+                USB_debug("          DescriptorType      = 0x%02x [CS_ENDPOINT]\n", *(bptr+1));
+                USB_debug("          DescriptorSubType   = 0x%02x [AUDIO_EP_GENERAL]\n",  *(bptr+2));
+                USB_debug("          bmAttributes        = 0x%02x\n", *(bptr+3));   
+                USB_debug("          bmControls          = 0x%02x\n", *(bptr+4));          
+                USB_debug("          bLockDelayUnits     = 0x%02x\n", *(bptr+5));     
+                USB_debug("          wLockDelay          = %d\n", *(uint16_t *)(bptr+6));
+           
                 break;
 
             default:
@@ -895,7 +1025,7 @@ static int  usbh_parse_configuration(UDEV_T *udev, uint8_t *desc_buff)
             if(hdr->bDescriptorType == USB_DT_INTERFACE)
                 break;
 
-            USB_debug("ignore descriptor 0x%X %d\n", hdr->bDescriptorType, hdr->bLength);
+//            USB_debug("ignore descriptor 0x%X %d\n", hdr->bDescriptorType, hdr->bLength);
 
             desc_buff += hdr->bLength;
             len -= hdr->bLength;

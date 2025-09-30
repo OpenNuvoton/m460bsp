@@ -214,16 +214,16 @@ extern int  usbh_umas_reset_disk(int drv_no);
 extern void usbh_uac_init(void);
 extern int usbh_uac_open(struct uac_dev_t *audev);
 extern struct uac_dev_t * usbh_uac_get_device_list(void);
-extern int usbh_uac_get_channel_number(struct uac_dev_t *audev, uint8_t target);
-extern int usbh_uac_get_bit_resolution(struct uac_dev_t *audev, uint8_t target, uint8_t *byte_cnt);
+extern int usbh_uac_get_channel_number(struct uac_dev_t *audev, uint8_t target, uint32_t *ch_list, int max_cnt, uint8_t *type);
+extern int usbh_uac_get_bit_resolution(struct uac_dev_t *audev, uint8_t target, uint32_t *bit_list, int max_cnt, uint8_t *type);
 extern int usbh_uac_get_sampling_rate(struct uac_dev_t *audev, uint8_t target, uint32_t *srate_list, int max_cnt, uint8_t *type);
 extern int usbh_uac_sampling_rate_control(struct uac_dev_t *audev, uint8_t target, uint8_t req, uint32_t *srate);
 extern int usbh_uac_mute_control(struct uac_dev_t *audev, uint8_t target, uint8_t req, uint16_t chn, uint8_t *mute);
 extern int usbh_uac_vol_control(struct uac_dev_t *audev, uint8_t target, uint8_t req, uint16_t chn, uint16_t *volume);
 extern int usbh_uac_auto_gain_control(struct uac_dev_t *audev, uint8_t target, uint8_t req, uint16_t chn, uint8_t *bAGC);
-extern int usbh_uac_start_audio_in(struct uac_dev_t *uac, UAC_CB_FUNC *func);
+extern int usbh_uac_start_audio_in(struct uac_dev_t *uac, uint8_t u8Alt, UAC_CB_FUNC *func);
 extern int usbh_uac_stop_audio_in(struct uac_dev_t *audev);
-extern int usbh_uac_start_audio_out(struct uac_dev_t *uac, UAC_CB_FUNC *func);
+extern int usbh_uac_start_audio_out(struct uac_dev_t *uac, uint8_t u8Alt, UAC_CB_FUNC *func);
 extern int usbh_uac_stop_audio_out(struct uac_dev_t *audev);
 
 /// @cond HIDDEN_SYMBOLS

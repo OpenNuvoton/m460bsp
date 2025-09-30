@@ -39,20 +39,59 @@
  *  @retval   < 0      Failed. UAC device may not present or function not supported.
  *  @retval   Otherwise  The channel number.
  */
-int  usbh_uac_get_channel_number(UAC_DEV_T *uac, uint8_t target)
+int  usbh_uac_get_channel_number(UAC_DEV_T *uac, uint8_t target, uint32_t *ch_list,
+                                int max_cnt, uint8_t *type)
 {
     AS_FT1_T   *ft;
+    AS_IF_T      asif;
+    int i;
+    if(uac->version == 0x0200)
+    {
+        if(target == UAC_SPEAKER)
+            asif = uac->asif_out;
+        else
+            asif = uac->asif_in;
 
-    if(target == UAC_SPEAKER)
-        ft = uac->asif_out.ft;
+        if(asif.iface->num_alt < max_cnt)
+            *type = asif.iface->num_alt;
+        else               
+            *type = max_cnt;
+
+        for(i=0;i<*type;i++)
+        {
+            if(target == UAC_SPEAKER)
+                ch_list[i] = uac->acif.speaker_ch[i];
+            else
+                ch_list[i] = uac->acif.mic_ch[i];
+        }
+        return 0;
+    }
     else
-        ft = uac->asif_in.ft;
+    {
+        if(target == UAC_SPEAKER)
+            ft = uac->asif_out.ft;
+        else
+            ft = uac->asif_in.ft;
 
-    if(!ft)
-        return UAC_RET_DEV_NOT_SUPPORTED;
+        if(!ft)
+            return UAC_RET_DEV_NOT_SUPPORTED;
 
-    return ft->bNrChannels;
+        if(asif.iface->num_alt < max_cnt)
+            *type = asif.iface->num_alt;
+        else               
+            *type = max_cnt;
+
+        for(i=0;i<*type;i++)
+        {
+            if(target == UAC_SPEAKER)
+                ch_list[i] = uac->acif.speaker_ch[i];
+            else
+                ch_list[i] = uac->acif.mic_ch[i];
+        }
+        return 0;
+    }
 }
+
 
 /**
  *  @brief  Obtain Audio Class device subframe bit resolution..
@@ -65,9 +104,12 @@ int  usbh_uac_get_channel_number(UAC_DEV_T *uac, uint8_t target)
  *  @retval   < 0        Failed. UAC device may not present or function not supported.
  *  @retval   Otherwise  The number of effectively used bits from the available bits in an audio subframe.
  */
-int  usbh_uac_get_bit_resolution(UAC_DEV_T *uac, uint8_t target, uint8_t *byte_cnt)
+int  usbh_uac_get_bit_resolution(UAC_DEV_T *uac, uint8_t target, uint32_t *bit_list,
+                                int max_cnt, uint8_t *type)
 {
-    AS_FT1_T   *ft;
+    AS_FT1_T   *ft;     
+    AS_IF_T      asif;
+    int i;
 
     if(target == UAC_SPEAKER)
         ft = uac->asif_out.ft;
@@ -77,9 +119,44 @@ int  usbh_uac_get_bit_resolution(UAC_DEV_T *uac, uint8_t target, uint8_t *byte_c
     if(!ft)
         return UAC_RET_DEV_NOT_SUPPORTED;
 
-    *byte_cnt = ft->bSubframeSize;
+    if(uac->version == 0x0200)
+    {
+        if(target == UAC_SPEAKER)
+            asif = uac->asif_out;
+        else
+            asif = uac->asif_in;
 
-    return ft->bBitResolution;
+        if(asif.iface->num_alt < max_cnt)
+            *type = asif.iface->num_alt;
+        else               
+            *type = max_cnt;
+
+        for(i=0;i<*type;i++)
+        {
+            if(target == UAC_SPEAKER)
+                bit_list[i] = uac->acif.speaker_SubslotSize[i];
+            else
+                bit_list[i] = uac->acif.mic_SubslotSize[i];
+        }
+        return 0;
+    }
+    else
+    {                         
+
+        if(asif.iface->num_alt < max_cnt)
+            *type = asif.iface->num_alt;
+        else               
+            *type = max_cnt;
+
+        for(i=0;i<*type;i++)
+        {
+            if(target == UAC_SPEAKER)
+                bit_list[i] = uac->acif.speaker_SubslotSize[i];
+            else
+                bit_list[i] = uac->acif.mic_SubslotSize[i];
+        }
+        return 0;
+    }
 }
 
 /// @cond HIDDEN_SYMBOLS
@@ -113,29 +190,86 @@ int  usbh_uac_get_sampling_rate(UAC_DEV_T *uac, uint8_t target, uint32_t *srate_
 {
     AS_FT1_T   *ft;
     int        i;
-
-    if(target == UAC_SPEAKER)
-        ft = uac->asif_out.ft;
-    else
-        ft = uac->asif_in.ft;
-
-    if(!ft)
-        return UAC_RET_DEV_NOT_SUPPORTED;
-
-    *type = ft->bSamFreqType;
-
-    if(*type == 0)
+    uint32_t clock_id; 
+    int         ret;
+    if(target == UAC_SPEAKER)  
     {
-        if(max_cnt < 2)
-            return UAC_RET_OUT_OF_MEMORY;
-
-        srate_list[0] = srate_to_u32(&ft->tSamFreq[0][0]);
-        srate_list[1] = srate_to_u32(&ft->tSamFreq[1][0]);
+        clock_id = uac->acif.speaker_clock_id;
+        ft = uac->asif_out.ft;
     }
     else
     {
-        for(i = 0; i < *type; i++)
-            srate_list[i] = srate_to_u32(&ft->tSamFreq[i][0]);
+        clock_id = uac->acif.mic_clock_id;   
+        ft = uac->asif_in.ft;
+    }
+
+    if(uac->version == 0x0200)
+    {
+        uint8_t range_buf[256];
+        uint32_t u32Len;      
+        uint16_t wNumSubRanges, chn = 0; 
+
+        ret = usbh_ctrl_xfer(uac->udev,
+                             REQ_TYPE_IN | REQ_TYPE_CLASS_DEV | REQ_TYPE_TO_IFACE,
+                             UAC_GET_RANGE,
+                             (CLOCK_FREQUENCY_CONTROL << 8) | chn,
+                             (clock_id << 8) | uac->acif.iface->if_num,
+                             256,
+                             range_buf,
+                             &u32Len,
+                             UAC_REQ_TIMEOUT);
+
+        if (ret < 0)
+            return ret;
+
+        wNumSubRanges = range_buf[0] | (range_buf[1] << 8);
+
+        *type = wNumSubRanges; 
+
+        UAC_DBGMSG("GET_RANGE: wNumSubRanges = %d\n", wNumSubRanges);
+
+        for (int i = 0; i < wNumSubRanges; i++)
+        {
+            int offset = 2 + i * 12;
+#if 0
+            uint32_t min = range_buf[offset] |
+                           (range_buf[offset + 1] << 8) |
+                           (range_buf[offset + 2] << 16) |
+                           (range_buf[offset + 3] << 24);
+            uint32_t res = range_buf[offset + 8] |
+                           (range_buf[offset + 9] << 8) |
+                           (range_buf[offset + 10] << 16) |
+                           (range_buf[offset + 11] << 24);
+#endif
+            uint32_t max = range_buf[offset + 4] |
+                           (range_buf[offset + 5] << 8) |
+                           (range_buf[offset + 6] << 16) |
+                           (range_buf[offset + 7] << 24);
+            UAC_DBGMSG("  Range %d: MIN=%u, MAX=%u, RES=%u\n", i, min, max, res);
+            if(i < max_cnt)
+                srate_list[i] = max;
+        }
+        return 0;
+    }
+    else
+    {
+        if(!ft)
+            return UAC_RET_DEV_NOT_SUPPORTED;
+        *type = ft->bSamFreqType;
+
+        if(*type == 0)
+        {
+            if(max_cnt < 2)
+                return UAC_RET_OUT_OF_MEMORY;
+
+            srate_list[0] = srate_to_u32(&ft->tSamFreq[0][0]);
+            srate_list[1] = srate_to_u32(&ft->tSamFreq[1][0]);
+        }
+        else
+        {
+            for(i = 0; i < *type; i++)
+                srate_list[i] = srate_to_u32(&ft->tSamFreq[i][0]);
+        }
     }
     return 0;
 }
@@ -163,42 +297,100 @@ int  usbh_uac_get_sampling_rate(UAC_DEV_T *uac, uint8_t target, uint32_t *srate_
 int  usbh_uac_sampling_rate_control(UAC_DEV_T *uac, uint8_t target, uint8_t req, uint32_t *srate)
 {
     EP_INFO_T   *ep;
-    uint8_t     bmRequestType;
-    uint8_t     tSampleFreq[3];
+    uint8_t     bmRequestType, set_cur = 0;
+    uint8_t     tSampleFreq[4];
     uint32_t    xfer_len;
     int         ret;
+    uint32_t   clock_id, chn = 0x0; //Master Channel
+ 
+    if(uac->version == 0x0200)
+    {
+        if(target == UAC_SPEAKER)  
+            clock_id = uac->acif.speaker_clock_id;
+        else
+            clock_id = uac->acif.mic_clock_id;    
 
-    if(target == UAC_SPEAKER)
-        ep = uac->asif_out.ep;
+        tSampleFreq[0] = *srate & 0xff;
+        tSampleFreq[1] = (*srate >> 8) & 0xff;
+        tSampleFreq[2] = (*srate >> 16) & 0xff;
+        tSampleFreq[3] = (*srate >> 24) & 0xff;
+
+        if(req & 0x80)
+            bmRequestType = REQ_TYPE_IN | REQ_TYPE_CLASS_DEV | REQ_TYPE_TO_IFACE;
+        else
+        {
+            set_cur = 1;
+            bmRequestType = REQ_TYPE_OUT | REQ_TYPE_CLASS_DEV | REQ_TYPE_TO_IFACE;
+        }
+        req = req & 0x7F;
+        /* Audio Class Request - Endpoint Control Requests (5.2.3.2) */
+        ret = usbh_ctrl_xfer(uac->udev, bmRequestType, req,
+                             (CLOCK_FREQUENCY_CONTROL << 8) | chn,
+                             (clock_id << 8) | uac->acif.iface->if_num,
+                             4,                            /* wLength - parameter block length */
+                             tSampleFreq,                  /* parameter block                */
+                             &xfer_len, UAC_REQ_TIMEOUT);
+
+        if(ret < 0)
+            return ret;
+
+        if(xfer_len != 4)
+           return UAC_RET_DATA_LEN;
+
+        *srate = (tSampleFreq[3] << 24) |(tSampleFreq[2] << 16) | (tSampleFreq[1] << 8) | tSampleFreq[0];
+
+        if(set_cur)
+        {
+            if(target == UAC_SPEAKER)  
+                uac->acif.speaker_samplingrate = *srate; 
+            else
+                uac->acif.mic_samplingrate = *srate; 
+        }
+    }
     else
-        ep = uac->asif_in.ep;
+    {           
+        if(target == UAC_SPEAKER)
+            ep = uac->asif_out.ep;
+        else
+            ep = uac->asif_in.ep;
 
-    if(ep == NULL)
-        return UAC_RET_DEV_NOT_SUPPORTED;
+        if(ep == NULL)
+            return UAC_RET_DEV_NOT_SUPPORTED;
 
-    tSampleFreq[0] = *srate & 0xff;
-    tSampleFreq[1] = (*srate >> 8) & 0xff;
-    tSampleFreq[2] = (*srate >> 16) & 0xff;
+        tSampleFreq[0] = *srate & 0xff;
+        tSampleFreq[1] = (*srate >> 8) & 0xff;
+        tSampleFreq[2] = (*srate >> 16) & 0xff;
 
-    if(req & 0x80)
-        bmRequestType = REQ_TYPE_IN | REQ_TYPE_CLASS_DEV | REQ_TYPE_TO_EP;
-    else
-        bmRequestType = REQ_TYPE_OUT | REQ_TYPE_CLASS_DEV | REQ_TYPE_TO_EP;
+        if(req & 0x80)
+            bmRequestType = REQ_TYPE_IN | REQ_TYPE_CLASS_DEV | REQ_TYPE_TO_EP;
+        else
+        {
+            set_cur = 1;
+            bmRequestType = REQ_TYPE_OUT | REQ_TYPE_CLASS_DEV | REQ_TYPE_TO_EP;
+        }
+        /* Audio Class Request - Endpoint Control Requests (5.2.3.2) */
+        ret = usbh_ctrl_xfer(uac->udev, bmRequestType, req,
+                             (SAMPLING_FREQ_CONTROL << 8),  /* wValue - Control Selector (CS) */
+                             ep->bEndpointAddress,         /* wIndex - endpoint              */
+                             3,                            /* wLength - parameter block length */
+                             tSampleFreq,                  /* parameter block                */
+                             &xfer_len, UAC_REQ_TIMEOUT);
+        if(ret < 0)
+            return ret;
 
-    /* Audio Class Request - Endpoint Control Requests (5.2.3.2) */
-    ret = usbh_ctrl_xfer(uac->udev, bmRequestType, req,
-                         (SAMPLING_FREQ_CONTROL << 8),  /* wValue - Control Selector (CS) */
-                         ep->bEndpointAddress,         /* wIndex - endpoint              */
-                         3,                            /* wLength - parameter block length */
-                         tSampleFreq,                  /* parameter block                */
-                         &xfer_len, UAC_REQ_TIMEOUT);
-    if(ret < 0)
-        return ret;
+        if(xfer_len != 3)
+           return UAC_RET_DATA_LEN;
 
-    if(xfer_len != 3)
-        return UAC_RET_DATA_LEN;
+        *srate = srate_to_u32(tSampleFreq);
+        if(set_cur)
+        {
+            if(target == UAC_SPEAKER)  
+                uac->acif.speaker_samplingrate = *srate; 
+            else
+                uac->acif.mic_samplingrate = *srate; 
+        }
+    }
 
-    *srate = srate_to_u32(tSampleFreq);
     return 0;
 }
 
@@ -236,7 +428,7 @@ int usbh_uac_mute_control(UAC_DEV_T *uac, uint8_t target, uint8_t req, uint16_t 
     uint8_t     bUnitID;
     uint32_t    xfer_len;
     int         ret;
-
+ 
     if(target == UAC_MICROPHONE)
         bUnitID = uac->acif.mic_fuid;
     else
@@ -246,6 +438,9 @@ int usbh_uac_mute_control(UAC_DEV_T *uac, uint8_t target, uint8_t req, uint16_t 
         bmRequestType = REQ_TYPE_IN | REQ_TYPE_CLASS_DEV | REQ_TYPE_TO_IFACE;
     else
         bmRequestType = REQ_TYPE_OUT | REQ_TYPE_CLASS_DEV | REQ_TYPE_TO_IFACE;
+
+    if(uac->version == 0x0200)
+        req = req & 0x7F;
 
     /* Audio Class Request - Feature Unit Control Request (5.2.2.4) */
     ret = usbh_ctrl_xfer(uac->udev, bmRequestType, req,
@@ -279,6 +474,7 @@ int usbh_uac_mute_control(UAC_DEV_T *uac, uint8_t target, uint8_t req, uint16_t 
  *                     - \ref UAC_SET_RES
  *                     - \ref UAC_GET_RES
  *                     - \ref UAC_GET_STAT
+ *                     - \ref UAC_RANGE
  *  @param[in]  chn    The requested channel. It can be one of the followings:
  *                     - \ref UAC_CH_LEFT_FRONT
  *                     - \ref UAC_CH_RIGHT_FRONT
@@ -314,10 +510,13 @@ int usbh_uac_mute_control(UAC_DEV_T *uac, uint8_t target, uint8_t req, uint16_t 
  */
 int usbh_uac_vol_control(UAC_DEV_T *uac, uint8_t target, uint8_t req, uint16_t chn, uint16_t *volume)
 {
-    uint8_t     bmRequestType;
-    uint8_t     bUnitID;
-    uint32_t    xfer_len;
+    uint8_t     bmRequestType;    
+    uint8_t     reqBackup;
+    uint8_t     bUnitID, u8Range = 0;
+    uint32_t    xfer_len, len = 2;
     int         ret;
+    uint16_t    u16Range[4];
+    uint8_t     *puPtr = (uint8_t *)volume;
 
     if(target == UAC_MICROPHONE)
         bUnitID = uac->acif.mic_fuid;
@@ -329,19 +528,47 @@ int usbh_uac_vol_control(UAC_DEV_T *uac, uint8_t target, uint8_t req, uint16_t c
     else
         bmRequestType = REQ_TYPE_OUT | REQ_TYPE_CLASS_DEV | REQ_TYPE_TO_IFACE;
 
+    if(uac->version == 0x0200)
+    {
+        if((req == UAC_GET_MAX) || (req == UAC_GET_MIN) || (req == UAC_GET_RES))
+        {
+            reqBackup = req;
+            u8Range = 1;
+            req = UAC_RANGE;
+            len = 8;
+            puPtr =  (uint8_t *)u16Range;
+        }
+        else
+            req = req & 0x7F;
+    }
+ 
     /* Audio Class Request - Feature Unit Control Request (5.2.2.4) */
     ret = usbh_ctrl_xfer(uac->udev, bmRequestType, req,
                          (VOLUME_CONTROL << 8) | chn,/* wValue - Control Selector (CS)    */
                          (bUnitID << 8) | (uac->acif.iface->if_num),  /* wIndex - unit ID and interface number */
-                         2,                          /* wLength - parameter block length  */
-                         (uint8_t *)volume,          /* parameter block                   */
+                         len,                          /* wLength - parameter block length  */
+                         puPtr,          /* parameter block                   */
                          &xfer_len, UAC_REQ_TIMEOUT);
     if(ret < 0)
         return ret;
 
-    if(xfer_len != 2)
+    if(xfer_len != len)
         return UAC_RET_DATA_LEN;
-
+    if(u8Range)
+    {
+        switch(reqBackup)
+        {
+            case UAC_GET_MIN:
+                *volume = u16Range[1]; 
+                break;
+            case UAC_GET_MAX:
+                *volume = u16Range[2]; 
+                break;
+            case UAC_GET_RES:
+                *volume = u16Range[3]; 
+                break;
+        }
+    }
     return 0;
 }
 
@@ -390,6 +617,10 @@ int  usbh_uac_auto_gain_control(UAC_DEV_T *uac, uint8_t target, uint8_t req, uin
     else
         bmRequestType = REQ_TYPE_OUT | REQ_TYPE_CLASS_DEV | REQ_TYPE_TO_IFACE;
 
+    if(uac->version == 0x0200)
+    {
+        req = req & 0x7F;
+    }
     /* Audio Class Request - Feature Unit Control Request (5.2.2.4) */
     ret = usbh_ctrl_xfer(uac->udev, bmRequestType, req,
                          (AUTOMATIC_GAIN_CONTROL << 8) | chn,  /* wValue - Control Selector (CS)    */
@@ -516,9 +747,9 @@ static void iso_in_irq(UTR_T *utr)
         }
         else
         {
-            UAC_DBGMSG("Iso %d err - %d\n", i, utr->iso_status[i]);
-            if((utr->iso_status[i] == USBH_ERR_NOT_ACCESS0) || (utr->iso_status[i] == USBH_ERR_NOT_ACCESS1))
-                utr->bIsoNewSched = 1;
+//            UAC_DBGMSG("Iso %d err - %d\n", i, utr->iso_status[i]);
+//            if((utr->iso_status[i] == USBH_ERR_NOT_ACCESS0) || (utr->iso_status[i] == USBH_ERR_NOT_ACCESS1))
+//                utr->bIsoNewSched = 1;
         }
         utr->iso_xlen[i] = utr->ep->wMaxPacketSize;
     }
@@ -539,7 +770,7 @@ static void iso_in_irq(UTR_T *utr)
  *  @retval    0          Success
  *  @retval    Otherwise  Failed
  */
-int usbh_uac_start_audio_in(UAC_DEV_T *uac, UAC_CB_FUNC *func)
+int usbh_uac_start_audio_in(UAC_DEV_T *uac, uint8_t u8Alt, UAC_CB_FUNC *func)
 {
     UDEV_T       *udev = uac->udev;
     AS_IF_T      *asif = &uac->asif_in;
@@ -548,7 +779,6 @@ int usbh_uac_start_audio_in(UAC_DEV_T *uac, UAC_CB_FUNC *func)
     EP_INFO_T    *ep;
     UTR_T        *utr;
     uint8_t      *buff;
-    uint8_t      bAlternateSetting;
     int          i, j, ret;
 
     if(!uac || !iface)
@@ -560,19 +790,18 @@ int usbh_uac_start_audio_in(UAC_DEV_T *uac, UAC_CB_FUNC *func)
     /*------------------------------------------------------------------------------------*/
     /*  Select the maximum packet size alternative interface                              */
     /*------------------------------------------------------------------------------------*/
-    if(usbh_uac_find_max_alt(iface, EP_ADDR_DIR_IN, EP_ATTR_TT_ISO, &bAlternateSetting) != 0)
-        return UAC_RET_FUNC_NOT_FOUND;
+
 
     uac->func_au_in = func;
 
-    ret = usbh_set_interface(iface, bAlternateSetting);
+    ret = usbh_set_interface(iface, u8Alt);
     if(ret < 0)
     {
-        UAC_ERRMSG("Failed to set interface %d, %d! (%d)\n", iface->if_num, bAlternateSetting, ret);
+        UAC_ERRMSG("Failed to set interface %d, %d! (%d)\n", iface->if_num, u8Alt, ret);
         return ret;
     }
 
-    ret = uac_parse_streaming_interface(uac, iface, bAlternateSetting);
+    ret = uac_parse_streaming_interface(uac, iface, u8Alt);
     if(ret < 0)
         return ret;
 
@@ -596,7 +825,13 @@ int usbh_uac_start_audio_in(UAC_DEV_T *uac, UAC_CB_FUNC *func)
     if(asif->ep == NULL)
         return UAC_RET_FUNC_NOT_FOUND;
     ep = asif->ep;
+    if(uac->version == 0x0200)
+    {
+        uac->xfer = uac->acif.mic_ch[u8Alt] * uac->acif.mic_samplingrate * uac->acif.mic_SubslotSize[u8Alt] / 8000;
+//    printf("UAC_MICROPHONE xfer %d\n", uac->xfer);
 
+        ep->wMaxPacketSize = uac->xfer;
+		}
 #ifdef UAC_DEBUG
     UAC_DBGMSG("Activated isochronous-in endpoint =>");
     usbh_dump_ep_info(ep);
@@ -755,9 +990,9 @@ static void iso_out_irq(UTR_T *utr)
     {
         if(utr->iso_status[i] != 0)
         {
-            // UAC_DBGMSG("Iso %d err - %d\n", i, utr->iso_status[i]);
-            if((utr->iso_status[i] == USBH_ERR_NOT_ACCESS0) || (utr->iso_status[i] == USBH_ERR_NOT_ACCESS1))
-                utr->bIsoNewSched = 1;
+//            UAC_DBGMSG("Iso %d err - %d\n", i, utr->iso_status[i]);
+//            if((utr->iso_status[i] == USBH_ERR_NOT_ACCESS0) || (utr->iso_status[i] == USBH_ERR_NOT_ACCESS1))
+//                utr->bIsoNewSched = 1;
         }
         utr->iso_xlen[i] = uac->func_au_out(uac, utr->iso_buff[i], utr->ep->wMaxPacketSize);
     }
@@ -779,7 +1014,7 @@ static void iso_out_irq(UTR_T *utr)
  *  @retval    0          Success
  *  @retval    Otherwise  Failed
  */
-int usbh_uac_start_audio_out(UAC_DEV_T *uac, UAC_CB_FUNC *func)
+int usbh_uac_start_audio_out(UAC_DEV_T *uac, uint8_t u8Alt, UAC_CB_FUNC *func)
 {
     UDEV_T       *udev = uac->udev;
     AS_IF_T      *asif = &uac->asif_out;
@@ -788,7 +1023,6 @@ int usbh_uac_start_audio_out(UAC_DEV_T *uac, UAC_CB_FUNC *func)
     EP_INFO_T    *ep;
     UTR_T        *utr;
     uint8_t      *buff;
-    uint8_t      bAlternateSetting;
     int          i, j, ret;
 
     if(!uac || !func || !iface)
@@ -797,22 +1031,16 @@ int usbh_uac_start_audio_out(UAC_DEV_T *uac, UAC_CB_FUNC *func)
     if(asif->flag_streaming)
         return UAC_RET_IS_STREAMING;
 
-    /*------------------------------------------------------------------------------------*/
-    /*  Select the maximum packet size alternative interface                              */
-    /*------------------------------------------------------------------------------------*/
-    if(usbh_uac_find_max_alt(iface, EP_ADDR_DIR_OUT, EP_ATTR_TT_ISO, &bAlternateSetting) != 0)
-        return UAC_RET_FUNC_NOT_FOUND;
-
     uac->func_au_out = func;
 
-    ret = usbh_set_interface(iface, bAlternateSetting);
+    ret = usbh_set_interface(iface, u8Alt);
     if(ret < 0)
     {
-        UAC_ERRMSG("Failed to set interface %d, %d! (%d)\n", iface->if_num, bAlternateSetting, ret);
+        UAC_ERRMSG("Failed to set interface %d, %d! (%d)\n", iface->if_num, u8Alt, ret);
         return ret;
     }
 
-    ret = uac_parse_streaming_interface(uac, iface, bAlternateSetting);
+    ret = uac_parse_streaming_interface(uac, iface, u8Alt);
     if(ret < 0)
         return ret;
 
@@ -829,7 +1057,10 @@ int usbh_uac_start_audio_out(UAC_DEV_T *uac, UAC_CB_FUNC *func)
                 ((ep->bmAttributes & EP_ATTR_TT_MASK) == EP_ATTR_TT_ISO))
         {
             asif->ep = ep;
-            UAC_DBGMSG("Audio in endpoint 0x%x found, size: %d\n", ep->bEndpointAddress, ep->wMaxPacketSize);
+            if(uac->version == 0x0200)
+                ep->wMaxPacketSize = uac->xfer;
+
+            UAC_DBGMSG("Audio out endpoint 0x%x found, size: %d\n", ep->bEndpointAddress, ep->wMaxPacketSize);
             break;
         }
     }
@@ -837,6 +1068,8 @@ int usbh_uac_start_audio_out(UAC_DEV_T *uac, UAC_CB_FUNC *func)
         return UAC_RET_FUNC_NOT_FOUND;
     ep = asif->ep;
 
+    uac->xfer = uac->acif.speaker_ch[u8Alt] * uac->acif.speaker_samplingrate * uac->acif.speaker_SubslotSize[u8Alt] / 8000;
+//    printf("UAC_SPEAKER xfer %d\n", uac->xfer);
 #ifdef UAC_DEBUG
     UAC_DBGMSG("Activated isochronous-out endpoint =>");
     usbh_dump_ep_info(ep);
@@ -984,7 +1217,7 @@ int usbh_uac_open(UAC_DEV_T *uac)
 {
     IFACE_T      *iface;
     uint8_t      bAlternateSetting;
-    int          ret;
+    int          ret, i;
 
     /*------------------------------------------------------------------------------------*/
     /*  Select the maximum packet size alternative interface                              */
@@ -993,6 +1226,14 @@ int usbh_uac_open(UAC_DEV_T *uac)
 
     if(iface != NULL)
     {
+        for(i=0;i<iface->num_alt;i++)
+        {
+            ret = uac_parse_streaming_interface(uac, iface, i);
+            if(ret < 0)
+                return ret;
+            uac->acif.mic_ch[i] = uac->asif_in.bNrChannels;  
+            uac->acif.mic_SubslotSize[i] = uac->asif_in.bSubslotSize;  
+        }
         if(usbh_uac_find_max_alt(iface, EP_ADDR_DIR_IN, EP_ATTR_TT_ISO, &bAlternateSetting) != 0)
             return UAC_RET_FUNC_NOT_FOUND;
 
@@ -1011,6 +1252,14 @@ int usbh_uac_open(UAC_DEV_T *uac)
 
     if(iface != NULL)
     {
+        for(i=0;i<iface->num_alt;i++)
+        {
+            ret = uac_parse_streaming_interface(uac, iface, i);
+            if(ret < 0)
+                return ret;
+            uac->acif.speaker_ch[i] = uac->asif_out.bNrChannels;  
+            uac->acif.speaker_SubslotSize[i] = uac->asif_out.bSubslotSize;  
+        }
         if(usbh_uac_find_max_alt(iface, EP_ADDR_DIR_OUT, EP_ATTR_TT_ISO, &bAlternateSetting) != 0)
             return UAC_RET_FUNC_NOT_FOUND;
 

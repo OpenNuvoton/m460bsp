@@ -59,6 +59,11 @@ typedef enum
 #define PROCESSING_UNIT               0x07
 #define EXTENSION_UNIT                0x08
 
+#define CLOCK_SOURCE                  0x0A
+#define CLOCK_SELECTOR                0x0B
+#define CLOCK_MULTIPLIER              0x0C
+
+
 /* Audio Class-Specific AS Interface Descriptor Subtypes (A.6) */
 #define AS_DESCRIPTOR_UNDEFINED       0x00
 #define AS_GENERAL                    0x01
@@ -162,6 +167,15 @@ typedef enum
 #define FORMAT_TYPE_II                0x02
 #define FORMAT_TYPE_III               0x03
 
+
+
+/* USB Audio Class 2.0 Control Request Codes */
+#define UAC_GET_RANGE              0x02    /* Get supported sampling frequency range */
+
+/* USB Audio Class 2.0 Clock Entity Control Selectors */
+#define CLOCK_FREQUENCY_CONTROL    0x01    /* Control selector for sampling frequency */
+
+
 /*-----------------------------------------------------------------------------------
  *  Audio Class Control Interface Descriptor header
  */
@@ -229,6 +243,23 @@ typedef struct ac_itd_t                     /*! Audio Class-Specific Input Termi
     __packed uint8_t  iChannelNames;
     __packed uint8_t  iTerminal;
 } AC_IT_T;                                  /*! Audio Class-Specific Input Terminal Descriptor        */
+
+typedef struct ac_itd_20_t                  /*! Audio 2.0 Class-Specific Input Terminal Descriptor        */
+{
+    __packed uint8_t  bLength;                       /*!< Size of this descriptor, in bytes: 12                */
+    __packed uint8_t  bDescriptorType;               /*!< CS_INTERFACE descriptor type; 0x24                   */
+    __packed uint8_t  bDescriptorSubtype;            /*!< INPUT_TERMINAL descriptor subtype; 0x2               */
+    __packed uint8_t  bTerminalID;
+    __packed uint16_t wTerminalType;
+    __packed uint8_t  bAssocTerminal;       
+    __packed uint8_t  bCSourceID;
+    __packed uint8_t  bNrChannels;
+    __packed uint32_t wChannelConfig;
+    __packed uint8_t  iChannelNames;
+    __packed uint16_t bmControls;
+    __packed uint8_t  iTerminal;
+} AC_IT_20_T;                                  /*! Audio Class-Specific Input Terminal Descriptor        */
+
 #else
 typedef struct __attribute__((__packed__)) ac_itd_t     /*! Audio Class-Specific Input Terminal Descriptor        */
 {
@@ -243,6 +274,24 @@ typedef struct __attribute__((__packed__)) ac_itd_t     /*! Audio Class-Specific
     uint8_t  iChannelNames;
     uint8_t  iTerminal;
 } AC_IT_T;                                  /*! Audio Class-Specific Input Terminal Descriptor        */
+
+
+
+typedef struct __attribute__((__packed__)) ac_itd_20_t     /*! Audio 2.0 Class-Specific Input Terminal Descriptor        */
+{
+    uint8_t  bLength;                       /*!< Size of this descriptor, in bytes: 12                */
+    uint8_t  bDescriptorType;               /*!< CS_INTERFACE descriptor type; 0x24                   */
+    uint8_t  bDescriptorSubtype;            /*!< INPUT_TERMINAL descriptor subtype; 0x2               */
+    uint8_t  bTerminalID;
+    uint16_t wTerminalType;
+    uint8_t  bAssocTerminal;       
+    uint8_t  bCSourceID;
+    uint8_t  bNrChannels;
+    uint32_t wChannelConfig;
+    uint8_t  iChannelNames;
+    uint16_t bmControls;
+    uint8_t  iTerminal;
+} AC_IT_20_T;                                  /*! Audio Class-Specific Input Terminal Descriptor        */
 #endif
 
 /*-----------------------------------------------------------------------------------
@@ -260,6 +309,20 @@ typedef struct ac_otd_t
     __packed uint8_t  bSourceID;
     __packed uint8_t  iTerminal;
 } AC_OT_T;
+
+typedef struct ac_otd_20_t
+{
+    __packed uint8_t  bLength;
+    __packed uint8_t  bDescriptorType;
+    __packed uint8_t  bDescriptorSubtype;
+    __packed uint8_t  bTerminalID;
+    __packed uint16_t wTerminalType;
+    __packed uint8_t  bAssocTerminal;
+    __packed uint8_t  bSourceID;          
+    __packed uint8_t  bCSourceID;
+    __packed uint16_t  bmControls;
+    __packed uint8_t  iTerminal;
+} AC_OT_20_T;
 #else
 typedef struct __attribute__((__packed__)) ac_otd_t
 {
@@ -272,6 +335,20 @@ typedef struct __attribute__((__packed__)) ac_otd_t
     uint8_t  bSourceID;
     uint8_t  iTerminal;
 } AC_OT_T;
+
+typedef struct __attribute__((__packed__)) ac_otd_20_t
+{
+    uint8_t  bLength;
+    uint8_t  bDescriptorType;
+    uint8_t  bDescriptorSubtype;
+    uint8_t  bTerminalID;
+    uint16_t wTerminalType;
+    uint8_t  bAssocTerminal;
+    uint8_t  bSourceID;          
+    uint8_t  bCSourceID;
+    uint16_t  bmControls;
+    uint8_t  iTerminal;
+} AC_OT_20_T;
 #endif
 
 /*---------------------------------*/
@@ -417,7 +494,21 @@ typedef struct as_gen_t
     __packed uint8_t  bTerminalLink;
     __packed uint8_t  bDelay;
     __packed uint16_t wFormatTag;
-} AS_GEN_T;
+} AS_GEN_T;      
+
+typedef struct as_gen_20_t
+{
+    __packed uint8_t  bLength;
+    __packed uint8_t  bDescriptorType;
+    __packed uint8_t  bDescriptorSubtype;
+    __packed uint8_t  bTerminalLink;
+    __packed uint8_t  bmControls;        
+    __packed uint8_t  bFormatType;
+    __packed uint32_t bmFormats;
+    __packed uint8_t  bNrChannels;
+    __packed uint32_t bmChannelCOnfig;      
+    __packed uint8_t  iChannelNames;
+} AS_GEN_20_T;
 #else
 typedef struct __attribute__((__packed__)) as_gen_t
 {
@@ -428,6 +519,20 @@ typedef struct __attribute__((__packed__)) as_gen_t
     uint8_t  bDelay;
     uint16_t wFormatTag;
 } AS_GEN_T;
+
+typedef struct __attribute__((__packed__)) as_gen_20_t
+{
+    uint8_t  bLength;
+    uint8_t  bDescriptorType;
+    uint8_t  bDescriptorSubtype;
+    uint8_t  bTerminalLink;
+    uint8_t  bmControls;        
+    uint8_t  bFormatType;
+    uint32_t bmFormats;
+    uint8_t  bNrChannels;
+    uint32_t bmChannelCOnfig;      
+    uint8_t  iChannelNames;
+} AS_GEN_20_T;
 #endif
 
 /*-----------------------------------------------------------------------------------

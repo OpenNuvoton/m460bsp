@@ -46,7 +46,7 @@
 #define UAC_SET_RES                  0x04   /*!< UAC request to set resolution.           */
 #define UAC_GET_RES                  0x84   /*!< UAC request to get resolution.           */
 #define UAC_GET_STAT                 0xFF   /*!< UAC request to get status.               */
-
+#define UAC_RANGE                    0x02   /*!< UAC2.0 request to get MIN, MAX, RES      */
 /*
  * Audio Class-Specific Channel selection
  */
@@ -80,6 +80,15 @@ typedef struct ac_if_t
     uint8_t        mic_fuid;                /*!< Microphone Feature Unit ID               */
     uint8_t        speaker_id;              /*!< Speaker terminal ID                      */
     uint8_t        speaker_fuid;            /*!< Speaker Feature Unit ID                  */
+    uint8_t        mic_clock_id;
+    uint8_t        speaker_clock_id;
+    uint8_t        speaker_ch[MAX_ALT_PER_IFACE];             
+    uint32_t       speaker_samplingrate;     
+    uint8_t        speaker_SubslotSize[MAX_ALT_PER_IFACE];
+    uint8_t        mic_ch[MAX_ALT_PER_IFACE];                   
+    uint8_t        mic_SubslotSize[MAX_ALT_PER_IFACE];            
+    uint32_t       mic_samplingrate;       
+
 }  AC_IF_T;
 
 /*----------------------------------------------------------------------------------------*/
@@ -92,7 +101,12 @@ typedef struct as_if_t
     UTR_T          *utr[NUM_UTR];           /*!< ping-pong transfer requests              */
     AS_GEN_T       *as_gen;                 /*!< Point to the Class-Specific AS Interface Descriptor of this interface */
     AC_IT_T        *it;                     /*!< Point to the Input Terminal connected with USB OUT endpoint */
+    AC_IT_20_T     *it_20;                  /*!< Point to the 2.0 Input Terminal connected with USB OUT endpoint */
+    AS_GEN_20_T    *as_gen_20;              /*!< Point to the 2.0 Class-Specific AS Interface Descriptor of this interface */
+    uint8_t        bSubslotSize;
+    uint8_t        bNrChannels;
     AC_OT_T        *ot;                     /*!< Point to the Output Terminal connected with USB IN endpoint */
+    AC_OT_20_T     *ot_20;                  /*!< Point to the 2.0 Output Terminal connected with USB IN endpoint */
     AS_FT1_T       *ft;                     /*!< Point to Format type descriptor, support Type-I only */
     CS_EP_T        *cs_epd;                 /*!< Point to AS Isochronous Audio Data Endpoint Descriptor */
     uint8_t        flag_streaming;          /*!< audio is streaming or not                */
@@ -110,6 +124,8 @@ typedef struct uac_dev_t
     UAC_CB_FUNC    *func_au_in;             /*!< audio in callback function               */
     UAC_CB_FUNC    *func_au_out;            /*!< audio out callback function              */
     uint32_t       uid;                     /*!< The unique ID to identify an UAC device. */
+    uint32_t       version;
+    uint32_t       xfer;
     UAC_STATE_E    state;
     struct uac_dev_t    *next;              /*!< point to the UAC device                  */
 } UAC_DEV_T;                                /*! audio class device structure              */
