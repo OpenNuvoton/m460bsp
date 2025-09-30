@@ -824,33 +824,6 @@ void CANFD_Close(CANFD_T *psCanfd)
  *
  * @details     The function is used to get the element's address when read transmit buffer.
  */
-static uint32_t CANFD_GetTxBufferElementAddress(CANFD_T *psCanfd, uint32_t u32Idx)
-{
-    uint32_t u32Size = 0;
-    u32Size = (CANFD_ReadReg(&psCanfd->TXESC) & CANFD_TXESC_TBDS_Msk) >> CANFD_TXESC_TBDS_Pos;
-
-    if (u32Size < 5U)
-    {
-        u32Size += 4U;
-    }
-    else
-    {
-        u32Size = u32Size * 4U - 10U;
-    }
-
-    return (CANFD_ReadReg(&psCanfd->TXBC) & CANFD_TXBC_TBSA_Msk) + u32Idx * u32Size * 4U;
-}
-
-/**
- * @brief       Get the element's address when read transmit buffer.
- *
- * @param[in]   psCanfd      The pointer of the specified CAN FD module.
- * @param[in]   u32Idx       The number of the transmit buffer element
- *
- * @return      Address of the element in transmit buffer.
- *
- * @details     The function is used to get the element's address when read transmit buffer.
- */
 static uint32_t CANFD_GetTxEventFifoElementAddress(CANFD_T *psCanfd, uint32_t u32Idx)
 {
     return (CANFD_ReadReg(&psCanfd->TXEFC) & CANFD_TXEFC_EFSA_Msk) + (u32Idx * 8U);
