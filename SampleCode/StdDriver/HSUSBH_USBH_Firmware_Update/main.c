@@ -216,8 +216,7 @@ int main(void)
 
     delay_us(100000);                       /* delay 100ms for some slow response pen drive. */
 
-    usbh_pooling_hubs();
-    usbh_pooling_hubs();
+    while(usbh_pooling_hubs() == 0);
 
     usbh_firmware_update();
 

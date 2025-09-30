@@ -30,11 +30,6 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>FATFS</name>
-			<type>2</type>
-			<locationURI>virtual:/virtual</locationURI>
-		</link>
-		<link>
 			<name>Library</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -55,11 +50,6 @@
 			<locationURI>PARENT-4-PROJECT_LOC/Library/Device/Nuvoton/m460/Source</locationURI>
 		</link>
 		<link>
-			<name>FATFS/FATFS</name>
-			<type>2</type>
-			<locationURI>PARENT-4-PROJECT_LOC/ThirdParty/FatFs/source</locationURI>
-		</link>
-		<link>
 			<name>Library/Library</name>
 			<type>2</type>
 			<locationURI>PARENT-4-PROJECT_LOC/Library/StdDriver/src</locationURI>
@@ -73,16 +63,6 @@
 			<name>User/mp3headerparser.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/mp3headerparser.c</locationURI>
-		</link>
-		<link>
-			<name>User/sdglue.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/sdglue.c</locationURI>
-		</link>
-		<link>
-			<name>User/diskio.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/diskio.c</locationURI>
 		</link>
 		<link>
 			<name>User/isr.c</name>
@@ -104,6 +84,11 @@
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/audio_codec.c</locationURI>
 		</link>
+		<link>
+			<name>User/pseudofile.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/pseudofile.c</locationURI>
+		</link>
 	</linkedResources>
 	<filteredResources>
 		<filter>
@@ -113,24 +98,6 @@
 			<matcher>
 				<id>org.eclipse.ui.ide.multiFilter</id>
 				<arguments>1.0-name-matches-false-false-GCC</arguments>
-			</matcher>
-		</filter>
-		<filter>
-			<id>1505206511418</id>
-			<name>FATFS/FATFS</name>
-			<type>5</type>
-			<matcher>
-				<id>org.eclipse.ui.ide.multiFilter</id>
-				<arguments>1.0-name-matches-false-false-ff.c</arguments>
-			</matcher>
-		</filter>
-		<filter>
-			<id>1505206511455</id>
-			<name>FATFS/FATFS</name>
-			<type>10</type>
-			<matcher>
-				<id>org.eclipse.ui.ide.multiFilter</id>
-				<arguments>1.0-name-matches-false-false-option</arguments>
 			</matcher>
 		</filter>
 		<filter>
@@ -185,15 +152,6 @@
 			<matcher>
 				<id>org.eclipse.ui.ide.multiFilter</id>
 				<arguments>1.0-name-matches-false-false-i2c.c</arguments>
-			</matcher>
-		</filter>
-		<filter>
-			<id>1505206283066</id>
-			<name>Library/Library</name>
-			<type>5</type>
-			<matcher>
-				<id>org.eclipse.ui.ide.multiFilter</id>
-				<arguments>1.0-name-matches-false-false-sdh.c</arguments>
 			</matcher>
 		</filter>
 		<filter>

@@ -4,7 +4,7 @@
  * @brief    I2S mp3 player sample configuration header file.
  *
  * @copyright SPDX-License-Identifier: Apache-2.0
- * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
+ * @copyright Copyright (c) 2025 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #ifndef PROJECT_CONFIG_H
 #define PROJECT_CONFIG_H
@@ -17,8 +17,8 @@
 #define USE_SDH
 //#define USE_USBH
 
-#define PCM_BUFFER_SIZE        2304
-#define FILE_IO_BUFFER_SIZE    4096
+#define PCM_BUFFER_SIZE        (1152)
+#define FILE_IO_BUFFER_SIZE    (4096)
 
 struct mp3Header
 {
