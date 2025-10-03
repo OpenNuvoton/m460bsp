@@ -32,6 +32,8 @@ project:
         - file: ../../../../Library/Device/Nuvoton/m460/Source/GCC/startup_m460.S
           for-compiler: GCC
         - file: ../../../../Library/Device/Nuvoton/m460/Source/system_m460.c
+          define:
+          - HBI_ENABLE: 2
     - group: User
       files:
         - file: ../main.c
