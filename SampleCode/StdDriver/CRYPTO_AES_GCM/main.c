@@ -33,10 +33,10 @@ __ALIGNED(4) uint8_t g_au8FeedBackBuf[72] = {0};
 /* for the key and data in binary format */
 __ALIGNED(4) uint8_t g_key[32] = { 0 };
 __ALIGNED(4) uint8_t g_iv[32] = { 0 };
-__ALIGNED(4) uint8_t g_A[265] = { 0 };
-__ALIGNED(4) uint8_t g_P[256] = { 0 };
-__ALIGNED(4) uint8_t g_C[256] = { 0 };
-__ALIGNED(4) uint8_t g_T[256] = { 0 };
+__ALIGNED(4) uint8_t g_A[320] = { 0 };
+__ALIGNED(4) uint8_t g_P[320] = { 0 };
+__ALIGNED(4) uint8_t g_C[320] = { 0 };
+__ALIGNED(4) uint8_t g_T[320] = { 0 };
 
 
 typedef struct
