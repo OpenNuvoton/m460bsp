@@ -17,7 +17,7 @@
 */
 
 int32_t g_I2C_i32ErrCode = 0;       /*!< I2C global error code */
-int32_t g_I2C_u32HalfBaudRateDelayCount = 0x80U; /*!< I2C half baud rate delay count, default value is set for I2C baud rate @100K */
+int32_t g_I2C_au32HalfBaudRateDelayCount[5] = {0x80U, 0x80U, 0x80U, 0x80U, 0x80U}; /*!< I2C half baud rate delay count, default value is set for I2C baud rate @100K */
 
 /** @addtogroup I2C_EXPORTED_FUNCTIONS I2C Exported Functions
   @{
@@ -34,7 +34,9 @@ int32_t g_I2C_u32HalfBaudRateDelayCount = 0x80U; /*!< I2C half baud rate delay c
  */
 static void I2C_DelayHalfBaudRate(I2C_T *i2c)
 {
-    volatile int32_t u32DelayCount = g_I2C_u32HalfBaudRateDelayCount;
+    uint32_t u32Index = (uint32_t)i2c == I2C0_BASE ? 0U : ((uint32_t)i2c == I2C1_BASE ? 1U : \
+                        ((uint32_t)i2c == I2C2_BASE ? 2U : ((uint32_t)i2c == I2C3_BASE ? 3U : 4U)));
+    volatile int32_t u32DelayCount = g_I2C_au32HalfBaudRateDelayCount[u32Index];
 
     /* Delay half baud rate time */
     while (u32DelayCount-- > 0)
@@ -58,8 +60,10 @@ static void I2C_DelayHalfBaudRate(I2C_T *i2c)
   */
 uint32_t I2C_Open(I2C_T *i2c, uint32_t u32BusClock)
 {
-    uint32_t u32Div, u32NFCnt;
+    uint32_t u32Div;
     uint32_t u32Pclk;
+    uint32_t u32Index = (uint32_t)i2c == I2C0_BASE ? 0U : ((uint32_t)i2c == I2C1_BASE ? 1U : \
+                        ((uint32_t)i2c == I2C2_BASE ? 2U : ((uint32_t)i2c == I2C3_BASE ? 3U : 4U)));
 
     if( (i2c == I2C1) || (i2c == I2C3) )
     {
@@ -70,14 +74,10 @@ uint32_t I2C_Open(I2C_T *i2c, uint32_t u32BusClock)
         u32Pclk = CLK_GetPCLK0Freq();
     }
 
-    g_I2C_u32HalfBaudRateDelayCount = (((u32Pclk / (u32BusClock << 2U)) + 1U) / 2) + 3; /* Calculate half baud rate delay count */
+    g_I2C_au32HalfBaudRateDelayCount[u32Index] = (((u32Pclk / (u32BusClock << 2U)) + 1U) / 2) + 3; /* Calculate half baud rate delay count */
 
     u32Div = (uint32_t)(((u32Pclk * 10U) / (u32BusClock * 4U) + 5U) / 10U - 1U); /* Compute proper divider for I2C clock */
     i2c->CLKDIV = u32Div;
-
-    /* Set noise filter count based on divider value */
-    u32NFCnt = (u32Div > 16U) ? 15U : (u32Div - 1U);
-    i2c->CLKDIV = (i2c->CLKDIV & ~I2C_CLKDIV_NFCNT_Msk) | (u32NFCnt << I2C_CLKDIV_NFCNT_Pos);
 
     /* Enable I2C */
     i2c->CTL0 |= I2C_CTL0_I2CEN_Msk;
