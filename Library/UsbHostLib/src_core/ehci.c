@@ -915,7 +915,7 @@ static int ehci_quit_xfer(UTR_T *utr, EP_INFO_T *ep)
         utr->ep->hw_pipe = NULL;
     }
 
-    if ((ep != NULL) && (ep->hw_pipe != NULL))
+    if((ep != NULL) && (ep->hw_pipe != NULL))
     {
         qh = (QH_T *)(ep->hw_pipe);
         /* add the QH to remove list, it will be removed on the next IAAD interrupt       */
@@ -925,9 +925,9 @@ static int ehci_quit_xfer(UTR_T *utr, EP_INFO_T *ep)
 
     /* wait until IAAD interrupt processed */
     t0 = get_ticks();
-    while ((_ehci->UCMDR & HSUSBH_UCMDR_IAAD_Msk) || (_ehci->USTSR & HSUSBH_USTSR_IAA_Msk))
+    while((_ehci->UCMDR & HSUSBH_UCMDR_IAAD_Msk) || (_ehci->USTSR & HSUSBH_USTSR_IAA_Msk))
     {
-        if (get_ticks() - t0 > 2)
+        if(get_ticks() - t0 > 2)
         {
             USB_error("%s - IAAD lost!!  UCMDR:0x%x, USTSR: 0x%x, UIENR: 0x%x\n", __func__, _ehci->UCMDR, _ehci->USTSR, _ehci->UIENR);
             ehci_reinit();
@@ -1156,7 +1156,7 @@ void iaad_remove_qh()
         while(qh->done_list)                /* we can free the qTDs now                   */
         {
             qtd = qh->done_list;
-            if (qtd == qtd->next)
+            if(qtd == qtd->next)
             {
                 free_ehci_qTD(qtd);
                 qh->done_list = NULL;
@@ -1181,7 +1181,7 @@ void sync_remove_qtd_done()
         while(qh->done_list)                /* we can free the qTDs now                   */
         {
             qtd = qh->done_list;
-            if (qtd == qtd->next)
+            if(qtd == qtd->next)
             {
                 free_ehci_qTD(qtd);
                 qh->done_list = NULL;
