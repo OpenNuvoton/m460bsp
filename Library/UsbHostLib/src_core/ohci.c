@@ -436,7 +436,7 @@ static int ohci_ctrl_xfer(UTR_T *utr)
     ed->NextED = 0;
 
     //TD_debug("TD SETUP [0x%x]: 0x%x, 0x%x, 0x%x, 0x%x\n", (int)td_setup, td_setup->Info, td_setup->CBP, td_setup->BE, td_setup->NextTD);
-    //if (td_data)
+    //if(td_data)
     //    TD_debug("TD DATA  [0x%x]: 0x%x, 0x%x, 0x%x, 0x%x\n", (int)td_data, td_data->Info, td_data->CBP, td_data->BE, td_data->NextTD);
     //TD_debug("TD STATUS [0x%x]: 0x%x, 0x%x, 0x%x, 0x%x\n", (int)td_status, td_status->Info, td_status->CBP, td_status->BE, td_status->NextTD);
     ED_debug("Xfer ED 0x%x: 0x%x 0x%x 0x%x 0x%x\n", (int)ed, ed->Info, ed->TailP, ed->HeadP, ed->NextED);
