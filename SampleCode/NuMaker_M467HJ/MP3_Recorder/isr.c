@@ -125,7 +125,7 @@ void I2S0_IRQHandler(void)
 
         for(i = 0; i < u32Len; i++)
         {
-            outp32(HYPER_RAM_MEM_MAP + g_u32BuffPos + 4 * i, I2S_READ_RX_FIFO(I2S0));
+            outp32(HYPERRAM_BASE + g_u32BuffPos + 4 * i, I2S_READ_RX_FIFO(I2S0));
         }
 
         g_u32BuffPos += 4 * u32Len;

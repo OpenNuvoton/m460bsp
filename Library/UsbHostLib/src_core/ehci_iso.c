@@ -364,7 +364,7 @@ static void  write_itd_micro_frame(UTR_T *utr, int fidx, iTD_T *itd, int mf)
                            ((buff_addr & 0xFFFFF000) - (itd->buff_base & 0xFFFFF000)) |   /* PG */
                            (buff_addr & 0xFFF);                                           /* Transaction offset */
 
-__DSB();
+    __DSB();
 }
 
 static void remove_iso_ep_from_list(ISO_EP_T *iso_ep)

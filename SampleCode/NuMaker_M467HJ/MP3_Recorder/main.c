@@ -424,7 +424,7 @@ int main(void)
 #ifndef REC_IN_RT
 
                 /* Clear HyperRAM */
-                if(ClearHyperRAM(HYPER_RAM_MEM_MAP, HYPER_RAM_MEM_MAP + 0x800000) < 0)
+                if(ClearHyperRAM(HYPERRAM_BASE, HYPERRAM_BASE + 0x800000) < 0)
                     return -1;
 
 #endif
