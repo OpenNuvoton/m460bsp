@@ -26,9 +26,6 @@
 #define IMAGE_MAX_SIZE          (SELECT_RES_WIDTH * SELECT_RES_HEIGHT * 2)
 #define IMAGE_BUFF_CNT          4
 
-#define JPEG_START_MARKER       0xFFD8
-#define JPEG_END_MARKER         0xFFD9
-
 FIL file;
 
 enum
@@ -51,7 +48,7 @@ struct img_buff_t
 struct img_buff_t  _imgs[IMAGE_BUFF_CNT];
 uint8_t  (*image_buff_pool)[IMAGE_BUFF_CNT][IMAGE_MAX_SIZE] __attribute__((aligned(32))) = (uint8_t (*)[IMAGE_BUFF_CNT][IMAGE_MAX_SIZE])HYPERRAM_BASE;
 volatile int   _idx_usb = 0, _idx_post = 0;
-int   _total_frame_count = 0;
+volatile int   ignore_img = 0;
 
 extern int kbhit(void);                        /* function in retarget.c                 */
 
@@ -344,9 +341,7 @@ int  uvc_rx_callbak(UVC_DEV_T *vdev, uint8_t *data, int len)
 {
     int  next_idx;
 
-	(void)(data);
-
-    _total_frame_count++;
+    (void)(data);
 
     next_idx = (_idx_usb + 1) % IMAGE_BUFF_CNT;
 
@@ -498,9 +493,16 @@ void process_mjpeg_stream()
     int start = 0, end = 0, frame = 0;
 
     /* Scanning JPEG frame in the buffer */
-    while(find_jpeg_frame(_imgs[_idx_usb].buff, IMAGE_MAX_SIZE, &start, &end))
+    while(find_jpeg_frame(_imgs[_idx_post].buff, IMAGE_MAX_SIZE, &start, &end))
     {
-        save_jpeg_to_sd(&_imgs[_idx_usb].buff[start], end - start, frame++);
+        /* Ignore the first two images */
+        if(ignore_img >= 2)
+            save_jpeg_to_sd(&_imgs[_idx_post].buff[start], end - start, frame++);
+
+        _imgs[_idx_post].state = IMAGE_BUFF_FREE;
+        _idx_post = (_idx_post + 1) % IMAGE_BUFF_CNT;
+
+        ignore_img++;
     }
 }
 
@@ -556,12 +558,14 @@ int main(void)
             g_u32SaveStart = 1;
         }
 
+        if(g_u32SaveStart == 1)
+        {
+            usbh_uvc_start_streaming(vdev, uvc_rx_callbak);
+        }
+
         if((_imgs[_idx_post].state == IMAGE_BUFF_READY) && (g_u32SaveStart == 1))
         {
             process_mjpeg_stream();
-
-            _imgs[_idx_post].state = IMAGE_BUFF_POST;
-            _idx_post = (_idx_post + 1) % IMAGE_BUFF_CNT;
         }
     }
 }
