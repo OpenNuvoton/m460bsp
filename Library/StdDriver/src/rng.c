@@ -50,7 +50,7 @@ static void RNG_BasicConfig()
 {
     int32_t i;
     int32_t timeout = 0x1000000;
-
+    i = 0;
     /* Enable TRNG & PRNG */
     CLK->AHBCLK0 |= CLK_AHBCLK0_CRPTCKEN_Msk;
     CLK->APBCLK1 |= CLK_APBCLK1_TRNGCKEN_Msk;
@@ -80,7 +80,7 @@ int32_t RNG_Open()
 {
     int32_t i;
     int32_t timeout = 0x1000000;
-    
+ 
     RNG_BasicConfig();
     
     /* TRNG Activate */
