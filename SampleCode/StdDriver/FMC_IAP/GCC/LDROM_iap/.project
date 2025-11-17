@@ -60,9 +60,9 @@
 			<locationURI>PARENT-1-PROJECT_LOC/LDROM_iap.ld</locationURI>
 		</link>
 		<link>
-			<name>User/startup_m460_tiny.S</name>
+			<name>User/startup_M460_tiny.S</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/startup_m460_tiny.S</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/startup_M460_tiny.S</locationURI>
 		</link>
 	</linkedResources>
 	<filteredResources>
