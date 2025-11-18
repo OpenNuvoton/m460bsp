@@ -1071,13 +1071,7 @@
     <group>
         <name>Library</name>
         <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\acmp.c</name>
-        </file>
-        <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\clk.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\dac.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\Library\StdDriver\src\fmc.c</name>
