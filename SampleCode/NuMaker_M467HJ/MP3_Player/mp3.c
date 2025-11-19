@@ -159,7 +159,6 @@ void MP3Player(void)
     volatile uint8_t u8PCMBufferTargetIdx = 0;
     volatile uint32_t pcmbuf_idx, i;
     volatile unsigned int Mp3FileOffset = 0;
-    uint16_t sampleL, sampleR;
     uint32_t u32IdleCnt, u32FrameCnt;
     uint32_t u32Timeout;
 
@@ -361,9 +360,6 @@ void MP3Player(void)
         }
 
     }
-
-    /* Waiting for all buffer play out */
-    while(PB8 && PB9){}
 
 stop:
 
