@@ -81,13 +81,15 @@ int main(void)
         2. Open "NuMicro ICP Programming Tool" to enable XOM region and
            according to xom_scatter.scf settings.
         3. Test XOM function with XOM enabled again.
-        4. Review xomlib.c and .\lib\xomlib.h to make sure all XOM function pointers are included.
-        5. Build final XOMCode. XOMAddr.exe will be executed to update
-           function pointer addresses after built.
+        4. Review xomlib.c(Keil), xomlibIAR.c(IAR) and .\lib\xomlib.h
+           to make sure all XOM function pointers are included.
+        5. (Keil) Build final XOMCode. XOMAddr.exe will be executed to update
+                  function pointer addresses after built.
+           (IAR) Update xomlibIAR.c function pointers manually.
         6. Build XOMLib project to generate xomlib.lib or xomlib.a.
            It includes function pointers for XOM.
            The library (xomlib.lib or xomlib.a) and header (xomlib.h) is located at lib directory.
-        7. Pass xomlib library & xomlib.h to the people who will call the funcitons in XOM.
+        7. Pass xomlib library & xomlib.h to the people who will call the functions in XOM.
     */
 
     printf("\n\n");
