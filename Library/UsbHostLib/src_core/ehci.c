@@ -312,7 +312,7 @@ static int  ehci_init(void)
 static int  ehci_reinit(void)
 {
     int      timeout = 250 * 1000;          /* EHCI reset time-out 250 ms                */
-    HSUSBH_T ehci_backup;
+    HSUSBH_T ehci_backup = { 0 };
 
     memcpy(&ehci_backup, _ehci, sizeof(ehci_backup));
 
@@ -371,7 +371,6 @@ static void ehci_shutdown(void)
 static void move_qh_to_remove_list(QH_T *qh)
 {
     QH_T       *q;
-    qTD_T      *qtd;
 
     // USB_debug("move_qh_to_remove_list - 0x%x (0x%x)\n", (int)qh, qh->Chrst);
 
@@ -1173,7 +1172,6 @@ void sync_remove_qtd_done()
 {
     QH_T    *qh;
     qTD_T   *qtd;
-    UTR_T   *utr;
 
     qh =  _Iqh[NUM_IQH - 1];
     while(qh != NULL)
