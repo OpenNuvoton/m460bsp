@@ -6,9 +6,7 @@ solution:
     - compiler: GCC@>=10.3.1
   build-types:
     - type: debug
-      optimize: debug
-    - type: release
-      optimize: balanced
+      optimize: none
   target-types:
     - type: ARMCLANG
       compiler: AC6
