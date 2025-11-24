@@ -223,19 +223,8 @@ int32_t mii_check_phy_init(synopGMACdevice *gmacdev)
     if(ret < 0)
         return ret;
     
-    if(ret == LINKDOWN)
-    {
-        gmacdev->DuplexMode = 0;
-        gmacdev->Speed      = 0;
-        gmacdev->LinkState  = 0;
-        gmacdev->LoopBackMode = 0;
-    }
-    else
-    {
-        mii_ethtool_gset(gmacdev, 1);
-        
-        ret = (gmacdev->Speed | (gmacdev->DuplexMode << 4));
-    }
+    mii_ethtool_gset(gmacdev, 1);  
+    ret = (gmacdev->Speed | (gmacdev->DuplexMode << 4));
     
 #if (CONFIGURE_PHY_LED_STATUS == 1)
     ConfigurePHYLEDStatus(gmacdev);

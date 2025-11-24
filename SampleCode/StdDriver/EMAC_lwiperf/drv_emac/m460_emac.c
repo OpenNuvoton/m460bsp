@@ -63,7 +63,6 @@ static void EMAC_ModuleInit(void)
 
 void EMAC_Open(uint8_t *macaddr)
 {        
-    int32_t ret = 0;
     uint32_t i;
 
     EMAC_ModuleInit();
@@ -93,7 +92,7 @@ void EMAC_Open(uint8_t *macaddr)
     else
         synopGMAC_set_mdc_clk_div(&GMACdev, GmiiCsrClk2);
     GMACdev.ClockDivMdc = synopGMAC_get_mdc_clk_div(&GMACdev);    
-    if((ret = mii_check_phy_init(&GMACdev)) < 0)
+    if(mii_check_phy_init(&GMACdev) < 0)
     {
         printf("emac:: Init PHY FAIL.\n");
         printf("\n??? Check the PHY device...\n");

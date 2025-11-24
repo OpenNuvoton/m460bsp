@@ -49,13 +49,13 @@ enum GMACPhyBase
     PHY31 = 31,
 };
 
-#define DEFAULT_PHY_BASE PHY0       //We use First Phy
-#define MACBASE 0x0000          // The Mac Base address offset is 0x0000
-#define DMABASE 0x1000          // Dma base address starts with an offset 0x1000
+#define DEFAULT_PHY_BASE PHY0       // We use First Phy
+#define MACBASE 0x0000          	// The Mac Base address offset is 0x0000
+#define DMABASE 0x1000          	// Dma base address starts with an offset 0x1000
 
 
-#define TRANSMIT_DESC_SIZE          16 //Tx Descriptors needed in the Descriptor pool/queue
-#define RECEIVE_DESC_SIZE           32 //Rx Descriptors needed in the Descriptor pool/queue
+#define TRANSMIT_DESC_SIZE          16 //16 //Tx Descriptors needed in the Descriptor pool/queue
+#define RECEIVE_DESC_SIZE           32 //32 //Rx Descriptors needed in the Descriptor pool/queue
 
 #define ETHERNET_HEADER             14  //6 byte Dest addr, 6 byte Src addr, 2 byte length/type
 #define ETHERNET_CRC                 4  //Ethernet CRC
@@ -70,8 +70,8 @@ enum GMACPhyBase
 #define PKT_FRAME_BUF_SIZE        1536  //(ETHERNET_HEADER + ETHERNET_CRC + MAX_ETHERNET_PAYLOAD + VLAN_TAG)+alignment
 
 // This is the IP's phy address. This is unique address for every MAC in the universe
-#define DEFAULT_MAC0_ADDRESS {0x00, 0x55, 0x7B, 0xB5, 0x7D, 0xF7}
-#define DEFAULT_MAC1_ADDRESS {0x00, 0x55, 0x7B, 0xB5, 0x7D, 0xF8}
+#define DEFAULT_MAC0_ADDRESS    {0x00, 0x55, 0x7B, 0xB5, 0x7D, 0xF7}
+#define DEFAULT_MAC1_ADDRESS    {0x00, 0x55, 0x7B, 0xB5, 0x7D, 0xF8}
 
 /*
 DMA Descriptor Structure

@@ -132,7 +132,7 @@ s32 synopGMAC_setup_tx_desc_queue(synopGMACdevice *gmacdev, DmaDesc *first_desc,
 
     gmacdev->TxDescDma   = (dma_addr_t)first_desc;
 
-    for (i = 0; i < gmacdev -> TxDescCount; i++)
+    for (i = 0; i < gmacdev->TxDescCount; i++)
     {
         synopGMAC_tx_desc_init_ring((DmaDesc *)gmacdev->TxDesc + i, i == gmacdev->TxDescCount - 1);
 
@@ -195,7 +195,7 @@ s32 synopGMAC_setup_rx_desc_queue(synopGMACdevice *gmacdev, DmaDesc *first_desc,
 #endif
     gmacdev->RxDescDma   = (dma_addr_t)((u32)first_desc);
 
-    for (i = 0; i < gmacdev -> RxDescCount; i++)
+    for (i = 0; i < gmacdev->RxDescCount; i++)
     {
         synopGMAC_rx_desc_init_ring((DmaDesc *)gmacdev->RxDesc + i, i == gmacdev->RxDescCount - 1);
         TR("%02d %08x \n", i, (unsigned int)(gmacdev->RxDesc + i));
@@ -406,18 +406,18 @@ s32 synop_handle_received_data(synopGMACdevice *gmacdev, PKT_FRAME_T **ppsPktFra
     //u16 time_stamp_higher;
     u32 time_stamp_high;
     u32 time_stamp_low;
-    s32 desc_index;
+    //s32 desc_index;
 
     /* Handle the Receive Descriptors */
-    if ((desc_index=synopGMAC_get_rx_qptr(gmacdev, &status,
+    if (synopGMAC_get_rx_qptr(gmacdev, &status,
                               &dma_addr1, NULL, &data1,
-                              &ext_status, &time_stamp_high, &time_stamp_low)) >= 0)
+                              &ext_status, &time_stamp_high, &time_stamp_low) >= 0)
     {
         //synopGMAC_TS_read_timestamp_higher_val(gmacdev, &time_stamp_higher);
         //TR("S:%08x ES:%08x DA1:%08x d1:%08x TSH:%08x TSL:%08x TSHW:%08x \n",status,ext_status,dma_addr1, data1,time_stamp_high,time_stamp_low,time_stamp_higher);
         TR("S:%08x ES:%08x DA1:%08x d1:%08x TSH:%08x TSL:%08x\n", status, ext_status, dma_addr1, data1, time_stamp_high, time_stamp_low);
 
-        TR("Received Data at Rx Descriptor %d for skb 0x%08x whose status is %08x\n", desc_index, data1, status);
+        //TR("Received Data at Rx Descriptor %d for skb 0x%08x whose status is %08x\n", desc_index, data1, status);
 
         if (synopGMAC_is_rx_desc_valid(status))
         {
