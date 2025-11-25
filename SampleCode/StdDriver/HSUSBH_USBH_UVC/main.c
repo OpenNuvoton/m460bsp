@@ -339,7 +339,7 @@ void  init_image_buffers(void)
 
 int  uvc_rx_callbak(UVC_DEV_T *vdev, uint8_t *data, int len)
 {
-    int  next_idx;
+    int next_idx;
 
     (void)(data);
 
@@ -492,18 +492,21 @@ void process_mjpeg_stream()
 {
     int start = 0, end = 0, frame = 0;
 
-    /* Scanning JPEG frame in the buffer */
-    while(find_jpeg_frame(_imgs[_idx_post].buff, IMAGE_MAX_SIZE, &start, &end))
+    do
     {
-        /* Ignore the first two images */
-        if(ignore_img >= 2)
-            save_jpeg_to_sd(&_imgs[_idx_post].buff[start], end - start, frame++);
+        /* Scanning JPEG frame in the buffer */
+        while(find_jpeg_frame(_imgs[_idx_post].buff, IMAGE_MAX_SIZE, &start, &end))
+        {
+            /* Ignore the first three images */
+            if(ignore_img >= 3)
+                save_jpeg_to_sd(&_imgs[_idx_post].buff[start], end - start, frame++);
 
-        _imgs[_idx_post].state = IMAGE_BUFF_FREE;
-        _idx_post = (_idx_post + 1) % IMAGE_BUFF_CNT;
+            _imgs[_idx_post].state = IMAGE_BUFF_FREE;
+            _idx_post = (_idx_post + 1) % IMAGE_BUFF_CNT;
 
-        ignore_img++;
-    }
+            ignore_img++;
+        }
+    } while(_imgs[_idx_post].state == IMAGE_BUFF_READY);
 }
 
 int main(void)
@@ -560,12 +563,8 @@ int main(void)
 
         if(g_u32SaveStart == 1)
         {
-            usbh_uvc_start_streaming(vdev, uvc_rx_callbak);
-        }
-
-        if((_imgs[_idx_post].state == IMAGE_BUFF_READY) && (g_u32SaveStart == 1))
-        {
-            process_mjpeg_stream();
+            if(_imgs[_idx_post].state == IMAGE_BUFF_READY)
+                process_mjpeg_stream();
         }
     }
 }
