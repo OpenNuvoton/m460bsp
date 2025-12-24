@@ -429,6 +429,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\gpio.c</FilePath>
             </File>
+            <File>
+              <FileName>pdma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\pdma.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -450,5 +455,14 @@
     <components/>
     <files/>
   </RTE>
+
+  <LayerInfo>
+    <Layers>
+      <Layer>
+        <LayName>QSPI_DualMode_Flash</LayName>
+        <LayPrjMark>1</LayPrjMark>
+      </Layer>
+    </Layers>
+  </LayerInfo>
 
 </Project>

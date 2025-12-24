@@ -283,6 +283,15 @@ extern "C"
 #define QSPI_GET_TX_FIFO_FULL_FLAG(qspi)   ( ((qspi)->STATUS & QSPI_STATUS_TXFULL_Msk) >> QSPI_STATUS_TXFULL_Pos )
 
 /**
+  * @brief      Get the count of available data in TX FIFO.
+  * @param[in]  qspi The pointer of the specified QSPI module.
+  * @return     The count of available data in TX FIFO.
+  * @details    Read RXCNT (QSPI_STATUS[31:28]) to get the count of available data in TX FIFO.
+  * \hideinitializer
+  */
+#define QSPI_GET_TX_FIFO_COUNT(qspi)       ( ((qspi)->STATUS & QSPI_STATUS_TXCNT_Msk) >> QSPI_STATUS_TXCNT_Pos )
+
+/**
   * @brief      Get the datum read from RX register.
   * @param[in]  qspi The pointer of the specified QSPI module.
   * @return     Data in RX register.

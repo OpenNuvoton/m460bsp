@@ -6,13 +6,18 @@
  * @copyright SPDX-License-Identifier: Apache-2.0
  * @copyright Copyright (C) 2021 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
-#include <stdio.h>
+#include "stdio.h"
+#include "string.h"
 #include "NuMicro.h"
 
 // *** <<< Use Configuration Wizard in Context Menu >>> ***
 // <o> GPIO Slew Rate Control
 // <0=> Normal <1=> High <2=> Fast
 #define SlewRateMode    1
+// <c1> Enable SPI Optimize
+// <i> Use FIFO mechanism for QSPI RX to maximize throughput
+#define ENABLE_SPI_OPTIMIZE
+// </c>
 // *** <<< end of configuration section >>> ***
 
 #define TEST_NUMBER     1   /* page numbers */
@@ -231,6 +236,12 @@ void SpiFlash_NormalPageProgram(uint32_t u32StartAddress, uint8_t *u8DataBuffer)
 void SpiFlash_NormalRead(uint32_t u32StartAddress, uint8_t *u8DataBuffer)
 {
     uint32_t u32Cnt;
+#ifdef ENABLE_SPI_OPTIMIZE
+    uint32_t u32RxDataWord = 64;
+    uint32_t u32RxTmp;
+    uint32_t u32TxDataCount = 0;
+    uint32_t u32RxDataCount = 0;
+#endif
 
     // /CS: active
     SPI_SET_SS_LOW(SPI_FLASH_PORT);
@@ -246,7 +257,30 @@ void SpiFlash_NormalRead(uint32_t u32StartAddress, uint8_t *u8DataBuffer)
     wait_SPI_IS_BUSY(SPI_FLASH_PORT);
     // clear RX buffer
     SPI_ClearRxFIFO(SPI_FLASH_PORT);
+#ifdef ENABLE_SPI_OPTIMIZE
+    SPI_SET_DATA_WIDTH(SPI_FLASH_PORT, 32);
+    SPI_ENABLE_BYTE_REORDER(SPI_FLASH_PORT);
 
+    while(u32RxDataCount < 256)
+    {
+        /* Check TX FULL flag */
+        if((SPI_GET_TX_FIFO_FULL_FLAG(SPI_FLASH_PORT) == 0) && (u32TxDataCount < u32RxDataWord))
+        {
+            SPI_WRITE_TX(SPI_FLASH_PORT, 0xFFFFFFFF);
+            u32TxDataCount++;
+        }
+        /* Check RX EMPTY flag */
+        if(SPI_GET_RX_FIFO_EMPTY_FLAG(SPI_FLASH_PORT) == 0)
+        {
+            u32RxTmp = QSPI_READ_RX(SPI_FLASH_PORT);
+            memcpy(&u8DataBuffer[u32RxDataCount], &u32RxTmp, 4);
+            u32RxDataCount+=4;
+        }
+    }
+
+    SPI_DISABLE_BYTE_REORDER(SPI_FLASH_PORT);
+    SPI_SET_DATA_WIDTH(SPI_FLASH_PORT, 8);
+#else
     // read data
     for(u32Cnt = 0; u32Cnt < 256; u32Cnt++)
     {
@@ -254,7 +288,7 @@ void SpiFlash_NormalRead(uint32_t u32StartAddress, uint8_t *u8DataBuffer)
         wait_SPI_IS_BUSY(SPI_FLASH_PORT);
         u8DataBuffer[u32Cnt] = (uint8_t)SPI_READ_RX(SPI_FLASH_PORT);
     }
-
+#endif
     // wait tx finish
     wait_SPI_IS_BUSY(SPI_FLASH_PORT);
 
