@@ -235,8 +235,9 @@ void SpiFlash_NormalPageProgram(uint32_t u32StartAddress, uint8_t *u8DataBuffer)
 
 void SpiFlash_NormalRead(uint32_t u32StartAddress, uint8_t *u8DataBuffer)
 {
+#ifndef ENABLE_SPI_OPTIMIZE
     uint32_t u32Cnt;
-#ifdef ENABLE_SPI_OPTIMIZE
+#else
     uint32_t u32RxDataWord = 64;
     uint32_t u32RxTmp;
     uint32_t u32TxDataCount = 0;

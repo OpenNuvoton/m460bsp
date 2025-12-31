@@ -53,7 +53,7 @@ static void QSPI_PDMA_Rx_Init(QSPI_T *module, uint32_t *u32RxTargetAddr, uint32_
     PDMA_SetTransferCnt(PDMA0, QSPI_RX_PDMA_CH, PDMA_WIDTH_32, u32TransferCount);
     //:APB to MEM (QSPI RX RAM)
     PDMA_SetTransferMode(PDMA0, QSPI_RX_PDMA_CH, PDMA_QSPI0_RX, FALSE, 0);
-    
+
     /* Set source/destination address and attributes */
     PDMA_SetTransferAddr(PDMA0, QSPI_RX_PDMA_CH,
                          (uint32_t)&(module)->RX,
@@ -61,7 +61,7 @@ static void QSPI_PDMA_Rx_Init(QSPI_T *module, uint32_t *u32RxTargetAddr, uint32_
                          (uint32_t)u32RxTargetAddr,
                          PDMA_DAR_INC);
      /* Single request type. SPI only support PDMA single request type. */
-    PDMA_SetBurstType(PDMA0, QSPI_RX_PDMA_CH, PDMA_REQ_SINGLE, 0); 
+    PDMA_SetBurstType(PDMA0, QSPI_RX_PDMA_CH, PDMA_REQ_SINGLE, 0);
     /* Disable table interrupt */
     PDMA0->DSCT[QSPI_RX_PDMA_CH].CTL |= PDMA_DSCT_CTL_TBINTDIS_Msk;
 }
@@ -288,16 +288,16 @@ void SpiFlash_NormalPageProgram(uint32_t u32StartAddress, uint8_t *u8DataBuffer)
 
 void SpiFlash_DualFastRead(uint32_t u32StartAddress, uint8_t *u8DataBuffer)
 {
+#ifndef ENABLE_QSPI_OPTIMIZE
     uint32_t u32Cnt;
-
-#ifdef ENABLE_QSPI_OPTIMIZE
+#else
     uint8_t u8TXS;
     uint32_t u32TxDataCount = 0;
 
     /* Set transfer width (32 bits) and transfer count */
     PDMA_SetTransferCnt(PDMA0, QSPI_RX_PDMA_CH, PDMA_WIDTH_32, 64);
     /* Set source/destination address and attributes */
-    PDMA_SetTransferAddr(PDMA0, QSPI_RX_PDMA_CH, 
+    PDMA_SetTransferAddr(PDMA0, QSPI_RX_PDMA_CH,
                          (uint32_t)&((QSPI_T*)SPI_FLASH_PORT)->RX,
                          PDMA_SAR_FIX,
                          (uint32_t)u8DataBuffer,

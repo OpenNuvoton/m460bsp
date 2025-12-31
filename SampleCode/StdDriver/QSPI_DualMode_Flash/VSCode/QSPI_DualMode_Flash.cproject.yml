@@ -40,6 +40,7 @@ project:
         - file: ../../../../Library/StdDriver/src/sys.c
         - file: ../../../../Library/StdDriver/src/qspi.c
         - file: ../../../../Library/StdDriver/src/gpio.c
+        - file: ../../../../Library/StdDriver/src/pdma.c
     - group: User
       files:
         - file: ../main.c
