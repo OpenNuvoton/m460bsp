@@ -35,7 +35,7 @@
 int32_t TRNG_Open(void)
 {
     uint32_t u32TimeOutCount = SystemCoreClock; /* 1 second time-out */
-    uint32_t i;
+    uint32_t i = 0;
 
     SYS->IPRST1 |= SYS_IPRST1_TRNGRST_Msk;
     SYS->IPRST1 ^= SYS_IPRST1_TRNGRST_Msk;
