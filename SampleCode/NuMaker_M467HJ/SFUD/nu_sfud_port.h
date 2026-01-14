@@ -5,6 +5,10 @@
 // <i> Enable SPIM DMA Read
 //#define ENABLE_SPIM_DMA_READ
 // </c>
+// <c1> ENABLE_THROUGHPUT_OPTIMIZE
+// <i> Use FIFO mechanism and enable PDMA for QSPI RX to maximize throughput
+#define ENABLE_THROUGHPUT_OPTIMIZE
+// </c>
 // *** <<< end of configuration section >>> ***
 #pragma once
 

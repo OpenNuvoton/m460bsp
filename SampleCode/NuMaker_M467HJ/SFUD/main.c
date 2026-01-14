@@ -31,7 +31,12 @@ void SYS_Init(void)
 
     /* Set core clock to 200MHz */
     CLK_SetCoreClock(200000000);
-
+#ifdef ENABLE_THROUGHPUT_OPTIMIZE
+    /* Enable PDMA0 module clock */
+    CLK_EnableModuleClock(PDMA0_MODULE);
+    /* Reset PDMA module */
+    SYS_ResetModule(PDMA0_RST);
+#endif
     /* Enable UART0 module clock */
     CLK_EnableModuleClock(UART0_MODULE);
 

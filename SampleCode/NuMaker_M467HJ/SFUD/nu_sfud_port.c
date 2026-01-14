@@ -28,6 +28,7 @@
  */
 
 #include "stdarg.h"
+#include "string.h"
 #include "NuMicro.h"
 #include "sfud.h"
 
@@ -38,10 +39,12 @@
 // *** <<< end of configuration section >>> ***
 
 static char log_buf[256];
-#define SPI_FLASH_PORT  SPI0
-#define QSPI_FLASH_PORT  QSPI0
-#define SPIM_FLASH_PORT  SPIM
-#define CHAR_BIT_SIZE    8
+#define SPI_FLASH_PORT      SPI0
+#define QSPI_FLASH_PORT     QSPI0
+#define SPIM_FLASH_PORT     SPIM
+#define CHAR_BIT_SIZE       8
+#define QSPI_RX_PDMA_CH     0
+#define SPI_TX_BUFFER_LIMIT 6
 void sfud_log_debug(const char *file, const long line, const char *format, ...);
 
 uint8_t SpiFlash_ReadStatusReg(void);
@@ -74,15 +77,19 @@ bool Spim_Is_Busy(void *spi);
 void Spim_Switch_Output(void *spi);
 void Spim_Switch_Input(void *spi);
 
+/* Example implementation for Non-OS with ISR usage
+static uint32_t g_u32Primask;
 static void spi_lock(const sfud_spi *spi)
 {
+    g_u32Primask = __get_PRIMASK();
     __disable_irq();
 }
 
 static void spi_unlock(const sfud_spi *spi)
 {
-    __enable_irq();
+    __set_PRIMASK(g_u32Primask);
 }
+*/
 
 __STATIC_INLINE void wait_Qspi_IS_Busy(QSPI_T *qspi)
 {
@@ -97,6 +104,339 @@ __STATIC_INLINE void wait_Qspi_IS_Busy(QSPI_T *qspi)
         }
     }
 }
+#ifdef ENABLE_THROUGHPUT_OPTIMIZE
+static void QSPI_PDMA_Rx_Init(QSPI_T *module, uint32_t *u32RxTargetAddr, uint32_t u32TransferCount)
+{
+    PDMA_Open(PDMA0, (1 << QSPI_RX_PDMA_CH));
+
+    /* --- RX PDMA  --- */
+    /* Set transfer width (32 bits) and transfer count */
+    PDMA_SetTransferCnt(PDMA0, QSPI_RX_PDMA_CH, PDMA_WIDTH_32, u32TransferCount);
+    //:APB to MEM (QSPI RX RAM)
+    PDMA_SetTransferMode(PDMA0, QSPI_RX_PDMA_CH, PDMA_QSPI0_RX, FALSE, 0);
+
+    /* Set source/destination address and attributes */
+    PDMA_SetTransferAddr(PDMA0, QSPI_RX_PDMA_CH,
+                         (uint32_t)&(module)->RX,
+                         PDMA_SAR_FIX,
+                         (uint32_t)u32RxTargetAddr,
+                         PDMA_DAR_INC);
+
+     /* Single request type. SPI only support PDMA single request type. */
+    PDMA_SetBurstType(PDMA0, QSPI_RX_PDMA_CH, PDMA_REQ_SINGLE, 0);
+    /* Disable table interrupt */
+    PDMA0->DSCT[QSPI_RX_PDMA_CH].CTL |= PDMA_DSCT_CTL_TBINTDIS_Msk;
+}
+
+static sfud_err QSPI_PDMA_Rx_Polling(void)
+{
+    sfud_err result = SFUD_SUCCESS;
+    uint32_t u32RetryTimes = SystemCoreClock;
+
+    while(1)
+    {
+        if(PDMA_GET_TD_STS(PDMA0) & (1 << QSPI_RX_PDMA_CH))
+        {
+            break;
+        }
+
+        SFUD_RETRY_PROCESS(NULL, u32RetryTimes, result);
+
+        if (result != SFUD_SUCCESS)
+        {
+            result = SFUD_ERR_TIMEOUT;
+            break;
+        }
+    }
+
+    PDMA_CLR_TD_FLAG(PDMA0, (1 << QSPI_RX_PDMA_CH));
+
+    /* Disable SPI master's PDMA transfer function */
+    QSPI_DISABLE_RX_PDMA(QSPI0);
+    return result;
+}
+
+static sfud_err spi_write_read_optimize(const sfud_spi *spi, const uint8_t *write_buf, size_t write_size, uint8_t *read_buf,
+        size_t read_size) {
+    sfud_err result = SFUD_SUCCESS;
+
+    if (write_size)
+    {
+        SFUD_ASSERT(write_buf);
+    }
+    if (read_size)
+    {
+        SFUD_ASSERT(read_buf);
+    }
+
+    uint32_t u32Cnt = 0;
+    uint32_t u32RetryTimes = 1000;
+    uint32_t u32RxDataByte = read_size % 4;
+    uint32_t u32RxDataWord = u32RxDataByte ? (read_size >> 2) + 1 : read_size >> 2;
+
+    uint32_t u32RxTmp;
+    uint32_t u32TxDataCount = 0;
+    uint32_t u32RxDataCount = 0;
+
+    SPI_SET_DATA_WIDTH((QSPI_T*)spi->user_module, 8);
+    // CS: active
+    spi->ss_low(spi->user_module);
+
+    while(u32Cnt < write_size)
+    {
+        if(SPI_GET_TX_FIFO_FULL_FLAG((SPI_T*)spi->user_module) == 0)
+        {
+            SPI_WRITE_TX((SPI_T*)spi->user_module, write_buf[u32Cnt++]);
+        }
+    }
+    while (spi->isbusy(spi->user_module))
+    {
+        SFUD_RETRY_PROCESS(NULL, u32RetryTimes, result);
+    }
+    if (result != SFUD_SUCCESS || read_size == 0)
+    {
+        goto exit;
+    }
+    // clear RX buffer
+    SPI_ClearRxFIFO((SPI_T*)spi->user_module);
+
+    SPI_SET_DATA_WIDTH((SPI_T*)spi->user_module, 32);
+    SPI_ENABLE_BYTE_REORDER((SPI_T*)spi->user_module);
+    while(u32RxDataCount < read_size)
+    {
+        /* Check TX FULL flag and TX data count */
+        if((SPI_GET_TX_FIFO_FULL_FLAG((SPI_T*)spi->user_module) == 0) && (u32TxDataCount < u32RxDataWord))
+        {
+            SPI_WRITE_TX((SPI_T*)spi->user_module, 0xFFFFFFFF);
+            u32TxDataCount++;
+        }
+        /* Check RX EMPTY flag */
+        if(SPI_GET_RX_FIFO_EMPTY_FLAG((SPI_T*)spi->user_module) == 0)
+        {
+            u32RxTmp = QSPI_READ_RX((SPI_T*)spi->user_module);
+            if(u32RxDataCount == (u32RxDataWord - 1))
+            {
+                memcpy(&read_buf[u32RxDataCount], &u32RxTmp, u32RxDataByte);
+            }
+            else
+            {
+                memcpy(&read_buf[u32RxDataCount], &u32RxTmp, 4);
+            }
+            u32RxDataCount+=4;
+        }
+    }
+
+exit:
+    // /CS: de-active
+    spi->ss_high(spi->user_module);
+    SPI_DISABLE_BYTE_REORDER((SPI_T*)spi->user_module);
+    SPI_SET_DATA_WIDTH((SPI_T*)spi->user_module, 8);
+    return result;
+}
+
+static sfud_err qspi_write_read_optimize(const sfud_spi *spi, const uint8_t *write_buf, size_t write_size, uint8_t *read_buf,
+        size_t read_size) {
+    sfud_err result = SFUD_SUCCESS;
+
+    if (write_size)
+    {
+        SFUD_ASSERT(write_buf);
+    }
+    if (read_size)
+    {
+        SFUD_ASSERT(read_buf);
+    }
+    uint32_t u32Cnt = 0;
+    uint32_t u32RetryTimes = 1000;
+    uint32_t u32RxDataByte = read_size % 4;
+    uint32_t u32RxDataWord = u32RxDataByte ? (read_size >> 2) + 1 : read_size >> 2;
+
+    uint32_t u32RxTmp;
+    uint32_t u32TxDataCount = 0;
+    uint32_t u32RxDataCount = 0;
+
+    QSPI_SET_DATA_WIDTH((QSPI_T*)spi->user_module, 8);
+    // /CS: active
+    spi->ss_low(spi->user_module);
+
+    while(u32Cnt < write_size)
+    {
+        if(QSPI_GET_TX_FIFO_FULL_FLAG((QSPI_T*)spi->user_module) == 0)
+        {
+            QSPI_WRITE_TX((QSPI_T*)spi->user_module, write_buf[u32Cnt++]);
+        }
+    }
+
+    while (spi->isbusy(spi->user_module))
+    {
+        SFUD_RETRY_PROCESS(NULL, u32RetryTimes, result);
+    }
+
+    if (result != SFUD_SUCCESS || read_size == 0)
+    {
+        goto exit;
+    }
+
+    // clear RX buffer
+    QSPI_ClearRxFIFO((QSPI_T*)spi->user_module);
+
+    QSPI_SET_DATA_WIDTH((QSPI_T*)spi->user_module, 32);
+    QSPI_ENABLE_BYTE_REORDER((QSPI_T*)spi->user_module);
+
+    while(u32RxDataCount < read_size)
+    {
+        /* Check TX FULL flag and TX data count */
+        if((QSPI_GET_TX_FIFO_FULL_FLAG((QSPI_T*)spi->user_module) == 0) && (u32TxDataCount < u32RxDataWord))
+        {
+            QSPI_WRITE_TX((QSPI_T*)spi->user_module, 0xFFFFFFFF);
+            u32TxDataCount++;
+        }
+        /* Check RX EMPTY flag */
+        if(QSPI_GET_RX_FIFO_EMPTY_FLAG((QSPI_T*)spi->user_module) == 0)
+        {
+            u32RxTmp = QSPI_READ_RX((QSPI_T*)spi->user_module);
+            if(u32RxDataCount == (u32RxDataWord - 1))
+            {
+                memcpy(&read_buf[u32RxDataCount], &u32RxTmp, u32RxDataByte);
+            }
+            else
+            {
+                memcpy(&read_buf[u32RxDataCount], &u32RxTmp, 4);
+            }
+            u32RxDataCount+=4;
+        }
+    }
+
+exit:
+    // /CS: de-active
+    spi->ss_high(spi->user_module);
+    QSPI_DISABLE_BYTE_REORDER((QSPI_T*)spi->user_module);
+    QSPI_SET_DATA_WIDTH((QSPI_T*)spi->user_module, 8);
+    return result;
+}
+
+static sfud_err qspi_qual_read_optimize(const struct __sfud_spi *spi, uint32_t addr, sfud_qspi_read_cmd_format *qspi_read_cmd_format,
+        uint8_t *read_buf, size_t read_size) {
+    sfud_err result = SFUD_SUCCESS;
+
+    uint8_t u8TXS;
+    uint32_t u32TxDataCount = 0;
+
+    // Use a stack buffer (1024 bytes)
+    uint32_t u32RxTmpBuff[256];
+    uint32_t u32RxBufferSize = sizeof(u32RxTmpBuff);
+    uint32_t u32Offset = 0;
+    uint32_t u32ChunkSize;
+    uint32_t u32ChunkWords;
+
+    // enable quad mode
+    SpiFlash_EnableQEBit();
+
+    // /CS: active
+    QSPI_SET_SS_LOW((QSPI_T*)spi->user_module);
+
+    // Command: 0xEB, Fast Read quad data
+    QSPI_WRITE_TX(QSPI_FLASH_PORT, (uint8_t)qspi_read_cmd_format->instruction);
+    wait_Qspi_IS_Busy((QSPI_T*)spi->user_module);
+
+    // enable SPI quad IO mode and set direction
+    QSPI_ENABLE_QUAD_OUTPUT_MODE((QSPI_T*)spi->user_module);
+    QSPI_SET_DATA_WIDTH((QSPI_T*)spi->user_module, qspi_read_cmd_format->address_size);
+    QSPI_WRITE_TX((QSPI_T*)spi->user_module, addr);
+    wait_Qspi_IS_Busy((QSPI_T*)spi->user_module);
+
+    QSPI_SET_DATA_WIDTH((QSPI_T*)spi->user_module, qspi_read_cmd_format->dummy_cycles * 4);
+    QSPI_WRITE_TX((QSPI_T*)spi->user_module, 0xFFFFFFFF);
+    wait_Qspi_IS_Busy((QSPI_T*)spi->user_module);
+
+    QSPI_ENABLE_QUAD_INPUT_MODE((QSPI_T*)spi->user_module);
+    QSPI_ENABLE_BYTE_REORDER((QSPI_T*)spi->user_module);
+    // clear RX buffer
+    QSPI_ClearRxFIFO((QSPI_T*)spi->user_module);
+    QSPI_SET_DATA_WIDTH((QSPI_T*)spi->user_module, 32);
+
+    while (u32Offset < read_size)
+    {
+        uint32_t u32Remaining = read_size - u32Offset;
+        u32ChunkSize = (u32Remaining > u32RxBufferSize) ? u32RxBufferSize : u32Remaining;
+        u32ChunkWords = (u32ChunkSize + 3) / 4;
+
+        // --- RX PDMA  ---
+        /* Set transfer width (32 bits) and transfer count */
+        PDMA_SetTransferCnt(PDMA0, QSPI_RX_PDMA_CH, PDMA_WIDTH_32, u32ChunkWords);
+        /* Set source/destination address and attributes */
+        if(((uint32_t)read_buf & 0x03) == 0x00)// Check the destination address is 4-byte aligned
+        {
+            PDMA_SetTransferAddr(PDMA0, QSPI_RX_PDMA_CH,
+                                 (uint32_t)&((QSPI_T*)spi->user_module)->RX,
+                                 PDMA_SAR_FIX,
+                                 (uint32_t)read_buf + u32Offset,
+                                 PDMA_DAR_INC);
+        }
+        else
+        {
+            PDMA_SetTransferAddr(PDMA0, QSPI_RX_PDMA_CH,
+                                 (uint32_t)&((QSPI_T*)spi->user_module)->RX,
+                                 PDMA_SAR_FIX,
+                                 (uint32_t)u32RxTmpBuff,
+                                 PDMA_DAR_INC);
+        }
+
+        PDMA_SetTransferMode(PDMA0, QSPI_RX_PDMA_CH, PDMA_QSPI0_RX, FALSE, 0);
+
+        u32TxDataCount = 0;
+
+        /* Enable SPI master PDMA function */
+        QSPI_TRIGGER_RX_PDMA(QSPI0);
+
+        while(u32TxDataCount < u32ChunkWords)
+        {
+            /* Check TX FULL flag and TX data count */
+            u8TXS = (SPI_TX_BUFFER_LIMIT - QSPI_GET_TX_FIFO_COUNT((QSPI_T*)spi->user_module));
+
+            if (u32TxDataCount + u8TXS > u32ChunkWords)
+            {
+                u8TXS = u32ChunkWords - u32TxDataCount;
+            }
+
+            u32TxDataCount += u8TXS;
+            while(u8TXS--)
+            {
+                QSPI_WRITE_TX((QSPI_T*)spi->user_module, 0xFFFFFFFF);
+            }
+        }
+        result = QSPI_PDMA_Rx_Polling();
+
+        if (result != SFUD_SUCCESS)
+        {
+            break;
+        }
+
+        if(((uint32_t)read_buf & 0x03) != 0x00)
+        {
+            /* Copy data if success */
+            memcpy(read_buf + u32Offset, (uint8_t*)u32RxTmpBuff, u32ChunkSize);
+        }
+        u32Offset += u32ChunkSize;
+    }
+
+    QSPI_SET_DATA_WIDTH((QSPI_T*)spi->user_module, 8);
+    QSPI_DISABLE_BYTE_REORDER((QSPI_T*)spi->user_module);
+
+    // wait tx finish
+    wait_Qspi_IS_Busy((QSPI_T*)spi->user_module);
+
+    // /CS: de-active
+    QSPI_SET_SS_HIGH((QSPI_T*)spi->user_module);
+
+    QSPI_DISABLE_QUAD_MODE((QSPI_T*)spi->user_module);
+    // disable quad mode
+    SpiFlash_DisableQEBit();
+
+    return result;
+}
+#endif
+
 /**
  * SPI write data then read data
  */
@@ -183,6 +523,7 @@ exit:
 /**
  * read flash data by QSPI
  */
+#ifndef ENABLE_THROUGHPUT_OPTIMIZE
 static sfud_err qspi_read(const struct __sfud_spi *spi, uint32_t addr, sfud_qspi_read_cmd_format *qspi_read_cmd_format,
         uint8_t *read_buf, size_t read_size)
 {
@@ -247,7 +588,7 @@ static sfud_err qspi_read(const struct __sfud_spi *spi, uint32_t addr, sfud_qspi
 
     return result;
 }
-
+#endif
 static sfud_err qspi_read_spim(const struct __sfud_spi *spi, uint32_t addr, sfud_qspi_read_cmd_format *qspi_read_cmd_format,
         uint8_t *read_buf, size_t read_size)
 {
@@ -311,10 +652,14 @@ sfud_err sfud_spi_port_init(sfud_flash *flash)
             SPI_DisableAutoSS(SPI_FLASH_PORT);
 
             SYS_LockReg();
-
+#ifdef ENABLE_THROUGHPUT_OPTIMIZE
+            flash->spi.wr = spi_write_read_optimize;
+#else
             flash->spi.wr = spi_write_read;
-            flash->spi.lock = spi_lock;
-            flash->spi.unlock = spi_unlock;
+#endif
+            /* lock/unlock can be NULL for Non-OS without SPI usage in ISR */
+            flash->spi.lock = NULL;
+            flash->spi.unlock = NULL;
 
             flash->spi.user_module = (void*)SPI_FLASH_PORT;
             flash->spi.ss_low = Spi_Ss_Low;
@@ -369,12 +714,22 @@ sfud_err sfud_spi_port_init(sfud_flash *flash)
             SYS_LockReg();
 
             /* set the interfaces and data */
+#ifdef ENABLE_THROUGHPUT_OPTIMIZE
+            flash->spi.wr = qspi_write_read_optimize;
+#else
             flash->spi.wr = spi_write_read;
+#endif
 #ifdef SFUD_USING_QSPI
+#ifdef ENABLE_THROUGHPUT_OPTIMIZE
+            QSPI_PDMA_Rx_Init(QSPI_FLASH_PORT, 0, 0);
+            flash->spi.qspi_read = qspi_qual_read_optimize;
+#else
             flash->spi.qspi_read = qspi_read;
 #endif
-            flash->spi.lock = spi_lock;
-            flash->spi.unlock = spi_unlock;
+#endif
+            /* lock/unlock can be NULL for Non-OS without SPI usage in ISR */
+            flash->spi.lock = NULL;
+            flash->spi.unlock = NULL;
 
             flash->spi.user_module = (void*)QSPI_FLASH_PORT;
             flash->spi.ss_low = Qspi_Ss_Low;
@@ -427,8 +782,9 @@ sfud_err sfud_spi_port_init(sfud_flash *flash)
 #ifdef SFUD_USING_QSPI
             flash->spi.qspi_read = qspi_read_spim;
 #endif
-            flash->spi.lock = spi_lock;
-            flash->spi.unlock = spi_unlock;
+            /* lock/unlock can be NULL for Non-OS without SPI usage in ISR */
+            flash->spi.lock = NULL;
+            flash->spi.unlock = NULL;
 
             flash->spi.user_module = (void*)SPIM_FLASH_PORT;
             flash->spi.ss_low = Spim_Ss_Low;
