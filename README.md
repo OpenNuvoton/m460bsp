@@ -90,6 +90,9 @@ To experience the powerful features of M460 in few minutes, please refer to NuMa
 
 - paho.mqtt.embedded-c<br>
 	Eclipse Paho MQTT C/C++ client for Embedded platforms.
+	
+- SFUD<br>
+	Serial flash operate functions by SFUD library.
 
 - shine<br>
 	A blazing fast MP3 encoding library implemented in fixed-point arithmetic.
