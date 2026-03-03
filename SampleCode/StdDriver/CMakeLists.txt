@@ -74,3 +74,7 @@ create_project(QSPI_QuadMode_Flash ${CMAKE_CURRENT_LIST_DIR}/QSPI_QuadMode_Flash
 create_project(QSPI_Slave3Wire ${CMAKE_CURRENT_LIST_DIR}/QSPI_Slave3Wire/main.c)
 
 create_project(USBD_VCOM_MultiPort ${CMAKE_CURRENT_LIST_DIR}/USBD_VCOM_MultiPort/main.c ${CMAKE_CURRENT_LIST_DIR}/USBD_VCOM_MultiPort/descriptors.c ${CMAKE_CURRENT_LIST_DIR}/USBD_VCOM_MultiPort/vcom_serial.c)
+
+create_project(HSUSBH_USBH_UVC ${CMAKE_CURRENT_LIST_DIR}/HSUSBH_USBH_UVC/main.c ${CMAKE_CURRENT_LIST_DIR}/HSUSBH_USBH_UVC/diskio.c ${CMAKE_CURRENT_LIST_DIR}/HSUSBH_USBH_UVC/sdglue.c)
+target_include_directories(HSUSBH_USBH_UVC PRIVATE ${BSP_DIR}/Library/UsbHostLib/inc)
+target_link_libraries(HSUSBH_USBH_UVC usbh_core_lib usbh_uvc_lib fatfs_lib)

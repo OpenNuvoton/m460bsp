@@ -3,11 +3,50 @@ project:
     - pack: Nuvoton::NuMicroM4_DFP
   misc:
     - for-compiler: AC6
-      C: [-std=c99, -fno-rtti, -funsigned-char, -fshort-enums, -fshort-wchar, -ffunction-sections, -fdata-sections, -D__MICROLIB, -o0, -gdwarf-4, -fno-inline]
-      ASM: [-D__MICROLIB, -DStack_Size=0x800]
-      Link: [--library_type=microlib, --map, --load_addr_map_info, --symbols, --info sizes, --info totals, --entry Reset_Handler, --summary_stderr, --info summarysizes, --diag_suppress=6314]
+      C:
+        [
+          -std=c99,
+          -fno-rtti,
+          -funsigned-char,
+          -fshort-enums,
+          -fshort-wchar,
+          -ffunction-sections,
+          -fdata-sections,
+          -D__MICROLIB,
+          -o0,
+          -gdwarf-4,
+          -fno-inline
+        ]
+      ASM: [ -D__MICROLIB, -DStack_Size=0x800 ]
+      Link:
+        [
+          --library_type=microlib,
+          --map,
+          --load_addr_map_info,
+          --symbols,
+          --info sizes,
+          --info totals,
+          --entry Reset_Handler,
+          --summary_stderr,
+          --info summarysizes,
+          --diag_suppress=6314
+        ]
     - for-compiler: GCC
-      C: [-std=gnu11, --specs=nano.specs, -Wno-return-type, -Wno-unused-but-set-variable, -fdata-sections, -ffunction-sections, -fno-builtin, -fshort-enums, -funsigned-char, -mthumb, -Wno-main, -gdwarf-4]
+      C:
+        [
+          -std=gnu11,
+          --specs=nano.specs,
+          -Wno-return-type,
+          -Wno-unused-but-set-variable,
+          -fdata-sections,
+          -ffunction-sections,
+          -fno-builtin,
+          -fshort-enums,
+          -funsigned-char,
+          -mthumb,
+          -Wno-main,
+          -gdwarf-4
+        ]
       Link:
         - -Xlinker
         - --gc-sections
@@ -15,16 +54,16 @@ project:
         - -Wl,-Map,"$OutDir()$/$Project$.map"
   setups:
     - output:
-        type: ["elf", "bin"]
+        type: [ "elf", "bin" ]
   linker:
     - for-compiler: GCC
       script: ../../../../Library/Device/Nuvoton/m460/Source/GCC/gcc_arm.ld
   add-path:
-        - ../../../../Library/CMSIS/Include
-        - ../../../../Library/Device/Nuvoton/m460/Include
-        - ../../../../Library/StdDriver/inc
-        - ../../../../Library/UsbHostLib/inc
-        - ../../../../ThirdParty/FatFs/source
+    - ../../../../Library/CMSIS/Include
+    - ../../../../Library/Device/Nuvoton/m460/Include
+    - ../../../../Library/StdDriver/inc
+    - ../../../../Library/UsbHostLib/inc
+    - ../../../../ThirdParty/FatFs/source
   groups:
     - group: CMSIS
       files:
@@ -34,7 +73,7 @@ project:
           for-compiler: GCC
         - file: ../../../../Library/Device/Nuvoton/m460/Source/system_m460.c
           define:
-          - HBI_ENABLE: 2
+            - HBI_ENABLE: 2
     - group: User
       files:
         - file: ../main.c
@@ -49,6 +88,7 @@ project:
         - file: ../../../../Library/StdDriver/src/gpio.c
         - file: ../../../../Library/StdDriver/src/hbi.c
         - file: ../../../../Library/StdDriver/src/sdh.c
+        - file: ../../../../Library/StdDriver/src/timer.c
     - group: UsbHostLib
       files:
         - file: ../../../../Library/UsbHostLib/src_core/ehci.c

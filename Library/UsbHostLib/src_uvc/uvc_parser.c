@@ -236,17 +236,11 @@ int uvc_parse_control_interface(UVC_DEV_T *vdev, IFACE_T *iface)
             //    UVC_DBGMSG("UVC interrupt in endpoint 0x%x foudn.\n", epd->bEndpointAddress);
         }
 
-        if(ifd->bLength == 0)
+        if(epd->bLength == 0)
             return UVC_RET_PARSER;          /* prevent infinite loop                      */
 
         bptr += epd->bLength;
         size -= epd->bLength;
-
-        if(epd->bDescriptorType != USB_DT_ENDPOINT)
-        {
-            UVC_DBGMSG("UVC VC interface endpoint parsing error, remain %d bytes!\n", size);
-            break;
-        }
     }
 
     if(size != 0)
@@ -314,12 +308,14 @@ int uvc_parse_streaming_interface(UVC_DEV_T *vdev, IFACE_T *iface)
 
     bptr += ifd->bLength;
     size -= ifd->bLength;
+//    printf("bptr=%d; size=%d\n\n", bptr, size);
 
     /*------------------------------------------------------------------------------------*/
     /*  Parsing Video Streaming interface alternative setting 0                           */
     /*------------------------------------------------------------------------------------*/
     while(size >= (int)sizeof(DESC_IF_T))
     {
+        DESC_STILL_IMAGE_FRAME_T   *vs_still_image_frame;
         DESC_VSU_FORMAT_T   *vsu_format;
         DESC_VSU_FRAME_T    *vsu_frame;
         DESC_MJPG_FORMAT_T  *mjpg_format;
@@ -334,13 +330,16 @@ int uvc_parse_streaming_interface(UVC_DEV_T *vdev, IFACE_T *iface)
 
         ifd_vs_hdr = (DESC_VSI_HDR_T *)bptr;
 
+//        printf("ST=%d\n", ifd_vs_hdr->bDescriptorSubType);
         switch (ifd_vs_hdr->bDescriptorSubType)
         {
             case VS_INPUT_HEADER:
                 UVC_DBGMSG("VS Interface VS_INPUT_HEADER\n");
-                UVC_DBGMSG("    bNumFormats:      0x%x\n", ifd_vs_hdr->bNumFormats);
-                UVC_DBGMSG("    bEndpointAddress: 0x%x\n", ifd_vs_hdr->bEndpointAddress);
-                UVC_DBGMSG("    bTerminalLink:    0x%x\n", ifd_vs_hdr->bTerminalLink);
+                UVC_DBGMSG("    bNumFormats:         0x%x\n", ifd_vs_hdr->bNumFormats);
+                UVC_DBGMSG("    bEndpointAddress:    0x%x\n", ifd_vs_hdr->bEndpointAddress);
+                UVC_DBGMSG("    bTerminalLink:       0x%x\n", ifd_vs_hdr->bTerminalLink);
+                UVC_DBGMSG("    bStillCaptureMethod: 0x%x\n", ifd_vs_hdr->bStillCaptureMethod);
+                UVC_DBGMSG("    bTriggerSupport:     0x%x\n", ifd_vs_hdr->bTriggerSupport);
                 break;
 
             case VS_FORMAT_UNCOMPRESSED:
@@ -459,7 +458,7 @@ int uvc_parse_streaming_interface(UVC_DEV_T *vdev, IFACE_T *iface)
                     UVC_DBGMSG("VS Interface VS_FRAME_MJPEG\n");
                     UVC_DBGMSG("    bFormatIndex: 0x%x\n", mjpg_frame->bFrameIndex);
                     UVC_DBGMSG("    wWidth:       0x%x\n", mjpg_frame->wWidth);
-                    UVC_DBGMSG("    wHeight       0x%x\n", mjpg_frame->wHeight);
+                    UVC_DBGMSG("    wHeight:      0x%x\n", mjpg_frame->wHeight);
                     UVC_DBGMSG("    dwMinBitRate: 0x%x\n", mjpg_frame->dwMinBitRate);
                     UVC_DBGMSG("    dwMaxBitRate: 0x%x\n", mjpg_frame->dwMaxBitRate);
                     UVC_DBGMSG("    dwDefaultFrameInterval:  0x%x\n", mjpg_frame->dwDefaultFrameInterval);
@@ -475,6 +474,37 @@ int uvc_parse_streaming_interface(UVC_DEV_T *vdev, IFACE_T *iface)
                     size -= mjpg_frame->bLength;
                 }
 
+                /*--------------------------------------------------------------------------*/
+                /*  Parsing all still image frame descriptors under this format descriptor  */
+                /*--------------------------------------------------------------------------*/
+                vs_still_image_frame = (DESC_STILL_IMAGE_FRAME_T *)bptr;
+
+                if((vs_still_image_frame->bDescriptorType != UVC_CS_INTERFACE) ||
+                        (vs_still_image_frame->bDescriptorSubType != VS_STILL_IMAGE_FRAME))
+                {
+                    UVC_DBGMSG("No VS_STILL_IMAGE_FRAME found (optional), skipping.\n");
+                    ifd = (DESC_IF_T *)bptr;  /* must */
+                    break;
+                }
+
+                UVC_DBGMSG("VS Interface VS_STILL_IMAGE_FRAME\n");
+                UVC_DBGMSG("    bEndpointAddress:        0x%x\n", vs_still_image_frame->bEndpointAddress);
+                UVC_DBGMSG("    bNumImageSizePatterns:   0x%x\n", vs_still_image_frame->bNumImageSizePatterns);
+                for(i = 0; (i < vs_still_image_frame->bNumImageSizePatterns); i++)
+                {
+
+                    vc->still_image_width[i] = vs_still_image_frame->wSize[i].wWidth;
+                    vc->still_image_height[i] = vs_still_image_frame->wSize[i].wHeight;
+                    UVC_DBGMSG("    [%d]wWidth x wHeight:     0x%x x 0x%x\n", (i + 1), vs_still_image_frame->wSize[i].wWidth, vs_still_image_frame->wSize[i].wHeight);
+                }
+
+//                idx = vc->num_of_frames;
+//                vc->frame_format[idx] = vc->format[vc->num_of_formats - 1];
+//                vc->num_of_frames++;
+
+                bptr += vs_still_image_frame->bLength;
+                size -= vs_still_image_frame->bLength;
+
                 ifd = (DESC_IF_T *)bptr;  /* must */
                 break;
 
@@ -489,9 +519,16 @@ int uvc_parse_streaming_interface(UVC_DEV_T *vdev, IFACE_T *iface)
                 UVC_DBGMSG("    dwDefaultFrameInterval:  0x%x\n", mjpg_frame->dwDefaultFrameInterval);
                 break;
 
+            case VS_STILL_IMAGE_FRAME:
+                vs_still_image_frame = (DESC_STILL_IMAGE_FRAME_T *)ifd_vs_hdr;
+                UVC_DBGMSG("VS Interface VS_STILL_IMAGE_FRAME\n");
+                UVC_DBGMSG("    bEndpointAddress:        0x%x\n", vs_still_image_frame->bEndpointAddress);
+                UVC_DBGMSG("    bNumImageSizePatterns:   0x%x\n", vs_still_image_frame->bNumImageSizePatterns);
+                UVC_DBGMSG("    bNumCompressionPatterns: 0x%x\n", vs_still_image_frame->bNumCompressionPatterns);
+                break;
+
             case VS_OUTPUT_HEADER:
             case VS_UNDEFINED:
-            case VC_INPUT_TERMINAL:
             case VS_FORMAT_MPEG2TS:
             case VS_FORMAT_DV:
             case VS_COLORFORMAT:
@@ -622,4 +659,3 @@ int uvc_parse_streaming_interface(UVC_DEV_T *vdev, IFACE_T *iface)
 /*! @}*/ /* end of group USBH_Library */
 
 /*! @}*/ /* end of group LIBRARY */
-

@@ -165,6 +165,7 @@ include_directories(${BSP_DIR}/ThirdParty/LibMAD/inc)
 # Build library
 add_subdirectory(${BSP_DIR}/Library/StdDriver/src)
 add_subdirectory(${BSP_DIR}/Library/Device/Nuvoton/m460/Source)
+add_subdirectory(${BSP_DIR}/Library/UsbHostLib)
 add_subdirectory(${BSP_DIR}/Library/CryptoAccelerator)
 add_subdirectory(${BSP_DIR}/Library/NuMaker/xmodem)
 add_subdirectory(${BSP_DIR}/ThirdParty/mbedtls-3.1.0/library)
