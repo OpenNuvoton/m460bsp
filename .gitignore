@@ -26,6 +26,8 @@ out/
 build/
 .metadata/
 tmp/
+RTE/
+.fwauto/
 
 *.cbuild-run.yml
 *.cbuild-idx.yml
