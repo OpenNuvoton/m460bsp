@@ -133,13 +133,14 @@ int EraseAP(uint32_t addr_start, uint32_t size)
 {
     uint32_t u32Addr, u32Cmd, u32Size;
     int32_t i32Size;
-    uint32_t u32TimeOutCount = FMC_TIMEOUT_ERASE;
+    uint32_t u32TimeOutCount;
 
     u32Addr = addr_start;
     i32Size = (int32_t)size;
 
     while(i32Size > 0)
     {
+	u32TimeOutCount = FMC_TIMEOUT_ERASE;
         if((size >= FMC_BANK_SIZE) && !(u32Addr & (FMC_BANK_SIZE - 1)))
         {
             u32Cmd = FMC_ISPCMD_BANK_ERASE;

@@ -131,11 +131,12 @@ void WriteData(uint32_t addr_start, uint32_t addr_end, uint32_t *data)  // Write
 int EraseAP(uint32_t addr_start, uint32_t size)
 {
     uint32_t u32Addr, u32Cmd, u32Size;
-    uint32_t u32TimeOutCount = FMC_TIMEOUT_ERASE;
+    uint32_t u32TimeOutCount;
     u32Addr = addr_start;
 
     while(size > 0)
     {
+	u32TimeOutCount = FMC_TIMEOUT_ERASE;
         if((size >= FMC_BANK_SIZE) && !(u32Addr & (FMC_BANK_SIZE - 1)))
         {
             u32Cmd = FMC_ISPCMD_BANK_ERASE;
