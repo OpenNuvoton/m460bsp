@@ -6,7 +6,9 @@ This document provides SBOM-ready metadata for the vendored FreeRTOS component u
 
 - Component name (`name`): `FreeRTOS-Kernel`
 - Component type (`type`): `library`
-- Supplier / project: `FreeRTOS` (Amazon)
+- Manufacturer (`manufacturer.name`): `Amazon.com, Inc.`
+- Supplier (`supplier.name`): `Amazon.com, Inc.`
+- Author / project: `Amazon.com, Inc. (FreeRTOS project)`
 - Version: `10.0.0`
 - License: `MIT` (SPDX)
 - Evidence path: `ThirdParty/FreeRTOS`
@@ -46,6 +48,8 @@ Recommended component fields:
 - `version`: `10.0.0`
 - `scope`: `required`
 - `author`: `Amazon.com, Inc. (FreeRTOS project)`
+- `manufacturer.name`: `Amazon.com, Inc.`
+- `supplier.name`: `Amazon.com, Inc.`
 - `description`: `FreeRTOS Kernel vendored in ThirdParty/FreeRTOS, including kernel source, public headers, GCC/IAR/RVDS portable layers, memory managers, license text, and demo/common example files.`
 - `licenses[0].license.id`: `MIT`
 - `properties` (recommended custom properties):
@@ -79,6 +83,12 @@ If your internal SBOM naming policy differs, keep naming consistent across all t
   "version": "10.0.0",
   "scope": "required",
   "author": "Amazon.com, Inc. (FreeRTOS project)",
+  "manufacturer": {
+    "name": "Amazon.com, Inc."
+  },
+  "supplier": {
+    "name": "Amazon.com, Inc."
+  },
   "purl": "pkg:generic/freertos-kernel@10.0.0",
   "description": "FreeRTOS Kernel vendored in ThirdParty/FreeRTOS, including kernel source, public headers, GCC/IAR/RVDS portable layers, memory managers, license text, and demo/common example files.",
   "licenses": [
@@ -105,6 +115,7 @@ If your internal SBOM naming policy differs, keep naming consistent across all t
 
 ## 7) Compliance Notes
 
+- `manufacturer` identifies Amazon.com, Inc. as the organization maintaining and publishing FreeRTOS; `supplier` records Amazon.com, Inc. as the upstream supplier.
 - Keep original upstream copyright/license notices.
 - Version evidence is taken from the vendored kernel headers and source files.
 - License evidence is taken from the vendored `License/license.txt` file.

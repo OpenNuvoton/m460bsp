@@ -6,7 +6,8 @@ This document provides SBOM-ready metadata for the vendored lwIP component under
 
 - Component name (`name`): `lwIP`
 - Component type (`type`): `library`
-- Supplier / project: `lwIP project / Swedish Institute of Computer Science`
+- Manufacturer (`manufacturer.name`): `Swedish Institute of Computer Science`
+- Supplier (`supplier.name`): `lwIP project / Swedish Institute of Computer Science`
 - Version: `2.1.2`
 - License: `BSD-3-Clause` (SPDX)
 - Evidence path: `ThirdParty/lwIP`
@@ -46,6 +47,8 @@ Recommended component fields:
 - `version`: `2.1.2`
 - `scope`: `required`
 - `author`: `lwIP project / Swedish Institute of Computer Science`
+- `manufacturer.name`: `Swedish Institute of Computer Science`
+- `supplier.name`: `lwIP project / Swedish Institute of Computer Science`
 - `description`: `lwIP TCP/IP stack vendored in ThirdParty/lwIP, including stack source, public headers, apps, network interface code, documentation, tests, and license text.`
 - `licenses[0].license.id`: `BSD-3-Clause`
 - `properties` (recommended custom properties):
@@ -80,6 +83,12 @@ If your internal SBOM naming policy differs, keep naming consistent across all t
   "version": "2.1.2",
   "scope": "required",
   "author": "lwIP project / Swedish Institute of Computer Science",
+  "manufacturer": {
+    "name": "Swedish Institute of Computer Science"
+  },
+  "supplier": {
+    "name": "lwIP project / Swedish Institute of Computer Science"
+  },
   "purl": "pkg:generic/lwip@2.1.2",
   "description": "lwIP TCP/IP stack vendored in ThirdParty/lwIP, including stack source, public headers, apps, network interface code, documentation, tests, and license text.",
   "licenses": [
@@ -107,6 +116,7 @@ If your internal SBOM naming policy differs, keep naming consistent across all t
 
 ## 7) Compliance Notes
 
+- `manufacturer` identifies Swedish Institute of Computer Science as the original creator of lwIP; `supplier` records lwIP project / Swedish Institute of Computer Science as the upstream supplier.
 - Keep original upstream copyright/license notices.
 - Version evidence is taken from `src/include/lwip/init.h` and the `STABLE-2.1.2` entry in `CHANGELOG`.
 - License evidence is taken from the vendored `COPYING` file and the BSD license note in `README`.

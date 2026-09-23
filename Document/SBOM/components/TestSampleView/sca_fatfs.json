@@ -7,6 +7,12 @@
       "version": "R0.12",
       "scope": "required",
       "author": "ChaN",
+      "manufacturer": {
+        "name": "ChaN"
+      },
+      "supplier": {
+        "name": "ChaN"
+      },
       "purl": "pkg:generic/fatfs@R0.12",
       "cpe": "cpe:2.3:a:elm-chan:fatfs:r0.12:*:*:*:*:*:*:*",
       "description": "FatFs - Generic FAT file system module for embedded systems (ANSI C/C89), integrated as vendored source code.",

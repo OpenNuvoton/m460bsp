@@ -6,7 +6,9 @@ This document provides SBOM-ready metadata for the vendored Mbed TLS component u
 
 - Component name (`name`): `Mbed TLS`
 - Component type (`type`): `library`
-- Supplier / project: `Mbed TLS Contributors`
+- Manufacturer (`manufacturer.name`): `Arm Limited`
+- Supplier (`supplier.name`): `Arm Limited`
+- Author (`author`): `Mbed TLS Contributors`
 - Version: `3.1.0`
 - License: `Apache-2.0` (SPDX)
 - Evidence path: `ThirdParty/mbedtls-3.1.0`
@@ -52,6 +54,8 @@ Recommended component fields:
 - `version`: `3.1.0`
 - `scope`: `required`
 - `author`: `Mbed TLS Contributors`
+- `manufacturer.name`: `Arm Limited`
+- `supplier.name`: `Arm Limited`
 - `description`: `Mbed TLS cryptographic and TLS library vendored in ThirdParty/mbedtls-3.1.0, including core library sources, public headers, configurations, documentation, programs, tests, scripts, build metadata, and bundled third-party code.`
 - `licenses[0].license.id`: `Apache-2.0`
 - `properties` (recommended custom properties):
@@ -86,6 +90,12 @@ If your internal SBOM naming policy differs, keep naming consistent across all t
   "version": "3.1.0",
   "scope": "required",
   "author": "Mbed TLS Contributors",
+  "manufacturer": {
+    "name": "Arm Limited"
+  },
+  "supplier": {
+    "name": "Arm Limited"
+  },
   "purl": "pkg:generic/mbedtls@3.1.0",
   "description": "Mbed TLS cryptographic and TLS library vendored in ThirdParty/mbedtls-3.1.0, including core library sources, public headers, configurations, documentation, programs, tests, scripts, build metadata, and bundled third-party code.",
   "licenses": [
@@ -113,6 +123,7 @@ If your internal SBOM naming policy differs, keep naming consistent across all t
 
 ## 7) Compliance Notes
 
+- `manufacturer` identifies Arm Limited as the organization maintaining and releasing Mbed TLS 3.1.0; `supplier` records Arm Limited as the upstream supplier (with contributions from Mbed TLS Contributors).
 - Keep original upstream copyright/license notices.
 - Version evidence is taken from `include/mbedtls/build_info.h`, with cross-checks in `ChangeLog` and `CMakeLists.txt`.
 - License evidence is taken from the vendored `LICENSE` file, the license note in `README.md`, and Apache-2.0 SPDX headers in the source tree.

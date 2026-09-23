@@ -6,7 +6,9 @@ This document provides SBOM-ready metadata for the vendored Eclipse Paho MQTT Em
 
 - Component name (`name`): `Eclipse Paho MQTT Embedded C`
 - Component type (`type`): `library`
-- Supplier / project: `Ian Craggs / Eclipse Paho project`
+- Manufacturer (`manufacturer.name`): `Eclipse Foundation`
+- Supplier (`supplier.name`): `Eclipse Foundation`
+- Author / project: `Ian Craggs / Eclipse Paho project`
 - Version: `1.0.0`
 - License: `Eclipse Public License v1.0 OR Eclipse Distribution License v1.0`
 - Evidence path: `ThirdParty/paho.mqtt.embedded-c`
@@ -55,6 +57,8 @@ Recommended component fields:
 - `version`: `1.0.0`
 - `scope`: `required`
 - `author`: `Ian Craggs / Eclipse Paho project`
+- `manufacturer.name`: `Eclipse Foundation`
+- `supplier.name`: `Eclipse Foundation`
 - `description`: `Eclipse Paho MQTT C/C++ client library for embedded platforms vendored in ThirdParty/paho.mqtt.embedded-c, including MQTTPacket, MQTTClient, MQTTClient-C, samples, tests, documentation, build metadata, and license texts.`
 - `licenses[0].license.name`: `Eclipse Public License v1.0 OR Eclipse Distribution License v1.0`
 - `properties` (recommended custom properties):
@@ -88,6 +92,12 @@ If your internal SBOM naming policy differs, keep naming consistent across all t
   "version": "1.0.0",
   "scope": "required",
   "author": "Ian Craggs / Eclipse Paho project",
+  "manufacturer": {
+    "name": "Eclipse Foundation"
+  },
+  "supplier": {
+    "name": "Eclipse Foundation"
+  },
   "purl": "pkg:generic/paho.mqtt.embedded-c@1.0.0",
   "description": "Eclipse Paho MQTT C/C++ client library for embedded platforms vendored in ThirdParty/paho.mqtt.embedded-c, including MQTTPacket, MQTTClient, MQTTClient-C, samples, tests, documentation, build metadata, and license texts.",
   "licenses": [
@@ -114,6 +124,7 @@ If your internal SBOM naming policy differs, keep naming consistent across all t
 
 ## 7) Compliance Notes
 
+- `manufacturer` identifies Eclipse Foundation as the governing organization of the Eclipse Paho project; `supplier` records Eclipse Foundation as the upstream supplier.
 - Keep original upstream copyright/license notices.
 - Version evidence is taken from `CMakeLists.txt` and `library.properties`.
 - License evidence is taken from `README.md`, `about.html`, the vendored `epl-v10` and `edl-v10` license texts, and source-file license notices.

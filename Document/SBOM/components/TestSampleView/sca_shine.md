@@ -6,7 +6,8 @@ This document provides SBOM-ready metadata for the vendored shine component unde
 
 - Component name (`name`): `shine`
 - Component type (`type`): `library`
-- Supplier / project: `Savonet / shine project`
+- Manufacturer (`manufacturer.name`): `Savonet / shine project`
+- Supplier (`supplier.name`): `Savonet / shine project`
 - Version: `3.1.1`
 - License: `GNU Library General Public License v2.0`
 - Evidence path: `ThirdParty/shine`
@@ -47,6 +48,8 @@ Recommended component fields:
 - `version`: `3.1.1`
 - `scope`: `required`
 - `author`: `Savonet / shine project`
+- `manufacturer.name`: `Savonet / shine project`
+- `supplier.name`: `Savonet / shine project`
 - `description`: `shine fixed-point MP3 encoding library vendored in ThirdParty/shine, including encoder library sources, command-line encoder source, JavaScript build support, test assets, build metadata, and license text.`
 - `licenses[0].license.name`: `GNU Library General Public License v2.0`
 - `properties` (recommended custom properties):
@@ -80,6 +83,12 @@ If your internal SBOM naming policy differs, keep naming consistent across all t
   "version": "3.1.1",
   "scope": "required",
   "author": "Savonet / shine project",
+  "manufacturer": {
+    "name": "Savonet / shine project"
+  },
+  "supplier": {
+    "name": "Savonet / shine project"
+  },
   "purl": "pkg:generic/shine@3.1.1",
   "description": "shine fixed-point MP3 encoding library vendored in ThirdParty/shine, including encoder library sources, command-line encoder source, JavaScript build support, test assets, build metadata, and license text.",
   "licenses": [
@@ -106,6 +115,7 @@ If your internal SBOM naming policy differs, keep naming consistent across all t
 
 ## 7) Compliance Notes
 
+- `manufacturer` identifies Savonet / shine project as the organization and project behind shine; `supplier` records Savonet / shine project as the upstream supplier.
 - Keep original upstream copyright/license notices.
 - Version evidence is taken from `configure.ac`, with cross-checks in `ChangeLog` and `shine.pc.in`.
 - License evidence is taken from the vendored `COPYING` file and README history.

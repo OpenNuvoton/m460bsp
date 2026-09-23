@@ -7,6 +7,12 @@
       "version": "1.0.0",
       "scope": "required",
       "author": "Ian Craggs / Eclipse Paho project",
+      "manufacturer": {
+        "name": "Eclipse Foundation"
+      },
+      "supplier": {
+        "name": "Eclipse Foundation"
+      },
       "purl": "pkg:generic/paho.mqtt.embedded-c@1.0.0",
       "cpe": "cpe:2.3:a:eclipse:paho_mqtt_c\\/c\\+\\+_client:1.0.0:*:*:*:*:*:*:*",
       "description": "Eclipse Paho MQTT C/C++ client library for embedded platforms vendored in ThirdParty/paho.mqtt.embedded-c, including MQTTPacket, MQTTClient, MQTTClient-C, samples, tests, documentation, build metadata, and license texts.",

@@ -7,6 +7,12 @@
       "version": "3.1.0",
       "scope": "required",
       "author": "Mbed TLS Contributors",
+      "manufacturer": {
+        "name": "Arm Limited"
+      },
+      "supplier": {
+        "name": "Arm Limited"
+      },
       "purl": "pkg:generic/mbedtls@3.1.0",
       "cpe": "cpe:2.3:a:arm:mbed_tls:3.1.0:*:*:*:*:*:*:*",
       "description": "Mbed TLS cryptographic and TLS library vendored in ThirdParty/mbedtls-3.1.0, including core library sources, public headers, configurations, documentation, programs, tests, scripts, build metadata, and bundled third-party code.",

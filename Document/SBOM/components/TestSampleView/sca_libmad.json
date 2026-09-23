@@ -7,6 +7,12 @@
       "version": "0.15.1-beta",
       "scope": "required",
       "author": "Underbit Technologies, Inc.",
+      "manufacturer": {
+        "name": "Underbit Technologies, Inc."
+      },
+      "supplier": {
+        "name": "Underbit Technologies, Inc."
+      },
       "purl": "pkg:generic/libmad@0.15.1-beta",
       "cpe": "cpe:2.3:a:underbit:libmad:0.15.1b:*:*:*:*:*:*:*",
       "description": "libmad MPEG audio decoder library vendored in ThirdParty/LibMAD, including decoder source files, public/internal headers, fixed-point tables, and local CMake build metadata.",

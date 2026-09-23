@@ -7,6 +7,12 @@
       "version": "1.1.0",
       "scope": "required",
       "author": "Armink",
+      "manufacturer": {
+        "name": "Armink"
+      },
+      "supplier": {
+        "name": "Armink"
+      },
       "purl": "pkg:generic/sfud@1.1.0",
       "description": "Serial Flash Universal Driver Library vendored in ThirdParty/SFUD, including public headers, serial flash driver source, SFDP support, and platform port source.",
       "licenses": [

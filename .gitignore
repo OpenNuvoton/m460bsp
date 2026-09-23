@@ -28,6 +28,7 @@ build/
 tmp/
 RTE/
 .fwauto/
+.vscode/
 
 *.cbuild-run.yml
 *.cbuild-idx.yml

@@ -6,7 +6,8 @@ This document provides SBOM-ready metadata for the vendored Independent JPEG Gro
 
 - Component name (`name`): `libjpeg`
 - Component type (`type`): `library`
-- Supplier / project: `Independent JPEG Group`
+- Manufacturer (`manufacturer.name`): `Independent JPEG Group`
+- Supplier (`supplier.name`): `Independent JPEG Group`
 - Version: `9b`
 - License: `Independent JPEG Group license`
 - Evidence path: `ThirdParty/libjpeg`
@@ -40,6 +41,8 @@ Recommended component fields:
 - `version`: `9b`
 - `scope`: `required`
 - `author`: `Independent JPEG Group`
+- `manufacturer.name`: `Independent JPEG Group`
+- `supplier.name`: `Independent JPEG Group`
 - `description`: `Independent JPEG Group libjpeg vendored in ThirdParty/libjpeg, including JPEG compression/decompression library sources, command-line tools, build scripts, documentation, and test images.`
 - `licenses[0].license.name`: `Independent JPEG Group license`
 - `properties` (recommended custom properties):
@@ -72,6 +75,12 @@ If your internal SBOM naming policy differs, keep naming consistent across all t
   "version": "9b",
   "scope": "required",
   "author": "Independent JPEG Group",
+  "manufacturer": {
+    "name": "Independent JPEG Group"
+  },
+  "supplier": {
+    "name": "Independent JPEG Group"
+  },
   "purl": "pkg:generic/libjpeg@9b",
   "description": "Independent JPEG Group libjpeg vendored in ThirdParty/libjpeg, including JPEG compression/decompression library sources, command-line tools, build scripts, documentation, and test images.",
   "licenses": [
@@ -97,6 +106,7 @@ If your internal SBOM naming policy differs, keep naming consistent across all t
 
 ## 7) Compliance Notes
 
+- `manufacturer` identifies Independent JPEG Group as the group that developed and released libjpeg; `supplier` records Independent JPEG Group as the upstream supplier.
 - Keep the original upstream `README` and source-file copyright/license notices.
 - Version evidence is taken from the vendored `README` and `jversion.h`.
 - License evidence is taken from the legal terms in the vendored `README`.

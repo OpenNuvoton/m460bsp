@@ -7,6 +7,12 @@
       "version": "3.1.1",
       "scope": "required",
       "author": "Savonet / shine project",
+      "manufacturer": {
+        "name": "Savonet / shine project"
+      },
+      "supplier": {
+        "name": "Savonet / shine project"
+      },
       "purl": "pkg:generic/shine@3.1.1",
       "description": "shine fixed-point MP3 encoding library vendored in ThirdParty/shine, including encoder library sources, command-line encoder source, JavaScript build support, test assets, build metadata, and license text.",
       "licenses": [

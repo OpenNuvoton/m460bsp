@@ -6,7 +6,8 @@ This document provides SBOM-ready metadata for the vendored libmad component und
 
 - Component name (`name`): `libmad`
 - Component type (`type`): `library`
-- Supplier / project: `Underbit Technologies, Inc.`
+- Manufacturer (`manufacturer.name`): `Underbit Technologies, Inc.`
+- Supplier (`supplier.name`): `Underbit Technologies, Inc.`
 - Version: `0.15.1-beta`
 - License: `GPL-2.0-or-later` (SPDX)
 - Evidence path: `ThirdParty/LibMAD`
@@ -44,6 +45,8 @@ Recommended component fields:
 - `version`: `0.15.1-beta`
 - `scope`: `required`
 - `author`: `Underbit Technologies, Inc.`
+- `manufacturer.name`: `Underbit Technologies, Inc.`
+- `supplier.name`: `Underbit Technologies, Inc.`
 - `description`: `libmad MPEG audio decoder library vendored in ThirdParty/LibMAD, including decoder source files, public/internal headers, fixed-point tables, and local CMake build metadata.`
 - `licenses[0].license.id`: `GPL-2.0-or-later`
 - `properties` (recommended custom properties):
@@ -77,6 +80,12 @@ If your internal SBOM naming policy differs, keep naming consistent across all t
   "version": "0.15.1-beta",
   "scope": "required",
   "author": "Underbit Technologies, Inc.",
+  "manufacturer": {
+    "name": "Underbit Technologies, Inc."
+  },
+  "supplier": {
+    "name": "Underbit Technologies, Inc."
+  },
   "purl": "pkg:generic/libmad@0.15.1-beta",
   "description": "libmad MPEG audio decoder library vendored in ThirdParty/LibMAD, including decoder source files, public/internal headers, fixed-point tables, and local CMake build metadata.",
   "licenses": [
@@ -103,6 +112,7 @@ If your internal SBOM naming policy differs, keep naming consistent across all t
 
 ## 7) Compliance Notes
 
+- `manufacturer` identifies Underbit Technologies, Inc. as the organization that developed libmad; `supplier` records Underbit Technologies, Inc. as the upstream supplier.
 - Keep original upstream copyright/license notices in source and header files.
 - Version evidence is taken from the vendored `inc/version.h` macros and `src/version.c`.
 - License evidence is taken from the GPL notices embedded in vendored source and header files.

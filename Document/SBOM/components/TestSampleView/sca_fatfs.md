@@ -6,7 +6,9 @@ This document provides component metadata for the **FatFs file system library** 
 
 - Component name (`name`): `FatFs`
 - Component type (`type`): `library`
-- Supplier / author: `ChaN`
+- Manufacturer (`manufacturer.name`): `ChaN`
+- Supplier (`supplier.name`): `ChaN`
+- Author (`author`): `ChaN`
 - Version: `R0.12` (identified from source headers and revision ID)
 - Copyright:
   - `Copyright (C) 2016, ChaN, all right reserved.`
@@ -51,6 +53,8 @@ Suggested values (adjust as needed for your SBOM toolchain):
 - `version`: `R0.12`
 - `scope`: `required`
 - `author`: `ChaN`
+- `manufacturer.name`: `ChaN`
+- `supplier.name`: `ChaN`
 - `description`: `FatFs - Generic FAT file system module for embedded systems (ANSI C/C89), integrated as source code under ThirdParty/FatFs.`
 - `licenses`: see Section 2
 - `properties` (recommended custom properties):
@@ -77,6 +81,12 @@ FatFs is vendored source code and not a typical package-manager artifact (e.g., 
   "version": "R0.12",
   "scope": "required",
   "author": "ChaN",
+  "manufacturer": {
+    "name": "ChaN"
+  },
+  "supplier": {
+    "name": "ChaN"
+  },
   "purl": "pkg:generic/fatfs@R0.12",
   "description": "FatFs - Generic FAT file system module for embedded systems (ANSI C/C89), integrated as vendored source code.",
   "licenses": [
@@ -102,5 +112,6 @@ FatFs is vendored source code and not a typical package-manager artifact (e.g., 
 
 ## 8) Compliance Notes
 
+- `manufacturer` identifies ChaN as the developer/author of FatFs; `supplier` records ChaN as the upstream supplier in this component description.
 - Keep the original license/disclaimer headers in source files.
 - If LFN/exFAT features are enabled, perform product-level patent/license review for target markets (this is a product compliance consideration, not part of the FatFs source license terms themselves).

@@ -6,7 +6,8 @@ This document provides SBOM-ready metadata for the vendored SFUD component under
 
 - Component name (`name`): `SFUD`
 - Component type (`type`): `library`
-- Supplier / project: `Armink`
+- Manufacturer (`manufacturer.name`): `Armink`
+- Supplier (`supplier.name`): `Armink`
 - Version: `1.1.0`
 - License: `MIT` (SPDX)
 - Evidence path: `ThirdParty/SFUD`
@@ -47,6 +48,8 @@ Recommended component fields:
 - `version`: `1.1.0`
 - `scope`: `required`
 - `author`: `Armink`
+- `manufacturer.name`: `Armink`
+- `supplier.name`: `Armink`
 - `description`: `Serial Flash Universal Driver Library vendored in ThirdParty/SFUD, including public headers, serial flash driver source, SFDP support, and platform port source.`
 - `licenses[0].license.id`: `MIT`
 - `properties` (recommended custom properties):
@@ -80,6 +83,12 @@ If your internal SBOM naming policy differs, keep naming consistent across all t
   "version": "1.1.0",
   "scope": "required",
   "author": "Armink",
+  "manufacturer": {
+    "name": "Armink"
+  },
+  "supplier": {
+    "name": "Armink"
+  },
   "purl": "pkg:generic/sfud@1.1.0",
   "description": "Serial Flash Universal Driver Library vendored in ThirdParty/SFUD, including public headers, serial flash driver source, SFDP support, and platform port source.",
   "licenses": [
@@ -106,6 +115,7 @@ If your internal SBOM naming policy differs, keep naming consistent across all t
 
 ## 7) Compliance Notes
 
+- `manufacturer` identifies Armink as the author/developer of SFUD; `supplier` records Armink as the upstream supplier.
 - Keep original upstream copyright/license notices.
 - Version evidence is taken from `inc/sfud_def.h`, with usage cross-checked in `src/sfud.c`.
 - License evidence is taken from the MIT license headers in the vendored source files.

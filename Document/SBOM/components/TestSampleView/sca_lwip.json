@@ -7,6 +7,12 @@
       "version": "2.1.2",
       "scope": "required",
       "author": "lwIP project / Swedish Institute of Computer Science",
+      "manufacturer": {
+        "name": "Swedish Institute of Computer Science"
+      },
+      "supplier": {
+        "name": "lwIP project / Swedish Institute of Computer Science"
+      },
       "purl": "pkg:generic/lwip@2.1.2",
       "cpe": "cpe:2.3:a:lwip_project:lwip:2.1.2:*:*:*:*:*:*:*",
       "description": "lwIP TCP/IP stack vendored in ThirdParty/lwIP, including stack source, public headers, apps, network interface code, documentation, tests, and license text.",
