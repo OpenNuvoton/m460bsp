@@ -2,10 +2,10 @@
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",
   "specVersion": "1.6",
-  "serialNumber": "urn:uuid:7d74e0ce-e724-4bfc-b3ed-72c139157291",
+  "serialNumber": "urn:uuid:90d58607-910e-4c59-8fa9-52f3bc792f13",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-09-23T17:35:00+08:00",
+    "timestamp": "2026-10-07T15:00:29+08:00",
     "tools": {
       "components": [
         {
@@ -20,14 +20,14 @@
       "bom-ref": "e1f8148bf663a81a",
       "type": "application",
       "name": "MCU Test Sample",
-      "version": "v3.00.005-25-g4268b6d2",
+      "version": "v3.00.005-27-g7e8a8db5",
       "supplier": {
         "name": "Nuvoton Technology Corp.",
         "url": [
           "https://www.nuvoton.com"
         ]
       },
-      "purl": "pkg:generic/nuvoton/mcu-test-sample@v3.00.005-25-g4268b6d2",
+      "purl": "pkg:generic/nuvoton/mcu-test-sample@v3.00.005-27-g7e8a8db5",
       "licenses": [
         {
           "license": {
@@ -2836,14 +2836,14 @@
       "type": "application",
       "bom-ref": "m460bsp:test-sample-component:samplecode",
       "name": "m460 SampleCode",
-      "version": "v3.00.005-25-g4268b6d2",
+      "version": "v3.00.005-27-g7e8a8db5",
       "supplier": {
         "name": "Nuvoton Technology Corp.",
         "url": [
           "https://www.nuvoton.com"
         ]
       },
-      "purl": "pkg:generic/nuvoton/samplecode@v3.00.005-25-g4268b6d2",
+      "purl": "pkg:generic/nuvoton/samplecode@v3.00.005-27-g7e8a8db5",
       "hashes": [
         {
           "alg": "SHA-256",
@@ -2934,7 +2934,7 @@
         },
         {
           "name": "bsp:evidence-file",
-          "value": "Document/SBOM/components/sca_fatfs.json"
+          "value": "Document/SBOM/components/TestSampleView/sca_fatfs.json"
         }
       ],
       "hashes": [
@@ -2994,7 +2994,7 @@
         },
         {
           "name": "bsp:evidence-file",
-          "value": "Document/SBOM/components/sca_freertos.json"
+          "value": "Document/SBOM/components/TestSampleView/sca_freertos.json"
         },
         {
           "name": "bsp:evidence-path",
@@ -3062,7 +3062,7 @@
         },
         {
           "name": "bsp:evidence-file",
-          "value": "Document/SBOM/components/sca_libjpeg.json"
+          "value": "Document/SBOM/components/TestSampleView/sca_libjpeg.json"
         },
         {
           "name": "bsp:evidence-path",
@@ -3134,7 +3134,7 @@
         },
         {
           "name": "bsp:evidence-file",
-          "value": "Document/SBOM/components/sca_libmad.json"
+          "value": "Document/SBOM/components/TestSampleView/sca_libmad.json"
         },
         {
           "name": "bsp:evidence-path",
@@ -3210,7 +3210,7 @@
         },
         {
           "name": "bsp:evidence-file",
-          "value": "Document/SBOM/components/sca_lwip.json"
+          "value": "Document/SBOM/components/TestSampleView/sca_lwip.json"
         },
         {
           "name": "bsp:evidence-path",
@@ -3286,7 +3286,7 @@
         },
         {
           "name": "bsp:evidence-file",
-          "value": "Document/SBOM/components/sca_mbedtls.json"
+          "value": "Document/SBOM/components/TestSampleView/sca_mbedtls.json"
         },
         {
           "name": "bsp:evidence-path",
@@ -3363,7 +3363,7 @@
         },
         {
           "name": "bsp:evidence-file",
-          "value": "Document/SBOM/components/sca_mqtt.json"
+          "value": "Document/SBOM/components/TestSampleView/sca_mqtt.json"
         },
         {
           "name": "bsp:evidence-path",
@@ -3434,7 +3434,7 @@
         },
         {
           "name": "bsp:evidence-file",
-          "value": "Document/SBOM/components/sca_sfud.json"
+          "value": "Document/SBOM/components/TestSampleView/sca_sfud.json"
         },
         {
           "name": "bsp:evidence-path",
@@ -3505,7 +3505,7 @@
         },
         {
           "name": "bsp:evidence-file",
-          "value": "Document/SBOM/components/sca_shine.json"
+          "value": "Document/SBOM/components/TestSampleView/sca_shine.json"
         },
         {
           "name": "bsp:evidence-path",
@@ -3857,12 +3857,12 @@
   ],
   "signature": {
     "algorithm": "Ed25519",
-    "keyId": "WSChang0",
+    "keyId": "wschang0@nuvoton.com",
     "publicKey": {
       "kty": "OKP",
       "crv": "Ed25519",
       "x": "TgbfwoVHePVjOGkBXjwGXZ8R9W6uukRP7UOt3Sr52QM"
     },
-    "value": "70iXU_yznIH4t1Ul1pJaREEZBKqLfMUQYHOJQ3Lged3m-k_jJhhZl-Z7-B05fp9l7srfV1lYYjVUXCwkJyAkDA"
+    "value": "fT009lwmxqSRKjyk0yy16V9HR5QyJ1_-yD7rwrkv10J4otJeJWcc2wiJqC3EAwBNXF2QeYXQpn0zj3HARtgRDA"
   }
 }
