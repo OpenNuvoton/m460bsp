@@ -46,7 +46,7 @@
         },
         {
           "name": "bsp:evidence-file",
-          "value": "Document/SBOM/components/sca_fatfs.json"
+          "value": "Document/SBOM/components/TestSampleView/sca_fatfs.json"
         }
       ]
     }

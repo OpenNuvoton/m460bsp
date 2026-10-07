@@ -54,7 +54,7 @@
         },
         {
           "name": "bsp:evidence-file",
-          "value": "Document/SBOM/components/sca_lwip.json"
+          "value": "Document/SBOM/components/TestSampleView/sca_lwip.json"
         },
         {
           "name": "bsp:evidence-path",

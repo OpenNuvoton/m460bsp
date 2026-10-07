@@ -54,7 +54,7 @@
         },
         {
           "name": "bsp:evidence-file",
-          "value": "Document/SBOM/components/sca_mbedtls.json"
+          "value": "Document/SBOM/components/TestSampleView/sca_mbedtls.json"
         },
         {
           "name": "bsp:evidence-path",

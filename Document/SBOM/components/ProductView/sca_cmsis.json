@@ -49,7 +49,7 @@
         },
         {
           "name": "bsp:evidence-file",
-          "value": "Document/SBOM/cmsis/sca_cmsis.json"
+          "value": "Document/SBOM/components/ProductView/sca_cmsis.json"
         },
         {
           "name": "bsp:evidence-path",

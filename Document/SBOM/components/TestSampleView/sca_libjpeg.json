@@ -46,7 +46,7 @@
         },
         {
           "name": "bsp:evidence-file",
-          "value": "Document/SBOM/components/sca_libjpeg.json"
+          "value": "Document/SBOM/components/TestSampleView/sca_libjpeg.json"
         },
         {
           "name": "bsp:evidence-path",

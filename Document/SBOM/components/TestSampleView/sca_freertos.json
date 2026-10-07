@@ -50,7 +50,7 @@
         },
         {
           "name": "bsp:evidence-file",
-          "value": "Document/SBOM/components/sca_freertos.json"
+          "value": "Document/SBOM/components/TestSampleView/sca_freertos.json"
         },
         {
           "name": "bsp:evidence-path",

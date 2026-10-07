@@ -50,7 +50,7 @@
         },
         {
           "name": "bsp:evidence-file",
-          "value": "Document/SBOM/components/sca_mqtt.json"
+          "value": "Document/SBOM/components/TestSampleView/sca_mqtt.json"
         },
         {
           "name": "bsp:evidence-path",

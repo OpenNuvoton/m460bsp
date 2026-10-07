@@ -49,7 +49,7 @@
         },
         {
           "name": "bsp:evidence-file",
-          "value": "Document/SBOM/components/sca_sfud.json"
+          "value": "Document/SBOM/components/TestSampleView/sca_sfud.json"
         },
         {
           "name": "bsp:evidence-path",

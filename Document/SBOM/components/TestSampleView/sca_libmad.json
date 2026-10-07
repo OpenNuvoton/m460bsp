@@ -50,7 +50,7 @@
         },
         {
           "name": "bsp:evidence-file",
-          "value": "Document/SBOM/components/sca_libmad.json"
+          "value": "Document/SBOM/components/TestSampleView/sca_libmad.json"
         },
         {
           "name": "bsp:evidence-path",
